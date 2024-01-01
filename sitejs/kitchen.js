@@ -165,6 +165,11 @@ async function preview(_this, isAdded) {
     previewDialog.showModal();
     let id = parseInt(_this.dataset.idx);
     let data = cache_decks[id];
+    previewDialog.innerHTML = `
+        <div class='title-bar'>
+            <h2>...</h2>
+        </div>
+    `;
     if(!data) {
         let [success, deck] = await DeckGateway.get(id, true, false);
         if(!success) {
