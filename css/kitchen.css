@@ -121,6 +121,9 @@
         }
     };
 }
+#strict-maching-slider {
+    cursor: pointer;
+}
 .decks-display {
     width: 100%;
 }
@@ -183,7 +186,7 @@
 }
 .owned-decks, .popular-decks {
     display: flex;
-    gap: 10px;
+    gap: 15px;
     flex-wrap: wrap;
 }
 .decks-display > div{
