@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento!</title>
     <?php require_once "../globalreqs.php"?>
-    <script type="module" src="../../sitejs/userdir.js" type="text/javascript"></script>
+    <script type="module" src="../../sitejs/userdir.js" type="text/javascript" data-loading="true"></script>
 </head>
 <body>
     <?php require_once "../header.php"?>

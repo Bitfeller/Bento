@@ -69,6 +69,7 @@ const rightSushi = document.getElementById("Right_Sushi");
         await UserGateway.editUser("notifsub", String(curr));
         notifText.innerHTML = `<span class='material-symbols-outlined'>${curr == "0" ? "notifications_off" : "notifications_active"}</span>${curr == "0" ? "Don't notify me to review." : (curr == "1" ? "Remind me everyday when I have to review." : (curr == "2" ? "Remind me every 3 days when I have to review." : "Remind me every week when I have to review."))}</span>`;
     });
+    window.LOADED();
     const paramList = new URLSearchParams(window.location.search);
     if(paramList.get("new") == "1") {
         // replace URL so that user doesn't accidentally re-activate tutorial later

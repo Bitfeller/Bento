@@ -98,6 +98,7 @@ async function update() {
     }
     decks.push(...data);
     await update();
+    window.LOADED();
     loadBtn.addEventListener("mousedown", async () => {
         loadBtn.innerHTML = "Loading more decks...";
         let [success, data] = await DeckGateway.getall(decks.length);
@@ -163,24 +164,6 @@ async function preview(_this, isAdded) {
             deck = target[i];
         }
     }
-    if(deck.deleted == true) {
-        previewDialog.innerHTML = `
-            <div class='title-bar'>
-                <h2>Preview:</h2>
-                <button class="closeBtns" id="previewDialog_leave"><span class="material-symbols-outlined">close</span></button>
-            </div>
-            <div class='preview-container'>
-                <div class='preview-container-part' id='overview'>
-                    <h2>${deck.name}</h2>
-                    <p>This deck was deleted.</p>
-                </div>
-            </div>
-        `;
-        previewDialog.getElementsByClassName("closeBtns")[0].addEventListener("mousedown", () => {
-            previewDialog.close();
-        });
-        return;
-    }
     await UserGateway.editUser("view", String(deck.id));
     let answer_list = "";
     if(!deck.data.contnt) {
@@ -239,12 +222,20 @@ async function preview(_this, isAdded) {
         previewDialog.getElementsByClassName("delete-btn")[0].addEventListener("mousedown", async () => {
             await DeckGateway.modify(deck.id, "delete", "");
             previewDialog.close();
-            for(let i = 0; i < target.length; i++) {
-                if(target[i].id == deck.id) {
-                    target[i] = {
-                        id: deck.id,
-                        deleted: true
-                    }
+            // find div in added decks container
+            for(let j = 0; j < addedDecksContainer.children.length; j++) {
+                if(addedDecksContainer.children[j].dataset.idx == deck.id) {
+                    addedDecksContainer.children[j].remove();
+                    if(addedDecksContainer.innerHTML.length == 0) addedDecksContainer.innerHTML = "<p class=\"info-blank\">You haven't added any decks to your reviews yet.</p>";
+                    break;
+                }
+            }
+            // update div in marketplace
+            let divs = document.getElementsByClassName("ingredient-box");
+            for(let j = 0; j < divs.length; j++) {
+                if(divs[j].dataset.idx == deck.id) {
+                    divs[j].remove();
+                    break;
                 }
             }
         });
@@ -285,6 +276,41 @@ async function reviews_update(_this, isAdded) {
         }
     } else {
         user.userdata.reviews[deck.id] = {};
+        // Make sure deck still exists
+        let [success, data] = await DeckGateway.get(deck.id);
+        if(!success) {
+            previewDialog.showModal();
+            previewDialog.innerHTML = `
+                <div class='title-bar'>
+                    <h2>Hmm.</h2>
+                    <button class="closeBtns" id="previewDialog_leave"><span class="material-symbols-outlined">close</span></button>
+                </div>
+                <div class='preview-container'>
+                    <div class='preview-container-part' id='overview'>
+                        <h2>no info</h2>
+                        <p>We weren't able to add this deck, since it was deleted by its owner.<br>You can close this prompt once you're done.</p>
+                    </div>
+                </div>
+            `;
+            previewDialog.getElementsByClassName("closeBtns")[0].addEventListener("mousedown", () => previewDialog.close());
+            // find div in added decks container
+            for(let j = 0; j < addedDecksContainer.children.length; j++) {
+                if(addedDecksContainer.children[j].dataset.idx == deck.id) {
+                    addedDecksContainer.children[j].remove();
+                    if(addedDecksContainer.innerHTML.length == 0) addedDecksContainer.innerHTML = "<p class=\"info-blank\">You haven't added any decks to your reviews yet.</p>";
+                    break;
+                }
+            }
+            // update div in marketplace
+            let divs = document.getElementsByClassName("ingredient-box");
+            for(let j = 0; j < divs.length; j++) {
+                if(divs[j].dataset.idx == deck.id) {
+                    divs[j].remove();
+                    break;
+                }
+            }
+            return;
+        }
         // Add to list of reviewDecks
         reviewDecks.push(deck);
         let newBox = box(deck.id, true, deck.name, deck.deckpic, deck.owner, true);

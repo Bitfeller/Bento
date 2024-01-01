@@ -6,7 +6,7 @@
     <title>Bento | Learn</title>
     <link rel="stylesheet" href="../../css/game.css"/>
     <?php require_once "../globalreqs.php"?>
-    <script type="module" src="../../sitejs/game.js"></script>
+    <script type="module" src="../../sitejs/game.js" data-loading="true"></script>
     <!-- MathJax -->
     <script>
         window.MathJax = {

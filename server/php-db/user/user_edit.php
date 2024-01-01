@@ -80,15 +80,38 @@
                     fail("email taken");
                 }
                 $stmt->close();
+                // Send email to previous email
+                $uid = $result['id'];
+                $username = $result['username'];
+                send_mail(
+                    $result['email'], 
+                    "Changed Email", 
+                    "Hey there!<br><br>Your account, <b>$username</b>, recently changed its email to $val.<br>If you didn't make this change, please let us know immediately so that we can help restore your account.<br><br>Bento<br><span style='font-size: 10px; color: rgb(200, 200, 200)'>You can reply to this email to contact us.<br>You're receiving this email because you were the last email associated with this account.</span>", 
+                    "Hey there!\n\nYour account, $username, recently changed its email to $val.\nIf you didn't make this change, please let us know immediately so that we can help restore your account.\n\nBento\n\n(You can reply to this email to contact us. You're receiving this email because you were the last email associated with this account.)"
+                );
+                // Generate verifStr
+                $verifStr = '';
+                $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-=_+[]\\{}|;\':",./<>?`~';
+                $len = strlen($chars);
+                for($i = 0; $i < $len; $i++) {
+                    $verifStr .= $chars[random_int(0, $len-1)];
+                }
+                $hashVerif = password_hash($verifStr, PASSWORD_DEFAULT);
                 // Set email
-                $sql = "UPDATE users SET email = ?, verified = ? WHERE id = ?;";
+                $sql = "UPDATE users SET email = ?, verified = ?, verif = ? WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
                 $verified = 0;
-                $stmt->bind_param("sii", $val, $verified, $_SESSION['uid']);
+                $stmt->bind_param("sisi", $val, $verified, $hashVerif, $_SESSION['uid']);
                 $stmt->execute();
                 $stmt->close();
                 $_SESSION['email'] = $val;
                 $_SESSION['verified'] = false;
+                send_mail(
+                    $val,
+                    "Email Verification", 
+                    "Hey there!<br><br>Verify your new email address for $username <a href='https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=0&user=$uid'>here</a>.<br><br>If this isn't your account, you can safely ignore this email.<br><br>Bento<br><span style='font-size: 10px; color: rgb(200, 200, 200)'>You can reply to this email to contact us.<br>You're receiving this email because your email was associated with this account.<br>You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.</span>", 
+                    "Hey there!\n\nVerify your new email address for $username at https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=0&user=$uid. \nIf this isn't your account, you can safely ignore this email.\n\nBento\n(You can reply to this email to contact us. You're receiving this email because your email was associated with this account.)\n(You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.)"
+                );
             break;
             case "password":
                 if(!password_verify($verifpwd, $result['password'])) {
@@ -100,6 +123,12 @@
                 $stmt->bind_param("si", $newPwd, $_SESSION['uid']);
                 $stmt->execute();
                 $stmt->close();
+                send_mail(
+                    $result['email'], 
+                    "Changed Password", 
+                    "Hey there!<br><br>Your account, <b>$username</b>, recently changed its password.<br>If you didn't make this change, please let us know immediately so that we can help restore your account.<br><br>Bento<br><span style='font-size: 10px; color: rgb(200, 200, 200)'>You can reply to this email to contact us.<br>You're receiving this email because you're currently the email associated with this account.</span>", 
+                    "Hey there!\n\nYour account, $username, recently changed its password.\nIf you didn't make this change, please let us know immediately so that we can help restore your account.\n\nBento\n\n(You can reply to this email to contact us. You're receiving this email because you're currently the email associated with this account.)"
+                );
             break;
             case 'userdata':
                 $val = json_decode($val, false);

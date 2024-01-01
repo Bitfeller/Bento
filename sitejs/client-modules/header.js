@@ -14,6 +14,18 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
 
     const loader = document.getElementsByClassName("loader")[0];
     const tips = document.getElementsByClassName("tips")[0];
+    
+    let load_failed = false;
+
+    let loadingScripts = false;
+    // Search for loading scripts
+    const scripts = document.getElementsByTagName('script');
+    for(let i = 0; i < scripts.length; i++) {
+        if(scripts[i].dataset.loading == "true") {
+            loadingScripts = true;
+            break;
+        }
+    }
 
     const tipslist = [
         "When making ranking questions, you can drag answers...",
@@ -29,18 +41,34 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         "Found a bug? Let us know!"
     ];
 
-    function tip_changer(newtext) {
+    function tip_changer(newtext, color) {
         return new Promise((res, rej) => {
             tips.innerHTML = `<p class='prev-tip'>${tips.innerHTML}</p>`;
             window.setTimeout(() => {
+                if(color) tips.style.color = color;
                 tips.innerHTML = `<p class='new-tip'>${newtext}</p>`;
+                if(color) tips.getElementsByClassName('new-tip')[0].style.color = color;
                 window.setTimeout(() => {
                     tips.innerHTML = newtext;
+                    if(color) {}
                     res();
                 }, 500);
             }, 500);
         });
     }
+
+    window.LOADED = () => {
+        clearInterval(tipper);
+        loader.remove();
+    };
+    window.LOAD_ERROR = (err) => {
+        load_failed = true;
+        clearInterval(tipper);
+        tip_changer(err, "rgb(175, 100, 100)");
+    };
+
+    tips.innerHTML = tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)];
+    let tipper = setInterval(async () => await tip_changer(tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)]), 5000);
 
     let [success, data] = await UserGateway.getuser();
     if(!success && data == "no session") {
@@ -57,25 +85,25 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         if(data.pfp && data.pfp.length > 0) {
             pfp.src = data.pfp;
         }
-    }
-    // Load theme
-    let theme = data.userdata.theme;
-    // Reference:
-    // 0 = Nord
-    // 1 = Coffee-Midnight
-    // 2 - Catppuccin
-    // 3 - Classic
-    // We don't check for Nord as it's already loaded in global.css; we simply load overrides if we need to for other themes
-    switch(theme) {
-        case 1:
-            document.head.innerHTML += `<link rel='stylesheet' href='../css/themes/coffee-midnight.css'>`;
-        break;
-        case 2:
-            document.head.innerHTML += `<link rel='stylesheet' href='../css/themes/catppuccin.css'>`;
-        break;
-        case 3:
-            document.head.innerHTML += `<link rel='stylesheet' href='../css/themes/classic.css'>`;
-        break;
+        // Load theme
+        let theme = data.userdata.theme;
+        // Reference:
+        // 0 = Nord
+        // 1 = Coffee-Midnight
+        // 2 - Catppuccin
+        // 3 - Classic
+        // We don't check for Nord as it's already loaded in global.css; we simply load overrides if we need to for other themes
+        switch(theme) {
+            case 1:
+                document.head.innerHTML += `<link rel='stylesheet' href='../css/themes/coffee-midnight.css'>`;
+            break;
+            case 2:
+                document.head.innerHTML += `<link rel='stylesheet' href='../css/themes/catppuccin.css'>`;
+            break;
+            case 3:
+                document.head.innerHTML += `<link rel='stylesheet' href='../css/themes/classic.css'>`;
+            break;
+        }
     }
     // Initialize service-worker for notifications if allowed
     if(Notification.permission == "granted" && data.notifsub != "0") {
@@ -87,18 +115,18 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
             console.log("serviceworker_err:", e);
         }
     }
-    tips.innerHTML = tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)];
-    let tipper = setInterval(async () => {
-        await tip_changer(tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)])
-    }, 5000);
-    if(document.readyState == "complete") {
-        clearInterval(tipper);
-        loader.remove();
-    } else {
-        window.addEventListener("load", () => {
+    
+    if(!loadingScripts) {
+        if(document.readyState == "complete" && !load_failed) {
             clearInterval(tipper);
             loader.remove();
-        })
+        } else {
+            window.addEventListener("load", () => {
+                if(load_failed) return;
+                clearInterval(tipper);
+                loader.remove();
+            })
+        }
     }
 
     logout.addEventListener("mousedown", async () => {

@@ -6,7 +6,7 @@
     <title>Bento | Edit Deck</title>
     <?php require_once "../globalreqs.php"?>
     <link rel="stylesheet" href="../../css/createDeck.css"/>
-    <script type="module" src="../../sitejs/editdeck.js"></script>
+    <script type="module" src="../../sitejs/editdeck.js" data-loading="true"></script>
     <!-- MathJax -->
     <script>
         window.MathJax = {

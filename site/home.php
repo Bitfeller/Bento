@@ -6,7 +6,7 @@
     <title>Bento - Home</title>
     <?php require_once "globalreqs.php"?>
     <link rel="stylesheet" href="/css/home.css"/>
-    <script type="module" src="../sitejs/home.js"></script>
+    <script type="module" src="../sitejs/home.js" data-loading="true"></script>
 </head>
 <body data-uo="true">
     <?php require_once "header.php"?>       

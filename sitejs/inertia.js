@@ -250,7 +250,6 @@ class Asteroid {
         }
     }
     
-    gameStart();
     input.addEventListener("keyup", () => {
         asteroids.forEach((asteroid, idx) => {
             if(input.value.toLowerCase().replaceAll(/\s/g, "") == asteroid.answer.toLowerCase().replaceAll(/\s/g, "")) {
@@ -270,4 +269,8 @@ class Asteroid {
         paused = false;
         ended = false;
     });
+
+    window.LOADED();
+    
+    gameStart();
 })();

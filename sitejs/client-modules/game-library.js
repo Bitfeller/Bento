@@ -239,6 +239,8 @@ async function init(_decks, info) {
         // Get deck
         let [success, data] = await DeckGateway.get(deck);
         if(!success) {
+            // Run window.LOAD_ERROR to let the header/loader know loading failed
+            window.LOAD_ERROR("Looks like this deck doesn't exist, or there's an issue on our side.");
             console.error("Encountered while attempting to fetch deck of d_id(" + deck + "):", data);
             return false;
         }

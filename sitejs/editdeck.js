@@ -345,13 +345,13 @@ function initRanking(newDiv, n, q) {
         `;
         rankingList.appendChild(item);
         item.addEventListener("dragstart", function() {
-            dragging = this;
-            this.style['background-color'] = "rgb(150, 200, 255)";
+            dragging = item;
+            item.style['background-color'] = "rgb(150, 200, 255)";
             rankingList.prepend(dragLine);
         });
         item.addEventListener("dragend", function(e) {
-            if(dragging !== this) {return;}
-            this.style['background-color'] = "";
+            if(dragging !== item) {return;}
+            item.style['background-color'] = "";
             dragLine.remove();
             let top;
             let bottom;
@@ -364,18 +364,18 @@ function initRanking(newDiv, n, q) {
                 } else if((i - 1) >= 0) {
                     top = objects[i-1];
                     bottom = objects[i];
-                    rankingList.insertBefore(this, bottom);
+                    rankingList.insertBefore(item, bottom);
                     break;
                 } else {
                     top = objects[i];
-                    this.remove();
-                    rankingList.prepend(this);
+                    item.remove();
+                    rankingList.prepend(item);
                     break;
                 }
             }
             if(!top) {
-                this.remove();
-                rankingList.appendChild(this);
+                item.remove();
+                rankingList.appendChild(item);
             }
             dragging = undefined;
         });
@@ -403,13 +403,13 @@ function initRanking(newDiv, n, q) {
     for(let i = 0; i < currentObjs.length; i++) {
         let obj = currentObjs[i];
         obj.addEventListener("dragstart", function() {
-            dragging = this;
-            this.style['background-color'] = "rgb(150, 200, 255)";
+            dragging = obj;
+            obj.style['background-color'] = "rgb(150, 200, 255)";
             rankingList.prepend(dragLine);
         });
         obj.addEventListener("dragend", function(e) {
-            if(dragging !== this) {return;}
-            this.style['background-color'] = "";
+            if(dragging !== obj) {return;}
+            obj.style['background-color'] = "";
             dragLine.remove();
             let top;
             let bottom;
@@ -422,18 +422,18 @@ function initRanking(newDiv, n, q) {
                 } else if((i - 1) >= 0) {
                     top = objects[i-1];
                     bottom = objects[i];
-                    rankingList.insertBefore(this, bottom);
+                    rankingList.insertBefore(obj, bottom);
                     break;
                 } else {
                     top = objects[i];
-                    this.remove();
-                    rankingList.prepend(this);
+                    obj.remove();
+                    rankingList.prepend(obj);
                     break;
                 }
             }
             if(!top) {
-                this.remove();
-                rankingList.appendChild(this);
+                obj.remove();
+                rankingList.appendChild(obj);
             }
             dragging = undefined;
         });
@@ -795,13 +795,13 @@ addCard.addEventListener("mousedown", newCard);
                     `;
                     rankingList.appendChild(item);
                     item.addEventListener("dragstart", function() {
-                        dragging = this;
-                        this.style['background-color'] = "rgb(150, 200, 255)";
+                        dragging = item;
+                        item.style['background-color'] = "rgb(150, 200, 255)";
                         rankingList.prepend(dragLine);
                     });
                     item.addEventListener("dragend", function(e) {
-                        if(dragging !== this) {return;}
-                        this.style['background-color'] = "";
+                        if(dragging !== item) {return;}
+                        item.style['background-color'] = "";
                         dragLine.remove();
                         let top;
                         let bottom;
@@ -814,18 +814,18 @@ addCard.addEventListener("mousedown", newCard);
                             } else if((i - 1) >= 0) {
                                 top = objects[i-1];
                                 bottom = objects[i];
-                                rankingList.insertBefore(this, bottom);
+                                rankingList.insertBefore(item, bottom);
                                 break;
                             } else {
                                 top = objects[i];
-                                this.remove();
-                                rankingList.prepend(this);
+                                item.remove();
+                                rankingList.prepend(item);
                                 break;
                             }
                         }
                         if(!top) {
-                            this.remove();
-                            rankingList.appendChild(this);
+                            item.remove();
+                            rankingList.appendChild(item);
                         }
                         dragging = undefined;
                     });
@@ -854,6 +854,7 @@ addCard.addEventListener("mousedown", newCard);
             break;
         }
     }
+    window.LOADED();
 })();
 
 // Dragging event

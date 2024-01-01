@@ -36,6 +36,7 @@
             if(isset($_SESSION['pwd_change'])) {
                 unset($_SESSION['pwd_change']);
                 unset($_SESSION['pwd_uid']);
+                unset($_SESSION['pwd_timestamp']);
             }
             $sql = "SELECT * FROM users WHERE id = ?;";
             $stmt = $conn->prepare($sql);
@@ -51,13 +52,23 @@
             }
             $userVerif = $res['verif'];
             $valid = password_verify($verif, $userVerif);
+            if(!$valid) {
+                fail("invalid verif");
+            }
             $_SESSION['pwd_change'] = true;
             $_SESSION['pwd_uid'] = $uid;
+            $_SESSION['pwd_timestamp'] = time();
             success();
         } else if($mode === "newpwd") {
             session_start();
             if(!isset($_SESSION['pwd_change']) || !isset($_SESSION['pwd_uid'])) {
                 fail("not valid");
+            }
+            if((time() - $_SESSION['pwd_timestamp']) > 10 * 60) {
+                unset($_SESSION['pwd_change']);
+                unset($_SESSION['pwd_uid']);
+                unset($_SESSION['pwd_timestamp']);
+                fail('past time');
             }
             if(!isset($newPwd)) {
                 fail("no pwd");
@@ -71,6 +82,7 @@
             $stmt->close();
             unset($_SESSION['pwd_change']);
             unset($_SESSION['pwd_uid']);
+            unset($_SESSION['pwd_timestamp']);
             success();
         }
     }

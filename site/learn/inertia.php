@@ -6,7 +6,7 @@
     <title>Bento | Inertia</title>
     <?php require_once "../globalreqs.php"?>
     <link rel="stylesheet" href="../../css/intertia.css"/>
-    <script type="module" src="../../sitejs/inertia.js"></script>
+    <script type="module" src="../../sitejs/inertia.js" data-loading="true"></script>
 </head>
 <body data-uo="true">
     <?php require_once "../header.php"?>

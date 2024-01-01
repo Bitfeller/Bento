@@ -1,5 +1,15 @@
 <?php
+    // Load libraries
+    //      Load PHPMailer
+    require_once '../lib/phpmailer/src/Exception.php';
+    require_once '../lib/phpmailer/src/PHPMailer.php';
+    require_once '../lib/phpmailer/src/SMTP.php';
+
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+
     // Essential functions
+    //      Success and fail return functions
     function fail($reason) {
         http_response_code(200);
         echo json_encode(["status" => "error", "reason" => $reason]);
@@ -15,6 +25,7 @@
         echo "Invalid";
         exit();
     }
+    //      Request validation
     function is_host_allowed($origin, $allowed_origins) {
         $origin = str_replace("/http[s]*:\/\//", "", $origin);
         $origin = str_replace("/:[0-9]+/", "", $origin);
@@ -37,6 +48,7 @@
             access_fail();
         }
     }
+    //      Fetch body data
     function get_data(...$required_values) {
         $json_data = file_get_contents('php://input');
         $data = json_decode($json_data, true);
@@ -82,6 +94,7 @@
             }
         }
     }
+    //      Get server config
     function get_server_config() {
         if(file_exists('../../conf/local-config.json')) {
             return json_decode(file_get_contents("../../conf/local-config.json"), true);
@@ -89,6 +102,7 @@
             return json_decode(file_get_contents('../../conf/config.json'), true);
         }
     }
+    //      Content sanitizer
     function _traverse_array_sanitize(array $content) {
         $newContnt = [];
         foreach($content as $val) {
@@ -149,4 +163,28 @@
             fail("conn: ". mysqli_connect_error());
         }
         return $conn;
+    }
+    // Mailer
+    function send_mail($target, $subject, $body, $alt_body = null) {
+        $conf = get_server_config();
+        $mail = new PHPMailer();
+        $mail->isSMTP();
+        $mail->Host = $conf['mail_smtp_server'];
+        $mail->Port = 465;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->SMTPAuth = true;
+        $mail->Username = $conf['mail_username'];
+        $mail->Password = $conf['mail_password'];
+        $mail->setFrom($conf['mail_username'], $conf['mail_name']);
+        $mail->addAddress($target, '');
+        $mail->Subject = $subject;
+        $mail->isHTML();
+        $mail->Body = $body;
+        if(isset($alt_body)) {
+            $mail->AltBody = $alt_body;
+        }
+        if(!$mail->send()) {
+            return false;
+        }
+        return true;
     }

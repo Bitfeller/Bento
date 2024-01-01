@@ -192,6 +192,70 @@ class UserGateway {
                 return true;
         }
     }
+    // Recovery and verification methods
+    static async userdir(mode, uid, verif, newPwd) {
+        if(typeof(mode) !== "string" || typeof(verif) !== "string" || typeof(uid) !== "number") {
+            return [false, "invalid params"];
+        }
+        var success, reason;
+        await fetch(spath + "/php-db/user/user_direct.php", {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                mode,
+                uid,
+                verif,
+                newPwd
+            })
+        }).then(function(res) {
+            if(!res.ok) {
+                err("userdir");
+                success = false;
+                reason = 'fetch-err';
+                throw 'none';
+            }
+            return res.json();
+        }).then(function(res) {
+            success = (res.status == "success");
+            if(!success) reason = res.reason;
+        }).catch(function(err) {
+            if(err == "none") return;
+            console.log("backend: " + err);
+        });
+        return [success, reason];
+    }
+    static async resetPwd(username) {
+        if(typeof(username) !== "string") {
+            return [false, "invalid params"];
+        }
+        var success, reason;
+        await fetch(spath + "/php-db/user/user_resetpwd.php", {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username
+            })
+        }).then(function(res) {
+            if(!res.ok) {
+                err("resetPwd");
+                success = false;
+                reason = 'fetch-err';
+                throw 'none';
+            }
+            return res.json();
+        }).then(function(res) {
+            success = (res.status == "success");
+            if(!success) reason = res.reason;
+        }).catch(function(err) {
+            if(err == "none") return;
+            console.log("backend: " + err);
+        });
+        return [success, reason];
+    }
     constructor() {
         console.log("backend: invalid call of class.");
         throw new Error("backend");
