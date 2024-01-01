@@ -7,6 +7,21 @@
     <?php require_once "../globalreqs.php"?>
     <link rel="stylesheet" href="../../css/createDeck.css"/>
     <script type="module" src="../../sitejs/editdeck.js"></script>
+    <!-- MathJax -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: []
+            },
+            svg: {
+                fontCache: 'global',
+                scale: 1,
+            },
+            startup: {}
+        };
+    </script>
+    <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body data-uo="true">
     <?php require_once "../header.php"?>

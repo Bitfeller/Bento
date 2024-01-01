@@ -138,8 +138,13 @@ function initMc(newDiv, n, q) {
     `;
     // Set up selector
     set_selector(newDiv, n);
+    let problem = newDiv.getElementsByClassName('question')[0];
+    init_div(problem); // question
+    if(q) {
+        problem.setAttribute('data-html', q);
+        typeset(problem);
+    }
     // Set up multiple choice card functionality
-    init_div(newDiv.getElementsByClassName('question')[0]); // question
     let cardmc = newDiv.getElementsByClassName('card-mc')[0];
     let addBtn = newDiv.getElementsByClassName('mc-add')[0];
     addBtn.addEventListener("mousedown", function() {
@@ -239,8 +244,13 @@ function initTxt(newDiv, n, q) {
     `;
     // Set up selector
     set_selector(newDiv, n);
+    let problem = newDiv.getElementsByClassName('question')[0];
+    init_div(problem); // question
+    if(q) {
+        problem.setAttribute('data-html', q);
+        typeset(problem);
+    }
     // Configure tabbing
-    init_div(newDiv.getElementsByClassName('question')[0]);
     let txtAns = newDiv.getElementsByClassName('txt-answer')[0];
     init_div(txtAns);
     txtAns.addEventListener('keydown', (e) => {
@@ -279,8 +289,13 @@ function initRanking(newDiv, n, q) {
     `;
     // Set up selector
     set_selector(newDiv, n);
+    let problem = newDiv.getElementsByClassName('question')[0];
+    init_div(problem); // question
+    if(q) {
+        problem.setAttribute('data-html', q);
+        typeset(problem);
+    }
     // Set up ranking card functionality
-    init_div(newDiv.getElementsByClassName('question')[0]);
     let rankingList = newDiv.getElementsByClassName('ranking-list')[0];
     let addBtn = newDiv.getElementsByClassName('rank-add')[0];
     addBtn.addEventListener("mousedown", function() {
@@ -462,57 +477,6 @@ fileselecttrigger.addEventListener('change', () => {
         reader.readAsDataURL(file);
     }
 })
-
-function formatter(str) {
-    return str
-        .replaceAll("_1", "\u2081")
-        .replaceAll("_2", "\u2082")
-        .replaceAll("_3", "\u2083")
-        .replaceAll("_4", "\u2084")
-        .replaceAll("_5", "\u2085")
-        .replaceAll("_6", "\u2086")
-        .replaceAll("_7", "\u2087")
-        .replaceAll("_8", "\u2088")
-        .replaceAll("_9", "\u2089")
-        .replaceAll("_0", "\u2080")
-        .replaceAll("^1", "\u00B9")
-        .replaceAll("^2", "\u00B2")
-        .replaceAll("^3", "\u00B3")
-        .replaceAll("^4", "\u2074")
-        .replaceAll("^5", "\u2075")
-        .replaceAll("^6", "\u2076")
-        .replaceAll("^7", "\u2077")
-        .replaceAll("^8", "\u2078")
-        .replaceAll("^9", "\u2079")
-        .replaceAll("^0", "\u2070")
-        .replaceAll("^+", "\u207A")
-        .replaceAll("^-", "\u207B");
-}
-function backwards_formatter(str) {
-    return str
-        .replaceAll("\u2081", "_1")
-        .replaceAll("\u2082", "_2")
-        .replaceAll("\u2083", "_3")
-        .replaceAll("\u2084", "_4")
-        .replaceAll("\u2085", "_5")
-        .replaceAll("\u2086", "_6")
-        .replaceAll("\u2087", "_7")
-        .replaceAll("\u2088", "_8")
-        .replaceAll("\u2089", "_9")
-        .replaceAll("\u2080", "_0")
-        .replaceAll("\u00B9", "^1")
-        .replaceAll("\u00B2", "^2")
-        .replaceAll("\u00B3", "^3")
-        .replaceAll("\u2074", "^4")
-        .replaceAll("\u2075", "^5")
-        .replaceAll("\u2076", "^6")
-        .replaceAll("\u2077", "^7")
-        .replaceAll("\u2078", "^8")
-        .replaceAll("\u2079", "^9")
-        .replaceAll("\u2070", "^0")
-        .replaceAll("\u207A", "^+")
-        .replaceAll("\u207B", "^-");
-}
 
 createBtn.addEventListener("mousedown", async function() {
     if(!user) {
