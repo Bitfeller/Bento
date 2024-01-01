@@ -2,8 +2,11 @@ class DeckGateway {
     static async getall() {
         var data;
         var success;
-        fetch("../main/deck/deck_getall.php", {
-            method: 'get'
+        await fetch("../main/deck/deck_getall.php", {
+            method: 'get',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         }).then(function(res) {
             if(!res.ok) {
                 console.log("backend: getall() received an improper response when fetching decks.");
@@ -26,3 +29,5 @@ class DeckGateway {
         return [success, data];
     }
 }
+
+export {DeckGateway};

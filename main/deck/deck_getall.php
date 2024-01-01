@@ -27,6 +27,8 @@
     $raw_result = mysqli_stmt_get_result($stmt);
     $decks = [];
     while($row = mysqli_fetch_assoc($raw_result)) {
+        unset($row->viewdata);
+        unset($row->public);
         $decks[] = $row;
     }
     mysqli_stmt_close($stmt);
