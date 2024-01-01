@@ -10,4 +10,6 @@
 }
 #ingredient-flexbox {
     margin: 1vh;
+    display: flex;
+    flex-direction: row;
 }
