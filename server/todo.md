@@ -19,7 +19,4 @@
 
 - Scientific/math format for questions/answers
 - Allow cards to be shown both ways
-- Create feedback feature
 - Verification + password reset system via email
-
-- Fix inertia
