@@ -1,3 +1,4 @@
+<?php $_X_UO = true; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,11 +24,14 @@
     </script>
     <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
-<body data-uo="true">
+<body>
     <?php require_once "../header.php"?>
     <div class="container">
         <div class="create-container">
             <h1>Create a Deck</h1>
+            <button id="flush" class="line-up-icons">
+                <span class="material-symbols-outlined" id="picAddBtn">delete</span>
+            </button>
             <input type="text" placeholder="Name" id="name">
             <input type="text" placeholder="Description" id="description">
             <p>Deck picture:</p>

@@ -1,3 +1,4 @@
+<?php $_X_UO = true; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +25,7 @@
     </script>
     <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
-<body data-uo="true">
+<body>
     <?php require_once "../header.php"?>
     <div class='container'>
         <div class="search-container">

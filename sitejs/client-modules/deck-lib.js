@@ -5,6 +5,7 @@ const isPublic = document.getElementById("isPublic");
 const description = document.getElementById("description");
 const cardContain = document.getElementById("cardcontain");
 const addCard = document.getElementById("addcard");
+const flushDeck = document.getElementById("flush");
 const resetpic = document.getElementById("picReset");
 const fileselecttrigger = document.getElementById("fileselecttrigger");
 const picimg = document.getElementById("deckpic");
@@ -12,6 +13,8 @@ const picimg = document.getElementById("deckpic");
 let cards = [], deckpic = '', drag;
 let user;
 const sizeLimit = 2 * 1000 * 1000; // NOTE: must be same as max_image_size in server/conf/config.json
+
+let flushTick = 0;
 
 const dragline = document.createElement('div');
 dragline.style = 'display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;';
@@ -553,6 +556,27 @@ fileselecttrigger.addEventListener('change', () => {
         reader.readAsDataURL(file);
     }
 });
+document.addEventListener("paste", e => {
+    let items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (let item of items) {
+        if (item.type.startsWith("image/")) {
+            let file = item.getAsFile();
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = e => {
+                    let imageData = e.target.result;
+                    let content = e.target.result;
+                    if(content.byteLength > sizeLimit) return console.warn(`failed! Past size limit of ${sizeLimit / (1 * 1000 * 1000)} MB.`);
+                    deckpic = content;
+                    picimg.src = content;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    }
+});
 resetpic.addEventListener('mousedown', () => {
     deckpic = '';
     picimg.src = '../../img/defaultdeckpic.png';
@@ -994,6 +1018,22 @@ g_createbtn.addEventListener("mousedown", () => {
 // --------------------------------------------------- \\
 
 
+flushDeck.addEventListener('mousedown', () => {
+    if(cards.length == 0) return;
+    if(Date.now() - flushTick >= 3000) {
+        flushTick = Date.now();
+        window.SHOW_ERROR("Press again to delete all cards.");
+        return;
+    } else if(Date.now() - flushTick < 500) {
+        window.SHOW_ERROR("Don't press too fast - wait half a second.");
+        return;
+    }
+    flushTick = Date.now();
+    cards.forEach(card => card.remove());
+    cards = [];
+    newCard();
+    safety_check();
+});
 window.addEventListener('dragover', e => {
     if(!drag) return;
     let list = drag.parentNode;
@@ -1058,6 +1098,7 @@ const DeckBind = {
     user: () => user,
     cards: () => cards,
     deckpic: () => deckpic,
+    setDeckpic: (pic) => deckpic = pic,
     computeCenter,
     init_card,
     typeset,
