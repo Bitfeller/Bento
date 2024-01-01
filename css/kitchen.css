@@ -23,11 +23,7 @@
     gap: 5px;
 }
 .search-menu {
-    position: absolute;
-    top: 0;
-    right: 0;
     cursor: pointer;
-    transition: 0.3s;
 }
 .search-menu:hover {
     filter: brightness(85%);
