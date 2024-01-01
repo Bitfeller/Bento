@@ -380,7 +380,13 @@ async function fetchDecks(start = 0) {
         hasMtch.checked
     );
     
-    if(!success) return;
+    if(!success) 
+        return 0;
+
+    // Update "Show More Results" btn
+    loadMore.innerHTML = "Show More Results";
+    loadMore.style.pointerEvents = "all";
+    loadMore.style.opacity = "1";
 
     if(start > 0) {
         decks.push(...data);
@@ -391,6 +397,7 @@ async function fetchDecks(start = 0) {
     }
 
     await update();
+    return data.length;
 }
 
 // Color map
