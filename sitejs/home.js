@@ -47,6 +47,13 @@ const t_dialogmain = tutorialDialog.getElementsByClassName("dialog-main")[0];
         if(curr > 3) curr = 0;
         if(curr > 0 && Notification.permission !== "granted") {
             await Notification.requestPermission();
+            try {
+                navigator.serviceWorker.register(location.origin + "/sitejs/client-modules/service-worker.js", {
+                    type: "module"
+                });
+            } catch (e) {
+                console.log("serviceworker_err:", e);
+            }
         }
         if(curr > 0 && Notification.permission == "denied") {
             curr = 0;

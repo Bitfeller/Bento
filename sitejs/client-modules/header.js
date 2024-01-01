@@ -15,6 +15,7 @@ const tipslist = [
     "When making ranking questions, you can drag answers...",
     "If you own a Bento deck, you can export it when viewing it in the Kitchen...",
     "Have feedback? Let us know!",
+    "You can edit the decks you own in the Kitchen.",
     "Decks can be deleted by going to the Kitchen.",
     "You can find the decks you've made in the Kitchen.",
     "You can enable notifications on the home screen, and you'll get notified when you have to review.",
