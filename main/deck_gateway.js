@@ -5,7 +5,7 @@ class DeckGateway {
     static async getall(offset, searchTerms) {
         var success, data;
         await fetch("../main/deck/deck_getall.php", {
-            method: 'search',
+            method: 'post',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -75,7 +75,7 @@ class DeckGateway {
         }
         var success, data;
         await fetch("../main/deck/deck_open.php", {
-            method: 'search',
+            method: 'post',
             headers: {
                 'Content-Type': 'application/json'
             },
