@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen</title>
+    <?php require_once "globalReqs.php"?>
+    <link rel="stylesheet" href="/css/kitchen.css"/>
+</head>
+<body>
+    <?php require_once "header.php"?>
+    <div id="ingredient-box-container">
+        <div id="ingredient-flexbox">
+            <div class="ingredient-box">
+                <div>
+                    <div>
+                        <img class="ingredient-box-image" src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png">
+                    </div>
+                    <div class="ingredient-box-description-flexbox">
+                        <div>
+                            <img class="ingredient-box-icon" src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png">
+                        </div>
+                        <div>
+                            <div class="ingredient-box-description">
+                                Eastern Civilizations Russia - Terms
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ingredient-box-buttons-flexbox">
+                    <button class='ingredient-box-button previewBtns' onclick="previewModalShow()">
+                        Preview
+                    </button>
+                    <button class="ingredient-box-button getBtns" onclick="getModalShow()">
+                        Get
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="ingredient-flexbox">
+            <div class="ingredient-box">
+                <div>
+                    <div>
+                        <img class="ingredient-box-image" src="http://2.bp.blogspot.com/-3yJp6X0XPcI/TqQe6Q6O7KI/AAAAAAAAH8w/mjBWLcnP3YY/s400/300x300.jpg">
+                    </div>
+                    <div class="ingredient-box-description-flexbox">
+                        <div>
+                            <img class="ingredient-box-icon" src="http://2.bp.blogspot.com/-3yJp6X0XPcI/TqQe6Q6O7KI/AAAAAAAAH8w/mjBWLcnP3YY/s400/300x300.jpg">
+                        </div>
+                        <div>
+                            <div class="ingredient-box-description">
+                                Example Deck for Reasons Probably
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ingredient-box-buttons-flexbox">
+                    <button class="ingredient-box-button previewBtns" onclick="previewModalShow()">
+                        Preview
+                    </button>
+                    <button class="ingredient-box-button getBtns" onclick="getModalShow()">
+                        Get
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <section>
+        <div id="previewModal" class="modal">
+            <div class="modal-content">
+                <p><u>Preview</u></p>
+                <div id="preview-text">
+                    <!-- Random Selection of Questions (type) and answer -->
+                    <p>Question 1: (input): What is were the peasants of Russia called?</p>
+                    <p>Answer: serfs</p>
+                    <br>
+                    <p>Question 2 (matching): Bla bla bla </p>
+                    <p>Answer: bla bla</p>
+                    <br>
+                </div>
+            </div>
+        </div>
+        <div id="getModal" class="modal">
+            <div class="modal-content">
+                <p>This set will now appear in your reviews</p>
+                <p>So get ready...</p>
+            </div>
+        </div>
+    </section>
+</body>
+<script src="js/kitchen.js"></script>
+</html>

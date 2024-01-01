@@ -4,19 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="/css/main.css" />
+    <?php require_once "globalReqs.php"?>
     <link rel="stylesheet" href="/css/settings.css" />
-    <link rel="stylesheet" href="/css/global.css"/>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class=header><img alt="Bento! Logo"class=logo height=40px onclick='location.href="/html/"'src="/img/bento logo white.svg"><div class=right-header><span class="header-nav material-symbols-outlined">account_circle</span> <span class="header-nav material-symbols-outlined">tune</span></div></header>
-    
+    <?php require_once "header.php"?>
     <div id="settings-container">
-
         <div class="setting-box">
             <p>Set Size:</p>
             <input type="range" min="1" max="5" value="5" class="slider"  id="set-size-slider" oninput="displaySliderValue('set-size-slider', 'set-size-output')">
