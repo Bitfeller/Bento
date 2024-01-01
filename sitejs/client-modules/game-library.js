@@ -121,11 +121,6 @@ async function init(_decks, info) {
                 continue;
             }
             if(info.NTRonly && !UserGateway.calculateNTR(box, last)) delete data.data.contnt[q];
-            if(deckCard.dual) data.data.contnt[deckCard.ans[0]] = {
-                ans: q,
-                type: 'txt',
-                fromDual: true
-            }
         }
         user.userdata.reviews[deck] = userReview;
         let d_keys = Object.keys(data.data.contnt);
