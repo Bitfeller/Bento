@@ -12,6 +12,7 @@ const o_shuffle = document.getElementsByClassName("shuffle");
 const o_infinite_mode = document.getElementsByClassName("infinite-mode")[0];
 const infinite_mode_text = document.getElementsByClassName("infinite_mode_text")[0];
 const o_require_correct = document.getElementsByClassName('require_correct')[0];
+const inertiaButton = document.getElementById("inertia-btn");
 
 const deckSelect = document.getElementById("deckSelectAll");
 const settingsBoxs = document.getElementsByClassName("setting-box");
@@ -208,20 +209,14 @@ function updateDecks(decks) {
             return;
         }
         // Set options
-        let mode = 0,
+        let mode = o_mode[0].checked ? 1 : 0,
             repeat,
             shuffle,
             infinite_mode = o_infinite_mode.checked ? 1 : 0,
             require_correct = o_require_correct.checked ? 1 : 0;
-        if (o_mode[0].checked == true) mode = 1;
         for (let i = 0; i < o_repeat.length; i++) {
             if (o_repeat[i].checked == true) {
                 repeat = i + 1;
-            }
-        }
-        for (let i = 0; i < o_shuffle.length; i++) {
-            if (o_shuffle[i].checked == true) {
-                shuffle = i + 1;
             }
         }
         window.location.href =
@@ -263,4 +258,26 @@ function updateDecks(decks) {
             deckSelect.innerHTML = "check_box_outline_blank";
         }
     });
+    inertiaButton.addEventListener('mousedown', () => {
+        let selectedDecks = [];
+        for (let i = 0; i < deckContainer.children.length; i++) {
+            let item = deckContainer.children[i];
+            let idx = item.dataset.idx;
+            let checkbox = item.getElementsByClassName("deckCheck")[0];
+            if (checkbox.checked) {
+                selectedDecks.push(parseInt(idx));
+            }
+        }
+        if (selectedDecks.length == 0) {
+            errmsg.innerHTML = "Please select at least one deck to review.";
+            return;
+        }
+        let shuffle;
+        for (let i = 0; i < o_shuffle.length; i++) {
+            if (o_shuffle[i].checked == true) {
+                shuffle = i + 1;
+            }
+        }
+        window.location.href = '/learn/inertia?ds=' + selectedDecks.join(",") + '&m=' + (o_mode[0].checked ? 1 : 0) + '&s=' + shuffle;
+    })
 })();

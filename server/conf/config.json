@@ -11,5 +11,6 @@
     "vapid_details": {
         "public_key": "BK2goia_RGT26Nq5Blmc9yrejx_Cq4GpuWUcwZ9sn5DsaT8HfFqyql6Ss1D5K3T1W9Tow2JIVzigsVI4g-UyQBE",
         "private_key": "rGqFP5802HeRpJDa2KrCrEqBBVHPPbWZRk9rYAouVJQ"
-    }
+    },
+    "admins": [1, 5]
 }

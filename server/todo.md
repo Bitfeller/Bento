@@ -20,3 +20,4 @@
 - Scientific/math format for questions/answers
 - Allow cards to be shown both ways
 - Verification + password reset system via email
+- Make inertia better + release to the public
