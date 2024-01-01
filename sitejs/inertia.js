@@ -142,7 +142,12 @@ class Asteroid {
         this.y = -550;
         this.speed = random(1, 1.5) * (level / 2);
         this.q = card.q;
-        this.answer = card.type != "ranking" ? card.ans : "";
+        this.answer = card.type == "txt" ? card.ans : [];
+        if(card.type == "mc") {
+            for(let i = 0; i < card.ans.length; i++) {
+                this.answer.push(card.op[card.ans[i]]);
+            }
+        }
         this.wrappedText = wrapText(this.q, 100);
     }
     render() {
@@ -252,11 +257,13 @@ class Asteroid {
     
     input.addEventListener("keyup", () => {
         asteroids.forEach((asteroid, idx) => {
-            if(input.value.toLowerCase().replaceAll(/\s/g, "") == asteroid.answer.toLowerCase().replaceAll(/\s/g, "")) {
-                input.value = "";
-                asteroids.splice(idx, 1);
-                score++;
-                updateDisplay();
+            for(let i = 0; i < asteroid.answer.length; i++) {    
+                if(input.value.toLowerCase().replaceAll(/\s/g, "") == asteroid.answer[i].toLowerCase().replaceAll(/\s/g, "")) {
+                    input.value = "";
+                    asteroids.splice(idx, 1);
+                    score++;
+                    updateDisplay();
+                }
             }
         })
     });
