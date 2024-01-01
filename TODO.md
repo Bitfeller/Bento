@@ -8,6 +8,7 @@ failed; reason: ReferenceError: desc is not defined
 [X] special chacaters like & and ", the filler &amp and &quot do not get replaced when importing
 [X] no error feedback is shown for errors in bento importer
 [X] be able to sign up in login.php
+[X] error messages in profile.php
 [-] can't progress through mc if too long
 [-] ability to:
     [-] view the questions you're importign before you import
@@ -15,7 +16,6 @@ failed; reason: ReferenceError: desc is not defined
 [-] add a back button on kitchen page (and back btns in general)
 [-] tutorial, so people know where to go (ui is a little bit confusing)
 
-[-] error messages in profile.php
 
 [-] idk if this is intentional behavoiur, but when i log out and press the bento button in the top left, it sends me back to the login screen
 [-] labels undreneath buttons, (e.g. Kitchen: select decks)
