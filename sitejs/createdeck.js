@@ -443,6 +443,9 @@ createBtn.addEventListener("mousedown", async function() {
             case "size limit":
                 errmsg.innerHTML = "Looks like the deck's image exceeds the size limit of 2 MB.";
             break;
+            case "same problem":
+                errmsg.innerHTML = "It seems like two or more cards in your deck have the exact same question. (We currently don't support duplicate questions.)";
+            break;
             default:
                 console.log(reason);
                 errmsg.innerHTML = "Looks like there's an issue on our side. Try again later.";

@@ -508,11 +508,13 @@ function fetchProblem() {
     return gameData[randomSet[card]];
 }
 function getProgress() {
+    if(!active) return {dead: true};
     return {
         remaining: gameData.length * cardRepeat - seen
     }
 }
 function attemptProblem(answer) {
+    if(!active) return {dead: true};
     let problem = gameData[randomSet[card]];
     switch(problem.type) {
         case "mc":

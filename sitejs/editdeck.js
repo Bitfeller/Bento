@@ -472,8 +472,15 @@ createBtn.addEventListener("mousedown", async function() {
         return;
     }
     if(!s4) {
-        console.log(res4);
-        errmsg.innerHTML = "Looks like there's an issue on our side. Try again later.";
+        switch(res4) {
+            case "same problem":
+                errmsg.innerHTML = "It seems like two or more cards in your deck have the exact same question. (We currently don't support duplicate questions.)";
+            break;
+            default:        
+                console.log(res4);
+                errmsg.innerHTML = "Looks like there's an issue on our side. Try again later.";
+            break;
+        }
         return;
     }
     window.location.href = "/home?l=ed&s=1";

@@ -23,6 +23,11 @@
 #problem {
     text-align: center;
 }
+#problem > p {
+    text-overflow: ellipsis;
+    width: 100%;
+    overflow: hidden;
+}
 .op-input {
     width: 100%;
     height: 5vh;

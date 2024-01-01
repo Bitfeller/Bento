@@ -23,11 +23,14 @@ const warningDialog = document.getElementById("warningdialog");
 const leaveBtn = document.getElementById("leave");
 const wd_main = document.getElementsByClassName("main")[0];
 
+const usernameEl = document.getElementById("username");
+
 // main
 (async () => {
     let [success, data] = await UserGateway.getuser();
     if(!success) console.error(data);
     user = data;
+    usernameEl.innerHTML = user.username;
     if(user.pfp && user.pfp.length > 0) {
         pfp.src = user.pfp;
     }
