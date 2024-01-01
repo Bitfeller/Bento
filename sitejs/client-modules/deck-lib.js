@@ -807,6 +807,7 @@ const import_modal = document.getElementById('importing-modal');
 const i_import = document.getElementById('i-import');
 const i_cancel = document.getElementById('i-cancel');
 const import_q = document.getElementById('importing-questions');
+const qSelectAll = document.getElementById('qSelectAll');
 
 let temp_name, temp_desc, temp_contnt;
 
@@ -820,6 +821,24 @@ function open_import_modal(contnt) {
     i_cancel.disabled = false;
     import_q.innerHTML = "";
     let c_keys = Object.keys(contnt);
+    // Local function iterator:
+    function checked() {
+        let allChecked = true;
+        let oneChecked = false;
+        let boxes = import_q.getElementsByClassName('import-question-checkbox');
+        for(let i = 0; i < boxes.length; i++) {
+            if(boxes[i].checked) oneChecked = true;
+            if(!boxes[i].checked) allChecked = false;
+        }
+        return [allChecked, oneChecked];
+    }
+    function updateQSelectAll() {
+        console.log('running');
+        let state = checked();
+        if(state[0]) qSelectAll.innerHTML = "check_box";
+        else if(state[1]) qSelectAll.innerHTML = "indeterminate_check_box";
+        else qSelectAll.innerHTML = "check_box_outline_blank";
+    }
     try {
         for(let i = 0; i < c_keys.length; i++) {
             let q = c_keys[i];
@@ -845,13 +864,26 @@ function open_import_modal(contnt) {
                     </p>
                 </div>
             `;
-            carddiv.addEventListener("mousedown", (e) => {
-                let checkbox = carddiv.getElementsByClassName("import-question-checkbox")[0];
+            let checkbox = carddiv.getElementsByClassName("import-question-checkbox")[0];
+            carddiv.addEventListener("mousedown", e => {
                 if (e.target != checkbox) checkbox.checked = !checkbox.checked;
-            })
-            Array(carddiv.getElementsByClassName("mathJax")).map(e => typeset(e));
+                updateQSelectAll();
+            });
+            console.log(checkbox);
+            checkbox.addEventListener('change', updateQSelectAll);
+            Array(carddiv.getElementsByClassName("mathJax")).map(typeset);
             import_q.appendChild(carddiv);
         }
+        // Configure qSelectAll
+        qSelectAll.innerHTML = "check_box";
+        qSelectAll.addEventListener('mousedown', () => {
+            let state = checked();
+            let boxes = import_q.getElementsByClassName('import-question-checkbox');
+            for(let i = 0; i < boxes.length; i++)
+                if(state[0]) boxes[i].checked = false;
+                else boxes[i].checked = true;
+            updateQSelectAll();
+        });
         temp_contnt = contnt;
     } catch(_) {
         import_q.innerHTML = "We couldn't parse this import.";
