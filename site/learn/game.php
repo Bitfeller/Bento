@@ -20,9 +20,8 @@
             </div>
             <button id="answerbtn">Answer</button>
             <div id="answer_marker" class="line-up-icons">Mark Answer as Correct (Space) <span class="material-symbols-outlined">chevron_right</span></div>
-            <div id="answer_info"></div>
         </div>
-        <br>
+        <div id="answer_info"></div>
     </div>
     <div id="progressBar"></div>
 </body>
