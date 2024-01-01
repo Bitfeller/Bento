@@ -9,86 +9,67 @@
 </head>
 <body>
     <?php require_once "header.php"?>
-    <div id="ingredient-box-container">
-        <div id="ingredient-flexbox">
-            <div class="ingredient-box">
+    <h2>Added Decks</h2>
+    <div class="ingredients-container">
+        <div class="ingredient-box">
+            <div>
+                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png" alt="Russian Flag">
                 <div>
-                    <div>
-                        <img class="ingredient-box-image" src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png">
-                    </div>
-                    <div class="ingredient-box-description-flexbox">
-                        <div>
-                            <img class="ingredient-box-icon" src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png">
-                        </div>
-                        <div>
-                            <div class="ingredient-box-description">
-                                Eastern Civilizations Russia - Terms
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="ingredient-box-buttons-flexbox">
-                    <button class='ingredient-box-button previewBtns' onclick="previewModalShow()">
-                        Preview
-                    </button>
-                    <button class="ingredient-box-button getBtns" onclick="getModalShow()">
-                        Get
-                    </button>
+                    <h2>
+                        Eastern Civilizations - Russia
+                    </h2>
                 </div>
             </div>
-        </div>
-        <div id="ingredient-flexbox">
-            <div class="ingredient-box">
-                <div>
-                    <div>
-                        <img class="ingredient-box-image" src="http://2.bp.blogspot.com/-3yJp6X0XPcI/TqQe6Q6O7KI/AAAAAAAAH8w/mjBWLcnP3YY/s400/300x300.jpg">
-                    </div>
-                    <div class="ingredient-box-description-flexbox">
-                        <div>
-                            <img class="ingredient-box-icon" src="http://2.bp.blogspot.com/-3yJp6X0XPcI/TqQe6Q6O7KI/AAAAAAAAH8w/mjBWLcnP3YY/s400/300x300.jpg">
-                        </div>
-                        <div>
-                            <div class="ingredient-box-description">
-                                Example Deck for Reasons Probably
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="ingredient-box-buttons-flexbox">
-                    <button class="ingredient-box-button previewBtns" onclick="previewModalShow()">
-                        Preview
-                    </button>
-                    <button class="ingredient-box-button getBtns" onclick="getModalShow()">
-                        Get
-                    </button>
-                </div>
+            <div>
+                <button class="previewBtns" onclick="previewDialog.showModal()">View</button>
+                <button class="addBtns" onclick="addDialog.showModal()">Remove</button>
             </div>
         </div>
     </div>
-    
-
-    <section>
-        <div id="previewModal" class="modal">
-            <div class="modal-content">
-                <p><u>Preview</u></p>
-                <div id="preview-text">
-                    <!-- Random Selection of Questions (type) and answer -->
-                    <p>Question 1: (input): What is were the peasants of Russia called?</p>
-                    <p>Answer: serfs</p>
-                    <br>
-                    <p>Question 2 (matching): Bla bla bla </p>
-                    <p>Answer: bla bla</p>
-                    <br>
+    <div id="deck-divider" style=""></div>
+    <h2>Marketplace</h2>
+    <div class="ingredients-container">
+        <div class="ingredient-box">
+            <div>
+                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png" alt="Russian Flag">
+                <div>
+                    <h2>
+                        Eastern Civilizations - Russia
+                    </h2>
                 </div>
             </div>
-        </div>
-        <div id="getModal" class="modal">
-            <div class="modal-content">
-                <p>This set will now appear in your reviews</p>
-                <p>So get ready...</p>
+            <div>
+                <button class="previewBtns" onclick="previewDialog.showModal()">View</button>
+                <button class="addBtns" onclick="addDialog.showModal()">Add</button>
             </div>
         </div>
+    </div>
+
+    <section>
+        <dialog id="previewDialog">
+            <div class="title-bar">
+                <h2>Preview:</h2>
+                <button>x</button>
+            </div>
+            <!-- First 3 questions of the set -->
+            <div class="preview-container">
+                <p>#1 Q (input): What were the peasants of Russia called?</p>
+                <p>A: Serfs</p>
+                <p>#1 Q (input): What were the peasants of Russia called?</p>
+                <p>A: Serfs</p>
+                <p>#1 Q (input): What were the peasants of Russia called?</p>
+                <p>A: Serfs</p>
+            </div>
+
+        </dialog>
+        <dialog id="addDialog">
+            <button>x</button>
+            <br>
+            <h2>This set will now appear in your reviews</h2>
+            <br>
+            <h2>So get ready...</h2>
+        </dialog>
     </section>
 </body>
-<script src="js/kitchen.js"></script>
+<script src="/js/kitchen.js"></script>
 </html>

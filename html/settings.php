@@ -21,23 +21,23 @@
             <div>Vocab Repetition:</div>
             <div>
                 <input name="radio" type="radio" checked>
-                <span class="radio-label">Something</span>
+                <span class="radio-label">| Something</span>
             </div>
             <div>
                 <input name="radio" type="radio">
-                <span class="radio-label">Something Else</span>
+                <span class="radio-label">| Something Else</span>
             </div>
         </div>
         <div class="setting-box">
             <div>
                 <input type="checkbox">
-                Show Previous Vocab
+                | Show Previous Vocab
             </div>
         </div>
         <div class="setting-box">
             <div>
                 <input type="checkbox">
-                Vacation Mode
+                | Vacation Mode
             </div>
         </div>
         <div class="setting-box">
