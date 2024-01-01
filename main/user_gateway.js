@@ -5,7 +5,7 @@ class UserGateway {
     static async getuser() {
         var success, data;
         await fetch("../main/user/user_get.php", {
-            method: "search",
+            method: "get",
             headers: {
                 'Content-Type': 'application/json'
             }

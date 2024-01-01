@@ -15,7 +15,7 @@ add.addEventListener("mousedown", async function() {
     console.log("add:", success, reason);
 });
 getall.addEventListener("mousedown", async function() {
-    var [success, data] = await DeckGateway.getall();
+    var [success, data] = await DeckGateway.getall(0);
     console.log("getall:", success, data);
 });
 modify.addEventListener("mousedown", async function() {
