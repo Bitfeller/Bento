@@ -166,7 +166,7 @@ button {
     margin: 50px auto;
     padding: 30px;
     width: 50%;
-    height: 70%;
+    min-height: 70%;
     border-radius: 10px;
 }
 .options-container {
@@ -357,6 +357,25 @@ button {
 }
 #picAddBtn, #fileselecttrigger {
     cursor: pointer;
+}
+.import-card {
+    position: relative;
+    background-color: var(--gray);
+    padding: 5px;
+    padding-top: 35px;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+.import-q {
+
+}
+.import-a {
+    
+}
+.import-sel {
+    position: absolute;
+    top: 15px;
+    left: 10px;
 }
 @media only screen and (max-width: 1025px) {
     .options-container {
