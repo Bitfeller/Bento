@@ -136,13 +136,15 @@ function box(id, killfn = (box) => box.remove()) {
         loader: _load()
     };
 }
-function removeBox(id) {
+function removeBox(id, removeFromAllDecks = true) {
     let b = ownedDecks.querySelector(`.ingredient-box[data-id="${id}"]`);
     if(b) b.remove();
     if(ownedDecks.children.length == 0)
         ownedDecks.innerHTML = `<p class='info-blank'>You haven't added any decks to your reviews yet.</p>`;
-    b = pubDecks.querySelector(`.ingredient-box[data-id="${id}"]`);
-    if(b) b.remove();
+    if(removeFromAllDecks) {
+        b = pubDecks.querySelector(`.ingredient-box[data-id="${id}"]`);
+        if(b) b.remove();
+    }
 }
 
 async function update() {
@@ -325,7 +327,7 @@ async function updateReviews(_this) {
     let id = parseInt(_this.dataset.id);
     if(user.userdata.reviews[id]) {
         delete user.userdata.reviews[id];
-        removeBox(id);
+        removeBox(id, false);
     } else {
         user.userdata.reviews[id] = {};
         let [success, _] = await DeckGateway.get(id, false, false, false);
