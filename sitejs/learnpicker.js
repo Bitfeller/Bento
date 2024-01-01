@@ -153,11 +153,11 @@ function updateDecks(decks, counts) {
             if (!checkbox.checked) allChecked = false;
         }
         if(allChecked) {
-            for (let item in deckContainer.children)
+            for (let item of deckContainer.children)
                 item.getElementsByClassName("deckCheck")[0].checked = false;
             deckSelect.innerHTML = "check_box_outline_blank";
         } else {
-            for (let item in deckContainer.children)
+            for (let item of deckContainer.children)
                 item.getElementsByClassName("deckCheck")[0].checked = true;
             deckSelect.innerHTML = "check_box";
         }
