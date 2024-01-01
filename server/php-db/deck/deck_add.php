@@ -42,10 +42,10 @@
             $newProb = htmlspecialchars(strip_tags($prob));
             $newItem = [];
             $newItem['type'] = htmlspecialchars(strip_tags($data['type']));
-            if($data['op']) {
-                $newItem['op'] = htmlspecialchars(strip_tags(json_encode($data['op'])));
+            if(isset($data['op'])) {
+                $newItem['op'] = json_decode(htmlspecialchars(strip_tags(json_encode($data['op']))));
             }
-            $newItem['ans'] = htmlspecialchars(strip_tags($data['ans']));
+            $newItem['ans'] = json_decode(htmlspecialchars(strip_tags(json_encode($data['ans']))));
             $newVal['contnt'][$newProb] = $newItem;
         }
         $deckData = json_encode($newVal);
