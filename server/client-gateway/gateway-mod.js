@@ -37,6 +37,8 @@ async function sameUser() {
     return same;
 }
 async function senderror(name, error, relatedData) {
+    if(relatedData.plain)
+        relatedData.plain = relatedData.plain?.toString() ?? relatedData.plain;
     await fetch("https://bentoapi.valleynas.uk:443/error", {
         method: 'POST',
         headers: {
