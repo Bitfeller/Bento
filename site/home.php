@@ -6,6 +6,7 @@
     <title>Bento - Home</title>
     <?php require_once "globalreqs.php"?>
     <link rel="stylesheet" href="/css/home.css"/>
+    <script type="module" src="../sitejs/home.js"></script>
 </head>
 <body data-uo="true">
     <?php require_once "header.php"?>       
@@ -414,6 +415,15 @@
             </g>
         </g>
         </svg>
+        <div class="home-side-div-holder">
+            <div class="deck-reminders-holder home-side-div">
+                <h3>Decks to review</h3>
+                <div class="deck-reminders" id="deck-reminders"></div>
+            </div>
+            <div class="notifications-holder home-side-div">
+                <span id="text"><span class="material-symbols-outlined">notifications_off</span>Don't give me notifications</span>
+            </div>
+        </div>
     </div>
 </body>
 </html>
