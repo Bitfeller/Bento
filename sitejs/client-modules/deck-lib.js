@@ -9,7 +9,8 @@ const resetpic = document.getElementById("picReset");
 const fileselecttrigger = document.getElementById("fileselecttrigger");
 const picimg = document.getElementById("deckpic");
 
-let cards = [], deckpic = '', drag;
+let cards = [], deckpic = '';
+let drag, dragParent;
 let user;
 const sizeLimit = 2 * 1000 * 1000; // NOTE: must be same as max_image_size in server/conf/config.json
 
@@ -26,7 +27,7 @@ document.head.appendChild(dpscript);
 
 
 // Essential functions to set up div + ranking functionality
-function computeCenter(el) {
+function computeCentroid(el) {
     let rect = el.getBoundingClientRect();
     return {
         x: (rect.left + rect.right) / 2 + scrollX,
@@ -148,6 +149,42 @@ function init_div(div) {
         typeset(div);
     }
 }
+function dragAppend(e, node, parent) {
+    let top, bottom, y = e.pageY;
+    const children = parent.children;
+    for(let i = 0; i < children.length; i++) {
+        let centroid = computeCentroid(children[i]);
+        if(centroid.y < y) continue;
+        else if(i - 1 >= 0) {
+            top = children[i - 1];
+            bottom = children[i];
+            parent.insertBefore(node, bottom);
+            break;
+        } else {
+            top = children[i];
+            node.remove();
+            parent.prepend(node);
+            break;
+        }
+    }
+    if(!top) {
+        node.remove();
+        parent.appendChild(node);
+    }
+}
+function processDrag(e, parent) {
+    if(!drag) return;
+    if(dragline.parentNode != parent) parent.prepend(dragline);
+    dragAppend(e, dragline, parent);
+}
+function endDrag(e, node, parent) {
+    if(drag != node) return;
+    dragline.remove();
+    dragAppend(e, node, parent);
+    node.style.backgroundColor = '';
+    drag = null;
+    dragline.remove();
+}
 function toNew() {
     newCard();
     document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -249,36 +286,11 @@ function generator_rank(card, ranklist, txt) {
     ranklist.appendChild(item);
     item.addEventListener('dragstart', () => {
         drag = item;
+        dragParent = ranklist;
         item.style.backgroundColor = 'rgb(150, 200, 255)';
         ranklist.append(dragline);
     });
-    item.addEventListener('dragend', e => {
-        if(drag != item) return;
-        item.style.backgroundColor = '';
-        dragline.remove();
-        let top, bottom, y = e.pageY;
-        const objects = ranklist.children;
-        for(let i = 0; i < objects.length; i++) {
-            let centroid = computeCenter(objects[i]);
-            if(centroid.y < y) continue;
-            else if(i - 1 >= 0) {
-                top = objects[i - 1];
-                bottom = objects[i];
-                ranklist.insertBefore(item, bottom);
-                break;
-            } else {
-                top = objects[i];
-                item.remove();
-                ranklist.prepend(item);
-                break;
-            }
-        }
-        if(!top) {
-            item.remove();
-            ranklist.appendChild(item);
-        }
-        drag = null;
-    });
+    item.addEventListener('dragend', e => endDrag(e, item, ranklist));
     let input = item.getElementsByClassName('rank-item-txt')[0];
     let delbtn = item.getElementsByClassName('rank-del')[0];
     init_div(input);
@@ -994,32 +1006,7 @@ g_createbtn.addEventListener("mousedown", () => {
 // --------------------------------------------------- \\
 
 
-window.addEventListener('dragover', e => {
-    if(!drag) return;
-    let list = drag.parentNode;
-    if(dragline.parentNode != list) list.prepend(dragline);
-    let top, bottom, y = e.pageY;
-    const objects = list.children;
-    for(let i = 0; i < objects.length; i++) {
-        let centroid = computeCenter(objects[i]);
-        if(centroid.y < y) continue;
-        else if((i - 1) >= 0) {
-            top = objects[i - 1];
-            bottom = objects[i];
-            list.insertBefore(dragline, bottom);
-            break;
-        } else {
-            top = objects[i];
-            dragline.remove();
-            list.prepend(dragline);
-            break;
-        }
-    }
-    if(!top) {
-        dragline.remove();
-        list.appendChild(dragline);
-    }
-});
+window.addEventListener('dragover', e => processDrag(e, dragParent));
 window.addEventListener("keydown", e => {
     if(e.target === addCard && (e.key === "Enter" || e.key === " ")) {
         newCard();
@@ -1058,7 +1045,7 @@ const DeckBind = {
     user: () => user,
     cards: () => cards,
     deckpic: () => deckpic,
-    computeCenter,
+    computeCentroid,
     init_card,
     typeset,
     renderable,
