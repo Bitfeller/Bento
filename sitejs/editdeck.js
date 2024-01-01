@@ -93,5 +93,6 @@ createBtn.addEventListener('mousedown', async () => {
     description.value = window.lib.decode(contnt.data.desc);
     cardContain.innerHTML = "";
     DeckBind.appendToCards(contnt.data.contnt);
+    DeckBind.appendTags(window.lib.recur_decode(contnt.data.tags));
     window.LOADED();
 })();

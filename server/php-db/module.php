@@ -35,11 +35,13 @@
     //      Success and fail return functions
     function fail($reason) {
         http_response_code(200);
+        header("Content-Type: application/json");
         echo json_encode(["status" => "error", "reason" => $reason]);
         exit();
     }
     function success($data = null) {
         http_response_code(200);
+        header("Content-Type: application/json");
         echo json_encode(["status" => "success", "data" => $data]);
         exit();
     }
@@ -97,18 +99,24 @@
                     $type = "boolean";
                 break;
             }
+            if(!isset($data[$param])) continue;
             $val = $data[$param];
-            if(isset($val) and (gettype($val) !== $type and gettype($val) !== ($secondType or $type))) access_fail();
+            if(gettype($val) !== $type and gettype($val) !== ($secondType or $type)) access_fail();
         }
     }
 
-    //      Get server config
+    //      Get server config and other configurations
     function is_local_config() {
         return file_exists('../../conf/local-config.json');
     }
     function get_server_config() {
-        if(file_exists('../../conf/local-config.json')) return json_decode(file_get_contents("../../conf/local-config.json"), true);
-        else return json_decode(file_get_contents('../../conf/config.json'), true);
+        if(is_local_config()) 
+            return json_decode(file_get_contents("../../conf/local-config.json"), true);
+        else 
+            return json_decode(file_get_contents('../../conf/config.json'), true);
+    }
+    function get_allowed_tags() {
+        return json_decode(file_get_contents('../../conf/allowed_tags.json'), true);
     }
 
     //      Content sanitizer
@@ -170,15 +178,15 @@
         }
         return false;
     }
-    function get_filter_list() {
-        return file('../../conf/moderator/config-filter-regex.list');
-    }
     function _traverse_str_filter(string $content) {
         $filter_list = get_filter_list();
         foreach($filter_list as $filter)
             if(preg_match("/$filter/", $content))
                 return true;
         return false;
+    }
+    function get_filter_list() {
+        return file('../../conf/moderator/config-filter-regex.list');
     }
     function filter($content) {
         if(gettype($content) == "array") return _traverse_array_filter($content);

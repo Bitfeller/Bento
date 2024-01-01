@@ -18,6 +18,7 @@ createBtn.addEventListener('mousedown', async () => {
     lastTick = Date.now();
     if(!res) return;
     let [name, deckpic, data, isPublic] = res; // unpack
+    console.log(data.tags);
     let [success, reason] = await DeckGateway.add(name, deckpic || "", JSON.stringify(data), isPublic);
     if(!success) 
         switch(reason) {
@@ -26,6 +27,9 @@ createBtn.addEventListener('mousedown', async () => {
             break;
             case "invalid name":
                 window.SHOW_ERROR("That name has invalid characters or is empty. (Valid characters include dashes, a-z, A-Z, and 0-9)");
+            break;
+            case "invalid tag":
+                window.SHOW_ERROR("One of your tags are invalid.");
             break;
             case "flagged":
                 window.SHOW_ERROR("Your deck was flagged for inappropriate content.");
@@ -46,6 +50,20 @@ createBtn.addEventListener('mousedown', async () => {
         }
     else window.location.href = "/home?l=cd&s=1";
 });
+// tagInput.addEventListener('keydown', (e) => {
+//     if (e.key == 'Enter') {
+//         e.preventDefault(); 
+//         console.log(tagInput.value)
+//         tags.innerHTML += /*html*/`                
+//             <div class="tag remove-tag">
+//                 <div class="material-symbols-outlined">remove</div>
+//                 <p>${tagInput.value}</p>
+//             </div>
+//         `;
+//         tagInput.value = '';
+//         tagInput.focus();
+//     }
+// });
 
 (async () => {
     await DeckBind.init();
@@ -70,6 +88,7 @@ createBtn.addEventListener('mousedown', async () => {
         div.getElementsByClassName("show")[0].addEventListener("mousedown", async () => {
             cardContain.innerHTML = "";
             DeckBind.appendToCards(deck.contnt);
+            DeckBind.appendTags(window.lib.recur_decode(deck.tags));
             title.value = window.lib.decode(deck.name);
             desc.value = window.lib.decode(deck.desc);
             ispub.checked = deck.pub;
