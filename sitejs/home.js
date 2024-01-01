@@ -341,8 +341,10 @@ function set(text) {
     write(text);
 }
 (async () => {
+    console.log("getting user in HOME");
     let [success, _user] = await UserGateway.getuser(false, true, true, false);
     if(!success) return;
+    console.log("got user in HOME");
     user = _user;
     deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
   
