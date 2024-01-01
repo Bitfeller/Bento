@@ -57,6 +57,14 @@ function init_card(card, n) {
         if(on('card-rank')) return;
         if(e.key == "Enter" || e.key == " ") init_ranking(card, n, q.innerHTML);
     });
+    qf('mtchbtn').addEventListener("mousedown", () => { 
+        if(on('card-mtch')) return;
+        init_mtch(card, n, q.innerHTML);
+    });
+    qf('mtchbtn').addEventListener("keydown", e => {
+        if(on('card-mtch')) return;
+        if(e.key == "Enter" || e.key == " ") init_mtch(card, n, q.innerHTML);
+    });
     card.getElementsByClassName('card-del')[0].addEventListener("mousedown", () => {
         if(cards.length <= 1) return;
         let idx = cards.indexOf(card);
@@ -273,12 +281,39 @@ function generator_rank(card, ranklist, txt) {
         if(ranklist.children.length > 2) item.remove();
     });
 }
+function generator_mtch(card, mtchlist, r, txt) {
+    let pair = document.createElement('div');
+    pair.className = 'mtch-pair';
+    pair.innerHTML = `
+        <div contenteditable="true" type='input' class='mtchpair-term ansdiv' placeholder='Term'></div>
+        <div contenteditable="true" type='input' class='mtchpair-def ansdiv' placeholder='Definition'></div>
+        ${r ? "<button class='mtchpair-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>" : ""}
+    `;
+    mtchlist.appendChild(pair);
+    let term = pair.getElementsByClassName('mtchpair-term')[0];
+    let def = pair.getElementsByClassName('mtchpair-def')[0];
+    let delbtn = pair.getElementsByClassName('mtchpair-del')[0];
+    init_div(term);
+    init_div(def);
+    if(txt) term.setVal(txt);
+    def.addEventListener('keydown', e => {
+        if(e.key != "Tab" || e.shiftKey) return;
+        if(cards.indexOf(card) < cards.length - 1) return;
+        let ans = [...mtchlist.getElementsByClassName('mtch-pair')];
+        let idx = ans.indexOf(pair);
+        if(idx < ans.length - 1) return;
+        e.preventDefault();
+        toNew();
+    });
+    if(r) delbtn.addEventListener('mousedown', () => pair.remove());
+}
 function init_mc(card, n, q) {
     card.innerHTML = `
         <div class='cardsel'>
             <button class='mcbtn selbtn selbtn-sel'>Multiple Choice</button>
             <button class='txtbtn selbtn selbtn-nosel'>Text</button>
             <button class='rankbtn selbtn selbtn-nosel'>Ranking</button>
+            <button class='mtchbtn selbtn selbtn-nosel'>Matching</button>
         </div>
         <div class='cardmain'>
             <div class='card-q-cont'>
@@ -320,6 +355,7 @@ function init_txt(card, n, q) {
             <button class='mcbtn selbtn selbtn-nosel'>Multiple Choice</button>
             <button class='txtbtn selbtn selbtn-sel'>Text</button>
             <button class='rankbtn selbtn selbtn-nosel'>Ranking</button>
+            <button class='mtchbtn selbtn selbtn-nosel'>Matching</button>
         </div>
         <div class='cardmain'>
             <div class='card-q-cont'>
@@ -397,6 +433,7 @@ function init_ranking(card, n, q) {
             <button class='mcbtn selbtn selbtn-nosel'>Multiple Choice</button>
             <button class='txtbtn selbtn selbtn-nosel'>Text</button>
             <button class='rankbtn selbtn selbtn-sel'>Ranking</button>
+            <button class='mtchbtn selbtn selbtn-nosel'>Matching</button>
         </div>
         <div class='cardmain'>
             <div class='card-q-cont'>
@@ -420,6 +457,36 @@ function init_ranking(card, n, q) {
     addbtn.addEventListener('mousedown', generator);
     for(let i = 0; i < 2; i++) generator();
 }
+function init_mtch(card, n, q) {
+    card.innerHTML = `
+        <div class='cardsel'>
+            <button class='mcbtn selbtn selbtn-nosel'>Multiple Choice</button>
+            <button class='txtbtn selbtn selbtn-sel'>Text</button>
+            <button class='rankbtn selbtn selbtn-nosel'>Ranking</button>
+            <button class='mtchbtn selbtn selbtn-nosel'>Matching</button>
+        </div>
+        <div class='cardmain'>
+            <div class='card-q-cont'>
+                Question: <div contenteditable="true" type='input' class='q' placeholder='Question'>${q ?? ""}</div>
+            </div>
+            <div class='card-vals-cont card-mtch'></div>
+            <button class='mtch-add' tabindex='-1'><span class='material-symbols-outlined small-ico'>add</span> Add pair</button>
+            <button class='card-del' tabindex='-1'><span class='material-symbols-outlined small-ico'>close</span> Delete Card</button>
+            <div class='deck-divider'></div>
+        </div>
+    `;
+    init_card(card, n);
+    let problem = card.getElementsByClassName('q')[0];
+    init_div(problem);
+    if(q) problem.setVal(q);
+    // Set up match functionality
+    let pairlist = card.getElementsByClassName('card-mtch')[0];
+    let addbtn = card.getElementsByClassName('mtch-add')[0];
+    // Local generator
+    let generator = (r) => generator_mtch(card, pairlist, r);
+    addbtn.addEventListener('mousedown', () => generator(false));
+    for(let i = 0; i < 2; i++) generator(i == 0);
+}
 function newCard() {
     let card = document.createElement('div');
     let n = cards.length + 1;
@@ -433,6 +500,7 @@ function newCard() {
     let cn = type.className.split(" ");
     if(cn.includes('txtbtn')) init_txt(card, n);
         else if(cn.includes('rankbtn')) init_ranking(card, n);
+        else if(cn.includes('mtchbtn')) init_mtch(card, n);
         else init_mc(card, n); // mcbtn + etc.
 }
 
@@ -544,6 +612,23 @@ function toDeck(err_assigner, is_draft = false, bypass = false) {
             if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
             if(data[q.dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
+        } else if(cn.includes('mtchbtn')) {
+            let cdata = {
+                type: 'mtch',
+                ans: []
+            };
+            let q = card.getElementsByClassName('q')[0];
+            if(!q) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
+            let pairs = card.getElementsByClassName('mtch-pair');
+            for(let j = 0; j < pairs.length; j++) {
+                let term = pairs[j].getElementsByClassName('mtchpair-term')[0];
+                let def = pairs[j].getElementsByClassName('mtchpair-def')[0];
+                if(!term || !def) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
+                if(term.dataset.cnt.length > 0 && def.dataset.cnt.length > 0) cdata.ans.push([term.dataset.cnt, def.dataset.cnt]);
+            }
+            if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
+            if(data[q.dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            data[q.dataset.cnt] = cdata;
         }
     }
     data = {
@@ -609,6 +694,13 @@ function appendToCards(contnt) {
                 let rankinglist = carddiv.getElementsByClassName("ranking-list")[0];
                 rankinglist.innerHTML = '';
                 for(let i = 0; i < card.ans.length; i++) generator_rank(carddiv, rankinglist, card.ans[i]);
+            break;
+            case "mtch":
+                init_mtch(carddiv, n);
+                carddiv.getElementsByClassName('q')[0].setVal(q);
+                let mtchlist = carddiv.getElementsByClassName("card-mtch")[0];
+                mtchlist.innerHTML = '';
+                for(let i = 0; i < card.ans.length; i++) generator_mtch(carddiv, mtchlist, i == 0, card.ans[i]);
             break;
         }
     }

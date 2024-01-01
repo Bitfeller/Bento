@@ -190,7 +190,7 @@ class Asteroid {
     // Add terms to deckContnt
     for(let i = 0; i < deckContnt.length; i++)
         for(let j = 0; j < deckContnt[i].length; j++)
-            if(deckContnt[i][j].type != "ranking") deckData.push(deckContnt[i][j]);
+            if(deckContnt[i][j].type != "ranking" && deckContnt[i][j].type != "mtch") deckData.push(deckContnt[i][j]);
     // Scramble terms if needed
     if(randomTerms == true) {
         let save = deckData;
