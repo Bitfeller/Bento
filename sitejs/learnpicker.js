@@ -11,7 +11,7 @@ const o_repeat = document.getElementsByClassName("repeat");
 const o_shuffle = document.getElementsByClassName("shuffle");
 const o_infinite_mode = document.getElementsByClassName("infinite-mode")[0];
 const infinite_mode_text = document.getElementsByClassName("infinite_mode_text")[0];
-const o_require_correct = document.getElementsByClassName('require_correct');
+const o_require_correct = document.getElementsByClassName('require_correct')[0];
 
 const deckSelect = document.getElementById("deckSelectAll");
 
@@ -129,10 +129,7 @@ let user;
         if (o_mode[1].checked == true) {
             deckContainer.innerHTML = "";
             o_infinite_mode.disabled = true;
-            o_infinite_mode.setAttribute(
-                "data-enabled",
-                String(o_infinite_mode.checked),
-            );
+            o_infinite_mode.setAttribute("data-enabled", String(o_infinite_mode.checked));
             o_infinite_mode.checked = false;
             infinite_mode_text.innerHTML =
                 "You can't use Infinite Mode when learning decks to review.<br><i>Support for this feature may be added in the future</i>";
