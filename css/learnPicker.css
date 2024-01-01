@@ -16,12 +16,12 @@ h2 {
     margin: 25px;
     padding: 15px;
     border-radius: 10px;
-    background-color: rgb(33, 33, 33);
+    background-color: var(--gray);
 }
 .deck-container, .settings-container {
     display: flex;
     flex-direction: column;
-    background-color: rgb(33, 33, 33);
+    background-color: var(--gray);
     overflow: scroll;
 }
 .deck-container {
@@ -40,7 +40,7 @@ h2 {
     margin-left: 10%;
     width: 80%;
     margin-top: 12px;
-    background-color: rgb(56, 56, 56);
+    background-color: var(--light-gray);
 }
 .setting-box {
     justify-content: left;

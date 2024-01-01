@@ -1,5 +1,17 @@
+:root {
+    --light-text: #EEEEEE;
+    --dark-text: #292E32;
+    --select-blue: #236BD6;
+    --danger-red: #E01F15;
+    --navy-blue: #111A23;
+    --dark-gray: #1E1E1E;
+    --gray: #212121;
+    --light-gray: #292E32;
+    --lighter-gray: #383838;
+    --light-green: #CADDA0;
+}
 * {
-    color: #eeeeee;
+    color: var(--light-text);
     font-family: kadwa, karla, sans-serif;
     padding: 0;
     margin: 0;
@@ -31,7 +43,7 @@ p > * {
     font-family: kadwa;
 }
 body {
-    background: rgb(17, 26, 35);
+    background: var(--navy-blue);
 }
 body, .container {
     overflow-x: hidden;
@@ -42,15 +54,15 @@ body, .container {
 button {
     border-radius: 5px;
     border: none;
-    background-color: #cadda0;
-    color: #292E32;
+    background-color: var(--light-green);
+    color: var(--dark-text);
     cursor: pointer;
 }
 input {
     border: none;
     border-radius: 5px;
     color: #EEEEEE;
-    background-color: rgb(56, 56, 56);
+    background-color: var(--lighter-gray);
 }
 ::placeholder {
     opacity: 0.4;
@@ -64,7 +76,7 @@ input {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgb(17, 26, 35);
+    background-color: var(--navy-blue);
 }
 .load-rot {
     position: absolute;
@@ -111,7 +123,7 @@ input {
     font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 200, "opsz" 48;
 }
 .header span:hover {
-    color: #cadda0;
+    color: var(--light-green);
 }
 .logo {
     cursor: pointer;

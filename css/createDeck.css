@@ -1,6 +1,6 @@
 .mc-option-sel, .selbtn-select {
-    color: #EEEEEE;
-    background-color: #236bd6;
+    color: var(--light-text);
+    background-color: var(--select-blue);
 }
 button:hover {
     transition-duration: 0.2s;
@@ -11,10 +11,16 @@ button:hover {
     flex-direction: column;
     padding: 20px;
     border-radius: 10px;
+    width: 85%;
+    margin: auto;
     margin-top: 20px;
-    width: 30%;
-    margin-left: 35%;
-    background-color: #1e1e1e;
+    background-color: var(--dark-gray);
+}
+#name {
+    max-width: 600px;
+}
+#description {
+    max-width: 700px;
 }
 .create-container input, .create-container > button {
     font-size: 11pt;
@@ -29,27 +35,41 @@ button {
 .create-container input, .question, .mc-option-input {
     border: none;
     margin-bottom: 10px;
-    background-color: rgb(56, 56, 56);
-    color: #EEEEEE;
+    color: var(--light-text);
+}
+.question, .mc-option-input {
+    width: 70%;
+}
+.mc-option-del {
+    color: var(--light-text);
+    background-color: var(--danger-red);
+
 }
 .create-container > ::placeholder {
     opacity: 0.4;
-    color: #CADDA0;
+    color: var(--light-green)
 } 
 .create-container > .mcbtn {
     margin-left: 0px;
 }
-.mc-add, .rank-add, .card-del {
-    color: #EEEEEE;
-    background-color: #236bd6;
+.mc-add, .rank-add {
+    color: var(--light-text);
+    background-color: var(--select-blue);
+}
+.card-del {
+    color: var(--light-text);
+    background-color: var(--danger-red);
 }
 #addcard, #create {
-    background-color: #EEEEEE;
+    background-color: var(--light-text);
+    width: 76%;
+    max-width: 700px;
 }
-@media only screen and (max-width: 1450px) {
-    .create-container {
-        width: 90%;
-        margin: auto;
-        margin-top: 20px;
+.card {
+    margin-top: 10px;
+}
+@media only screen and (max-width: 700px) {
+    #addcard, #create {
+        width: 100%;
     }
 }
