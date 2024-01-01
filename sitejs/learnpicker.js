@@ -42,7 +42,7 @@ function updateDecks(decks) {
         o_infinite_mode.setAttribute("data-enabled", String(o_infinite_mode.checked));
         o_infinite_mode.checked = false;
         infinite_mode_text.innerHTML =
-            "You can't use Infinite Mode when learning decks to review.<br><i>Support for this feature may be added in the future</i>";
+            "You can't use Infinite Mode when learning decks to review.";
         let r_keys = Object.keys(reviews);
         for (let i = 0; i < r_keys.length; i++) {
             if (decks[i] == 0) continue;
@@ -117,7 +117,7 @@ function updateDecks(decks) {
     o_infinite_mode.setAttribute("data-enabled", String(o_infinite_mode.checked));
     o_infinite_mode.checked = false;
     infinite_mode_text.innerHTML =
-        "You can't use Infinite Mode when learning decks to review.<br><i>Support for this feature may be added in the future</i>";
+        "You can't use Infinite Mode when learning decks to review.";
     let r_keys = Object.keys(reviews);
     for (let i = 0; i < r_keys.length; i++) {
         let id = parseInt(r_keys[i]);
@@ -155,6 +155,7 @@ function updateDecks(decks) {
         } else if (box.querySelectorAll('input[type="checkbox"]').length > 0) {
             let checkbox = box.querySelectorAll('input[type="checkbox"]')[0];
             box.addEventListener("mousedown", () => {
+                if(checkbox.disabled) return;
                 checkbox.checked = !checkbox.checked;
             });
         }
@@ -210,7 +211,7 @@ function updateDecks(decks) {
             shuffle,
             infinite_mode = o_infinite_mode.checked ? 1 : 0,
             require_correct = o_require_correct.checked ? 1 : 0;
-        if (o_mode[1].checked == true) mode = 1;
+        if (o_mode[0].checked == true) mode = 1;
         for (let i = 0; i < o_repeat.length; i++) {
             if (o_repeat[i].checked == true) {
                 repeat = i + 1;
