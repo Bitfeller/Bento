@@ -1,6 +1,6 @@
 <div id="too-big-img"></div>
 <header class=header id=header>
-    <img alt="Bento! Logo" class=logo height=40px onclick='location.href="/home"' src="/img/bento logo white.svg" title="Bento! home">
+    <img alt="Bento! Logo" class=logo height=40px onclick='location.href="/home"' src="/img/bento logo white.svg" title="Bento! home"><span class="info">BETA</span>
     <div class=right-header>
         <span id="header:verify-email-alert" class="verify-email-alert header-nav right-header-ico">Verify Your Email</span>
         <img class="pfp right-header-ico" src="/img/defaultpfp.png" id="header:pfp" title="Your Profile">

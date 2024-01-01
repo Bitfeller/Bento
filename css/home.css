@@ -148,6 +148,7 @@ dialog button {
     z-index: 102;
 }
 div.version {
+    z-index: 9;
     position: absolute;
     display: flex;
     flex-direction: row;
