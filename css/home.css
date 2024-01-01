@@ -246,6 +246,7 @@ footer > hr {
     height: 25%;
 }
 .modal {
+    border: none;
     display: none; 
     position: fixed; 
     z-index: 1; 
