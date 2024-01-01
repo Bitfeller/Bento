@@ -60,5 +60,5 @@ fn main() {
     // Will fail if there isn't a directory there, but we don't care:
     let _ = copy_dir(&join(&xampp_path, "htdocs"), &join(&xampp_path, "htdocs-backup"));
     let _ = symlink(&join(&path, "..\\..\\"), &join(&xampp_path, "htdocs"));
-    let _ = copy_dir(&join(&path, "..\\rebuild-resourc\\mysql"), &join(&xampp_path, "mysql\\data"));
+    let _ = copy_dir(&join(&path, "..\\rebuild-resourc\\data"), &join(&xampp_path, "mysql\\data"));
 }

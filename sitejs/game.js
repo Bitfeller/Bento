@@ -27,6 +27,9 @@ let dragLine = document.createElement("div");
 let r_temp = document.createElement('div');
 r_temp.style.visibility = 'hidden';
 document.body.appendChild(r_temp);
+// Time
+let startTick = -1;
+let endTick = -1;
 
 dragLine.style = "display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;";
 function noAnswer() {
@@ -115,6 +118,7 @@ function refresh() {
     
     for(let i = 0; i < objs.length; i++) objs[i].remove();
     objs = [], dragElements = [], centroids = [];
+    startTIck = Date.now();
     dragging = undefined;
     answerbtn.style.display = "block";
     
@@ -149,6 +153,7 @@ function refresh() {
                     if (correct) {
                         op_i.innerHTML = `<p class="answer-symbol">✅</p> ` + op_i.innerHTML;
                         window.setTimeout(() => {
+                            Game.registerTick(Date.now() - startTick);
                             Game.continue();
                             refresh();
                         }, 1000);
@@ -163,6 +168,7 @@ function refresh() {
                         answerbtn.style.display = "block";
                         answerbtn.innerHTML = "Continue >>> (Enter)";
                         toProceed = true;
+                        endTick = Date.now();
                     }
                 });
                 objs.push(op_i);
@@ -341,6 +347,7 @@ function answerHandler() {
     if (Game.isDead()) window.location.href = "/home?l=lm&s=1";
     if (toProceed) {
         if (Game.fetchProblem().type == "txt" && requireCorrect && !Game.getLastCorrect()) return;
+        Game.registerTick(endTick - startTick);
         Game.continue();
         answerMarker.style.display = reshowMarker.style.display = "none";
         answerbtn.innerHTML = "Answer";
@@ -363,6 +370,7 @@ function answerHandler() {
                         for(let i = 0; i < objs.length; i++)
                             if(data.ans.indexOf(parseInt(objs[i].getAttribute('i'))) > -1) objs[i].innerHTML = `<p class="answer-symbol">✅</p> ` + objs[i].getAttribute('orig');
                         window.setTimeout(() => {
+                            Game.registerTick(Date.now() - startTick);
                             Game.continue();
                             refresh();
                         }, 1000);
@@ -377,6 +385,7 @@ function answerHandler() {
                         answerbtn.style.display = "block";
                         answerbtn.innerHTML = "Continue >>> (Enter)";
                         toProceed = true;
+                        endTick = Date.now();
                     }
                 }
             break;
@@ -385,6 +394,7 @@ function answerHandler() {
                 if(objs[0].textContent === "") return noAnswer();
                 correct = Game.isCorrect(objs[0].textContent.toLowerCase());
                 if(correct) {
+                    Game.registerTick(Date.now() - startTick);
                     Game.continue();
                     contlabel();
                     refresh();
@@ -404,6 +414,7 @@ function answerHandler() {
                     }
                     answerMarker.style.display = reshowMarker.style.display = "block";
                     toProceed = true;
+                    endTick = Date.now();
                 }
             break;
             case "ranking":
@@ -411,6 +422,7 @@ function answerHandler() {
                 for(let i = 0; i < dragElements.length; i++) answerList.push(dragElements[i].textContent);
                 correct = Game.isCorrect(answerList);
                 if(correct) {
+                    Game.registerTick(Date.now() - startTick);
                     Game.continue();
                     contlabel();
                     refresh();
@@ -432,6 +444,7 @@ function answerHandler() {
                     answerbtn.focus();
                     answerMarker.style.display = reshowMarker.style.display = "block";
                     toProceed = true;
+                    endTick = Date.now();
                 }
             break;
             case "mtch":
@@ -468,8 +481,10 @@ function answerHandler() {
                     answerbtn.style.display = "block";
                     answerbtn.innerHTML = "Continue >>> (Enter)";
                     toProceed = true;
+                    endTick = Date.now();
                 } else {
                     Game.markCorrect(); // Mark as correct since we already checked
+                    Game.registerTick(Date.now() - startTick);
                     Game.continue();
                     contlabel();
                     refresh();
@@ -540,6 +555,7 @@ window.addEventListener("dragover", e => {
 })();
 answerMarker.addEventListener("mousedown", () => {
     Game.markCorrect();
+    Game.registerTick(endTick - startTick);
     Game.continue();
     answerMarker.style.display = "none";
     reshowMarker.style.display = "none";
@@ -550,6 +566,7 @@ answerMarker.addEventListener("mousedown", () => {
     refresh();
 });
 reshowMarker.addEventListener("mousedown", () => {
+    Game.registerTick(endTick - startTick);
     Game.reshow();
     answerMarker.style.display = "none";
     reshowMarker.style.display = "none";
@@ -592,6 +609,7 @@ window.addEventListener("keydown", e => {
                 cont_a.children[mc_sel[i] - 1].innerHTML = `<p class="answer-symbol">✅</p> ` + cont_a.children[mc_sel[i] - 1].innerHTML;
             selected = true;
             window.setTimeout(() => {
+                Game.registerTick(Date.now() - startTick);
                 Game.continue();
                 refresh();
             }, 1000);
@@ -608,6 +626,7 @@ window.addEventListener("keydown", e => {
             answerbtn.style.display = "block";
             answerbtn.innerHTML = "Continue >>> (Enter)";
             toProceed = true;
+            endTick = Date.now();
         }
         mc_sel = [];
     }
@@ -615,6 +634,7 @@ window.addEventListener("keydown", e => {
     if(!toProceed) return;
     if(e.key == "Enter") e.preventDefault();
     if(e.key == "Enter" && (requireCorrect ? answerbtn.disabled == false : e.target != objs[0])) {
+        Game.registerTick(endTick - startTick);
         Game.continue();
         answerMarker.style.display = "none";
         reshowMarker.style.display = "none";
@@ -628,6 +648,7 @@ window.addEventListener("keydown", e => {
         e.preventDefault();
         // Space
         Game.markCorrect();
+        Game.registerTick(endTick - startTick);
         Game.continue();
         answerMarker.style.display = "none";
         reshowMarker.style.display = "none";
@@ -640,6 +661,7 @@ window.addEventListener("keydown", e => {
     if(e.key == "r" && !e.ctrlKey && e.target != objs[0]) {
         e.preventDefault();
         // Reshow
+        Game.registerTick(endTick - startTick);
         Game.reshow();
         answerMarker.style.display = "none";
         reshowMarker.style.display = "none";

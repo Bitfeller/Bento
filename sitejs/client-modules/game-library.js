@@ -18,6 +18,7 @@ let seen = 0, C_w = 0;
 
 const totalWrong = {};
 const cardsSeen = {};
+const timeSpent = {};
 let updateFn;
 
 let lastCorrect = false, reshow_correct = undefined;
@@ -27,6 +28,24 @@ let lastCorrect = false, reshow_correct = undefined;
 function random(a, b) {
     return Math.floor(Math.random() * (b - a) + a + 0.5);
 }
+function avg(arr) {
+    let total = 0;
+    for(let num in arr) {
+        total += num;
+    }
+    return total / arr.length;
+}
+function filter_outliers(arr) {
+    let v = avg(arr);
+    for(let i = 0; i < arr.length; i++) {
+        if(Math.abs(arr[i] - v) > v * 2) {
+            arr.splice(i, 1);
+            i--;
+        }
+    }
+    return arr;
+}
+
 // -------------------------------------------------------- \\
 
 function iterateCard() {
@@ -145,6 +164,7 @@ async function init(_decks, info) {
     // Cache
     let cache_boxes = {};
     let cache_scores = {};
+    let cache_times = {};
 
     const update = async () => {
         let csKeys = Object.keys(cardsSeen);
@@ -157,14 +177,17 @@ async function init(_decks, info) {
             // Cache holders for deck
             if(!cache_boxes[holder]) cache_boxes[holder] = {};
             if(!cache_scores[holder]) cache_scores[holder] = {};
+            if(!cache_times[holder]) cache_times[holder] = {};
             // Update card
             let userCard = user.userdata.reviews[holder][card.q];
             if(userCard) {
                 if(!cache_boxes[holder][card.q]) cache_boxes[holder][card.q] = user.userdata.reviews[holder][card.q].box;
                 if(!cache_scores[holder][card.q]) cache_scores[holder][card.q] = user.userdata.reviews[holder][card.q].score;
+                if(!cache_times[holder][card.q]) cache_times[holder][card.q] = user.userdata.reviews[holder][card.q].time ?? avg(filter_outliers(timeSpent[csKeys[i]]));
                 user.userdata.reviews[holder][card.q].last = Date.now();
                 let thisScore = cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] || 0)); // correct - wrong
                 user.userdata.reviews[holder][card.q].score = (cache_scores[holder][card.q] * 0.8 + thisScore * 1.1).toFixed(3);
+                user.userdata.reviews[holder][card.q].time = (cache_times[holder][card.q] * 0.8 + avg(filter_outliers(timeSpent[csKeys[i]])) * 1.1).toFixed(3);
                 if(user.userdata.reviews[holder][card.q].score < -1.25)
                     user.userdata.reviews[holder][card.q].box = Math.max(cache_boxes[holder][card.q] - 1, 1);
                 else if(user.userdata.reviews[holder][card.q].score > 1.25)
@@ -173,11 +196,13 @@ async function init(_decks, info) {
                 let newcard = {
                     last: Date.now(),
                     box: 1,
+                    time: avg(filter_outliers(timeSpent[csKeys[i]])),
                     score: ((cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] || 0))) * 1.1).toFixed(3)
                 }
                 newcard.box = newcard.score > 1.25 ? 2 : 1;
                 cache_boxes[holder][card.q] = newcard.box;
                 cache_scores[holder][card.q] = newcard.score;
+                cache_times[holder][card.q] = newcard.time;
                 user.userdata.reviews[holder][card.q] = newcard;
             }
         }
@@ -262,6 +287,11 @@ function getLastCorrect() {
 function markCorrect() {
     lastCorrect = true;
 }
+function registerTick(len) {
+    len /= 1000;
+    if(timeSpent[currSet[card]]) timeSpent[currSet[card]].push(len);
+        else timeSpent[currSet[card]] = [len];
+}
 function _continue() {
     return (reshow_correct == undefined ? lastCorrect : reshow_correct) ? correct() : incorrect();
 }
@@ -301,6 +331,7 @@ const Game = {
     getProgress,
     isCorrect,
     markCorrect,
+    registerTick,
     getLastCorrect,
     check,
     continue: _continue,
