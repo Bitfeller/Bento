@@ -100,6 +100,7 @@ function newRandomDeck() {
     if(available.length == 0 && currWrong.length == 0 && lsWrong.length == 0 && llsWrong.length == 0) {
         // finished set - move on to next set
         currentSet++;
+        C_gw += C_lw;
         E_s = 0;
         C_lw = 0;
         C_pwsets = 0;
@@ -420,24 +421,28 @@ function getProgress() {
             if(seen >= cardRepeat) realWrong++;
         }
     }
-    // 5 / 8?
-    let S_l = Math.ceil(real_deckSize / curr) * (gameData.length / real_deckSize - 2) + Math.ceil((real_deckSize + realWrong) / curr) + C_gw;
-    let S_l_std = Math.ceil(real_deckSize / curr) * (gameData.length / real_deckSize - 1) + C_gw;
-    if(S_l < 0) S_l = 0;
-    if(S_l_std < 0) S_l_std = 0;
-    if(S_l - S_l_std > 0) {
-        // diff greater than previous C_gw; add
-        // S_l greater than standard, meaning wrong count leads to a new set
-        C_gw += S_l - S_l_std;
-    }
+
+    // Update local first
     let s_curr = curr;
 
     if(currentSet < 1) s_curr = real_deckSize;
-    let S_ll = Math.ceil((real_deckSize * cardRepeat + realWrong) / s_curr) + C_lw;
+    let S_ll = Math.ceil((real_deckSize * cardRepeat + realWrong) / s_curr);
     let S_ll_std = Math.ceil(real_deckSize * cardRepeat / s_curr) + C_lw;
     if(S_ll - S_ll_std > 0) {
-        // same logic, but for local
+        // diff greater than previous C_lw; add
+        // S_ll greater than standard, meaning wrong count leads to a new set
         C_lw += S_ll - S_ll_std;
+    }
+
+    // Globally
+    // 5 / 8?
+    let S_l = Math.ceil(real_deckSize / curr) * (gameData.length / real_deckSize - 2) + Math.ceil((real_deckSize + realWrong) / curr) + C_gw;
+    let S_l_std = Math.ceil(real_deckSize / curr) * (gameData.length / real_deckSize - 1) + C_gw + C_lw;
+    if(S_l < 0) S_l = 0;
+    if(S_l_std < 0) S_l_std = 0;
+    if(S_l - S_l_std > 0) {
+        // same logic, but globally
+        C_gw += S_l - S_l_std;
     }
 
     let left = get_pwsets();
