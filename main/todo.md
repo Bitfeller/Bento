@@ -23,6 +23,7 @@
 - Have terms searched in more than just deck name
 - Improve deck viewing
 - Refine logout feature
+- Show text when hovering over buttons on navbar
 
 ### Bugs:
 - Increase number of loaded decks when searching
