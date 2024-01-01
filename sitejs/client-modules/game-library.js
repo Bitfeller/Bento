@@ -262,6 +262,13 @@ async function init(_decks, info) {
                 let ntr = UserGateway.calculateNTR(box, last);
                 if(!ntr) delete data.data.contnt[q];
             }
+            if(deckCard.dual) {
+                data.data.contnt[deckCard.ans] = {
+                    ans: q,
+                    type: 'txt',
+                    fromDual: true
+                };
+            }
             if(!deckCard) {
                 delete userReview[r_keys[i]];
                 updateReviews = true;
@@ -319,6 +326,7 @@ async function init(_decks, info) {
         for(let i = 0; i < csKeys.length; i++) {
             let card = gameData[parseInt(csKeys[i])];
             let holder = card.d_id;
+            if(card.fromDual) continue;
             // Make sure the user has the question right at least once
             if(cardsSeen[csKeys[i]] <= totalWrong[csKeys[i]]) continue;
             // Cache holders for deck
