@@ -30,12 +30,14 @@
         }
         $stmt->close();
         // Sanitize values
-        $deckpicData = explode(",", $deckpic, 2);
-        $deckpicData = $deckpicData[1];
-        $decodedpic = base64_decode($deckpicData);
-        $imageValid = imagecreatefromstring($decodedpic);
-        if($imageValid === false) {
-            fail("exception: deckpic isn't a valid image. For security purposes, the server has denied the image.");
+        if($deckpic !== "") {
+            $deckpicData = explode(",", $deckpic, 2);
+            $deckpicData = $deckpicData[1];
+            $decodedpic = base64_decode($deckpicData);
+            $imageValid = imagecreatefromstring($decodedpic);
+            if($imageValid === false) {
+                fail("exception: deckpic isn't a valid image. For security purposes, the server has denied the image.");
+            }
         }
         $deckData = json_decode($deckData, true);
         if($deckData == null) {
