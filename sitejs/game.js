@@ -258,6 +258,7 @@ function answerHandler() {
                         answerbtn.innerHTML =
                             "Enter the correct answer before advancing.";
                         answerbtn.disabled = true;
+                        objs[0].value = "";
                     }
                     answerMarker.style.display = "block";
                     toProceed = true;
