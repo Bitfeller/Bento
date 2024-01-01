@@ -64,17 +64,17 @@ fn main() {
     if !Path::new(xampp_path).exists() {
         panic!("XAMPP not found.");
     }
+
+    
     let xampp_path = Path::new(xampp_path).to_path_buf();
     let path = std::env::current_dir().unwrap();
 
-    println!();
-    println!("========================= Rebuild =========================");
+    println!("\n========================= Rebuild =========================");
     println!("XAMPP path: {}", xampp_path.to_string_lossy());
     println!("Current path: {}", path.to_string_lossy());
     println!("===========================================================");
     println!("Warning: while rebuilding local environment, it is best not to launch any XAMPP services or modify XAMPP.");
-    println!("Find an issue? Open a PR/issue on GitHub.");
-    println!();
+    println!("Find an issue? Open a PR/issue on GitHub.\n");
 
     // Stop xampp
     let _ = stop_xampp(&xampp_path);
