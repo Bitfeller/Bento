@@ -13,11 +13,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Minify
-      run: |
-         find . -name "*.html" -exec npx html-minifier-terser --collapse-whitespace --remove-comments --minify-js true --minify-css true --output {} {} \;
-         find . -name "*.css" -exec npx clean-css-cli -o {} {} \;
-         find . -name "*.js" -exec npx terser -o {} -- {} \;
+#    - name: Minify
+ #     run: |
+#         find . -name "*.html" -exec npx html-minifier-terser --collapse-whitespace --remove-comments --minify-js true --minify-css true --output {} {} \;
+ #        find . -name "*.css" -exec npx clean-css-cli -o {} {} \;
+ #        find . -name "*.js" -exec npx terser -o {} -- {} \;
 
     - name: Deploy via SSH
       env:
