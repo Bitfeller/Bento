@@ -154,6 +154,9 @@ function toNew() {
     cards[cards.length - 1].getElementsByClassName('q')[0].focus();
 }
 
+function flush_deck() {
+    // TODO: flush button
+}
 
 // --------------------------------------------------- \\
 
