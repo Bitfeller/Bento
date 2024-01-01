@@ -84,7 +84,7 @@ async function renderable(input) {
         MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([r_temp])).catch(e => console.warn('math formatting failed; reason:', e.message));
         await MathJax.startup.promise;
         return r_temp.innerHTML.trim() !== '';
-    } catch(e) {
+    } catch(_) {
         return false;
     }
 }
@@ -104,7 +104,7 @@ function refresh() {
         for(let i = 0; i < objs.length; i++) objs[i].remove();
         setTimeout(() =>
             window.addEventListener("keydown", e => e.key == "Enter" ? answerHandler() : null),
-        500);
+            500);
         return;
     }
 
@@ -114,7 +114,7 @@ function refresh() {
     typeset(problem);
     
     for(let i = 0; i < objs.length; i++) objs[i].remove();
-    [objs, dragElements, centroids] = [[], [], []];
+    objs = [], dragElements = [], centroids = [];
     dragging = undefined;
     answerbtn.style.display = "block";
     
@@ -153,9 +153,9 @@ function refresh() {
                             refresh();
                         }, 1000);
                     } else {
-                        for (let j = 0; j < cont_a.children.length; j++) {
-                            let item = cont_a.children[j];
-                            if(data.ans.indexOf(j) > -1) item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
+                        for(let j = 0; j < data.ans.length; j++) {
+                            let right = data.ans[j], item = cont_a.children[right];
+                            item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
                         }
                         op_i.innerHTML = `<p class="answer-symbol">❌</p> ` + op_i.innerHTML;
                         answerMarker.style.display = "block";
@@ -232,22 +232,19 @@ function refresh() {
                     if (dragging !== el) return;
                     el.style["background-color"] = "";
                     dragLine.remove();
-                    let top;
-                    let bottom;
-                    let y = e.pageY;
+                    let top, bottom, y = e.pageY;
                     for (let i = 0; i < dragElements.length; i++) {
                         if (centroids[i].y < y) continue;
-                        else if (i - 1 >= 0) {
-                            top = dragElements[i - 1];
-                            bottom = dragElements[i];
-                            list.insertBefore(el, bottom);
-                            break;
-                        } else {
+                        if(i == 0) {
                             top = dragElements[i];
                             el.remove();
                             list.prepend(el);
                             break;
                         }
+                        top = dragElements[i - 1];
+                        bottom = dragElements[i];
+                        list.insertBefore(el, bottom);
+                        break;
                     }
                     if (!top) {
                         el.remove();
@@ -281,7 +278,6 @@ function refresh() {
             objs.push(defs);
             let termList = data.ans.slice();
             let defsList = data.ans.slice();
-            // if you found this, go touch some grass.
             for(let i = 0; i < data.ans.length; i++) {
                 let t_idx = Math.floor(
                     Math.random() * (termList.length - 1) + 0.5,
@@ -289,6 +285,7 @@ function refresh() {
                 let d_idx = Math.floor(
                     Math.random() * (defsList.length - 1) + 0.5,
                 );
+
                 let t_item = termList[t_idx][0];
                 let d_item = defsList[d_idx][1];
                 let t_el = document.createElement("div");
@@ -298,6 +295,7 @@ function refresh() {
                 typeset(t_el);
                 termList.splice(t_idx, 1);
                 terms.appendChild(t_el);
+
                 let d_el = document.createElement("div");
                 d_el.className = "matching-item";
                 d_el.id = "item-" + data.ans.indexOf(defsList[d_idx]);
@@ -305,11 +303,12 @@ function refresh() {
                 typeset(d_el);
                 defsList.splice(d_idx, 1);
                 defs.appendChild(d_el);
-                t_el.addEventListener("mousedown", () => {
-                    if(termSelect) return;
-                    termSelect = t_el;
-                    termSelect.style["background-color"] = "rgba(0, 255, 0, 0.5)";
-                    if(defSelect) {
+
+                [t_el, d_el].forEach(el => el.addEventListener('mousedown', () => {
+                    if(el == t_el && termSelect || el == d_el && defSelect) return;
+                    el == t_el ? termSelect = el : defSelect = el;
+                    el.style["background-color"] = "rgba(0, 255, 0, 0.5)";
+                    if(el == t_el ? defSelect : termSelect) {
                         if(termSelect.id == defSelect.id) {
                             termSelect.remove();
                             defSelect.remove();
@@ -321,32 +320,10 @@ function refresh() {
                             lt.style["background-color"] = "rgba(0, 0, 0, 0)";
                             ld.style["background-color"] = "rgba(0, 0, 0, 0)";
                         }, 500);
-                        termSelect = undefined;
-                        defSelect = undefined;
+                        termSelect = undefined, defSelect = undefined;
                         if(terms.children.length == 0) answerHandler();
                     }
-                });
-                d_el.addEventListener("mousedown", () => {
-                    if(defSelect) return;
-                    defSelect = d_el;
-                    defSelect.style["background-color"] = "rgba(0, 255, 0, 0.5)";
-                    if(termSelect) {
-                        if(termSelect.id == defSelect.id) {
-                            termSelect.remove();
-                            defSelect.remove();
-                        } else incorrectMatch++;
-                        let [lt, ld] = [termSelect, defSelect];
-                        termSelect.style["background-color"] = "rgba(255, 0, 0, 0.5)";
-                        defSelect.style["background-color"] = "rgba(255, 0, 0, 0.5)";
-                        window.setTimeout(() => {
-                            lt.style["background-color"] = "rgba(0, 0, 0, 0)";
-                            ld.style["background-color"] = "rgba(0, 0, 0, 0)";
-                        }, 500);
-                        termSelect = undefined;
-                        defSelect = undefined;
-                        if(defs.children.length == 0) answerHandler();
-                    }
-                });
+                }));
             }
             answerbtn.innerHTML = "Skip >>> (Backspace)";
             answerbtn.style.display = "block";
@@ -357,7 +334,7 @@ function refresh() {
         <p>${progress.seen - 1}</p> <span class="material-symbols-outlined">check</span>
         <p>${progress.remaining + 1}</p> <span class="material-symbols-outlined">box</span>
     `;
-    progressBar.style.width = `${((progress.seen - 1) / (progress.remaining + progress.seen)) * 100}%`;
+    progressBar.style.width = `${((progress.seen - 1) / progress.total) * 100}%`;
 }
 function answerHandler() {
     hideDisplay();
@@ -365,8 +342,7 @@ function answerHandler() {
     if (toProceed) {
         if (Game.fetchProblem().type == "txt" && requireCorrect && !Game.getLastCorrect()) return;
         Game.continue();
-        answerMarker.style.display = "none";
-        reshowMarker.style.display = "none";
+        answerMarker.style.display = reshowMarker.style.display = "none";
         answerbtn.innerHTML = "Answer";
         ans_a.innerHTML = "";
         ans_a.style.display = "none";
@@ -397,8 +373,7 @@ function answerHandler() {
                             let item = cont_a.children[j];
                             if(data.ans.indexOf(j) > -1 && mc_sel.indexOf(j) < 0) item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
                         }
-                        answerMarker.style.display = "block";
-                        reshowMarker.style.display = "block";
+                        answerMarker.style.display = reshowMarker.style.display = "block";
                         answerbtn.style.display = "block";
                         answerbtn.innerHTML = "Continue >>> (Enter)";
                         toProceed = true;
@@ -427,8 +402,7 @@ function answerHandler() {
                         answerbtn.disabled = true;
                         objs[0].textContent = "";
                     }
-                    answerMarker.style.display = "block";
-                    reshowMarker.style.display = "block";
+                    answerMarker.style.display = reshowMarker.style.display = "block";
                     toProceed = true;
                 }
             break;
@@ -456,8 +430,7 @@ function answerHandler() {
                     }
                     answerbtn.innerHTML = "Continue >>> (Enter)";
                     answerbtn.focus();
-                    answerMarker.style.display = "block";
-                    reshowMarker.style.display = "block";
+                    answerMarker.style.display = reshowMarker.style.display = "block";
                     toProceed = true;
                 }
             break;
@@ -491,8 +464,7 @@ function answerHandler() {
                         typeset(d_el);
                         defsList.appendChild(d_el);
                     }
-                    answerMarker.style.display = "block";
-                    reshowMarker.style.display = "block";
+                    answerMarker.style.display = reshowMarker.style.display = "block";
                     answerbtn.style.display = "block";
                     answerbtn.innerHTML = "Continue >>> (Enter)";
                     toProceed = true;
@@ -611,8 +583,7 @@ window.addEventListener("keydown", e => {
             mc_keynum = "";
             return;
         }
-        mc_keynum = "";
-        prob = undefined;
+        mc_keynum = "", prob = undefined;
         mc_sel.push(num);
         if(data.req == 1 && mc_sel.length < data.ans.length) return;
         let correct = Game.isCorrect(data.req == 1 ? mc_sel.map((v) => v - 1) : num - 1);
