@@ -316,6 +316,7 @@ main();
 let mc_keynum = "";
 let prob;
 window.addEventListener("keydown", (e) => {
+    if(selected) return;
     let data = Game.fetchProblem();
     let nums = "0123456789";
     if(data.type == "mc" && (nums.indexOf(e.key) > -1 || e.key == "Enter")) {
@@ -356,26 +357,3 @@ window.addEventListener("keydown", (e) => {
         }
     }
 });
-// window.addEventListener("keydown", function(e) {
-//     if(e.key >= "0" && e.key <= "9") {
-//         let i;
-//         if(e.key == "0") {
-//             i = 9;
-//         } else {
-//             i = parseInt(e.key)-1;
-//         }
-//         for (const child of cont_a.children) {
-//             try {
-//                 if (child.attributes.i.value == i) {
-//                     if(selected) {
-//                         selected.id = "not-select";
-//                     }
-//                     selected = child;
-//                     selected.id = "select";
-//                 }
-//             } catch (error) {
-//                 // Not a ms questions （多分）
-//             }
-//         }
-//     }
-// });
