@@ -142,6 +142,36 @@ class UserGateway {
         });
         return [true, undefined];
     }
+    static async giveFeedback(feedback) {
+        if(typeof(feedback) !== "string" || (feedback.length ?? 0) < 1) {
+            return [false, "invalid params"];
+        }
+        var success, reason;
+        await fetch(spath + "/php-db/feedback/feedback_new.php", {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                feedback
+            })
+        }).then(function(res) {
+            if(!res.ok) {
+                err("giveFeedback");
+                success = false;
+                reason = 'fetch-err';
+                throw 'none';
+            }
+            return res.json();
+        }).then(function(res) {
+            success = (res.status == "success");
+            if(!success) reason = res.reason;
+        }).catch(function(err) {
+            if(err == "none") {return;}
+            console.log("backend: " + err);
+        });
+        return [success, reason];
+    }
     static calculateNTR(box, lastSeen) {
         let tick = Date.now();
         let dist = tick - lastSeen;
