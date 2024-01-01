@@ -77,16 +77,20 @@ function newRandomDeck() {
     let len = gameData.length - currentSet * deckSize;
     let s_curr = curr, s_ls = ls, s_lls = lls;
     // if no last set OR last last set
+    console.log(s_curr, s_ls, s_lls);
     if(currentSet < 2) {
         s_ls += s_lls;
         s_lls = 0;
     }
+    console.log(s_curr, s_ls, s_lls);
     if(currentSet < 1) {
         s_curr += s_ls;
         s_ls = 0;
     }
+    console.log(s_curr, s_ls, s_lls);
     // If currentSet = 0 and len < deckSize; less problems than deckSize, so adjust accordingly
     if(currentSet == 0 && len < deckSize) s_curr = len;
+    console.log(s_curr, s_ls, s_lls);
     // Get problems
     randomSet = [];
     let problems = [];
@@ -382,9 +386,10 @@ function get_pwsets() {
 
     let len = gameData.length - deckSize;
     let real_deckSize = (currentSet == 0 && len < deckSize) ? len : deckSize;
-    
-    if(currentSet < 1) curr = real_deckSize;
-    let S_ll = Math.ceil((real_deckSize * cardRepeat + realWrong) / curr) + C_lw;
+    let s_curr = curr;
+
+    if(currentSet < 1) s_curr = real_deckSize;
+    let S_ll = Math.ceil((real_deckSize * cardRepeat + realWrong) / s_curr) + C_lw;
 
     // p functions: p_1 and p_2
     let p_1 = currentSet > 1 ? ls : ls + lls;
@@ -428,10 +433,11 @@ function getProgress() {
         // S_l greater than standard, meaning wrong count leads to a new set
         C_gw += S_l - S_l_std;
     }
+    let s_curr = curr;
 
-    if(currentSet < 1) curr = real_deckSize;
-    let S_ll = Math.ceil((real_deckSize * cardRepeat + realWrong) / curr) + C_lw;
-    let S_ll_std = Math.ceil(real_deckSize * cardRepeat / curr) + C_lw;
+    if(currentSet < 1) s_curr = real_deckSize;
+    let S_ll = Math.ceil((real_deckSize * cardRepeat + realWrong) / s_curr) + C_lw;
+    let S_ll_std = Math.ceil(real_deckSize * cardRepeat / s_curr) + C_lw;
     if(S_ll - S_ll_std > 0) {
         // same logic, but for local
         C_lw += S_ll - S_ll_std;
