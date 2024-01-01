@@ -59,8 +59,9 @@ createBtn.addEventListener('mousedown', async () => {
         let deck = user.userdata.draftdecks[keys[i]];
         let div = document.createElement("div");
         div.className = "draftdeck";
+        let day = "0".repeat(2 - String(date.getDate()).length) + date.getDate();
         div.innerHTML = `
-            <p>${date.toLocaleString('en-us', { weekday: 'short' })} ${date.getMonth()}/${date.getDate()}/${date.getFullYear().toString().slice(2)}, ${date.getHours()}:${date.getMinutes()}</p>
+            <p>${date.toLocaleString('en-us', { weekday: 'short' })} ${date.getMonth()}/${day}/${date.getFullYear().toString().slice(2)}, ${date.getHours()}:${date.getMinutes()}</p>
             <div><button class='show'><span class="material-symbols-outlined">resume</span></button>
             <button class='del'><span class="material-symbols-outlined">delete</span></button></div>`;
         draftdecks_history.appendChild(div);

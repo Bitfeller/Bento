@@ -354,7 +354,7 @@ function init_mc(card, n, q) {
     let allcorr = card.getElementsByClassName('mc-allcorr')[0];
     allcorr.style.display = "none";
     // Cloner
-    card.getElementsByClassName('mc-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card)));
+    card.getElementsByClassName('mc-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card) + 1));
     // Local generator
     let generator = t => generator_mc(cardmc, card, allcorr, t);
     addbtn.addEventListener('mousedown', () => generator(false));
@@ -421,7 +421,7 @@ function init_txt(card, n, q) {
     init_div(inverse.getElementsByClassName('q')[0]);
 
     // Cloner
-    card.getElementsByClassName('txt-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card)));
+    card.getElementsByClassName('txt-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card) + 1));
     
     // Generator
     let generator = (r, p, t) => generator_txt(card, i_anslist, r, p, t);
@@ -478,7 +478,7 @@ function init_ranking(card, n, q) {
     let ranklist = card.getElementsByClassName('ranking-list')[0];
     let addbtn = card.getElementsByClassName('rank-add')[0];
     // Cloner
-    card.getElementsByClassName('rank-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card)));
+    card.getElementsByClassName('rank-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card) + 1));
     // Local generator
     let generator = () => generator_rank(card, ranklist);
     addbtn.addEventListener('mousedown', generator);
@@ -511,7 +511,7 @@ function init_mtch(card, n, q) {
     let pairlist = card.getElementsByClassName('card-mtch')[0];
     let addbtn = card.getElementsByClassName('mtch-add')[0];
     // Cloner
-    card.getElementsByClassName('mtch-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card)));
+    card.getElementsByClassName('mtch-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card) + 1));
     // Local generator
     let generator = (r) => generator_mtch(card, pairlist, r);
     addbtn.addEventListener('mousedown', () => generator(true));
@@ -666,6 +666,7 @@ function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
         desc: description.value,
         contnt: data
     };
+    console.log(data.contnt);
     return [name.value, deckpic, data, isPublic.checked];
 }
 function generateCard(contnt, d_keys, i, n) {

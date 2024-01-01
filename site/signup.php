@@ -5,67 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php require_once "globalreqs.php"?>
     <title>Login</title>
-    <style>
-        .modal {
-            border: none;
-            left: 0;
-            top: 0;
-            width: 100%; 
-            height: 100%; 
-            overflow: auto;
-        }
-        .modal-content {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 1dvh;
-            background-color: var(--dark-gray);
-            border-style: none;
-            margin: 15% auto; 
-            padding: 30px;
-            width: 30%; 
-            border-radius: 10px;
-            animation-name: animatetop;
-            animation-duration: 0.4s;
-        }
-        .modal-content > p {
-            font-size: 18pt;
-        }
-        .modal-content > input {
-            border: none;
-            font-size: 18pt;
-            border-radius: 5px;
-            padding-left: 1%;
-        }
-        .modal-content > button {
-            margin-top: 1.5dvh;
-            height: 44px;
-            font-size: 18pt;
-        }
-        @media screen and (max-width: 1000px) {
-            .modal-content {
-                width: 80%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/css/barrier.css">
 </head>
 <body>
     <?php require_once "header.php"?>
     <div class="modal" id="signInModal">
         <div class="modal-content">
-                <p><u>Sign Up</u></p>
-                <p>Username:</p>
-                <input type="text" id="signUpUsername">
-                <p>Email:</p>
-                <input type="email" id="signUpEmail">
-                <p>Password:</p>
-                <input type="password" id="signUpPassword">
-                <p style="font-size: 13px; font-family: kadwa;">Your password is always secure. No one can see your password, not even us.</p>
-                <p>Confirm Password:</p>
-                <input type="password" id="signUpPassword2">
-                <button class="submitBtn" id="signUpBtn">Sign Up</button>
-                <p class='login-box-selector' onclick="location.href='/login'">I have an account >></p>
-                <p class="info-error" id="err"></p>
+            <p><u>Sign Up</u></p>
+            <p>Username:</p>
+            <input type="text" id="signUpUsername">
+            <p>Email:</p>
+            <input type="email" id="signUpEmail">
+            <p>Password:</p>
+            <input type="password" id="signUpPassword">
+            <p style="font-size: 13px; font-family: kadwa;">Your password is always secure. No one can see your password, not even us.</p>
+            <p>Confirm Password:</p>
+            <input type="password" id="signUpPassword2">
+            <button class="submitBtn" id="signUpBtn">Sign Up</button>
+            <p class='login-box-selector' onclick="location.href='/login'">I have an account >></p>
         </div>
     </div>
     <script type='module'>
