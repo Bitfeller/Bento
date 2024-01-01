@@ -30,10 +30,7 @@
         <div class="sidebar-container">
             <div class="sidebar">
                 <div class="search-box">
-                    <div style="display: flex; gap: 10px;">
-                        <div class="material-symbols-outlined search-menu">menu</div>
-                        <input type="text" id="searchBar" placeholder="Search...">
-                    </div>
+                    <input type="text" id="searchBar" placeholder="Search...">
                     <div class="checkbox-box">
                         <input type="checkbox" name="case-sensitive">
                         <p>Case Sensitive</p>
