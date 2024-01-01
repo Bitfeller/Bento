@@ -77,7 +77,7 @@
                 <div class="question-type-filters">
                     <div class="include-container">
                         <p>Include </p>
-                        <div id="strictMachingSlider">
+                        <div id="strictMatchingSlider">
                             <div></div>
                             <span>Strictly</span> / <span>Loosely</span>
                         </div>
@@ -112,6 +112,9 @@
                 <div class="popular-decks">
 
                 </div>
+                <button id="loadMore">
+                    Load More
+                </button>
             </div>
         </div>
         <section>

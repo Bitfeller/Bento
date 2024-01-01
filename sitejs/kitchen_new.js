@@ -8,8 +8,6 @@ let decks = [];
 
 let allowedTags = [];
 
-const sidebar = document.getElementsByClassName("sidebar")[0];
-
 const filteredTags = document.getElementsByClassName('filtered-tags')[0];
 const predefinedTags = document.getElementsByClassName('predefined-tags')[0];
 const tagSearch = document.getElementById('tagSearch');
@@ -21,7 +19,7 @@ const regex = document.getElementsByName('regex')[0];
 const caseSensitive = document.getElementsByName('case-sensitive')[0];
 const sortOptions = document.getElementById('sortOptions');
 
-const strictSlider = document.getElementById('strictMachingSlider');
+const strictSlider = document.getElementById('strictMatchingSlider');
 const hasMc = document.getElementById('mcCheckbox');
 const hasTxt = document.getElementById('textCheckbox');
 const hasRank = document.getElementById('rankCheckbox');
@@ -31,6 +29,8 @@ const ownedDecks = document.getElementsByClassName("owned-decks")[0];
 const pubDTitle = document.getElementById("pub-d-title");
 const pubDecks = document.getElementsByClassName("popular-decks")[0];
 const previewDialog = document.getElementById("preview-dialog");
+
+const loadMore = document.getElementById("loadMore");
 
 // ----------------- Image Query -----------------
 let queries = [];
@@ -355,21 +355,43 @@ async function updateReviews(_this) {
 }
 function getSortFilter() {
     switch(sortOptions.value) {
-        case "alphabet": return 1;
-        case "reverse-alphabet": return 2;
-        case "time": return 3;
-        case "reverse-time": return 4;
+        case "time": return 1;
+        case "reverse-time": return 2;
+        case "alphabet": return 3;
+        case "reverse-alphabet": return 4;
     }
 }
-async function fetchDecks() {
+async function fetchDecks(start = 0) {
     let query = searchBar.value.trim();
     let sort = getSortFilter();
-    let [success, data] = await DeckGateway.getall(0, query.length != '' ? query.split(" ") : [], regex.checked, caseSensitive.checked, Array(...document.querySelectorAll('.remove-tag .tag-value')).map(x => x.textContent), sort, false, hasMc.checked, hasTxt.checked, hasRank.checked, hasMtch.checked);
+
+    let [success, data] = await DeckGateway.getall(
+        start,
+        query.length != '' ? query.split(" ") : [],
+        regex.checked,
+        caseSensitive.checked,
+        Array(...document.querySelectorAll('.remove-tag .tag-value')).map(x => x.textContent),
+        sort,
+        strictSlider.children[0].style.right == "" ? true : false,
+        hasMc.checked,
+        hasTxt.checked,
+        hasRank.checked,
+        hasMtch.checked
+    );
+    
     if(!success) return;
-    decks = data;
-    loaded = -1;
-    pubDecks.innerHTML = "";
+
+    if(start > 0) {
+        decks.push(...data);
+    } else {
+        decks = data;
+        loaded = -1;
+        pubDecks.innerHTML = "";
+    }
+
     await update();
+
+    return data.length;
 }
 
 async function populateRecommended() {
@@ -400,17 +422,22 @@ async function populateRecommended() {
         // Skip if the tag is already in the filtered tags
         if (tag_exists(tag)) continue;
         
-        predefinedTags.innerHTML += `
-            <div class='tag add-tag' 
-                onclick='
-                    this.className = "tag remove-tag";
-                    this.children[0].innerHTML = "remove";
-                    document.getElementsByClassName("filtered-tags")[0].appendChild(this);
-                '>
-                <div class='material-symbols-outlined'>add</div>
-                <p class='tag-value'>${tag}</p>
-            </div>
+        let tagDiv = document.createElement('div');
+        tagDiv.className = 'tag add-tag';
+        tagDiv.innerHTML = `
+            <div class='material-symbols-outlined'>add</div>
+            <p class='tag-value'>${tag}</p>
         `;
+        tagDiv.onclick = () => {
+            filteredTags.innerHTML += `
+                <div class='tag remove-tag' onclick='this.remove()'>
+                    <div class='material-symbols-outlined'>remove</div>
+                    <p class='tag-value'>${tag}</p>
+                </div>
+            `;
+            tagDiv.remove();
+        };
+        predefinedTags.appendChild(tagDiv);
     }
     
     // Refresh the deck list with these tags
@@ -419,16 +446,25 @@ async function populateRecommended() {
 
 (async () => {
     let [success, data] = await UserGateway.getuser(false, true, true, false);
+
     if(!success && data == 'no session') return window.LOAD_ERROR("Please sign in.");
     if(!success) return window.LOAD_ERROR("Failed to fetch your user data.");
+
     user = data;
+
     allowedTags = await DeckGateway.getAllowedTags();
     allowedTags.map(x => tagSuggestions.innerHTML += `<option value='${x}'>`);
+    
     [success, data] = await DeckGateway.getall(0);
     if(!success) return;
     if(data.length == 0) return window.LOAD_ERROR("There aren't any decks...? Odd.");
+
+    // Set strict slider
+    strictSlider.children[0].style.right = "0";
+
     decks.push(...data);
     await update();
+
     window.LOADED();
     populateRecommended();
 })();
@@ -475,17 +511,25 @@ tagSearch.addEventListener('input', () => {
     }
 });
 
-strictSlider.addEventListener('click', () => {
+strictSlider.addEventListener('click', async () => {
     if(strictSlider.children[0].style.right == "")
         strictSlider.children[0].style.right = "0";
-    else strictSlider.children[0].style.right = "";
+    else
+        strictSlider.children[0].style.right = "";
+
+    await fetchDecks();
 });
 
 for(let i = 0; i < checkboxBoxes.length; i++) {
     let box = checkboxBoxes[i];
     let checkbox = box.querySelectorAll('input[type="checkbox"]')[0];
-    box.addEventListener("mousedown", (e) => {
-        if (e.target != checkbox) checkbox.checked = !checkbox.checked;
+    box.addEventListener("mousedown", async e => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.target != checkbox) 
+            checkbox.checked = !checkbox.checked;
+        
+        await fetchDecks();
     });
 }
 
@@ -495,6 +539,15 @@ for(let i = 0; i < checkboxBoxes.length; i++) {
         pubDTitle.innerHTML = "Public Decks:";
     await fetchDecks();
 }));
+
+loadMore.addEventListener('click', async () => {
+    let added = await fetchDecks(loaded + 1);
+    if(added == 0) {
+        loadMore.innerHTML = "No more decks to load.";
+        loadMore.style.pointerEvents = "none";
+        loadMore.style.opacity = "0.5";
+    }
+});
 
 window.addEventListener('mousedown', e => {
     if(e.target == previewDialog)

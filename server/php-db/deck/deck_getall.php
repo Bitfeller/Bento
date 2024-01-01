@@ -75,10 +75,10 @@
                 $sortType = "id DESC";
             break;
             case 3:
-                $sortType = "name DESC";
+                $sortType = "name ASC";
             break;
             case 4:
-                $sortType = "name ASC";
+                $sortType = "name DESC";
             break;
         }
         $limit = $conf['deckload_limit'];
