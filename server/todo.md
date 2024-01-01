@@ -6,6 +6,8 @@
 
 - Add more interactive games?
 
+- Keyboard shortcuts for formatting/mark as correct
+
 - Allow cards to be shown both ways
 - Allow grouping; random selection for incorrect options
 - Allow more types of questions; matching? images?
