@@ -43,6 +43,7 @@
             mysqli_stmt_bind_param($stmt, "ss", $_SESSION['username'], $_SESSION['email']);
             mysqli_stmt_execute($stmt);
             $result = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+            mysqli_stmt_close($stmt);
             if(!$result) {
                 fail("no user");
             }
@@ -63,6 +64,7 @@
                     if(mysqli_fetch_assoc( mysqli_stmt_get_result($stmt) )) {
                         fail("username taken");
                     }
+                    mysqli_stmt_close($stmt);
                     // Set username
                     $sql = "UPDATE users SET username = ? WHERE id = ?";
                     $stmt = mysqli_stmt_init($conn);
@@ -93,6 +95,7 @@
                     if(mysqli_fetch_assoc( mysqli_stmt_get_result($stmt) )) {
                         fail("email taken");
                     }
+                    mysqli_stmt_close($stmt);
                     // Set email
                     $sql = "UPDATE users SET email = ? AND verified = 0 WHERE id = ?";
                     $stmt = mysqli_stmt_init($conn);
