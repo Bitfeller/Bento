@@ -162,7 +162,7 @@
         user-select: none;
     }
 }
-#password, #email {
+#password, #email, #password-confirm {
     margin-top: 5px;
 }
 @keyframes ability-to-use {

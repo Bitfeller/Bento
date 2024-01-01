@@ -71,6 +71,7 @@
             <div id="change-password-box" style="display: none;">
                 <input type="password" id="password-curr-password" placeholder="Current Password">
                 <input type="password" id="password" placeholder="New Password">
+                <input type="password" id="password-confirm" placeholder="Confirm New Password">
                 <p>Passwords must be at least 8 characters long <p><i>for now...</i></p></p>
                 <button id="change-password">Change</button>
             </div>
