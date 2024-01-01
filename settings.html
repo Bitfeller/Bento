@@ -28,13 +28,20 @@
     </div>
     
     <div id="settings-container">
-        <div class="set-size-setting">
-            <p>Set Size: </p>
-            <input type="range" min="5" max="10" value="0" class="slider" id="myRange">
-            <p>value</p>
+
+        <div class="setting-box">
+            <p>Set Size:</p>
+            <input type="range" min="1" max="5" value="5" class="slider"  id="set-size-slider" oninput="displaySliderValue('set-size-slider', 'set-size-output')">
+            <output id="set-size-output">5</output>
         </div>
-        <br>
-        <div>Vocab Repetition</div>
+        <div class="setting-box">
+            Vocab Repetition
+            <input id="radio-1" name="radio" type="radio" checked>
+            <label for="radio-1" class="radio-label">Something</label>
+            
+            <input id="radio-2" name="radio" type="radio">
+            <p  for="radio-2" class="radio-label">Something Else</p>
+        </div>
         <div>Show Previous Vocab</div>
         <div>Theme</div>
         <div>Change Password</div>
@@ -46,4 +53,5 @@
 
     </div>
 </body>
+<script src="js/settings.js"></script>
 </html>
