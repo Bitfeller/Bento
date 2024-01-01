@@ -149,6 +149,7 @@ input {
     width: 100%;
 }
 .info-error {
+    margin-top: 5px;
     color: rgb(255, 100, 100);
     font-family: karla;
 }
@@ -197,4 +198,7 @@ input:checked + .slider:before {
     -webkit-transform: translateX(24px);
     -ms-transform: translateX(24px);
     transform: translateX(24px);
+}
+dialog::backdrop{
+    background-color: rgba(0, 0, 0, 0.7);
 }

@@ -13,10 +13,13 @@
     <?php require_once "../header.php"?>
     <div id="profile-container">
         <div id="left-div">
-            <img src="../../img/defaultpfp.png" class="profile-picture" id="pfp">
-            <input class='file-selector' accept="image/png,image/jpeg" id="fileselecttrigger" type="file">
-            <span class="material-symbols-outlined" id="pfpAddBtn">add_a_photo</span>
-            <span class="material-symbols-outlined" id="pfpReset">refresh</span>
+            <div id="profile-picture-container">
+                <img src="../../img/defaultpfp.png" class="profile-picture" id="pfp">
+                <input class='file-selector' accept="image/png,image/jpeg" id="fileselecttrigger" type="file">
+                <span class="material-symbols-outlined" id="pfpAddBtn">add_a_photo</span>
+                <span class="material-symbols-outlined" id="pfpReset">refresh</span>
+            </div>
+            <h1 id="username">Username</h1>
         </div>
         <div id="right-div">
             <div class="setting-box">
