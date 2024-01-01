@@ -489,6 +489,7 @@ window.addEventListener("keydown", (e) => {
     if(!toProceed) return;
     if(e.key == "Enter") e.preventDefault();
     if(e.key == "Enter" && (requireCorrect ? answerbtn.disabled == false : e.target != objs[0])) {
+        e.preventDefault();
         Game.continue();
         answerMarker.style.display = "none";
         answerbtn.innerHTML = "Answer";
