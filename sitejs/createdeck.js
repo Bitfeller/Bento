@@ -346,6 +346,57 @@ fileselecttrigger.addEventListener('change', () => {
     }
 })
 
+function formatter(str) {
+    return str
+        .replaceAll("_1", "\u2081")
+        .replaceAll("_2", "\u2082")
+        .replaceAll("_3", "\u2083")
+        .replaceAll("_4", "\u2084")
+        .replaceAll("_5", "\u2085")
+        .replaceAll("_6", "\u2086")
+        .replaceAll("_7", "\u2087")
+        .replaceAll("_8", "\u2088")
+        .replaceAll("_9", "\u2089")
+        .replaceAll("_0", "\u2080")
+        .replaceAll("^1", "\u00B9")
+        .replaceAll("^2", "\u00B2")
+        .replaceAll("^3", "\u00B3")
+        .replaceAll("^4", "\u2074")
+        .replaceAll("^5", "\u2075")
+        .replaceAll("^6", "\u2076")
+        .replaceAll("^7", "\u2077")
+        .replaceAll("^8", "\u2078")
+        .replaceAll("^9", "\u2079")
+        .replaceAll("^0", "\u2070")
+        .replaceAll("^+", "\u207A")
+        .replaceAll("^-", "\u207B");
+}
+function backwards_formatter(str) {
+    return str
+        .replaceAll("\u2081", "_1")
+        .replaceAll("\u2082", "_2")
+        .replaceAll("\u2083", "_3")
+        .replaceAll("\u2084", "_4")
+        .replaceAll("\u2085", "_5")
+        .replaceAll("\u2086", "_6")
+        .replaceAll("\u2087", "_7")
+        .replaceAll("\u2088", "_8")
+        .replaceAll("\u2089", "_9")
+        .replaceAll("\u2080", "_0")
+        .replaceAll("\u00B9", "^1")
+        .replaceAll("\u00B2", "^2")
+        .replaceAll("\u00B3", "^3")
+        .replaceAll("\u2074", "^4")
+        .replaceAll("\u2075", "^5")
+        .replaceAll("\u2076", "^6")
+        .replaceAll("\u2077", "^7")
+        .replaceAll("\u2078", "^8")
+        .replaceAll("\u2079", "^9")
+        .replaceAll("\u2070", "^0")
+        .replaceAll("\u207A", "^+")
+        .replaceAll("\u207B", "^-");
+}
+
 createBtn.addEventListener("mousedown", async function() {
     if(!user) {
         errmsg.innerHTML = "Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)";
@@ -387,13 +438,13 @@ createBtn.addEventListener("mousedown", async function() {
                     errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                     return;
                 }
-                cardData.op.push(answer.value);
+                cardData.op.push(formatter(answer.value));
                 let isCorrect = answers[j].getElementsByClassName('mc-option-sel');
                 if(isCorrect.length > 0) {
-                    cardData.ans = answer.value;
+                    cardData.ans = formatter(answer.value);
                 }
             }
-            data[question.value] = cardData;
+            data[formatter(question.value)] = cardData;
         } else if(classNames.includes('txtbtn')) {
             let cardData = {
                 type: 'txt',
@@ -405,8 +456,8 @@ createBtn.addEventListener("mousedown", async function() {
                 errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                 return;
             }
-            cardData.ans = answer.value;
-            data[question.value] = cardData;
+            cardData.ans = formatter(answer.value);
+            data[formatter(question.value)] = cardData;
         } else if(classNames.includes('rankbtn')) {
             let cardData = {
                 type: 'ranking',
@@ -426,9 +477,9 @@ createBtn.addEventListener("mousedown", async function() {
                     errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                     return;
                 }
-                cardData.ans.push(txt.value);
+                cardData.ans.push(formatter(txt.value));
             }
-            data[question.value] = cardData;
+            data[formatter(question.value)] = cardData;
         }
     }
     data = {
@@ -521,14 +572,14 @@ function appendToCards(contnt) {
         switch(card.type) {
             case "mc":
                 initMc(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].value = q;
+                newDiv.getElementsByClassName('question')[0].value = backwards_formatter(q);
                 let cardmc = newDiv.getElementsByClassName('card-mc')[0];
                 cardmc.innerHTML = "";
                 for(let i = 0; i < card.op.length; i++) {
                     let newOp = document.createElement("div");
                     newOp.className = "mc-option";
                     newOp.innerHTML = `
-                        <input type='input' class='mc-option-input' placeholder='...' value='${card.op[i]}'>
+                        <input type='input' class='mc-option-input' placeholder='...' value='${backwards_formatter(card.op[i])}'>
                         <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
                         <button class='mc-option-correct ${card.ans == card.op[i] ? 'mc-option-sel' : 'mc-option-nosel'}'>C</button>
                     `;
@@ -555,12 +606,12 @@ function appendToCards(contnt) {
             break;
             case "txt":
                 initTxt(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].value = q;
-                newDiv.getElementsByClassName('txt-answer')[0].value = card.ans;
+                newDiv.getElementsByClassName('question')[0].value = backwards_formatter(q);
+                newDiv.getElementsByClassName('txt-answer')[0].value = backwards_formatter(card.ans);
             break;
             case "ranking":
                 initRanking(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].value = q;
+                newDiv.getElementsByClassName('question')[0].value = backwards_formatter(q);
                 let rankingList = newDiv.getElementsByClassName("ranking-list")[0];
                 rankingList.innerHTML = '';
                 for(let i = 0; i < card.ans.length; i++) {
@@ -568,7 +619,7 @@ function appendToCards(contnt) {
                     item.className = 'ranking-item';
                     item.setAttribute("draggable", true);
                     item.innerHTML = `
-                        <input type='text' class='ranking-item-txt' placeholder='...' value='${card.ans[i]}'>
+                        <input type='text' class='ranking-item-txt' placeholder='...' value='${backwards_formatter(card.ans[i])}'>
                         <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
                     `;
                     rankingList.appendChild(item);
