@@ -19,6 +19,8 @@ let requireCorrect = false;
 let dragElements = [];
 let centroids = [];
 let dragging;
+let termSelect, defSelect;
+let incorrectMatch = 0;
 let dragLine = document.createElement("div");
 // Rendering testing
 let r_temp = document.createElement('div');
@@ -267,6 +269,82 @@ function refresh() {
             }
         break;
         case "matching":
+            // if you found this, go touch some grass.
+            incorrectMatch = 0;
+            let terms = document.createElement("div");
+            terms.className = "matching-terms";
+            terms.id = "matching-terms";
+            cont_a.appendChild(terms);
+            let defs = document.createElement("div");
+            defs.className = "matching-defs";
+            defs.id = "matching-defs";
+            cont_a.appendChild(defs);
+            objs.push(terms);
+            objs.push(defs);
+            let termList = data.ans.slice();
+            let defsList = data.ans.slice();
+            for(let i = 0; i < data.ans.length; i++) {
+                let t_idx = Math.floor(
+                    Math.random() * (answerList.length - 1) + 0.5,
+                );
+                let d_idx = Math.floor(
+                    Math.random() * (defsList.length - 1) + 0.5,
+                );
+                let t_item = termList[t_idx];
+                let d_item = defsList[d_idx];
+                let t_el = document.createElement("div");
+                t_el.className = "matching-item";
+                t_el.id = "item-" + t_idx;
+                t_el.innerHTML = `<p>${t_item}</p>`;
+                typeset(t_el);
+                termList.splice(t_idx, 1);
+                terms.appendChild(t_el);
+                let d_el = document.createElement("div");
+                d_el.className = "matching-item";
+                d_el.id = "item-" + d_idx;
+                d_el.innerHTML = `<p>${d_item}</p>`;
+                typeset(d_el);
+                defsList.splice(d_idx, 1);
+                defs.appendChild(d_el);
+                t_el.addEventListener("mousedown", () => {
+                    if(termSelect) return;
+                    termSelect = t_el;
+                    termSelect.style["background-color"] = "rgba(0, 255, 0, 0.5)";
+                    if(defSelect) {
+                        if(termSelect.id == defSelect.id) {
+                            termSelect.remove();
+                            defSelect.remove();
+                            return;
+                        } else {
+                            incorrectMatch++;
+                        }
+                        termSelect.style["background-color"] = "rgba(255, 0, 0, 0.5)";
+                        defSelect.style["background-color"] = "rgba(255, 0, 0, 0.5)";
+                        termSelect = undefined;
+                        defSelect = undefined;
+                    }
+                });
+                d_el.addEventListener("mousedown", () => {
+                    if(defSelect) return;
+                    defSelect = d_el;
+                    defSelect.style["background-color"] = "rgba(0, 255, 0, 0.5)";
+                    if(termSelect) {
+                        if(termSelect.id == defSelect.id) {
+                            termSelect.remove();
+                            defSelect.remove();
+                            return;
+                        } else {
+                            incorrectMatch++;
+                        }
+                        termSelect.style["background-color"] = "rgba(255, 0, 0, 0.5)";
+                        defSelect.style["background-color"] = "rgba(255, 0, 0, 0.5)";
+                        termSelect = undefined;
+                        defSelect = undefined;
+                    }
+                });
+            }
+            answerbtn.innerHTML = "Skip >>> (Backspace)";
+            answerbtn.style.display = "block";
         break;
     }
     var progress = Game.getProgress();
