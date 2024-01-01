@@ -6,13 +6,13 @@ input, div[contenteditable="true"] {
     display: flex;
     align-items: center;
 } */
-.card-mc {
-    margin: 10px 0;
+.card-mc, .card-txt, .ranking-list {
+    margin: 15px 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
 }
-.card-question-container, .mc-option {
+.card-question-container {
     margin-top: 10px;
     display: flex;
     align-items: center;
@@ -83,11 +83,11 @@ button {
     margin-left: 5px;
     padding: 0px 8px;
 }
-.create-container input, .question, .mc-option-input {
+.create-container input, .question, .mc-option-input{
     border: none;
     color: var(--light-text);
 }
-.question, .mc-option-input {
+.question, .mc-option-input, .txt-answer, .ranking-item-txt  {
     width: 70%;
     display: inline-block;
     height: 30px;
@@ -95,7 +95,7 @@ button {
 .create-container > .mcbtn {
     margin-left: 0px;
 }
-.mc-add, .rank-add {
+.mc-add, .rank-add, .txt-add {
     border: none;
     color: var(--light-text);
     background-color: var(--select-blue);

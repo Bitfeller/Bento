@@ -241,7 +241,6 @@ function initTxt(newDiv, n, q) {
             <div class="card-question-container">
                 Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div>
             </div>
-            All answers:
             <div class='card-txt'>
                 <div class='txt-ans-cont'>
                     <div contenteditable="true" type='input' class='txt-answer' placeholder='...'></div>
