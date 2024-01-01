@@ -263,6 +263,7 @@ async function init(_decks, info) {
             }
         }
         if(!userReview) {
+            // Doesn't exist in our reviews? interesting... regardless, might as well add it if for some reason specified...?
             userReview = {
                 deckid: deck,
                 cards: []

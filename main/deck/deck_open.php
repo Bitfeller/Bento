@@ -20,9 +20,6 @@
         $stmt->execute();
         $result = mysqli_fetch_assoc($stmt->get_result());
         if($result) {
-            if($result['owner'] !== $owner) {
-                unset($result['viewdata']);
-            }
             success(json_encode($result));
         } else {
             fail("no deck");
