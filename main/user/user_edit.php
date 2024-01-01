@@ -1,158 +1,115 @@
 <?php
-    // Essential functions
-    function fail($reason) {
-        echo json_encode(['status' => 'error', 'reason' => $reason]);
-        exit();
+    require_once '../funcs.php';
+    validate_request();
+    $data = get_data('setting');
+    // Make sure session exists
+    session_start();
+    if(!isset($_SESSION['uid'])) {
+        fail("no session");
     }
-    function access_fail() {
-        echo "Invalid.";
-        exit();
-    }
-    function success() {
-        echo json_encode(['status' => 'success']);
-        exit();
-    }
-    // Make valid request
-    $content_type = $_SERVER['CONTENT_TYPE'];
-    if($content_type !== 'application/json') {
-        access_fail();
-    }
-    // Get data
-    $json_data = file_get_contents('php://input');
-    $data = json_decode($json_data, true);
-    if(isset($data['setting'])) {
-        // Check if user session exists
-        session_start();
-        if(!isset($_SESSION['uid'])) {
-            fail("no session");
+    // Get body values
+    $setting = $data['setting'];
+    $val = $data['val'];
+    $verifpwd = $data['verifpwd'];
+    try {
+        require_once '../dbh.php';
+        // Get user
+        $sql = "SELECT * FROM users WHERE username = ? OR email = ?;";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $_SESSION['username'], $_SESSION['email']);
+        $stmt->execute();
+        $result = mysqli_fetch_assoc($stmt->get_result());
+        if(!$result) {
+            // Invalid user information
+            session_unset();
+            session_destroy();
+            fail("no user");
         }
-        $setting = $data['setting'];
-        $val = $data['val'];
-        $verifpwd = $data['verifpwd'];
-        try {
-            // Establish connection to database
-            require_once 'user_dbh.php';
-            if(!$conn) {
-                fail("conn: " . mysqli_connect_error());
-            }
-            $sql = "SELECT * FROM users WHERE username = ? OR email = ?;";
-            $stmt = mysqli_stmt_init($conn);
-            if(!mysqli_stmt_prepare($stmt, $sql)) {
-                fail("stmt: " . mysqli_stmt_error($stmt));
-            }
-            mysqli_stmt_bind_param($stmt, "ss", $_SESSION['username'], $_SESSION['email']);
-            mysqli_stmt_execute($stmt);
-            $result = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-            mysqli_stmt_close($stmt);
-            if(!$result) {
-                fail("no user");
-            }
-            switch($setting) {
-                case 'username':
-                    // Make sure username is valid
-                    if(!preg_match("/^[A-Za-z0-9]*$/", $val)) {
-                        fail("invalid username");
-                    }
-                    // Check if username is taken
-                    $sql = "SELECT * FROM users WHERE username = ?";
-                    $stmt = mysqli_stmt_init($conn);
-                    if(!mysqli_stmt_prepare($stmt, $sql)) {
-                        fail("stmt: ". mysqli_stmt_error($stmt));
-                    }
-                    mysqli_stmt_bind_param($stmt, "s", $val);
-                    mysqli_stmt_execute($stmt);
-                    if(mysqli_fetch_assoc( mysqli_stmt_get_result($stmt) )) {
-                        fail("username taken");
-                    }
-                    mysqli_stmt_close($stmt);
-                    // Set username
-                    $sql = "UPDATE users SET username = ? WHERE id = ?";
-                    $stmt = mysqli_stmt_init($conn);
-                    if(!mysqli_stmt_prepare($stmt, $sql)) {
-                        fail("stmt: ". mysqli_stmt_error($stmt));
-                    }
-                    mysqli_stmt_bind_param($stmt, "si", $val, $_SESSION['uid']);
-                    mysqli_stmt_execute($stmt);
-                    mysqli_stmt_close($stmt);
-                    $_SESSION['username'] = $val;
-                break;
-                case 'email':
-                    if(!password_verify($verifpwd, $result['password'])) {
-                        fail('invalid pwd');
-                    }
-                    // Make sure email is valid
-                    if(!filter_var($val, FILTER_VALIDATE_EMAIL)) {
-                        fail("invalid email");
-                    }
-                    // Check if username is taken
-                    $sql = "SELECT * FROM users WHERE email = ?";
-                    $stmt = mysqli_stmt_init($conn);
-                    if(!mysqli_stmt_prepare($stmt, $sql)) {
-                        fail("stmt: ". mysqli_stmt_error($stmt));
-                    }
-                    mysqli_stmt_bind_param($stmt, "s", $val);
-                    mysqli_stmt_execute($stmt);
-                    if(mysqli_fetch_assoc( mysqli_stmt_get_result($stmt) )) {
-                        fail("email taken");
-                    }
-                    mysqli_stmt_close($stmt);
-                    // Set email
-                    $sql = "UPDATE users SET email = ? AND verified = 0 WHERE id = ?";
-                    $stmt = mysqli_stmt_init($conn);
-                    if(!mysqli_stmt_prepare($stmt, $sql)) {
-                        fail("stmt: ". mysqli_stmt_error($stmt));
-                    }
-                    mysqli_stmt_bind_param($stmt, "si", $val, $_SESSION['uid']);
-                    mysqli_stmt_execute($stmt);
-                    mysqli_stmt_close($stmt);
-                    $_SESSION['email'] = $val;
-                    $_SESSION['verified'] = false;
-                break;
-                case 'password':
-                    if(!password_verify($verifpwd, $result['password'])) {
-                        fail('invalid pwd');
-                    }
-                    $sql = "UPDATE users SET password = ? WHERE id = ?";
-                    $stmt = mysqli_stmt_init($conn);
-                    if(!mysqli_stmt_prepare($stmt, $sql)) {
-                        fail("stmt: ". mysqli_stmt_error($stmt));
-                    }
-                    $newPwd = password_hash($val, PASSWORD_DEFAULT);
-                    mysqli_stmt_bind_param($stmt, "si", $newPwd, $_SESSION['uid']);
-                    mysqli_stmt_execute($stmt);
-                    mysqli_stmt_close($stmt);
-                break;
-                case 'reviews':
-                    $sql = "UPDATE users SET reviews = \"?\" WHERE id = ?";
-                    $stmt = mysqli_stmt_init($conn);
-                    if(!mysqli_stmt_prepare($stmt, $sql)) {
-                        fail("stmt: ". mysqli_stmt_error($stmt));
-                    }
-                    mysqli_stmt_bind_param($stmt, "si", $val, $_SESSION['uid']);
-                    mysqli_stmt_execute($stmt);
-                    mysqli_stmt_close($stmt);
-                    $_SESSION['reviews'] = $reviews;
-                break;
-                case 'remove':
-                    if(!password_verify($verifpwd, $result['password'])) {
-                        fail('invalid pwd');
-                    }
-                    $sql = "UPDATE users SET reviews = '[]' WHERE id = ?";
-                    $stmt = mysqli_stmt_init($conn);
-                    if(!mysqli_stmt_prepare($stmt, $sql)) {
-                        fail("stmt: ". mysqli_stmt_error($stmt));
-                    }
-                    mysqli_stmt_bind_param($stmt, "i", $_SESSION['uid']);
-                    mysqli_stmt_execute($stmt);
-                    mysqli_stmt_close($stmt);
-                    $_SESSION['reviews'] = '[]';
-                break;
-            }
-            success();
-        } catch (Exception $e) {
-            fail("exception: " . $e->getMessage());
+        if($result['id'] !== $_SESSION['uid']) {
+            // Invalid user information
+            session_unset();
+            session_destroy();
+            fail("no user");
         }
-        
-    } else {
-        access_fail();
+        $stmt->close();
+        switch($setting) {
+            case "username":
+                // Make sure username is valid
+                if(!preg_match("/^[A-Za-z0-9]*$/", $val)) {
+                    fail("invalid username");
+                }
+                // Check if username is taken
+                $sql = "SELECT * FROM users WHERE username = ?;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("s", $val);
+                $stmt->execute();
+                if(mysqli_fetch_assoc($stmt->get_result())) {
+                    fail("username taken");
+                }
+                $stmt->close();
+                // Update username
+                $sql = "UPDATE users SET username = ? WHERE id = ?;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("si", $val, $_SESSION['uid']);
+                $stmt->execute();
+                $stmt->close();
+                // Update decks to have accurate username as well
+                $sql = "UPDATE decks SET owner = ? WHERE owner = ?;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ss", $val, $_SESSION["username"]);
+                $stmt->execute();
+                $stmt->close();
+                // Update session
+                $_SESSION['username'] = $val;
+            break;
+            case "email":
+                if(!password_verify($verifpwd, $result['password'])) {
+                    fail('invalid pwd');
+                }
+                // Make sure email is valid
+                if(!filter_var($val, FILTER_VALIDATE_EMAIL)) {
+                    fail('invalid email');
+                }
+                // Check if email is taken
+                $sql = "SELECT * FROM users WHERE email = ?;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("s", $val);
+                $stmt->execute();
+                if(mysqli_fetch_assoc($stmt->get_result())) {
+                    fail("email taken");
+                }
+                $stmt->close();
+                // Set email
+                $sql = "UPDATE users SET email = ? AND verified = ? WHERE id = ?;";
+                $stmt = $conn->prepare($sql);
+                $verified = 0;
+                $stmt->bind_param("sii", $val, $verified, $_SESSION['uid']);
+                $stmt->execute();
+                $stmt->close();
+                $_SESSION['email'] = $val;
+                $_SESSION['verified'] = false;
+            break;
+            case "password":
+                if(!password_verify($verifpwd, $result['password'])) {
+                    fail('invalid pwd');
+                }
+                $sql = "UPDATE users SET password = ? WHERE id = ?";
+                $stmt = $conn->prepare($sql);
+                $newPwd = password_hash($val, PASSWORD_DEFAULT);
+                $stmt->bind_param("si", $newPwd, $_SESSION['uid']);
+                $stmt->execute();
+                $stmt->close();
+            break;
+            case 'reviews':
+                $sql = "UPDATE users SET reviews = ? WHERE id = ?;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("si", $val, $_SESSION['uid']);
+                $stmt->execute();
+                $stmt->close();
+                $_SESSION['reviews'] = $val;
+            break;
+        }
+        success();
+    } catch(Exception $e) {
+        fail("exception: " . $e->getMessage());
     }

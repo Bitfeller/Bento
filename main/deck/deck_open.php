@@ -1,32 +1,32 @@
 <?php
-    // Essential functions
-    function fail($reason) {
-        echo json_encode(['status' => 'error', 'reason' => $reason]);
-        exit();
+    require_once '../funcs.php';
+    validate_request();
+    $data = get_data('id');
+    // Make sure session exists
+    session_start();
+    if(!isset($_SESSION['uid'])) {
+        fail("no session");
     }
-    function access_fail() {
-        echo "Invalid.";
-        exit();
-    }
-    // Make valid request
-    $content_type = $_SERVER['CONTENT_TYPE'];
-    if($content_type !== 'application/json') {
-        access_fail();
-    }
-    // Add deck
-    $json_data = file_get_contents('php://input');
-    $data = json_decode($json_data, true);
-    if(isset($data['name'])) {
-        // Init database
-        require_once 'data_dbh.php';
-        if(!$conn) {
-            fail('conn: '. mysqli_connect_error());
-        }
-        // Get body values
-        $name = $data['name'];
+    // Get body values
+    $id = $data['id'];
+    $owner = $_SESSION['username'];
+    try {
+        require_once '../dbh.php';
         // Get deck
-        $sql = "SELECT * FROM decks WHERE name = ?";
-        $stmt = mysqli_stmt_init($conn);
-    } else {
-        access_fail();
+        $sql = "SELECT * FROM decks WHERE id = ? AND (public = ? OR owner = ?);";
+        $stmt = $conn->prepare($sql);
+        $public = 1;
+        $stmt->bind_param("iis", $id, $public, $owner);
+        $stmt->execute();
+        $result = mysqli_fetch_assoc($stmt->get_result());
+        if($result) {
+            if($result['owner'] !== $owner) {
+                unset($result['viewdata']);
+            }
+            success(json_encode($result));
+        } else {
+            fail("no deck");
+        }
+    } catch(Exception $e) {
+        fail("exception: " . $e->getMessage());
     }

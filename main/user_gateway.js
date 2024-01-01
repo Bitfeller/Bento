@@ -1,28 +1,35 @@
+function err(func) {
+    console.log("backend: " + func + "() received an improper response.");
+}
 class UserGateway {
     static async getuser() {
-        var data;
+        var success, data;
         await fetch("../main/user/user_get.php", {
-            method: "get"
+            method: "get",
+            headers: {
+                'Content-Type': 'application/json'
+            }
         }).then(function(res) {
             if(!res.ok) {
-                console.log("backend: getuser() received an improper response when fetching user information.");
-                throw new Error("none");
+                err("getuser");
+                success = false;
+                data = 'fetch-err';
+                throw "none";
             }
             return res.json();
         }).then(function(res) {
-            if(res.length === 0) {
-                data = [];
-                return;
+            success = (res.status == "success");
+            if(!success) {
+                data = res.reason;
+            } else {
+                data = res.data;
+                data.reviews = JSON.parse(data.reviews);
             }
-            data = res;
-            data.reviews = JSON.parse(data.reviews);
         }).catch(function(err) {
-            if(err === "Error: none") {
-                return;
-            }
+            if(err == "none") {return;}
             console.log("backend: " + err);
         });
-        return data;
+        return [success, data];
     }
     static async login(username, pwd) {
         if(!username || !pwd || username.length === 0 || pwd.length === 0) {
@@ -40,17 +47,17 @@ class UserGateway {
             })
         }).then(function(res) {
             if(!res.ok) {
-                console.log("backend: login() received an improper response when verifying user credentials.");
-                throw new Error("none");
+                err("login");
+                success = false;
+                reason = 'fetch-err';
+                throw "none";
             }
             return res.json();
         }).then(function(res) {
             success = (res.status == "success");
             if(!success) reason = res.reason;
         }).catch(function(err) {
-            if(err === "Error: none") {
-                return;
-            }
+            if(err == "none") {return;}
             console.log("backend: " + err);
         });
         return [success, reason];
@@ -75,22 +82,25 @@ class UserGateway {
             })
         }).then(function(res) {
             if(!res.ok) {
-                console.log("backend: signup() received an improper response when adding new user.");
-                throw new Error("none");
+                err("signup");
+                success = false;
+                reason = 'fetch-err';
+                throw 'none';
             }
             return res.json();
         }).then(function(res) {
             success = (res.status == "success");
             if(!success) reason = res.reason;
         }).catch(function(err) {
-            if(err === "Error: none") {
-                return;
-            }
+            if(err == "none") {return;}
             console.log("backend: " + err);
         });
         return [success, reason];
     }
     static async editUser(setting, val, pwd) {
+        if(!setting || !val || setting.length === 0) {
+            return [false, "invalid params"];
+        }
         var success, reason;
         await fetch("../main/user/user_edit.php", {
             method: 'post',
@@ -104,26 +114,29 @@ class UserGateway {
             })
         }).then(function(res) {
             if(!res.ok) {
-                console.log("backend: editUser() received an improper response when editing new user.");
-                throw new Error("none");
+                err("editUser");
+                success = false;
+                reason = 'fetch-err';
+                throw 'none';
             }
             return res.json();
         }).then(function(res) {
             success = (res.status == "success");
             if(!success) reason = res.reason;
         }).catch(function(err) {
-            if(err === "Error: none") {
-                return;
-            }
+            if(err == "none") {return;}
             console.log("backend: " + err);
         });
         return [success, reason];
     }
     static async signout() {
         await fetch("../main/user/user_logout.php", {
-            method: 'post'
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
-        return true;
+        return [true, undefined];
     }
     constructor() {
         console.log("backend: invalid call of class.");

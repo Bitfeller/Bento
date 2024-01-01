@@ -1,31 +1,32 @@
 import { UserGateway } from "../main/user_gateway.js";
-var username = document.getElementById("username");
-var pwd = document.getElementById("pwd");
-var email = document.getElementById("email");
-var signup = document.getElementById("signup");
-var login = document.getElementById("login");
-var signout = document.getElementById("signout");
-var fetch = document.getElementById("fetch");
-var setting = document.getElementById("setting");
-var val = document.getElementById("val");
-var edit = document.getElementById("edit");
+function g(el) {return document.getElementById(el);}
+var username = g('username');
+var pwd = g('pwd');
+var email = g('email');
+var signup = g('signup');
+var login = g('login');
+var signout = g('signout');
+var fetch = g('fetch');
+var setting = g('setting');
+var val = g('val');
+var edit = g('edit');
 signup.addEventListener("mousedown", async function() {
     var [success, reason] = await UserGateway.signup(username.value, pwd.value, email.value);
-    console.log(success, reason);
+    console.log("signup:", success, reason);
 });
 login.addEventListener("mousedown", async function() {
     var [success, reason] = await UserGateway.login(username.value, pwd.value);
-    console.log(success, reason);
+    console.log("login:", success, reason);
 });
 signout.addEventListener("mousedown", async function() {
-    await UserGateway.signout();
-    console.log("hooray....i think");
+    var [success, reason] = await UserGateway.signout();
+    console.log("signout:", success, reason);
 });
 fetch.addEventListener("mousedown", async function() {
-    var data = await UserGateway.getuser();
-    console.log(data);
+    var [success, data] = await UserGateway.getuser();
+    console.log("fetch:", success, data);
 });
 edit.addEventListener("mousedown", async function() {
-    var data = await UserGateway.editUser(setting.value, val.value, pwd.value);
-    console.log(data);
+    var [success, reason] = await UserGateway.editUser(setting.value, val.value, pwd.value);
+    console.log("edit:", success, reason);
 });
