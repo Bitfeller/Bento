@@ -48,7 +48,7 @@ async function update() {
     // Update decks in the user's review list
     if(reviewDecks.length == 0) {
         let keys = Object.keys(user.reviews);
-        if(keys.length > 1) addedDecksContainer.innerHTML = "";
+        if(keys.length > 0) addedDecksContainer.innerHTML = "";
         for(let i = 0; i < keys.length; i++) {
             let deckid = parseInt(keys[i]);
             let [success, deck] = await DeckGateway.get(deckid);
