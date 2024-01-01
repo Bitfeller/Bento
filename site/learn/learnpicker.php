@@ -24,7 +24,7 @@
                         <p> Review terms that need to be reviewed </p>
                     </div>
                     <div class="setting-box">
-                        <input type="checkbox">
+                         <input type="checkbox">
                         <p> Review all decks </p>
                     </div>
                 </div>
@@ -43,6 +43,24 @@
             </div>
         </div>
         <div>
+            <div class="big-box" id="settings-big-box">
+                <h2>Settings</h2>
+                <div class="settings-container">
+                    <div class="setting-box">
+                        <input type="checkbox" id="setting1Check">
+                        <p>| Fast Mode </p> <!-- (Skip to the next term immediately) -->
+                    </div>
+                    <div class="setting-box">
+                        <input type="checkbox" id="setting2Check">
+                        <p>| </p>
+                    </div>
+                    <div class="setting-box">
+                        <input type="checkbox" id="setting3Check">
+                        <p>| </p>
+                    </div>
+                    <!--  -->
+                </div>
+            </div>
             <div class="big-box" id="settings-big-box">
                 <h2>Settings</h2>
                 <div class="settings-container">
