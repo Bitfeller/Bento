@@ -218,6 +218,7 @@ async function preview(_this, isAdded) {
         let keys = Object.keys(contnt);
         for(let i = 0; i < keys.length; i++) answer_list += `<p><b>Q |  ${keys[i]}</b></p>${contnt[keys[i]].type == "mc" ? "<p>" + contnt[keys[i]].op.join(", ") + "</p>" : ""}<p>A |  ${(contnt[keys[i]].type == "mc" ? contnt[keys[i]].ans.map(x => contnt[keys[i]][x]) : contnt[keys[i]].ans).join(", ")}</p><div class='deck-divider' style='margin: 7px 3px; background-color: rgb(230, 230, 230); height: 2px;'></div>`;
     }
+    console.log(deck);
     previewDialog.innerHTML = `
         <div class='title-bar'>
             <h2>Preview:</h2>
@@ -226,7 +227,7 @@ async function preview(_this, isAdded) {
         <div class='preview-container'>
             <div class='preview-container-part' id='overview'>
                 <h2>${deck.name}</h2>
-                <p>By: <span class='username'>${deck.owner}</span></p>
+                <p>By: <span class='username'>${deck.owner}</span>${deck.public == 0 ? "<span class='private-deck'>Private</span>" : ""}</p>
                 <div class="line-up-icons view-container"><span class='views'>${deck.views ?? 0}</span> <span class="material-symbols-outlined views-icon">visibility</span></div>
                 ${user.username == deck.owner ? "<div class='deck-buttons'><button class='export-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>download</span> Export</div></button> <button class='edit-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>edit</span> Edit</div></button> <button class='delete-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>delete</span> Delete</div></button></div>" : ""}
             </div>

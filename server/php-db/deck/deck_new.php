@@ -33,15 +33,14 @@
         if($deckData->contnt === null) fail("invalid data");
         if(!isset($deckData->desc)) fail("invalid data");
         if(!isset($deckData->contnt)) fail("invalid data");
+        $deckData = sanitize($deckData);
+        $deckData = json_encode($deckData);
         // Sanitize values
         if($deckpic !== "" && $conf['check_image'] == true) {
             $deckpicData = explode(",", $deckpic, 2)[1];
             $decodedpic = base64_decode($deckpicData);
             if(imagecreatefromstring($decodedpic) === false) fail("exception: deckpic isn't a valid image. For security purposes, the server has denied the image.");
         }
-        $deckData = json_decode($deckData, false);
-        $deckData = sanitize($deckData);
-        $deckData = json_encode($deckData);
         if(strlen($deckpic) > 2 * 1000 * 1000) {
             fail('size limit');
         }
