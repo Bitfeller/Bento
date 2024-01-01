@@ -1,11 +1,5 @@
 # TODO: 
 ### Feature Tasks:
-- Learn Picker customizability options
-    - **OPTIONS:**
-        - Mode: Review *select decks*, Review terms *that need to be reviewed*, Review *all decks* (fn explained)
-        - Speed: *Quickly review* (p:0.9,x,x), *Take your time* (p:0.7,x,x)
-        - Repetitive: *Show a term at least twice for retention. [IF NEEDED]* (r:2), *Show a term at least once.* (r:1)
-        - Randomize: *Shuffle terms (recommended)* (s:true), *Don't shuffle terms (not recommended)* (s:false)
 - Reminder for reviewing decks
 - Create interactive games (teach emerson functions ig)
 
@@ -18,7 +12,6 @@
 ### Bugs:
 - Create proper error handling(?)
 - prevent XSS?
-- Add functionality to user settings
 
 ### Extra:
 - likes on decks?
