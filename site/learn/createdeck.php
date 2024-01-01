@@ -56,6 +56,10 @@
             <p>#2 - for the characters between the term and definition, choose <b>Custom</b> and use <code>></code>; between rows, use the custom character <code>^</code>.</p>
             <p>#3 - copy the text and paste it here.</p>
             <textarea type="text" placeholder="Paste Quizlet Export Here" id="QI-importText"></textarea>
+            <label class="switch">
+                <input type="checkbox" id="QI-reverse">
+                <span class="slider"></span>
+            </label> | Reverse terms and definitions<br>
             <button id="QI-createBtn">Import</button> 
             <p class="info-error" id="QI-err"></p>
         </div>

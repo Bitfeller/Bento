@@ -493,7 +493,7 @@ createBtn.addEventListener("mousedown", async function() {
                 errmsg.innerHTML = "Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)";
             break;
             case "invalid name":
-                errmsg.innerHTML = "That name has invalid characters. (Valid characters include dashes, a-z, A-Z, and 0-9)";
+                errmsg.innerHTML = "That name has invalid characters or is empty. (Valid characters include dashes, a-z, A-Z, and 0-9)";
             break;
             case "name taken":
                 errmsg.innerHTML = "You've already created another deck with that name";

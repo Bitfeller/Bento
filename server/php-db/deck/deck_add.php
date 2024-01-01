@@ -14,6 +14,9 @@
     $owner = $_SESSION['username'];
     $deckData = $data['data'];
     $public = $data['public'];
+    if(strlen($name) == 0) {
+        fail("invalid name");
+    }
     try {
         $conn = connect_to_db();
         // Sanitize namea
