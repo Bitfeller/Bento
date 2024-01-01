@@ -1,0 +1,101 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-size: 24pt;
+}
+body > div {
+    background: rgb(221,229,182);
+    background: linear-gradient(145deg, rgba(221,229,182,1) 0%, rgba(173,193,120,1) 50%, rgba(64,125,176,1) 100%); 
+}
+.logo {
+    font-size: 30pt;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.bento-logo {
+    font-size: 30pt;
+    border-radius: 10px;
+}
+body {
+    font-family: "Noto Sans", sans-serif;
+}
+.top-bar {
+    background: rgb(240,234,210);
+    background: linear-gradient(180deg, rgba(240,234,210,1) 0%, rgba(221,229,182,0) 100%); 
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1%;
+}
+.top-bar-side > button {
+    width: 125px;
+    font-size: 16pt;
+}
+.top-bar-side {
+    display: flex;
+    flex-direction: row;
+    gap: 4%;
+}
+button {
+    cursor: pointer;
+    border-radius: 10px;
+    border-width: 0px;
+}
+.learning {
+    font-size: 96pt;
+    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+}
+#faster {
+    margin-left: 15%;
+}
+#sales-pitch {
+    margin-top: 5%;
+    margin-left: 10%;
+    font-size: 24pt;
+    margin-bottom: 2.5%;
+}
+#bento-pitch > p,i {
+    font-size: 24pt;
+    margin-top: 1%;
+    font-family: "Noto Sans", sans-serif;
+}
+#bento-description > p,i,b {
+    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+    text-align: center;
+    font-size: 30pt;
+}
+.bento-pitch {
+    margin-left: 15%;
+    margin-top: 3%;
+}
+.bento-pitch > p,i {
+    font-size: 30pt;
+}
+#call-to-action {
+    padding-right: 5%;
+    padding-top: 2%;
+    font-size: 48pt;
+}
+hr {
+    margin-left: 2%;
+    margin-right: 2%;
+    height: 5px;
+    background-color: black;
+}
+#big-button-container {
+    margin-top: 4%;
+    margin-bottom: 3%;
+    justify-content: center;
+    display: flex;
+}
+#big-button {
+    width: 40%;
+    background: rgb(240,234,210);
+    font-size: 24pt;
+    padding: 1%;
+}
+#bottom-text {
+    text-align: center;
+}
+
+
