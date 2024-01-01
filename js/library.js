@@ -1,8 +1,8 @@
 var Game = (function() {
-    var deckSize = parseInt(localStorage.getItem("set-size")) || 5;
-    var cardRepeat = 2;
 
     var deck = sessionStorage.getItem("deck") || "";
+    var deckSize = parseInt(localStorage.getItem("set-size"+deck)) || 5;
+    var cardRepeat = parseInt(localStorage.getItem("cardrep"+deck)) || 1;
     var deckData;
     var currentSet = 0;
     
@@ -174,7 +174,8 @@ var Game = (function() {
                 }
                 // Set currentSet to get user's previous progress
                 currentSet = (localStorage.getItem("decksp_"+deck) || 0) % Math.ceil(deckData.length / deckSize);
-
+                deckSize = parseInt(localStorage.getItem("set-size"+deck)) || 5;
+                cardRepeat = parseInt(localStorage.getItem("cardrep"+deck)) || 2;
                 card = 0;
                 newRandomDeck();
             }).then(function(res) {
@@ -190,11 +191,17 @@ var Game = (function() {
         reload(onload);
     }
     function getDeck() {
-        return deckData;
+        return deck;
     }
-    function getProblem() {
-        console.log(randomSet, currentSet, card);
-        return deckData[randomSet[card]].question;
+    function getProblemData() {
+        if(!active) {return {problem: ""};}
+        return deckData[randomSet[card]];
+    }
+    function getProgress() {
+        return {
+            current: currentSet * deckSize,
+            max: deckData.length
+        };
     }
     function correct() {
         var success = iterateProblem();
@@ -215,18 +222,22 @@ var Game = (function() {
     function answerProblem(answer) {
         var problemData = deckData[randomSet[card]];
         switch(problemData.type) {
-            case "choice":
+            case "selection":
                 if(problemData.answers[answer] === problemData.correctAnswer) {
                     return correct();
                 } else {
                     return incorrect();
                 }
             case "input":
-                if(answer === problemData.correctAnswer) {
+                if(answer.toLowerCase() === problemData.correctAnswer.toLowerCase()) {
                     return correct();
                 } else {
                     return incorrect();
                 }
+            case "timeline":
+                return;
+            case "matching":
+                return;
         }
     }
     function isActive() {
@@ -235,7 +246,8 @@ var Game = (function() {
     return {
         setDeck: setDeck,
         getDeck: getDeck,
-        getProblem: getProblem,
+        getProgress: getProgress,
+        getProblemData: getProblemData,
         answerProblem: answerProblem,
         isActive: isActive
     };

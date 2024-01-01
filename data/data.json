@@ -1,103 +1,103 @@
 [
     {
         "question": "#1",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#2",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#3",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#4",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#5",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#6",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#7",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#8",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#9",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#10",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#11",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#12",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#13",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#14",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#15",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#16",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     },
     {
         "question": "#17",
-        "type": "choice",
+        "type": "selection",
         "answers": ["a", "b", "c", "d"],
         "correctAnswer": "a"
     }
