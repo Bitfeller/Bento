@@ -5,9 +5,7 @@
     require_types('n', 'time');
     // Make sure session exists
     session_start();
-    if(!isset($_SESSION['uid'])) {
-        fail("no session");
-    }
+    if(!isset($_SESSION['uid'])) fail("no session");
     // Get body values
     $time = $data['time'];
     $owner = $_SESSION['username'];
@@ -20,9 +18,7 @@
         if($pic !== "" && $pic === false) {
             @unlink($path); // Delete if it exists
             fail("broken img");
-        } else {
-            success($pic);
-        }
+        } else success($pic);
     } catch(Exception $e) {
         fail("exception: " . $e->getMessage());
     }

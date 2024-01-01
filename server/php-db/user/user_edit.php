@@ -5,9 +5,7 @@
     require_types('sss', 'setting', 'val', 'verifpwd');
     // Make sure session exists
     session_start();
-    if(!isset($_SESSION['uid'])) {
-        fail("no session");
-    }
+    if(!isset($_SESSION['uid'])) fail("no session");
     // Get body values
     $setting = $data['setting'];
     $val = $data['val'];
@@ -16,11 +14,11 @@
         $conf = get_server_config();
         $conn = connect_to_db();
         // Get user
-        $sql = "SELECT * FROM users WHERE username = ? OR email = ?;";
+        $sql = "SELECT * FROM users WHERE username = ? OR email = ? LIMIT 1;";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ss", $_SESSION['username'], $_SESSION['email']);
         $stmt->execute();
-        $result = mysqli_fetch_assoc($stmt->get_result());
+        $result = $stmt->get_result()->fetch_assoc();
         if(!$result) {
             // Invalid user information
             session_unset();
@@ -42,13 +40,9 @@
                 if(!file_exists($path)) {
                     fclose(fopen($path, "w"));
                     // If image
-                    if(isset($data->img)) {
-                        file_put_contents($path, $data->img);
-                    }
+                    if(isset($data->img)) file_put_contents($path, $data->img);
                 }
-                if(isset($data->img)) {
-                    unset($data->img);
-                }
+                if(isset($data->img)) unset($data->img);
             }
             // Check for old drafts
             $all = glob($conf['file_db'] . 'drafts/' . $result['id'] . '-*.pic');
@@ -57,35 +51,29 @@
                     $file = explode('-', $file);
                     $file = explode('.', $file[1]);
                     $file = $file[0];
-                    if(!isset($drafts->$file)) {
-                        unlink($conf['file_db'] . 'drafts/' . $result['id'] . '-' . $file . '.pic');
-                    }
+                    if(!isset($drafts->$file)) unlink($conf['file_db'] . 'drafts/' . $result['id'] . '-' . $file . '.pic');
                 }
             }
         }
         switch($setting) {
             case "username":
                 // Make sure username is valid
-                if(!preg_match("/^[A-Za-z0-9]*$/", $val)) {
-                    fail("invalid username");
-                }
+                if(!preg_match("/^[A-Za-z0-9]*$/", $val)) fail("invalid username");
                 // Check if username is taken
-                $sql = "SELECT * FROM users WHERE username = ?;";
+                $sql = "SELECT * FROM users WHERE username = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("s", $val);
                 $stmt->execute();
-                if(mysqli_fetch_assoc($stmt->get_result())) {
-                    fail("username taken");
-                }
+                if($stmt->get_result()->fetch_assoc()) fail("username taken");
                 $stmt->close();
                 // Update username
-                $sql = "UPDATE users SET username = ? WHERE id = ?;";
+                $sql = "UPDATE users SET username = ? WHERE id = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("si", $val, $_SESSION['uid']);
                 $stmt->execute();
                 $stmt->close();
                 // Update decks to have accurate username as well
-                $sql = "UPDATE decks SET owner = ? WHERE owner = ?;";
+                $sql = "UPDATE decks SET owner = ? WHERE owner = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("ss", $val, $_SESSION["username"]);
                 $stmt->execute();
@@ -94,21 +82,15 @@
                 $_SESSION['username'] = $val;
             break;
             case "email":
-                if(!password_verify($verifpwd, $result['password'])) {
-                    fail('invalid pwd');
-                }
+                if(!password_verify($verifpwd, $result['password'])) fail('invalid pwd');
                 // Make sure email is valid
-                if(!filter_var($val, FILTER_VALIDATE_EMAIL)) {
-                    fail('invalid email');
-                }
+                if(!filter_var($val, FILTER_VALIDATE_EMAIL)) fail('invalid email');
                 // Check if email is taken
-                $sql = "SELECT * FROM users WHERE email = ?;";
+                $sql = "SELECT * FROM users WHERE email = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("s", $val);
                 $stmt->execute();
-                if(mysqli_fetch_assoc($stmt->get_result())) {
-                    fail("email taken");
-                }
+                if($stmt->get_result()->fetch_assoc()) fail("email taken");
                 $stmt->close();
                 // Send email to previous email
                 $uid = $result['id'];
@@ -123,12 +105,10 @@
                 $verifStr = '';
                 $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-=_+[]\\{}|;\':",./<>?`~';
                 $len = strlen($chars);
-                for($i = 0; $i < $len; $i++) {
-                    $verifStr .= $chars[random_int(0, $len-1)];
-                }
+                for($i = 0; $i < $len; $i++) $verifStr .= $chars[random_int(0, $len-1)];
                 $hashVerif = password_hash($verifStr, PASSWORD_DEFAULT);
                 // Set email
-                $sql = "UPDATE users SET email = ?, verified = ?, verif = ? WHERE id = ?;";
+                $sql = "UPDATE users SET email = ?, verified = ?, verif = ? WHERE id = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
                 $verified = 0;
                 $stmt->bind_param("sisi", $val, $verified, $hashVerif, $_SESSION['uid']);
@@ -144,10 +124,8 @@
                 );
             break;
             case "password":
-                if(!password_verify($verifpwd, $result['password'])) {
-                    fail('invalid pwd');
-                }
-                $sql = "UPDATE users SET password = ? WHERE id = ?";
+                if(!password_verify($verifpwd, $result['password'])) fail('invalid pwd');
+                $sql = "UPDATE users SET password = ? WHERE id = ? LIMIt 1";
                 $stmt = $conn->prepare($sql);
                 $newPwd = password_hash($val, PASSWORD_DEFAULT);
                 $stmt->bind_param("si", $newPwd, $_SESSION['uid']);
@@ -166,7 +144,7 @@
                 $safeVal = sanitize($val);
                 check_drafts($conf, $result, $safeVal->drafts);
                 $safeVal = json_encode($safeVal);
-                $sql = "UPDATE users SET userdata = ? WHERE id = ?;";
+                $sql = "UPDATE users SET userdata = ? WHERE id = ? LIMIt 1;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("si", $safeVal, $_SESSION['uid']);
                 $stmt->execute();
@@ -183,7 +161,7 @@
                 $curr = json_decode($curr, false);
                 $curr->draftdecks = json_decode($safeVal, false);
                 $curr = json_encode($curr);
-                $sql = "UPDATE users SET userdata = ? WHERE id = ?;";
+                $sql = "UPDATE users SET userdata = ? WHERE id = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("si", $curr, $_SESSION['uid']);
                 $stmt->execute();
@@ -198,7 +176,7 @@
                 $curr = json_decode($curr, false);
                 $curr->reviews = json_decode($safeVal, false);
                 $curr = json_encode($curr);
-                $sql = "UPDATE users SET userdata = ? WHERE id = ?;";
+                $sql = "UPDATE users SET userdata = ? WHERE id = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("si", $curr, $_SESSION['uid']);
                 $stmt->execute();
@@ -210,7 +188,7 @@
                 $curr = json_decode($curr, false);
                 $curr->theme = (int)$val;
                 $curr = json_encode($curr);
-                $sql = "UPDATE users SET userdata = ? WHERE id = ?;";
+                $sql = "UPDATE users SET userdata = ? WHERE id = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("si", $curr, $_SESSION['uid']);
                 $stmt->execute();
@@ -218,12 +196,12 @@
                 $_SESSION['userdata'] = $curr;
             break;
             case 'view':
-                $sql = "SELECT * FROM decks WHERE id = ?;";
+                $sql = "SELECT * FROM decks WHERE id = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
                 $val = (int)$val;
                 $stmt->bind_param("i", $val);
                 $stmt->execute();
-                $result = mysqli_fetch_assoc($stmt->get_result());
+                $result = $stmt->get_result()->fetch_assoc();
                 if(!$result) {
                     $stmt->close();
                     fail("no deck");
@@ -239,7 +217,7 @@
                 if($exists == false) {
                     $viewdata[] = $_SESSION['uid'];
                     $viewdata = json_encode($viewdata);
-                    $sql = "UPDATE decks SET viewdata = ? WHERE id = ?;";
+                    $sql = "UPDATE decks SET viewdata = ? WHERE id = ? LIMIT 1;";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("si", $viewdata, $val);
                     $stmt->execute();
@@ -248,17 +226,11 @@
             break;
             case 'pfp':
                 if($val !== "" && $conf['check_image']) {
-                    $data = explode(",", $val, 2);
-                    $data = $data[1];
+                    $data = explode(",", $val, 2)[1];
                     $decodedVal = base64_decode($data);
-                    $imageValid = imagecreatefromstring($decodedVal);
-                    if($imageValid === false) {
-                        fail("exception: deckpic isn't a valid image. For security purposes, the server has denied the image.");
-                    }
+                    if(imagecreatefromstring($decodedVal) === false) fail("exception: deckpic isn't a valid image. For security purposes, the server has denied the image.");
                 }
-                if(strlen($val) > 3 * 1000 * 1000 && $conf['check_image']) {
-                    fail('size limit');
-                }
+                if(strlen($val) > $conf['max_image_size'] && $conf['check_image']) fail('size limit');
                 // Edit user's pfp
                 $path = $conf['file_db'] . 'pfps/' . $_SESSION['uid'] . '.pfp';
                 file_put_contents($path, $val);
@@ -266,7 +238,7 @@
                 $_SESSION['pfp'] = $val;
             break;
             case 'notifsub':
-                $sql = "UPDATE users SET notifsub = ? WHERE id = ?;";
+                $sql = "UPDATE users SET notifsub = ? WHERE id = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
                 $val = (int)$val;
                 $stmt->bind_param("ii", $val, $_SESSION['uid']);
@@ -275,21 +247,25 @@
                 $_SESSION['notifsub'] = $val;
             break;
             case 'delete':
-                if(!password_verify($verifpwd, $result['password'])) {
-                    fail('invalid pwd');
-                }
-                $sql = "DELETE FROM users WHERE id = ?;";
+                if(!password_verify($verifpwd, $result['password'])) fail('invalid pwd');
+                // Delete draft pics
+                $all = glob($conf['file_db'] . 'drafts/' . $result['id'] . '-*.pic');
+                if($all) foreach($all as $file) unlink($file);
+                // Delete user
+                $sql = "DELETE FROM users WHERE id = ? LIMIt 1;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("i", $_SESSION['uid']);
                 $stmt->execute();
                 $stmt->close();
+                // Delete pfp
+                $path = $conf['file_db'] . 'pfps/' . $_SESSION['uid'] . '.pfp';
+                if(file_exists($path)) unlink($path);
+                // Remove session
                 session_unset();
                 session_destroy();
             break;
             case 'resend-verif-email':
-                if($result['verified'] == true) {
-                    fail('verified');
-                }
+                if($result['verified'] == true) fail('verified');
                 $uid = $result['id'];
                 $username = $result['username'];
                 $email = $result['email'];

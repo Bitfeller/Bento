@@ -9,8 +9,11 @@ const editpic = document.getElementById("picAddBtn");
 const resetpic = document.getElementById("picReset");
 const fileselecttrigger = document.getElementById("fileselecttrigger");
 const picimg = document.getElementById("deckpic");
-let cards = [];
-let user, drag, deckpic = '';
+
+let cards = [], deckpic = '', drag;
+let user;
+const sizeLimit = 2 * 1000 * 1000; // NOTE: must be same as max_image_size in server/conf/config.json
+
 const dragline = document.createElement('div');
 dragline.style = 'display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;';
 
@@ -27,77 +30,78 @@ function computeCenter(el) {
     }
 }
 function init_card(card, n) {
-    card.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
-        if(card.getElementsByClassName('card-mc').length > 0) return;
-        init_mc(card, n, card.getElementsByClassName("q")[0].innerHTML);
+    let on = m => card.getElementsByClassName(m).length > 0;
+    let qf = m => card.getElementsByClassName(m)[0]; // quickfetch
+    let q = card.getElementsByClassName('q')[0];
+    qf('mcbtn').addEventListener("mousedown", () => {
+        if(on('card-mc')) return;
+        init_mc(card, n, q.innerHTML);
     });
-    card.getElementsByClassName('mcbtn')[0].addEventListener("keydown", function(e) {
-        if(card.getElementsByClassName('card-mc').length > 0) return;
-        if(e.key == "Enter" || e.key == " ") init_mc(card, n, card.getElementsByClassName("q")[0].innerHTML);
+    qf('mcbtn').addEventListener("keydown", e => {
+        if(on('card-mc')) return;
+        if(e.key == "Enter" || e.key == " ") init_mc(card, n, q.innerHTML);
     });
-    card.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
-        if(card.getElementsByClassName('txt-answer').length > 0) return;
-        init_txt(card, n, card.getElementsByClassName("q")[0].innerHTML);
+    qf('txtbtn').addEventListener("mousedown", () => {
+        if(on('txt-answer')) return;
+        init_txt(card, n, q.innerHTML);
     });
-    card.getElementsByClassName('txtbtn')[0].addEventListener("keydown", function(e) {
-        if(card.getElementsByClassName('txt-answer').length > 0) return;
-        if(e.key == "Enter" || e.key == " ") init_txt(card, n, card.getElementsByClassName("q")[0].innerHTML);
+    qf('txtbtn').addEventListener("keydown", e => {
+        if(on('txt-answer')) return;
+        if(e.key == "Enter" || e.key == " ") init_txt(card, n, q.innerHTML);
     });
-    card.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
-        if(card.getElementsByClassName('card-rank').length > 0) return;
-        init_ranking(card, n, card.getElementsByClassName("q")[0].innerHTML);
+    qf('rankbtn').addEventListener("mousedown", () => {
+        if(on('card-rank')) return;
+        init_ranking(card, n, q.innerHTML);
     });
-    card.getElementsByClassName('rankbtn')[0].addEventListener("keydown", function(e) {
-        if(card.getElementsByClassName('card-rank').length > 0) return;
-        if(e.key == "Enter" || e.key == " ") init_ranking(card, n, card.getElementsByClassName("q")[0].innerHTML);
+    qf('rankbtn').addEventListener("keydown", e => {
+        if(on('card-rank')) return;
+        if(e.key == "Enter" || e.key == " ") init_ranking(card, n, q.innerHTML);
     });
-    card.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
+    card.getElementsByClassName('card-del')[0].addEventListener("mousedown", () => {
         if(cards.length <= 1) return;
         let idx = cards.indexOf(card);
-        if(idx > -1) {
-            cards.splice(idx, 1);
-        }
+        if(idx > -1) cards.splice(idx, 1);
         card.remove();
     });
 }
 async function typeset(node) {
-    if(Object.keys(MathJax.startup) == 0) await new Promise((res, _) => {
-        MathJax.startup.ready = () => res();
-    });
-    MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([node])).catch((err) => console.warn('math formatting failed; reason:', err.message));
+    if(Object.keys(MathJax.startup) == 0) 
+        await new Promise((res) => {
+            MathJax.startup.ready = () => res();
+        });
+    MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([node])).catch((e) => console.warn('math formatting failed; reason:', e.message));
     return MathJax.startup.promise;
 }
 async function renderable(input) {
-    if(Object.keys(MathJax.startup) == 0) await new Promise((res, _) => {
-        MathJax.startup.ready = () => res();
-    });
+    if(Object.keys(MathJax.startup) == 0) 
+        await new Promise((res) => {
+            MathJax.startup.ready = () => res();
+        });
     r_temp.innerHTML = input;
-    let renderable = false;
     try {
-        MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([r_temp])).catch((err) => console.warn('math formatting failed; reason:', err.message));
+        MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([r_temp])).catch((e) => console.warn('math formatting failed; reason:', e.message));
         await MathJax.startup.promise;
-        renderable = r_temp.innerHTML.trim() !== '';
-    } catch(e) {
-        renderable = false;
+        return r_temp.innerHTML.trim() !== '';
+    } catch(_) {
+        return false;
     }
-    return renderable;
 }
 function init_div(div) {
     div.setAttribute('data-cnt', div.textContent);
     // data-cnt updating
-    div.addEventListener('focusout', (e) => {
-        if(div.getAttribute('focused') == true) return;
+    div.addEventListener('focusout', () => {
+        if(div.dataset.focus == '0') return;
         div.setAttribute('data-cnt', div.textContent);
-        div.setAttribute('focused', false);
+        div.setAttribute('data-focus', '0');
         typeset(div);
     });
     div.addEventListener('focus', () => {
+        div.setAttribute('data-focus', '1');
         div.textContent = div.dataset.cnt;
-        div.setAttribute('focused', true);
     });
     div.addEventListener('input', () => div.setAttribute('data-cnt', div.textContent));
     // Prevent new lines
-    div.addEventListener('keydown', (e) => {
+    div.addEventListener('keydown', e => {
         if(e.key == "Enter") e.preventDefault();
         if(e.altKey && e.key == "w") {
             if(cards.length <= 1) return;
@@ -105,14 +109,12 @@ function init_div(div) {
             if(!parent) return;
             let idx = cards.indexOf(parent);
             let next = parent.nextElementSibling || parent.parentNode.children[parent.parentNode.children.length - 2];
-            if(idx > -1) {
-                cards.splice(idx, 1);
-            }
+            if(idx > -1) cards.splice(idx, 1);
             parent.remove();
             next.getElementsByClassName('q')[0].focus();
         }
     });
-    div.addEventListener('paste', (e) => {
+    div.addEventListener('paste', e => {
         e.preventDefault();
         let data = e.clipboardData.getData('text/plain');
         let sanitized = data.replace(/\n+/g, '');
@@ -128,7 +130,7 @@ function init_div(div) {
             sel.addRange(range);
         }
     });
-    div.set_val = (val) => {
+    div.setVal = val => {
         div.innerHTML = val;
         div.setAttribute('data-cnt', div.textContent);
         typeset(div);
@@ -158,11 +160,11 @@ function generator_mc(cardmc, card, allcorr, t, txt) {
     let delbtn = newop.getElementsByClassName('mcop-del')[0];
     let corrbtn = newop.getElementsByClassName('mcop-corr')[0];
     init_div(input);
-    if(txt) input.set_val(txt);
-    input.addEventListener('keydown', (e) => {
+    if(txt) input.setVal(txt);
+    input.addEventListener('keydown', e => {
         if(e.key != "Tab" || e.shiftKey) return;
         if(cards.indexOf(card) < cards.length - 1) return;
-        let ans = Array(...cardmc.getElementsByClassName('mcop'));
+        let ans = [...cardmc.getElementsByClassName('mcop')];
         let idx = ans.indexOf(newop);
         if(idx < ans.length - 1) return;
         e.preventDefault();
@@ -170,7 +172,7 @@ function generator_mc(cardmc, card, allcorr, t, txt) {
     });
     delbtn.addEventListener('mousedown', () => {
         if(cardmc.children.length <= 2) return;
-        if(cardmc.getElementsByClassName('mcop-sel') == 1 && newop.getElementsByClassName('mcop-sel') == 1) {
+        if(cardmc.getElementsByClassName('mcop-sel').length == 1 && newop.getElementsByClassName('mcop-sel').length == 1) {
             let newcorr = cardmc.getElementsByClassName('mcop-nosel')[0];
             newcorr.className = 'mcop-corr mcop-sel';
             newcorr.innerHTML = "<span class='material-symbols-outlined'>check</span>";
@@ -186,11 +188,8 @@ function generator_mc(cardmc, card, allcorr, t, txt) {
             corrbtn.className = 'mcop-corr mcop-sel';
             corrbtn.innerHTML = "<span class='material-symbols-outlined'>check</span>";
         }
-        if(cardmc.getElementsByClassName('mcop-sel').length == 1) {
-            allcorr.style.display = "none";
-            allcorr.className = "mc-allcorr inactive";
-            allcorr.innerHTML = "<span class='material-symbols-outlined small-ico'>close</span> Require all correct answers";
-        } else allcorr.style.display = "inline-block";
+        if(cardmc.getElementsByClassName('mcop-sel').length == 1) allcorr.style.display = "none";
+        else allcorr.style.display = "inline-block";
     });
 }
 function generator_txt(card, i_anslist, r, p, txt) {
@@ -204,11 +203,11 @@ function generator_txt(card, i_anslist, r, p, txt) {
     let input = newans.getElementsByClassName('txtans')[0];
     let delbtn = newans.getElementsByClassName('txtans-del')[0];
     init_div(input);
-    if(txt) input.set_val(txt);
-    input.addEventListener('keydown', (e) => {
+    if(txt) input.setVal(txt);
+    input.addEventListener('keydown', e => {
         if(e.key != "Tab" || e.shiftKey) return;
         if(cards.indexOf(card) < cards.length - 1) return;
-        let ans = Array(...p.getElementsByClassName('txt-ans-cont'));
+        let ans = [...p.getElementsByClassName('txt-ans-cont')];
         let idx = ans.indexOf(newans);
         if(idx < ans.length - 1) return;
         e.preventDefault();
@@ -225,23 +224,21 @@ function generator_rank(card, ranklist, txt) {
         <button class='rank-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
     `;
     ranklist.appendChild(item);
-    item.addEventListener('dragstart', (e) => {
+    item.addEventListener('dragstart', () => {
         drag = item;
         item.style.backgroundColor = 'rgb(150, 200, 255)';
         ranklist.append(dragline);
     });
-    item.addEventListener('dragend', (e) => {
+    item.addEventListener('dragend', e => {
         if(drag != item) return;
         item.style.backgroundColor = '';
         dragline.remove();
-        let top;
-        let bottom;
-        let y = e.pageY;
+        let top, bottom, y = e.pageY;
         const objects = ranklist.children;
         for(let i = 0; i < objects.length; i++) {
             let centroid = computeCenter(objects[i]);
             if(centroid.y < y) continue;
-            else if((i - 1) >= 0) {
+            else if(i - 1 >= 0) {
                 top = objects[i - 1];
                 bottom = objects[i];
                 ranklist.insertBefore(item, bottom);
@@ -262,19 +259,18 @@ function generator_rank(card, ranklist, txt) {
     let input = item.getElementsByClassName('rank-item-txt')[0];
     let delbtn = item.getElementsByClassName('rank-del')[0];
     init_div(input);
-    if(txt) input.set_val(txt);
-    input.addEventListener('keydown', (e) => {
+    if(txt) input.setVal(txt);
+    input.addEventListener('keydown', e => {
         if(e.key != "Tab" || e.shiftKey) return;
         if(cards.indexOf(card) < cards.length - 1) return;
-        let ans = Array(...ranklist.getElementsByClassName('ranking-item'));
+        let ans = [...ranklist.getElementsByClassName('ranking-item')];
         let idx = ans.indexOf(item);
         if(idx < ans.length - 1) return;
         e.preventDefault();
         toNew();
     });
     delbtn.addEventListener('mousedown', () => {
-        if(ranklist.children.length <= 2) return;
-        item.remove();
+        if(ranklist.children.length > 2) item.remove();
     });
 }
 function init_mc(card, n, q) {
@@ -298,14 +294,14 @@ function init_mc(card, n, q) {
     init_card(card, n);
     let problem = card.getElementsByClassName('q')[0];
     init_div(problem);
-    if(q) problem.set_val(q);
+    if(q) problem.setVal(q);
     // Set up multiple choice card functionality
     let cardmc = card.getElementsByClassName('card-mc')[0];
     let addbtn = card.getElementsByClassName('mc-add')[0];
     let allcorr = card.getElementsByClassName('mc-allcorr')[0];
     allcorr.style.display = "none";
     // Local generator
-    let generator = (t) => generator_mc(cardmc, card, allcorr, t);
+    let generator = t => generator_mc(cardmc, card, allcorr, t);
     addbtn.addEventListener('mousedown', () => generator(false));
     allcorr.addEventListener('mousedown', () => {
         if(allcorr.className.indexOf('inactive') > -1) {
@@ -349,27 +345,27 @@ function init_txt(card, n, q) {
     init_card(card, n);
     let problem = card.getElementsByClassName('q')[0];
     init_div(problem);
-    if(q) problem.set_val(q);
+    if(q) problem.setVal(q);
     // Set up text card functionality
-    let anslist = card.getElementsByClassName('card-txt')[0];
-    let addbtn = card.getElementsByClassName('txt-add')[0];
-    let confinver = card.getElementsByClassName('txt-inver')[0];
-    let r_inver = card.getElementsByClassName('txt-rinver')[0];
-    let i_addbtn = card.getElementsByClassName('txt-i-add')[0];
-    let i_back = card.getElementsByClassName('txt-i-back')[0];
+    const anslist = card.getElementsByClassName('card-txt')[0];
+    const addbtn = card.getElementsByClassName('txt-add')[0];
+    const confinver = card.getElementsByClassName('txt-inver')[0];
+    const r_inver = card.getElementsByClassName('txt-rinver')[0];
+    const i_addbtn = card.getElementsByClassName('txt-i-add')[0];
+    const i_back = card.getElementsByClassName('txt-i-back')[0];
     r_inver.style.display = "none";
 
-    let cardsel = card.getElementsByClassName('cardsel')[0];
-    let cardmain = card.getElementsByClassName('cardmain')[0];
-    let inverse = card.getElementsByClassName('inverse')[0];
-    let i_anslist = inverse.getElementsByClassName('card-txt')[0];
+    const cardsel = card.getElementsByClassName('cardsel')[0];
+    const cardmain = card.getElementsByClassName('cardmain')[0];
+    const inverse = card.getElementsByClassName('inverse')[0];
+    const i_anslist = inverse.getElementsByClassName('card-txt')[0];
     inverse.style.display = "none";
 
-    init_div(inverse.getElementsByClassName('q')[0])
+    init_div(inverse.getElementsByClassName('q')[0]);
     
     // Generator
     let generator = (r, p, t) => generator_txt(card, i_anslist, r, p, t);
-    let inverse_ch = (t) => {
+    let inverse_ch = t => {
         cardsel.style.display = cardmain.style.display = t ? "none" : "block";
         inverse.style.display = t ? "block" : "none";
     };
@@ -380,7 +376,7 @@ function init_txt(card, n, q) {
             r_inver.style.display = "inline-block";
             generator(false, i_anslist, problem.textContent);
             let i_q = inverse.getElementsByClassName('q')[0];
-            i_q.set_val(anslist.getElementsByClassName('txt-ans-cont')[0].getElementsByClassName('txtans')[0].textContent);
+            i_q.setVal(anslist.getElementsByClassName('txt-ans-cont')[0].getElementsByClassName('txtans')[0].textContent);
             i_q.focus();
         }
         inverse_ch(true);
@@ -415,7 +411,7 @@ function init_ranking(card, n, q) {
     init_card(card, n);
     let problem = card.getElementsByClassName('q')[0];
     init_div(problem);
-    if(q) problem.set_val(q);
+    if(q) problem.setVal(q);
     // Set up ranking card functionality
     let ranklist = card.getElementsByClassName('ranking-list')[0];
     let addbtn = card.getElementsByClassName('rank-add')[0];
@@ -435,10 +431,9 @@ function newCard() {
     let type = cards[cards.length - 2].getElementsByClassName('selbtn-sel')[0].getElementsByClassName('selbtn-sel')[0];
     if(!type) return init_mc(card, n);
     let cn = type.className.split(" ");
-    if(cn.includes('mcbtn')) init_mc(card, n);
-        else if(cn.includes('txtbtn')) init_txt(card, n);
+    if(cn.includes('txtbtn')) init_txt(card, n);
         else if(cn.includes('rankbtn')) init_ranking(card, n);
-        else init_mc(card, n);
+        else init_mc(card, n); // mcbtn + etc.
 }
 
 
@@ -449,18 +444,17 @@ fileselecttrigger.addEventListener('change', () => {
     let files = fileselecttrigger.files;
     if(files && files[0]) {
         let file = files[0];
-        if(!file.type.startsWith('image/')) return console.log('failed - file type; ' + file.type);
+        if(!file.type.startsWith('image/')) return console.warn('failed - file type; ' + file.type);
         let reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = e => {
             let content = e.target.result;
-            if(content.byteLength > 2 * 1000 * 1000) return console.log("Failed! Past size limit of 2 MB.");
+            if(content.byteLength > sizeLimit) return console.warn(`failed! Past size limit of ${sizeLimit / (1 * 1000 * 1000)} MB.`);
             deckpic = content;
             picimg.src = content;
         };
         reader.readAsDataURL(file);
     }
 });
-// editpic.addEventListener('mousedown', () => fileselecttrigger.click());
 resetpic.addEventListener('mousedown', () => {
     deckpic = '';
     picimg.src = '../../img/defaultdeckpic.png';
@@ -490,15 +484,14 @@ function toDeck(err_assigner, is_draft = false, bypass = false) {
             if(!q) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
             let answers = card.getElementsByClassName('mcop');
             if(answers.length < 2) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
-            if(q.dataset.cnt.length == 0) continue;
             for(let j = 0; j < answers.length; j++) {
                 let ans = answers[j].getElementsByClassName('mcop-val')[0];
                 if(!ans) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
                 if(ans.dataset.cnt.length > 0) cdata.op.push(ans.dataset.cnt);
-                let iscorr = answers[j].getElementsByClassName('mcop-sel');
-                if(iscorr.length > 0) cdata.ans.push(j);
+                if(answers[j].getElementsByClassName('mcop-sel').length > 0) cdata.ans.push(j);
             }
-            if(card.getElementsByClassName('active').length > 0) cdata.req = 1;
+            if(q.dataset.cnt.length == 0 && cdata.op.length == 0) continue;
+            if(card.getElementsByClassName('active').length > 0 && cdata.ans.length > 1) cdata.req = 1;
             if(data[q.dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('txtbtn')) {
@@ -509,12 +502,12 @@ function toDeck(err_assigner, is_draft = false, bypass = false) {
             let q = card.getElementsByClassName('q')[0];
             let answers = card.getElementsByClassName('txt-ans-cont');
             if(answers.length < 1 || !q) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
-            if(q.dataset.cnt.length == 0) continue;
             for(let j = 0; j < answers.length; j++) {
                 let ans = answers[j].getElementsByClassName('txtans')[0];
                 if(!ans) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
                 if(ans.dataset.cnt.length > 0) cdata.ans.push(ans.dataset.cnt);
             }
+            if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
             let i_cdata = {
                 type: 'txt',
                 ans: [],
@@ -542,13 +535,13 @@ function toDeck(err_assigner, is_draft = false, bypass = false) {
             };
             let q = card.getElementsByClassName('q')[0];
             if(!q) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
-            if(q.dataset.cnt.length == 0) continue;
             let items = card.getElementsByClassName('ranking-item');
             for(let j = 0; j < items.length; j++) {
                 let txt = items[j].getElementsByClassName('rank-item-txt')[0];
                 if(!txt) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
                 if(txt.dataset.cnt.length > 0) cdata.ans.push(txt.dataset.cnt);
             }
+            if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
             if(data[q.dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
         }
@@ -561,10 +554,7 @@ function toDeck(err_assigner, is_draft = false, bypass = false) {
 }
 function appendToCards(contnt) {
     // Check if we only have one card first, and remove if so (cause it's annoying)
-    if(cards.length == 1) {
-        cards[0].remove();
-        cards = [];
-    }
+    if(cards.length == 1) cards.splice(0, 1)[0].remove();
     let d_keys = Object.keys(contnt);
     for(let i = 0; i < d_keys.length; i++)
         if(contnt[d_keys[i]].invfrom) {
@@ -585,7 +575,7 @@ function appendToCards(contnt) {
         switch(card.type) {
             case "mc":
                 init_mc(carddiv, n);
-                carddiv.getElementsByClassName('q')[0].set_val(q);
+                carddiv.getElementsByClassName('q')[0].setVal(q);
                 let cardmc = carddiv.getElementsByClassName('card-mc')[0];
                 let allcorr = carddiv.getElementsByClassName('mc-allcorr')[0];
                 cardmc.innerHTML = "";
@@ -593,12 +583,12 @@ function appendToCards(contnt) {
             break;
             case "txt":
                 init_txt(carddiv, n);
-                carddiv.getElementsByClassName('q')[0].set_val(q);
+                carddiv.getElementsByClassName('q')[0].setVal(q);
                 let anslist = carddiv.getElementsByClassName('card-txt')[0];
                 let inv = carddiv.getElementsByClassName('inverse')[0];
                 let i_anslist = inv.getElementsByClassName('card-txt-i')[0];
                 if(card.ans.length == 0) continue;
-                anslist.getElementsByClassName('txt-ans-cont')[0].children[0].set_val(card.ans[0]);
+                anslist.getElementsByClassName('txt-ans-cont')[0].children[0].setVal(card.ans[0]);
                 for(let i = 1; i < card.ans.length; i++) generator_txt(carddiv, i_anslist, true, anslist, card.ans[i]);
                 if(card.inv) {
                     let confinver = carddiv.getElementsByClassName('txt-inver')[0];
@@ -610,12 +600,12 @@ function appendToCards(contnt) {
                     let generator = (r, p, a) => generator_txt(carddiv, i_anslist, r, p, a);
                     generator(false, i_anslist, card.inv.ans[0]);
                     for(let i = 1; i < card.inv.ans.length; i++) generator(true, i_anslist, card.inv.ans[i]);
-                    inv.getElementsByClassName('q')[0].set_val(card.inv.q);
+                    inv.getElementsByClassName('q')[0].setVal(card.inv.q);
                 }
             break;
             case "ranking":
                 init_ranking(carddiv, n);
-                carddiv.getElementsByClassName('q')[0].set_val(q);
+                carddiv.getElementsByClassName('q')[0].setVal(q);
                 let rankinglist = carddiv.getElementsByClassName("ranking-list")[0];
                 rankinglist.innerHTML = '';
                 for(let i = 0; i < card.ans.length; i++) generator_rank(carddiv, rankinglist, card.ans[i]);
@@ -660,7 +650,7 @@ b_createbtn.addEventListener("mousedown", () => {
         let file = files[0];
         if(file.type !== "text/plain") return console.log('failed - file type; ' + file.type);
         let reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = e => {
             let content = e.target.result;
             try {
                 let main = JSON.parse(content);
@@ -739,7 +729,7 @@ g_createbtn.addEventListener("mousedown", () => {
 // --------------------------------------------------- \\
 
 
-window.addEventListener('dragover', (e) => {
+window.addEventListener('dragover', e => {
     if(!drag) return;
     let list = drag.parentNode;
     if(dragline.parentNode != list) list.prepend(dragline);
@@ -765,7 +755,7 @@ window.addEventListener('dragover', (e) => {
         list.appendChild(dragline);
     }
 });
-window.addEventListener("keydown", (e) => {
+window.addEventListener("keydown", e => {
     if(e.target === addCard && (e.key === "Enter" || e.key === " ")) {
         newCard();
         document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -773,8 +763,8 @@ window.addEventListener("keydown", (e) => {
         mcbtns[mcbtns.length - 1].focus();
     }
 });
-window.addEventListener("mousedown", (e) => {
-    if(e.target === b_modal || e.target == q_modal || e.target == g_modal) {
+window.addEventListener("mousedown", e => {
+    if(e.target == b_modal || e.target == q_modal || e.target == g_modal) {
         b_modal.style.display = "none";
         q_modal.style.display = "none";
         g_modal.style.display = "none";
@@ -792,26 +782,6 @@ async function init() {
     newCard();
     cards[cards.length - 1].getElementsByClassName('q')[0].focus();
     addCard.addEventListener('mousedown', newCard);
-    fileselecttrigger.addEventListener('click', () => {
-        let files = fileselecttrigger.files;
-        if(files && files[0]) {
-            let file = files[0];
-            if(!file.type.startsWith('image/')) return console.log('failed - file type; ' + file.type);
-            let reader = new FileReader();
-            reader.onload = (e) => {
-                let content = e.target.result;
-                if(content.byteLength > 2 * 1000 * 1000) return console.log("Failed! Past size limit of 2 MB.");
-                deckpic = content;
-                picimg.src = content;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-    editpic.addEventListener('mousedown', () => fileselecttrigger.click());
-    resetpic.addEventListener('mousedown', () => {
-        deckpic = '';
-        picimg.src = '../../img/defaultdeckpic.png';
-    });
 }
 function active() {
     return user != null;

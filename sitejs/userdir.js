@@ -8,10 +8,7 @@ const passwordInputs = document.getElementsByClassName('password-inputs')[0];
 
 (async () => {
     const params = new URLSearchParams(window.location.search);
-    if(!params.get("hash") || !params.get("v") || !params.get("user")) {
-        location.href = "/home";
-        return;
-    }
+    if(!params.get("hash") || !params.get("v") || !params.get("user")) return void (location.href = "/home");
     let hash = params.get("hash");
     let mode = params.get("v") == 0 ? "emailverif" : "pwdrecover";
     let user = parseInt(params.get("user"));

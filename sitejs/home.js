@@ -3,7 +3,8 @@ import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 
 const deckReminders = document.getElementsByClassName("review-schedule")[0].getElementsByClassName('container')[0];
 const searcher = document.getElementById('search-reviews');
-const deckViewer = document.getElementById('viewer');
+const deckViewer = document.getElementById('bento-modal');
+deckViewer.style.display = "none";
 // Tutorial required elements
 // const tutorialDialog = document.getElementById("tutorial-background");
 // const tutorialBoxHolder = document.getElementById("tutorial-box-holder");
@@ -19,15 +20,18 @@ const version = document.getElementById('header:version');
 const version_info = document.getElementById('header:version_info');
 const feedback_dialog = document.getElementById("header:feedback_dialog");
 
-function show(user, decks, deck) {
+function show(user, deck) {
     deckViewer.style.display = 'block';
-    let review = user.userdata.reviews[deck];
-    let name = deck;
-    deck = decks[deck];
+    let review = user.userdata.reviews[deck.name];
+    let name = deck.name;
     deckViewer.innerHTML = `
-        <div class='title'>
-            ${name}
+        <div class='title deck-container-overview' id='deck-container-overview'>
+            <h2>${name}</h2>
+            <p>By: a user</p>
         <div>
+        <div class='deck-container-main' id='deck-container-main'>
+
+        </div>
     `;
 }
 function hide() {
@@ -35,15 +39,12 @@ function hide() {
 }
 (async () => {
     let [success, data] = await UserGateway.getuser(false, true, true, false);
-    console.log(data.userdata);
     if(!success) return;
     deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
     let reviews = data.userdata.reviews;
     
     let r_keys = Object.keys(reviews);
-    let decks = [];
-    let counts = [];
-    let coll = 0;
+    let decks = [], counts = [], coll = 0;
 
     for(let i = 0; i < r_keys.length; i++) {
         let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), false, false, true);
@@ -68,13 +69,17 @@ function hide() {
     }
     if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- There aren't any decks to review. --</p>";
     deckReminders.innerHTML += "<h3>All Decks</h3>";
+    coll = 0;
     for(let i = 0; i < decks.length; i++) {
-        deckReminders.innerHTML += `
-            <div class="review-container">
-                <span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>
-            </div>
-        `;
+        coll++;
+        let div = document.createElement('div');
+        div.className = 'review-container';
+        div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>`;
+        deckReminders.appendChild(div);
+        div.addEventListener('mouseenter', () => show(data, decks[i]));
+        div.addEventListener('mouseleave', hide);
     }
+    if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- You don't have any decks in your reviews. --</p>";
     searcher.addEventListener('input', () => {
         if(searcher.value == '') {
             let coll = 0;
@@ -91,17 +96,21 @@ function hide() {
             }
             if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- There aren't any decks to review. --</p>";
             deckReminders.innerHTML += "<h3>All Decks</h3>";
+            coll = 0;
             for(let i = 0; i < decks.length; i++) {
-                deckReminders.innerHTML += `
-                    <div class="review-container">
-                        <span class="review-name"><span class='material-symbols-outlined'>arrow_back_ios</span>${decks[i].name}</span>
-                    </div>
-                `;
+                coll++;
+                let div = document.createElement('div');
+                div.className = 'review-container';
+                div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>`;
+                deckReminders.appendChild(div);
+                div.addEventListener('mouseenter', () => show(data, decks[i]));
+                div.addEventListener('mouseleave', hide);
             }
+            if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- You don't have any decks in your reviews. --</p>";
         } else {
             let coll = 0;
             deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
-            for(let i = 0; i < decks.length; i++) {
+            for(let i = 0; i < decks.length; i++)
                 if(counts[i] > 0 && decks[i].name.toLowerCase().includes(searcher.value.toLowerCase())) {
                     coll++;
                     deckReminders.innerHTML += `
@@ -110,25 +119,19 @@ function hide() {
                         </div>
                     `;
                 }
-            }
             if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- There are't any decks for review that match. --</p>";
             deckReminders.innerHTML += "<h3>All Decks</h3>";
             coll = 0;
-            for(let i = 0; i < decks.length; i++) {
+            for(let i = 0; i < decks.length; i++)
                 if(decks[i].name.toLowerCase().includes(searcher.value.toLowerCase())) {
                     coll++;
                     let div = document.createElement('div');
                     div.className = 'review-container';
                     div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>`;
                     deckReminders.appendChild(div);
-                    div.addEventListener('mouseenter', () => {
-                        show(data, decks, decks[i].name);
-                    });
-                    div.addEventListener('mouseleave', () => {
-
-                    });
+                    div.addEventListener('mouseenter', () => show(data, decks[i]));
+                    div.addEventListener('mouseleave', hide);
                 }
-            }
             if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- There are't any decks that match. --</p>";
         }
     });

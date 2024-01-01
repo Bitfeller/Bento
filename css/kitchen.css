@@ -94,6 +94,13 @@ body > h2 {
     text-decoration: underline;
     font-size: 18.5px;
 }
+.private-deck {
+    margin: 0px 5px;
+    padding: 0px 5px;
+    background-color: rgb(175, 150, 100);
+    border-radius: 10px;
+    font-size: 13px;
+}
 ::backdrop {
     background-image: radial-gradient(45deg, black);
     opacity: 0.75;    
