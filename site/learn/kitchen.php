@@ -6,7 +6,7 @@
     <title>Kitchen</title>
     <?php require_once "../globalreqs.php"?>
     <link rel="stylesheet" href="../../css/kitchen.css"/>
-    <script src="../../sitejs/kitchen_new.js" type="module" data-loading="true"></script>
+    <script src="../../sitejs/kitchen.js" type="module" data-loading="true"></script>
     <link rel="preload" href="../../img/loading.gif" as="image">
     <!-- MathJax -->
     <script>
@@ -49,7 +49,8 @@
                     <div class="filtered-tags">
                     </div>
                     <div class="break-line"></div>
-                    <p>Possible Tags (random): </p>
+                    <p>Suggested Tags: </p> 
+                    <!-- Trick the user to feel like they are suggested -->
                     <div class="predefined-tags">
                     </div>
                     <div class="break-line"></div>

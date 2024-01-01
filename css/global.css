@@ -441,6 +441,12 @@ dialog::backdrop {
     margin-top: 10px !important;
     margin-left: 0px !important;
 }
+.drag-line {
+    display: flex; 
+    background-color: var(--drag-bar); 
+    width: 100%; 
+    height: 5px;
+}
 @media only screen and (min-width: 9999px) {
     #too-big-img {
         background-image: url(/img/menhera-sad.gif);

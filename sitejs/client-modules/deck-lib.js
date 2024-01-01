@@ -22,7 +22,7 @@ const sizeLimit = 2 * 1000 * 1000; // NOTE: must be same as max_image_size in se
 let allowedTags = [];
 
 const dragline = document.createElement('div');
-dragline.style = 'display: flex; background-color: var(--drag-bar); width: 100%; height: 5px;';
+dragline.className = 'drag-line';
 
 // Load DOMPurify for imports
 const dpscript = document.createElement('script');
