@@ -218,6 +218,15 @@ button {
 #cardcontain {
     transition: 0.3s;
 }
+textarea {
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: var(--gray);
+    color: var(--light-text);
+    width: calc(100% - 60px);
+    height: max-content;
+}
 @media only screen and (max-width: 1025px) {
     .deck-pick-container, .deck-pic {
         height: calc(9vh*2.4);
@@ -237,11 +246,11 @@ button {
     #addcard, #create {
         width: 100%;
     }
-    #modal-content {
-        width: 93%;
+    .modal-content {
+        width: 92%;
         padding: 2% 1%;
     }
-    #modal-content > h1 {
+    .modal-content > h1 {
         font-size: 24pt;
     }
     .create-container {

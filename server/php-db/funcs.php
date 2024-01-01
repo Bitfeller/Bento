@@ -46,7 +46,7 @@
         }
         foreach ($params as $index => $param) {
             // format type
-            $type;
+            $type = "";
             $secondType = ""; // if applicable
             switch($types[$index]) {
                 case "s":
