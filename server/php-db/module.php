@@ -78,6 +78,7 @@
             if(isset($val) and (gettype($val) !== $type and gettype($val) !== ($secondType or $type))) access_fail();
         }
     }
+
     //      Get server config
     function get_server_config() {
         if(file_exists('../../conf/local-config.json')) return json_decode(file_get_contents("../../conf/local-config.json"), true);
@@ -119,7 +120,7 @@
         if(gettype($content) == "string") return _traverse_str_sanitize($content);
         return null;
     }
-    // Content filter
+    //      Content filter
     function get_filter_list() {
         return file('../../conf/moderator/config-filter-regex.list');
     }
@@ -135,6 +136,8 @@
         if(gettype($content) == "string") return _traverse_str_filter($content);
         return null;
     }
+
+    // Connect to database
     function connect_to_db() {
         $conf = get_server_config();
         $conn = mysqli_connect($conf['mysql']['host'], $conf['mysql']['user'], $conf['mysql']['password'], $conf['mysql']['db']);

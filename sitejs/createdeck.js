@@ -68,8 +68,8 @@ createBtn.addEventListener('mousedown', async () => {
         div.getElementsByClassName("show")[0].addEventListener("mousedown", async () => {
             cardContain.innerHTML = "";
             DeckBind.appendToCards(deck.contnt);
-            title.value = deck.name;
-            desc.value = deck.desc;
+            title.value = window.lib.decode(deck.name);
+            desc.value = window.lib.decode(deck.desc);
             ispub.checked = deck.pub;
             let [success, img] = await UserGateway.getDraftImage(time);
             if(!success) return void console.warn("Couldn't get draft img: " + img);
@@ -84,7 +84,7 @@ createBtn.addEventListener('mousedown', async () => {
         });
     }
     window.setInterval(async () => {
-        let copy = structuredClone(drafts_save);
+        let copy = window.lib.recur_decode(structuredClone(drafts_save));
         let res = DeckBind.toDeck(() => {}, true);
         if(!res) return;
         let [name, img, data, pub] = res; // unpack
