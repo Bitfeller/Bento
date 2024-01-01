@@ -7,6 +7,8 @@
 # =================== Folder Struct ===================
 # Remove unwanted files
 rm ./server/conf/local-config.json
+rm ./server/conf/config.json
+cp ../config.json ./server/conf/config.json
 rm -rf ./dev
 rm -rf ./site/test
 rm -rf ./sitejs/test-scripts
