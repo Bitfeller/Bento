@@ -2,7 +2,20 @@ const moduleurl = new URL(import.meta.url);
 const spath = moduleurl.pathname + "/../..";
 
 let lastUser;
+let fetchCache = {};
 
+async function gateway_fetch(path) {
+    if(fetchCache[path]) return fetchCache[path];
+    try {
+        const resp = await fetch(spath + path);
+        if(!resp.ok) throw "couldn't fetch!";
+        const data = await resp.json();
+        return fetchCache[path] = data;
+    } catch(e) {
+        console.error('backend: Failed to fetch:', e);
+        return {};
+    }
+}
 function types(t, ...args) {
     return args.every((c, i) => {
         if(c === undefined) return false;
@@ -37,4 +50,4 @@ async function sameUser() {
     return same;
 }
 
-export { types, sameUser };
+export { types, sameUser, gateway_fetch };

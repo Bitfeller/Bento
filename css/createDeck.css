@@ -78,6 +78,7 @@ button:hover {
 }
 #description {
     max-width: 700px;
+    margin-bottom: 15px;
 }
 .create-container input, .create-container > button {
     font-size: 11pt;
@@ -387,6 +388,54 @@ input[type="file"] {
     position: absolute;
     top: 15px;
     left: 10px;
+}
+#tagsContainer {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0px;
+    justify-items: center;
+}
+#tags {
+    display: flex;
+    gap: 10px;
+    overflow-x: scroll;
+}
+.tag {
+    display: flex;
+    padding: 0px 5px;
+    background-color: rgb(175, 150, 100);
+    border-radius: 5px;
+    align-items: center;
+    gap: 5px;
+    .material-symbols-outlined {
+        font-size: 12pt;
+    }
+    & p {
+        white-space: nowrap;
+    }
+}
+.add-tag, .remove-tag {
+    cursor: pointer;
+    transition: 0.3s;
+}
+.add-tag:hover, .remove-tag:hover {
+    filter: brightness(85%);
+}
+#tagInput {
+    width: 150px;
+    padding: 0px;
+    margin: 0px;
+    height: 32px;
+}
+.drag-handle {
+    width: 15px;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 10px;
+    user-select: none;
+}
+.drag-handle:hover {
+    filter: brightness(115%);
 }
 @media only screen and (max-width: 1025px) {
     .options-container {
