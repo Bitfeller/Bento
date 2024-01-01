@@ -7,7 +7,6 @@ const reviewBtn = document.getElementById("reviewBtn");
 const errmsg = document.getElementById("errmsg");
 
 const o_mode = document.getElementsByClassName("mode");
-const o_speed = document.getElementsByClassName("speed");
 const o_repeat = document.getElementsByClassName("repeat");
 const o_shuffle = document.getElementsByClassName("shuffle");
 
@@ -177,13 +176,8 @@ let user;
             return;
         }
         // Set options
-        let mode = 0, speed, repeat, shuffle;
+        let mode = 0, repeat, shuffle;
         if(o_mode[1].checked == true) mode = 1;
-        for(let i = 0; i < o_speed.length; i++) {
-            if(o_speed[i].checked == true) {
-                speed = i + 1;
-            }
-        }
         for(let i = 0; i < o_repeat.length; i++) {
             if(o_repeat[i].checked == true) {
                 repeat = i + 1;
@@ -194,7 +188,7 @@ let user;
                 shuffle = i + 1;
             }
         }
-        window.location.href = "/learn/game?ds=" + selectedDecks.join(",") + "&m=" + mode + "&s=" + speed + "&r=" + repeat + "&sh=" + shuffle;
+        window.location.href = "/learn/game?ds=" + selectedDecks.join(",") + "&m=" + mode + "&r=" + repeat + "&sh=" + shuffle;
     })
     deckSelect.addEventListener("mousedown", () => {
         let allChecked = false;

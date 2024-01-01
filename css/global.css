@@ -81,6 +81,7 @@ input {
     width: 100%;
     height: 100%;
     background-color: var(--navy-blue);
+    z-index: 500;
 }
 .load-rot {
     position: absolute;
@@ -94,6 +95,32 @@ input {
     border-bottom: solid white 10px;
     border-radius: 50%;
     animation: spin 2s linear infinite;
+}
+.loader .tips {
+    position: absolute;
+    top: 70%;
+    font-family: karla;
+    font-style: italic;
+    color: rgb(150, 150, 150);
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+.prev-tip, .new-tip {
+    width: 100%;
+    height: 100%;
+    font-family: karla;
+    font-style: italic;
+    color: rgb(150, 150, 150);
+    text-align: center;
+}
+.prev-tip {
+    opacity: 100%;
+    animation: t_fadeout 0.5s ease forwards;
+}
+.new-tip {
+    opacity: 0;
+    animation: t_fadein 0.5s ease forwards;
 }
 .header {
     height: 63px;
@@ -207,4 +234,25 @@ input:checked + .slider:before {
 }
 dialog::backdrop{
     background-color: rgba(0, 0, 0, 0.7);
+}
+
+@keyframes t_fadeout {
+    0% {
+        opacity: 100%;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+}
+@keyframes t_fadein {
+    0% {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    100% {
+        opacity: 100%;
+        transform: translateY(0);
+    }
 }

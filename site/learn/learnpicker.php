@@ -40,20 +40,6 @@
         </div>
         <div>
             <div class="big-box" id="settings-big-box">
-                <h2>Speed</h2>
-                <div class="settings-container">
-                    <div class="setting-box">
-                        <input type="radio" name="speed" class="sb-radio speed" id="1">
-                        <p>| Quickly review </p> <!-- (Skip to the next term immediately) -->
-                    </div>
-                    <div class="setting-box">
-                        <input type="radio" name="speed" class="sb-radio speed" id="2" checked="true">
-                        <p>| Take your time</p>
-                    </div>
-                    <!--  -->
-                </div>
-            </div>
-            <div class="big-box" id="settings-big-box">
                 <h2>Repetition</h2>
                 <div class="settings-container">
                     <div class="setting-box">

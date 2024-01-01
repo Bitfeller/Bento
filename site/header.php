@@ -8,4 +8,5 @@
 </header>
 <div class="loader">
   <div class="load-rot"></div>
+  <p class="tips"></p>
 </div>
