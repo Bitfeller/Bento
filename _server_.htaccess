@@ -16,6 +16,7 @@ SetEnvIf REQUEST_URI /(.*) NEWURI=$1
 # RewriteCond %{ENV:NEWURI} !^(.*)css\/(.*)$
 # RewriteCond %{ENV:NEWURI} !^(.*)img\/(.*)$
 # RewriteCond %{ENV:NEWURI} !^(.*)globalreqs.php(.*)$
+# RewriteCond %{REMOTE_ADDR} !^10\.
 # RewriteRule ^(.*)$ /site/maintenance.php [END]
 
 RewriteRule ^testdeck\.php$ - [F]

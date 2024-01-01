@@ -1,44 +1,43 @@
-// !! NOTE !!
-// This library version should not be utilized for production purposes.
+// [[ no info ]]
 
-import { UserGateway } from "../../server/client-gateway/user-gateway.js";
-import { DeckGateway } from "../../server/client-gateway/deck-gateway.js";
+import { UserGateway } from "../client-gateway/user-gateway.js";
+import { DeckGateway } from "../client-gateway/deck-gateway.js";
 
 // -------------------------------------------------------- \\
 
-let user;
+var user;
 
-let decks = [];
-let gameData = [
+var decks = [];
+var gameData = [
     // all questions data + totalWrong count
 ];
 
-let deckSize = 5;
-let cardRepeat = 2;
-let curr_p = 0.5, ls_p = 0.3, lls_p = 0.2;
-let currentSet = 0;
-let g_norand = true;
+var deckSize = 5;
+var cardRepeat = 2;
+var curr_p = 0.5, ls_p = 0.3, lls_p = 0.2;
+var currentSet = 0;
+var g_norand = true;
 
-let randomSet = [];
-let rndSetData = {};
-const currWrong = [];
-const wasWrong = [];
-const lsWrong = [];
-const llsWrong = [];
-const lsShown = [];
-const llsShown = [];
-let card = 0;
-let active = true;
+var randomSet = [];
+var rndSetData = {};
+var currWrong = [];
+var wasWrong = [];
+var lsWrong = [];
+var llsWrong = [];
+var lsShown = [];
+var llsShown = [];
+var card = 0;
+var active = true;
 
-let seen = 0;
-let C_lw = 0;
-let C_gw = 0;
-let E_s = 0;
-let C_pwsets = 0;
+var seen = 0;
+var C_lw = 0;
+var C_gw = 0;
+var E_s = 0;
+var C_pwsets = 0;
 
-const totalWrong = {};
-const cardsSeen = {};
-let updateFunc;
+var totalWrong = {};
+var cardsSeen = {};
+var updateFunc;
 
 // -------------------------------------------------------- \\
 
@@ -50,15 +49,25 @@ function random(a, b) {
 
 function iterateProblem() {
     // edit cardsSeen
-    if(cardsSeen[randomSet[card]]) {
-        cardsSeen[randomSet[card]]++;
+    if(cardsSeen[""+randomSet[card]]) {
+        cardsSeen[""+randomSet[card]] += 1;
     } else {
-        cardsSeen[randomSet[card]] = 1;
+        cardsSeen[""+randomSet[card]] = 1;
     }
     // next
-    card++;
+    card += 1;
     seen++;
-    if(card >= randomSet.length) return newRandomDeck(); // finished set! next set + restart process
+    if(card >= randomSet.length) {
+        // finished set! next set + restart process
+        let res = newRandomDeck();
+        // if(randomSet[card] >= currentSet * deckSize) {
+        //     seen += 1;
+        // }
+        return res;
+    }
+    // if(randomSet[card] >= currentSet * deckSize) {
+    //     seen += 1;
+    // }
     return true;
 }
 function newRandomDeck() {
@@ -70,7 +79,7 @@ function newRandomDeck() {
         E_s = 0;
         C_lw = 0;
         C_pwsets = 0;
-        seen--;
+        seen -= 1;
         updateFunc();
         return false;
     }
@@ -116,7 +125,7 @@ function newRandomDeck() {
                 if(ls < 1) ls = 1;
             }
         } else {
-            if(!even) curr--;
+            if(!even) curr -= 1;
             let amount = (curr + ls + lls - deckSize) / 2;
             ls -= amount;
             lls -= amount;
@@ -131,7 +140,7 @@ function newRandomDeck() {
         let equal = curr == ls;
         let even = (deckSize - curr - ls - lls) % 2 == 0;
         if(equal) {
-            if(!even) curr++;
+            if(!even) curr += 1;
             let amount = (deckSize - curr - ls - lls) / 2;
             curr += amount;
             ls += amount;
@@ -152,16 +161,16 @@ function newRandomDeck() {
     let problems = [];
     let available = [];
     for(let i = currentSet * deckSize; i < currentSet * deckSize + Math.min(len, deckSize); i++) {
-        if(rndSetData[i] && rndSetData[i] < cardRepeat) {
+        if(rndSetData[""+i] && rndSetData[""+i] < cardRepeat) {
             available.push(i);
-        } else if(!rndSetData[i]) {
-            rndSetData[i] = 0;
+        } else if(!rndSetData[""+i]) {
+            rndSetData[""+i] = 0;
             available.push(i);
         }
     }
     if(available.length == 0 && currWrong.length == 0 && lsWrong.length == 0 && llsWrong.length == 0) {
         // finished set - move on to next set
-        currentSet++;
+        currentSet += 1;
         E_s = 0;
         C_lw = 0;
         C_pwsets = 0;
@@ -174,7 +183,7 @@ function newRandomDeck() {
             let p = random(0, currWrong.length - 1);
             if(problems.indexOf(currWrong[p]) > -1) continue;
             problems.push(currWrong[p]);
-            rndSetData[currWrong[p]]++;
+            rndSetData[""+currWrong[p]] += 1;
             let idx = available.indexOf(currWrong[p]);
             if(idx > -1) available.splice(idx, 1);
             if(wasWrong.indexOf(currWrong[p]) < 0) wasWrong.push(currWrong[p]);
@@ -188,7 +197,7 @@ function newRandomDeck() {
                 if(problems.indexOf(available[p]) > -1) continue;
             }
             problems.push(available[p]);
-            rndSetData[available[p]]++;
+            rndSetData[""+available[p]] += 1;
             available.splice(p, 1);
         } else {
             break;
@@ -313,6 +322,14 @@ async function init(_decks, info) {
             user.reviews[deck] = userReview;
             let json = JSON.stringify(user.reviews);
             await UserGateway.editUser("reviews", json);
+            // userReview = {
+            //     deckid: deck,
+            //     cards: []
+            // };
+            // user.reviews.push(userReview);
+            // idx = user.reviews.length - 1;
+            // let json = JSON.stringify(user.reviews);
+            // await UserGateway.editUser("reviews", json);
         }
         let updateIdx = false;
         let r_keys = Object.keys(userReview);
@@ -360,7 +377,7 @@ async function init(_decks, info) {
         //         userReview.cards.splice(j, 1);
         //         updateReviews = true;
         //         updateIdx = true;
-        //         j--;
+        //         j -= 1;
         //     }
         //     // ["question", 0, last_time_they_saw_it = -1]
         // }
@@ -453,13 +470,13 @@ async function init(_decks, info) {
                 user.reviews[holder][card.q] = newcard;
             }
             // let idx;
-            // if(cache_deckIds[holder]) {
-            //     idx = cache_deckIds[holder];
+            // if(cache_deckIds[""+holder]) {
+            //     idx = cache_deckIds[""+holder];
             // } else {
             //     for(let j = 0; j < user.reviews.length; j++) {
             //         if(user.reviews[j].deckid == holder) {
             //             idx = j;
-            //             cache_deckIds[holder] = idx;
+            //             cache_deckIds[""+holder] = idx;
             //             break;
             //         }
             //     }
@@ -539,14 +556,14 @@ function get_pwsets() {
     return left;    
 }
 function getProgress() {
+    //if(!active) return {dead: true};
+
+
     // Calculate new global/local caches for C_w
     let curr = Math.floor(curr_p * deckSize + 0.5);
     let prev = deckSize - curr;
-    // 5 / 8?
-    let S_l = Math.ceil(((gameData.length - deckSize) * cardRepeat + currWrong.length) / curr) + C_gw;
-    let S_l_std = Math.ceil((gameData.length - deckSize) * cardRepeat / curr) + C_gw;
-    if(S_l < 0) S_l = 0;
-    if(S_l_std < 0) S_l_std = 0;
+    let S_l = cardRepeat + Math.ceil(((gameData.length - 8) * cardRepeat + currWrong.length) / curr) + C_gw;
+    let S_l_std = cardRepeat + Math.ceil((gameData.length - 8) * cardRepeat / curr) + C_gw;
     if(S_l - S_l_std > 0) {
         // diff greater than previous C_gw; add
         // S_l greater than standard, meaning wrong count leads to a new set
@@ -561,16 +578,19 @@ function getProgress() {
         C_lw += S_ll - S_ll_std;
     }
 
+
     let left = get_pwsets();
+
 
     return {
         seen,
         total: 
             // Initially based on a 16-card deck w/ deckSize 8:
-            gameData.length * cardRepeat            // d_s * r  (all cards)
-            + currWrong.length                      // w        (all wrong cards)
-            + S_l * prev                            // S_l(2)   (all previous cards shown)
-            + 2 * left,                             // 2 * (ls_w - (ceil(8r / 6) + cl_w - e_s)(p(c_d)))
+            gameData.length * cardRepeat      // d_s * r  (all cards)
+            + currWrong.length                  // w        (all wrong cards)
+            + (S_l - cardRepeat) * prev                        // S_l(2)   (all previous cards shown)
+            + 2 * left                           // 2 * (ls_w - (ceil(8r / 6) + cl_w - e_s)(p(c_d)))
+            ,
         remaining: gameData.length * cardRepeat - seen
     };
 }
@@ -589,7 +609,7 @@ function attemptProblem(answer) {
             }
             return isCorrect ? correct() : incorrect();
         case "matching":
-            console.error("matching doesn't exist, idiot!");
+            return;
     }
 }
 function isDead() {
@@ -604,7 +624,7 @@ function correct() {
 function incorrect() {
     if(randomSet[card] >= currentSet * deckSize) {
         currWrong.push(randomSet[card]);
-        seen--;
+        seen -= 1;
     } else if(randomSet[card] >= (currentSet - 1) * deckSize) {
         lsWrong.push(randomSet[card]);
         let left = get_pwsets();
@@ -620,10 +640,10 @@ function incorrect() {
             seen -= 2 * C_pwsets;
         }
     }
-    if(totalWrong[randomSet[card]]) {
-        totalWrong[randomSet[card]]++;
+    if(totalWrong[""+randomSet[card]]) {
+        totalWrong[""+randomSet[card]] += 1;
     } else {
-        totalWrong[randomSet[card]] = 1;
+        totalWrong[""+randomSet[card]] = 1;
     }
     correct();
     return false;

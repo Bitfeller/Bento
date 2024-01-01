@@ -208,7 +208,7 @@ async function preview(_this, isAdded) {
             const data = {
                 name: deck.name,
                 desc: deck.data.desc,
-                deckData: deck.data.contnt
+                contnt: deck.data.contnt
             };
             const json = JSON.stringify(data);
             const file = new File([json], deck.name+'.txt', {type: "text/plain"});
