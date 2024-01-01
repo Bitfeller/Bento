@@ -338,8 +338,7 @@ window.addEventListener('mousedown', e => {
         feedback_dialog.close();
         version_info.close();
     }
-    if(typewriteInterval && !t_btnOverride) {
+    if(typewriteInterval && !t_btnOverride)
         _finish();
-    }
     t_btnOverride = false;
 });
