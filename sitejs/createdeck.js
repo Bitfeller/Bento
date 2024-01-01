@@ -37,25 +37,25 @@ function initMc(newDiv, n, q) {
             <button class='rankbtn selbtn selbtn-noselect'>Ranking</button>
         </div>
         <div class='card-main'>
-            Question: <input type='input' class='question' placeholder='The question...' ${q ? "value=\"" + q + "\"" : ""}><br>
+            Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div><br>
             <div class='card-mc'>
                 <div class='mc-option'>
-                    <input type='input' class='mc-option-input' placeholder='...'>
+                    <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
                     <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
                     <button class='mc-option-correct mc-option-sel'><span class='material-symbols-outlined'>check</span></button>
                 </div>
                 <div class='mc-option'>
-                    <input type='input' class='mc-option-input' placeholder='...'>
+                    <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
                     <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
                     <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
                 </div>
                 <div class='mc-option'>
-                    <input type='input' class='mc-option-input' placeholder='...'>
+                    <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
                     <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
                     <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
                 </div>
                 <div class='mc-option'>
-                    <input type='input' class='mc-option-input' placeholder='...'>
+                    <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
                     <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
                     <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
                 </div>
@@ -67,10 +67,10 @@ function initMc(newDiv, n, q) {
     `;
     // Set up selector
     newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
-        initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
+        initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
     });
     newDiv.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
-        initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
+        initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
     });
     newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
         if(cards.length <= 1) return;
@@ -87,7 +87,7 @@ function initMc(newDiv, n, q) {
         let newOp = document.createElement("div");
         newOp.className = "mc-option";
         newOp.innerHTML = `
-            <input type='input' class='mc-option-input' placeholder='...'>
+            <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
             <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
             <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
         `;
@@ -146,18 +146,18 @@ function initTxt(newDiv, n, q) {
             <button class='rankbtn selbtn selbtn-noselect'>Ranking</button>
         </div>
         <div class='card-main'>
-            Question: <input type='input' class='question' placeholder='The question...' ${q ? "value=\"" + q + "\"" : ""}><br>
-            Answer: <input type='input' class='txt-answer' placeholder='...'>
+            Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div><br>
+            Answer: <div contenteditable="true" type='input' class='txt-answer' placeholder='...'></div>
         </div>
         <button class='card-del'>Delete Card</button>
         <div class='deck-divider'></div>
     `;
     // Set up selector
     newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
-        initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
+        initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
     });
     newDiv.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
-        initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
+        initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
     });
     newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
         if(cards.length <= 1) return;
@@ -176,14 +176,14 @@ function initRanking(newDiv, n, q) {
             <button class='rankbtn selbtn selbtn-select'>Ranking</button>
         </div>
         <div class='card-main'>
-            Question: <input type='input' class='question' placeholder='The question...' ${q ? "value=\"" + q + "\"" : ""}><br>
+            Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div><br>
             <div class='card-rank ranking-list'>
                 <div draggable='true' class='ranking-item'>
-                    <input type='text' class='ranking-item-txt' placeholder='...'>
+                    <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'></div>
                     <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
                 </div>
                 <div draggable='true' class='ranking-item'>
-                    <input type='text' class='ranking-item-txt' placeholder='...'>
+                    <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'></div>
                     <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
                 </div>
             </div>
@@ -194,10 +194,10 @@ function initRanking(newDiv, n, q) {
     `;
     // Set up selector
     newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
-        initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
+        initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
     });
     newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
-        initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
+        initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
     });
     newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
         if(cards.length <= 1) return;
@@ -215,7 +215,7 @@ function initRanking(newDiv, n, q) {
         item.className = 'ranking-item';
         item.setAttribute("draggable", true);
         item.innerHTML = `
-            <input type='text' class='ranking-item-txt' placeholder='...'>
+            <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'></div>
             <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
         `;
         rankingList.appendChild(item);
@@ -422,7 +422,7 @@ createBtn.addEventListener("mousedown", async function() {
         errmsg.innerHTML = "Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)";
         return;
     }
-    if(name.value == '') {
+    if(name == '') {
         errmsg.innerHTML = "Enter in a valid name for the deck";
         return;
     }
@@ -446,7 +446,7 @@ createBtn.addEventListener("mousedown", async function() {
                 errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                 return;
             }
-            // cardData.question = question.value;
+            // cardData.question = question;
             let answers = card.getElementsByClassName('mc-option');
             if(answers.length < 2) {
                 errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
@@ -458,13 +458,13 @@ createBtn.addEventListener("mousedown", async function() {
                     errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                     return;
                 }
-                cardData.op.push(formatter(answer.value));
+                cardData.op.push(formatter(answer.innerHTML));
                 let isCorrect = answers[j].getElementsByClassName('mc-option-sel');
                 if(isCorrect.length > 0) {
-                    cardData.ans = formatter(answer.value);
+                    cardData.ans = formatter(answer.innerHTML);
                 }
             }
-            data[formatter(question.value)] = cardData;
+            data[formatter(question.innerHTML)] = cardData;
         } else if(classNames.includes('txtbtn')) {
             let cardData = {
                 type: 'txt',
@@ -476,8 +476,8 @@ createBtn.addEventListener("mousedown", async function() {
                 errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                 return;
             }
-            cardData.ans = formatter(answer.value);
-            data[formatter(question.value)] = cardData;
+            cardData.ans = formatter(answer.innerHTML);
+            data[formatter(question.innerHTML)] = cardData;
         } else if(classNames.includes('rankbtn')) {
             let cardData = {
                 type: 'ranking',
@@ -488,7 +488,7 @@ createBtn.addEventListener("mousedown", async function() {
                 errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                 return;
             }
-            // cardData.question = question.value;
+            // cardData.question = question;
             let items = card.getElementsByClassName('ranking-item');
             for(let j = 0; j < items.length; j++) {
                 let item = items[j];
@@ -497,9 +497,9 @@ createBtn.addEventListener("mousedown", async function() {
                     errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                     return;
                 }
-                cardData.ans.push(formatter(txt.value));
+                cardData.ans.push(formatter(txt.innerHTML));
             }
-            data[formatter(question.value)] = cardData;
+            data[formatter(question.innerHTML)] = cardData;
         }
     }
     data = {
@@ -590,13 +590,13 @@ addCard.addEventListener("mousedown", newCard);
                 for(let j = 0; j < answers.length; j++) {
                     let answer = answers[j].getElementsByClassName('mc-option-input')[0];
                     if(!answer) continue;
-                    cardData.op.push(formatter(answer.value));
+                    cardData.op.push(formatter(answer.innerHTML));
                     let isCorrect = answers[j].getElementsByClassName('mc-option-sel');
                     if(isCorrect.length > 0) {
-                        cardData.ans = formatter(answer.value);
+                        cardData.ans = formatter(answer.innerHTML);
                     }
                 }
-                data[formatter(question.value)] = cardData;
+                data[formatter(question.innerHTML)] = cardData;
             } else if(classNames.includes('txtbtn')) {
                 let cardData = {
                     type: 'txt',
@@ -605,8 +605,8 @@ addCard.addEventListener("mousedown", newCard);
                 let question = card.getElementsByClassName('question')[0];
                 let answer = card.getElementsByClassName('txt-answer')[0];
                 if(!question || !answer) continue;
-                cardData.ans = formatter(answer.value);
-                data[formatter(question.value)] = cardData;
+                cardData.ans = formatter(answer.innerHTML);
+                data[formatter(question.innerHTML)] = cardData;
             } else if(classNames.includes('rankbtn')) {
                 let cardData = {
                     type: 'ranking',
@@ -620,9 +620,9 @@ addCard.addEventListener("mousedown", newCard);
                     let item = items[j];
                     let txt = item.getElementsByClassName('ranking-item-txt')[0];
                     if(!txt) continue;
-                    cardData.ans.push(formatter(txt.value));
+                    cardData.ans.push(formatter(txt.innerHTML));
                 }
-                data[formatter(question.value)] = cardData;
+                data[formatter(question.innerHTML)] = cardData;
             }
         }
         if(Object.keys(data).length == 0) return;
@@ -694,14 +694,14 @@ function appendToCards(contnt) {
         switch(card.type) {
             case "mc":
                 initMc(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].value = backwards_formatter(q);
+                newDiv.getElementsByClassName('question')[0].innerHTML = backwards_formatter(q);
                 let cardmc = newDiv.getElementsByClassName('card-mc')[0];
                 cardmc.innerHTML = "";
                 for(let i = 0; i < card.op.length; i++) {
                     let newOp = document.createElement("div");
                     newOp.className = "mc-option";
                     newOp.innerHTML = `
-                        <input type='input' class='mc-option-input' placeholder='...' value='${backwards_formatter(card.op[i])}'>
+                        <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'>${backwards_formatter(card.op[i])}</div>
                         <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
                         <button class='mc-option-correct ${card.ans == card.op[i] ? 'mc-option-sel' : 'mc-option-nosel'}'>${card.ans == card.op[i] ? '<span class="material-symbols-outlined">check</span>' : '<span class="material-symbols-outlined">check_indeterminate_small</span>'}</button>
                     `;
@@ -728,12 +728,12 @@ function appendToCards(contnt) {
             break;
             case "txt":
                 initTxt(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].value = backwards_formatter(q);
-                newDiv.getElementsByClassName('txt-answer')[0].value = backwards_formatter(card.ans);
+                newDiv.getElementsByClassName('question')[0].innerHTML = backwards_formatter(q);
+                newDiv.getElementsByClassName('txt-answer')[0].innerHTML = backwards_formatter(card.ans);
             break;
             case "ranking":
                 initRanking(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].value = backwards_formatter(q);
+                newDiv.getElementsByClassName('question')[0].innerHTML = backwards_formatter(q);
                 let rankingList = newDiv.getElementsByClassName("ranking-list")[0];
                 rankingList.innerHTML = '';
                 for(let i = 0; i < card.ans.length; i++) {
@@ -741,7 +741,7 @@ function appendToCards(contnt) {
                     item.className = 'ranking-item';
                     item.setAttribute("draggable", true);
                     item.innerHTML = `
-                        <input type='text' class='ranking-item-txt' placeholder='...' value='${backwards_formatter(card.ans[i])}'>
+                        <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'>${backwards_formatter(card.ans[i])}</div>
                         <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
                     `;
                     rankingList.appendChild(item);
@@ -878,7 +878,7 @@ q_createbtn.addEventListener("mousedown", () => {
     });
     if(!isValid) return;
     try {
-        appendToCards(val_contnt);
+        appendToCards(contnt);
     } catch(e) {
         q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.";
         return;
