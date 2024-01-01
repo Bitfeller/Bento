@@ -5,8 +5,8 @@
 # must NOT be included in this file unless otherwise generated or for the use of local environments.
 
 # Ignore all pfp images and picture images.
-file_db/**/*.pfp
-file_db/**/*.pic
+db/**/*.pfp
+db/**/*.pic
 
 # Ignore Node.js installed packages.
 **/node_modules/*
