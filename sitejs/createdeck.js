@@ -29,7 +29,7 @@ function computeCenter(el) {
         y: (rect.top + rect.bottom) / 2 + scrollY
     }
 }
-function initMc(newDiv, n) {
+function initMc(newDiv, n, q) {
     newDiv.innerHTML = `
         <div class='card-sel'>
             <button class='mcbtn selbtn selbtn-select'>Multiple Choice</button>
@@ -37,7 +37,7 @@ function initMc(newDiv, n) {
             <button class='rankbtn selbtn selbtn-noselect'>Ranking</button>
         </div>
         <div class='card-main'>
-            Question: <input type='input' class='question' placeholder='The question...'><br>
+            Question: <input type='input' class='question' placeholder='The question...' ${q ? "value=\"" + q + "\"" : ""}><br>
             <div class='card-mc'>
                 <div class='mc-option'>
                     <input type='input' class='mc-option-input' placeholder='...'>
@@ -67,10 +67,10 @@ function initMc(newDiv, n) {
     `;
     // Set up selector
     newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
-        initTxt(newDiv, n);
+        initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
     });
     newDiv.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
-        initRanking(newDiv, n);
+        initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
     });
     newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
         if(cards.length <= 1) return;
@@ -138,7 +138,7 @@ function initMc(newDiv, n) {
         });
     }
 }
-function initTxt(newDiv, n) {
+function initTxt(newDiv, n, q) {
     newDiv.innerHTML = `
         <div class='card-sel'>
             <button class='mcbtn selbtn selbtn-noselect'>Multiple Choice</button>
@@ -146,7 +146,7 @@ function initTxt(newDiv, n) {
             <button class='rankbtn selbtn selbtn-noselect'>Ranking</button>
         </div>
         <div class='card-main'>
-            Question: <input type='input' class='question' placeholder='The question...'><br>
+            Question: <input type='input' class='question' placeholder='The question...' ${q ? "value=\"" + q + "\"" : ""}><br>
             Answer: <input type='input' class='txt-answer' placeholder='...'>
         </div>
         <button class='card-del'>Delete Card</button>
@@ -154,10 +154,10 @@ function initTxt(newDiv, n) {
     `;
     // Set up selector
     newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
-        initMc(newDiv, n);
+        initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
     });
     newDiv.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
-        initRanking(newDiv, n);
+        initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
     });
     newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
         if(cards.length <= 1) return;
@@ -168,7 +168,7 @@ function initTxt(newDiv, n) {
         newDiv.remove();
     });
 }
-function initRanking(newDiv, n) {
+function initRanking(newDiv, n, q) {
     newDiv.innerHTML = `
         <div class='card-sel'>
             <button class='mcbtn selbtn selbtn-noselect'>Multiple Choice</button>
@@ -176,7 +176,7 @@ function initRanking(newDiv, n) {
             <button class='rankbtn selbtn selbtn-select'>Ranking</button>
         </div>
         <div class='card-main'>
-            Question: <input type='input' class='question' placeholder='The question...'><br>
+            Question: <input type='input' class='question' placeholder='The question...' ${q ? "value=\"" + q + "\"" : ""}><br>
             <div class='card-rank ranking-list'>
                 <div draggable='true' class='ranking-item'>
                     <input type='text' class='ranking-item-txt' placeholder='...'>
@@ -194,10 +194,10 @@ function initRanking(newDiv, n) {
     `;
     // Set up selector
     newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
-        initMc(newDiv, n);
+        initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
     });
     newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
-        initTxt(newDiv, n);
+        initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
     });
     newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
         if(cards.length <= 1) return;
