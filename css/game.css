@@ -140,16 +140,20 @@
     padding: 5px;
     border-radius: 10px;
 }
-#answer_marker {
+#answer_marker, #easy_marker, #reshow_q {
     display: none;
     cursor: pointer;
     float: right;
     color: var(--accent-1);
 }
+#easy_marker, #reshow_q {
+    display: block;
+    float: left;
+}
 #answer_marker:hover{
     filter: brightness(85%);
 }
-#answer_marker .material-symbols-outlined {
+#answer_marker .material-symbols-outlined, #easy_marker .material-symbols-outlined, #reshow_q .material-symbols-outlined {
     font-size: 15px;
     text-align: right;
 }
