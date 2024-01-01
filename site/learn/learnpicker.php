@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learn Picker</title>
-    <?php require_once "../globalreqs.php"?>
+    <?php require_once "../globalreqs.php"; ?>
     <link rel="stylesheet" href="../../css/learnPicker.css"/>
     <script type="module" src="../../sitejs/learnpicker.js"> </script>
 </head>
 <body data-uo="true">
-    <?php require_once "../header.php"?>
+    <?php require_once "../header.php"; ?>
     <div id="overall-container">
         <div id="left-div">
             <div class="big-box" id="mode-big-box">
@@ -28,7 +28,7 @@
             <div class="big-box" id="deck-big-box">
                 <h2>Deck Picker</h2>
                 <span class="material-symbols-outlined" id="deckSelectAll">indeterminate_check_box</span>
-                <div class="deck-container">   
+                <div class="deck-container">
                 </div>
             </div>
         </div>
@@ -65,6 +65,15 @@
                     <div class="setting-box">
                         <input type="checkbox" name="infinite_mode" class="sb-radio infinite-mode">
                         <p class="infinite_mode_text">| Infinite Mode</p>
+                    </div>
+                </div>
+            </div>
+            <div class="big-box" id="settings-big-box">
+                <h2>Assistive Tools <i style='color: rgb(200, 0, 0); font-size: 25px;'>NEW</i></h2>
+                <div class="settings-container">
+                    <div class="setting-box">
+                        <input type="checkbox" name="require_correct" class="sb-radio require_correct">
+                        <p>| (Text questions only) Require correct answer before advancing</p>
                     </div>
                 </div>
             </div>
