@@ -146,7 +146,7 @@ function refresh() {
                     if (selected && data.req == 0) return;
                     selected = true;
                     if(data.req == 1 && mc_sel.indexOf(i) < 0) {
-                        op_i.innerHTML = `<p class="answer-symbol">X</p> ` + op_i.innerHTML;
+                        op_i.innerHTML = `<p class="answer-symbol">⚬</p> ` + op_i.innerHTML;
                         mc_sel.push(i);
                         answerbtn.style.display = "block";
                         answerbtn.innerHTML = "Continue >>> (Enter)";
