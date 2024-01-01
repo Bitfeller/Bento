@@ -85,7 +85,10 @@ createBtn.addEventListener('mousedown', async () => {
     if(!success) window.location.href = "/home";
     if(contnt.owner != data.username) window.location.href = "/home";
     name.value = window.lib.decode(contnt.name);
-    if(contnt.deckpic && contnt.deckpic.length > 0) picimg.src = contnt.deckpic;
+    if(contnt.deckpic && contnt.deckpic.length > 0) {
+        picimg.src = contnt.deckpic;
+        DeckBind.setDeckpic(contnt.deckpic);
+    }
     isPublic.checked = contnt.public;
     description.value = window.lib.decode(contnt.data.desc);
     cardContain.innerHTML = "";
