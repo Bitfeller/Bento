@@ -562,6 +562,26 @@ resetpic.addEventListener('mousedown', () => {
 // --------------------------------------------------- \\
 
 
+function isEmpty(contnt) {
+    // Checks if there is only card and checks to see if both the question and the options/answers are empty.
+    if(Object.keys(contnt).length > 1) return false;
+    let keys = Object.keys(contnt);
+    let card = contnt[keys[0]];
+    if(card.type == 'mc') {
+        if(keys[0].trim() == '' && card.op.filter(op => op.trim() != '').length == 0)
+            return true;
+    } else if(card.type == 'txt') {
+        if(keys[0].trim() == '' && card.ans.filter(ans => ans.trim() != '').length == 0)
+            return true;
+    } else if(card.type == 'ranking') {
+        if(keys[0].trim() == '' && card.ans.filter(ans => ans.trim() != '').length == 0)
+            return true;
+    } else if(card.type == 'matching') {
+        if(keys[0].trim() == '' && card.ans.filter(op => op.filter(x => x.trim() != '').length != 0).length == 0)
+            return true;
+    }
+    return false;
+}
 function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
     if(!user) return void err_assigner("Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)");
     if(name.value == '' && !is_temp) return void err_assigner("You haven't named your deck yet.");
@@ -675,7 +695,7 @@ function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
         desc: description.value,
         contnt: data
     };
-    console.log(data.contnt);
+    if(isEmpty(data.contnt)) data.contnt = {};
     return [name.value, deckpic, data, isPublic.checked];
 }
 function generateCard(contnt, d_keys, i, n) {

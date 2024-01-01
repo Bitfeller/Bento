@@ -98,7 +98,7 @@ async function renderable(input) {
 function refresh() {
     hideDisplay();
     if(Game.isDead()) {
-        problem.innerHTML = "You completed Learn! Now go touch some <span>grass!</span>";
+        problem.innerHTML = "You completed Learn! Now go touch some <span>grass!</span><p class='small-text'>Enter to go home.</p><p class='small-text'>Space to restart.</p>";
         progressBar.style.width = `100%`;
         let progress = Game.getProgress();
         progressNumbers.style.marginLeft = "5px";
@@ -110,14 +110,17 @@ function refresh() {
         answerbtn.innerHTML = "Go back home >>>";
         for(let i = 0; i < objs.length; i++) objs[i].remove();
         setTimeout(() =>
-            window.addEventListener("keydown", e => e.key == "Enter" ? answerHandler() : null),
-            500);
+            window.addEventListener("keydown", e => {
+                if(e.key == "Enter") answerHandler();
+                if(e.key == " ") window.location.reload();
+            }),
+        200);
         return;
     }
 
     let data = Game.fetchProblem();
     problem.innerHTML = data.q;
-    if(data.type == 'mc' && data.req == 1) problem.innerHTML += "<p style='font-size: 15px;'>Select all correct answers.</p>";
+    if(data.type == 'mc' && data.req == 1) problem.innerHTML += "<p class='small-text'>Select all correct answers.</p>";
     typeset(problem);
     
     for(let i = 0; i < objs.length; i++) objs[i].remove();
@@ -579,13 +582,13 @@ window.addEventListener("keydown", e => {
             let len = data.op.length;
             let strlen = String(len);
             mc_keynum += e.key;
-            problem.innerHTML = data.q + (data.req == 1 ? "<p style='font-size: 15px;'>Select all correct answers.</p>" : '') + "<p style='font-size: 10px;'>" + mc_sel.join(",") + (mc_sel.length > 0 ? "," : "") + mc_keynum + "</p>";
+            problem.innerHTML = data.q + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : '') + "<p style='font-size: 10px;'>" + mc_sel.join(",") + (mc_sel.length > 0 ? "," : "") + mc_keynum + "</p>";
             if (strlen.length > mc_keynum) return;
         }
-        if (mc_keynum.length == 0) return void (problem.innerHTML = data.q + (data.req == 1 ? "<p style='font-size: 15px;'>Select all correct answers.</p>" : ''));
+        if (mc_keynum.length == 0) return void (problem.innerHTML = data.q + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : ''));
         let num = parseInt(mc_keynum);
         if (num > data.op.length) {
-            problem.innerHTML = data.q + (data.req == 1 ? "<p style='font-size: 15px;'>Select all correct answers.</p>" : '');
+            problem.innerHTML = data.q + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : '');
             mc_keynum = "";
             return;
         }

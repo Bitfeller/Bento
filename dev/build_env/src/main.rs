@@ -139,7 +139,7 @@ fn main() {
     println!("Building filter words...");
     Command::new("node")
         .arg(&join(&path, "..\\..\\server\\conf\\moderator\\static\\genregex.js"))
-        .output()
+        .status()
         .expect("Failed to build filter words.");
     println!("\tFinished building filter words.");
 }
