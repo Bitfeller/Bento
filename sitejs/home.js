@@ -27,7 +27,7 @@ function show(user, deck) {
     deckViewer.innerHTML = `
         <div class='title deck-container-overview' id='deck-container-overview'>
             <h2>${name}</h2>
-            <p>By: &lt;unknown&gt;</p>
+            <p>By: ${deck.owner}</p>
         <div><br>
         <hr><br>
         <div class='deck-container-main' id='deck-container-main'>
@@ -38,15 +38,7 @@ function show(user, deck) {
 function hide() {
     deckViewer.style.display = 'none';
 }
-async function update(search) {
-    let [success, data] = await UserGateway.getuser(false, true, true, false);
-    if(!success) return;
-    deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
-    let reviews = data.userdata.reviews;
-    
-    let r_keys = Object.keys(reviews);
-    let decks = [], counts = [];
-    
+function update(search, decks, counts, data) {
     search = search.toLowerCase();
     let searched = search != '';
     let coll = 0;
@@ -81,7 +73,7 @@ async function update(search) {
     if(!success) return;
     deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
     let reviews = data.userdata.reviews;
-    
+
     let r_keys = Object.keys(reviews);
     let decks = [], counts = [];
 
@@ -98,8 +90,8 @@ async function update(search) {
         count += deck.contnt_len - c_keys.length;
         counts.push(count);
     }
-    update('');
-    searcher.addEventListener('input', () => update(searcher.value));
+    update('', decks, counts, data);
+    searcher.addEventListener('input', () => update(searcher.value, decks, counts, data));
     window.LOADED();
 })();
 version.addEventListener('mousedown', () => version_info.showModal());
@@ -107,5 +99,4 @@ window.addEventListener('mousedown', e => {
     if(e.target == feedback_dialog || e.target == version_info) {
         feedback_dialog.close();
         version_info.close();
-    }
-});
+    }});
