@@ -212,7 +212,7 @@ function answerHandler() {
             case "ranking":
                 var answerList = [];
                 for(var i = 0; i < dragElements.length; i++) {
-                    answerList.push(dragElements[i].innerHTML);
+                    answerList.push(dragElements[i].textContent);
                 }
                 correct = Game.attemptProblem(answerList);
                 if(correct) {
