@@ -81,7 +81,7 @@ self.addEventListener("push", async (e) => {
         switch(user.notifsub) {
             case "0":
                 sub.unsubscribe();
-                fetch("http://" + location.hostname + ":3000/notify", {
+                fetch("https://bentoapi.valleynas.uk:443/notify", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
