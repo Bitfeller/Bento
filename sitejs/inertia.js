@@ -269,12 +269,7 @@ class Asteroid {
     });
     pause.addEventListener("mousedown", pauseGame);
     restart.addEventListener("mousedown", () => {
-        score = 0;
-        level = 1;
-        asteroids = [];
-        frameCount = 0;
-        paused = false;
-        ended = false;
+        window.location.reload();
     });
 
     window.LOADED();
