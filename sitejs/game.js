@@ -314,7 +314,6 @@ window.addEventListener("dragover", function(e) {
     let m = parseFloat(paramList.get("m"));
     let r = parseFloat(paramList.get("r"));
     let sh = parseFloat(paramList.get("sh"));
-    console.log(sh);
     await Game.init(dsVal, {
         NTRonly: m == 1 ? true : false,
         randomTerms: sh == 1 ? true : false,
