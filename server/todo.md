@@ -22,5 +22,4 @@
 - Create feedback feature
 - Verification + password reset system via email
 
-- Fix hidden sign up button on main page
 - Fix inertia
