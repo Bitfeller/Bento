@@ -24,3 +24,7 @@
 - Fix hidden sign up button on main page
 - Create feedback feature
 - Fix overflow of title when viewing deck
+- Error management for importing
+- Change allowed hosts for get/post
+- Allow option to require correct answers before continuing
+- Verification + password reset system via email
