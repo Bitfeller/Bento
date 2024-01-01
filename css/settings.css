@@ -17,7 +17,7 @@ button:hover {
   margin: 1.5%;
   border-radius: 10px;
   padding: 1%;
-  background-color: rgb(33, 33, 33);
+  background-color: var(--gray);
 }
 .setting-box > button, .setting-box > input {
   width: 45%;
@@ -40,15 +40,14 @@ input[type="checkbox"] {
   width: min-content;
 }
 .change-input {
-  color: #EEEEEE;
-  background-color: rgb(56, 56, 56);
+  color: var(--light-text);
   margin-top: 2%;
   margin-bottom: 2%;
 }
 #dangerZoneBox > button {
   margin-top: 2%;
   background-color: #E01F15;
-  color: #EEEEEE;
+  color: var(--light-text);
 }
 #set-size-slider {
   cursor: grabbing;
