@@ -46,7 +46,10 @@
     <div class="review-container">
         <div id="question">
             <!-- Just text -->
-            <span id="questionText">Which epic poem depicts Satan, Beelzebub, and o</span>
+            <span id="questionText">
+                Example question here.
+                This is a matching question which has several fill in the 
+            </span>
 
             <!-- Text and picture -->
             <!-- <span id="questionText"></span>
@@ -54,23 +57,25 @@
             </div>
         <div id="answers">
             <!-- Text -->
-            <input type="text" id="answerText" placeholder="Type your answer here..." autocomplete="off">
+            <!-- <input type="text" id="answerText" placeholder="Type your answer here..." autocomplete="off"> -->
 
             <!-- Multiple Choice -->
-            <!-- <div class="mc-option"></div>
-            <div class="mc-option"></div>
-            <div class="mc-option"></div>
-            <div class="mc-option"></div> -->
+            <!-- <div class="mc-option">The Correct Answer</div>
+            <div class="mc-option">Less correct answer</div>
+            <div class="mc-option">A very not correct answer that also happens to be longA very not correct answer that also happens to be long</div>
+            <div class="mc-option">A not correct answer</div>
+            <div class="mc-option">A not correct answer</div>
+            <div class="mc-option">A not correct answer</div> -->
 
             <!-- Ranking -->
-            <!-- <div class="ranking-option"></div>
-            <div class="ranking-option"></div>
-            <div class="ranking-option"></div> -->
+            <!-- <div class="ranking-option">Is the best or something</div>
+            <div class="ranking-option">Is the worst or something</div>
+            <div class="ranking-option">Is not the worst or something</div> -->
 
             <!-- Matching -->
-            <!-- <div class="matching-option"></div>
-            <div class="matching-option"></div>
-            <div class="matching-option"></div> -->
+            <div class="matching-option">1. This goes here</div>
+            <div class="matching-option">2. This goes there</div>
+            <div class="matching-option">3. That goes where?</div>
 
             <!-- More?! -->
             <div class="answer-options">
