@@ -2,8 +2,6 @@ import { UserGateway } from "../server/client-gateway/user-gateway.js";
 import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 import { DeckBind } from "./client-modules/deck-lib.js";
 
-let drafts_save;
-
 const title = document.getElementById("name");
 const desc = document.getElementById("description");
 const deckpic = document.getElementById("deckpic");
@@ -50,7 +48,7 @@ createBtn.addEventListener('mousedown', async () => {
 (async () => {
     await DeckBind.init();
     let user = DeckBind.user();
-    drafts_save = user.userdata.draftdecks;
+    let drafts_save = user.userdata.draftdecks;
     let keys = Object.keys(user.userdata.draftdecks);
     if(keys.length > 0) draftdecks_history.innerHTML = "";
     for(let i = 0; i < keys.length; i++) {

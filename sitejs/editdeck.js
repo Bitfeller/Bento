@@ -9,8 +9,7 @@ const createBtn = document.getElementById("create");
 const errmsg = document.getElementById("edit-err");
 const picimg = document.getElementById("deckpic");
 // Deck
-let deck;
-let last = 0;
+let deck, last = 0;
 
 createBtn.addEventListener('mousedown', async () => {
     let res = DeckBind.toDeck((v) => errmsg.innerHTML = v, false, (Date.now() - last) < 5000);
