@@ -126,7 +126,7 @@
             case 'delete':
                 $sql = "DELETE FROM decks WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("i", $d_id);
+                $stmt->bind_param("i", $id);
                 $stmt->execute();
                 $stmt->close();
                 success();
