@@ -236,7 +236,7 @@ function check(answer) {
     }
 }
 function isCorrect(answer) {
-    if(!active) return {dead: true};
+    if(!active) return { dead: true };
     let problem = gameData[currSet[card]];
     switch(problem.type) {
         case "mc":

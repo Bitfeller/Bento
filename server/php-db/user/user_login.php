@@ -21,7 +21,12 @@
         if(!$valid) fail("bad u/p");
         // @ = no warnings
         $pfp = @file_get_contents($conf['file_db'] . 'pfps/' . $result['id'] . '.pfp');
-        if($pfp !== "" && $pfp === false) fail("broken user");
+        if($pfp !== "" && $pfp === false) {
+            $handle = fopen($conf['file_db'] . 'pfps/' . $result['id'] . '.pfp', "w");
+            if(!$handle) fail("CRITICAL: couldn't create pfp!");
+            fclose($handle);
+            $pfp = "";
+        }
         session_start();
         $_SESSION['uid'] = $result['id'];
         $_SESSION['username'] = $result['username'];
