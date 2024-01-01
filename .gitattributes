@@ -1,4 +1,4 @@
-* linguist-vendored
+* linguist-vendored = false
 *.js linguist-vendored = false
 
 # linguist-language=Other
