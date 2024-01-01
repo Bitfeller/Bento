@@ -48,7 +48,7 @@
             fail('size limit');
         }
         // Add deck to database
-        $sql = "INSERT INTO decks (name, owner, data, viewdata, public) VALUES (?, ?, ?, ?, ?, ?);";
+        $sql = "INSERT INTO decks (name, owner, data, viewdata, public) VALUES (?, ?, ?, ?, ?);";
         $stmt = $conn->prepare($sql);
         $viewdata = '[]';
         $stmt->bind_param("ssssi", $name, $owner, $deckData, $viewdata, $public);
