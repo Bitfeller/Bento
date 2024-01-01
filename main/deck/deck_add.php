@@ -1,7 +1,8 @@
 <?php
     require_once '../funcs.php';
     validate_request();
-    $data = get_data('name');
+    $data = get_data('name', 'data', 'public');
+    require_types('ssn', 'name', 'data', 'public');
     // Make sure session exists
     session_start();
     if(!isset($_SESSION['uid'])) {

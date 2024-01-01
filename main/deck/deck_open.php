@@ -2,6 +2,7 @@
     require_once '../funcs.php';
     validate_request();
     $data = get_data('id');
+    require_types('n', 'id');
     // Make sure session exists
     session_start();
     if(!isset($_SESSION['uid'])) {
