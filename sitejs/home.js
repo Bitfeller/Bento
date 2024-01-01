@@ -6,7 +6,6 @@ const deckReminders = document.getElementById("deck-reminders");
 (async () => {
     let [success, data] = await UserGateway.getuser();
     if(!success) return;
-    deckReminders.innerHTML = "";
     let reviews = data.userdata.reviews;
     let r_keys = Object.keys(reviews);
     for(let i = 0; i < r_keys.length; i++) {
