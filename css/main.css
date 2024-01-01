@@ -1,12 +1,13 @@
 * {
     padding: 0;
     margin: 0;
-    font-size: 28pt;  
+    font-size: 3vh;  
     color: rgb(56, 38, 26);
     border-color: rgb(56, 38, 26);
 }
 .logo {
     color: white;
+    font-size: 28pt;
 }
 body {
     background-color: rgba(221, 184, 146, 0.55);
