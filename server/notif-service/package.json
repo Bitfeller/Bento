@@ -10,9 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cookie-parser": "^1.4.6",
     "express": "^4.19.2",
     "fs": "^0.0.1-security",
+    "mysql": "^2.18.1",
     "node-schedule": "^2.1.1",
+    "php-unserialize": "^0.0.1",
     "web-push": "^3.6.7"
   }
 }
