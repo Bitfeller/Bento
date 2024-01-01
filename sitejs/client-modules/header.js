@@ -132,6 +132,14 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         document.body.appendChild(errPopup);
         setTimeout(() => errPopup.remove(), 2500);
     };
+    window.SHOW_SUCCESS = info => {
+        const successPopup = document.createElement("div");
+        successPopup.innerText = info;
+        successPopup.className = "success-popup";
+
+        document.body.appendChild(successPopup);
+        setTimeout(() => successPopup.remove(), 2500);
+    };
     window.lib = {};
     // Decode plain string
     window.lib.decode = str => {
