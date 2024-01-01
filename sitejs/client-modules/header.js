@@ -1,48 +1,50 @@
 // Essential script for loading user data + initializing page
 import { UserGateway } from "../../server/client-gateway/user-gateway.js";
 
-const icons = document.getElementsByClassName("right-header-ico");
-const logout = document.getElementById("header:logout");
-const pfp = document.getElementById("header:pfp");
-const feedback = document.getElementById("header:feedback");
-const feedback_dialog = document.getElementById("header:feedback_dialog");
-const feedback_content = document.getElementById("header:feedback_content");
-const feedback_submit = document.getElementById("header:feedback_submit");
-const uo = document.body.dataset.uo;
-/*const hover = document.createElement("div");
-hover.style = "background-color: rgb(150, 150, 150); position: absolute; width: auto; padding: 7px; height: auto;";*/
-
-const loader = document.getElementsByClassName("loader")[0];
-const tips = document.getElementsByClassName("tips")[0];
-
-const tipslist = [
-    "When making ranking questions, you can drag answers...",
-    "If you own a Bento deck, you can export it when viewing it in the Kitchen...",
-    "Have feedback? Let us know!",
-    "You can edit the decks you own in the Kitchen.",
-    "Decks can be deleted by going to the Kitchen.",
-    "You can find the decks you've made in the Kitchen.",
-    "You can enable notifications on the home screen, and you'll get notified when you have to review.",
-    "You can import sets from Quizlet into Bento when making a deck.",
-    "This won't take long to load.",
-    "Taking too long to load? Consider letting us know.",
-    "Found a bug? Let us know!"
-];
-
-function tip_changer(newtext) {
-    return new Promise((res, rej) => {
-        tips.innerHTML = `<p class='prev-tip'>${tips.innerHTML}</p>`;
-        window.setTimeout(() => {
-            tips.innerHTML = `<p class='new-tip'>${newtext}</p>`;
-            window.setTimeout(() => {
-                tips.innerHTML = newtext;
-                res();
-            }, 500);
-        }, 500);
-    });
-}
-
 (async () => {
+    if(document.getElementById('header') == null) return;
+
+    const icons = document.getElementsByClassName("right-header-ico");
+    const logout = document.getElementById("header:logout");
+    const pfp = document.getElementById("header:pfp");
+    const feedback = document.getElementById("header:feedback");
+    const feedback_dialog = document.getElementById("header:feedback_dialog");
+    const feedback_content = document.getElementById("header:feedback_content");
+    const feedback_submit = document.getElementById("header:feedback_submit");
+    const uo = document.body.dataset.uo;
+    /*const hover = document.createElement("div");
+    hover.style = "background-color: rgb(150, 150, 150); position: absolute; width: auto; padding: 7px; height: auto;";*/
+
+    const loader = document.getElementsByClassName("loader")[0];
+    const tips = document.getElementsByClassName("tips")[0];
+
+    const tipslist = [
+        "When making ranking questions, you can drag answers...",
+        "If you own a Bento deck, you can export it when viewing it in the Kitchen...",
+        "Have feedback? Let us know!",
+        "You can edit the decks you own in the Kitchen.",
+        "Decks can be deleted by going to the Kitchen.",
+        "You can find the decks you've made in the Kitchen.",
+        "You can enable notifications on the home screen, and you'll get notified when you have to review.",
+        "You can import sets from Quizlet into Bento when making a deck.",
+        "This won't take long to load.",
+        "Taking too long to load? Consider letting us know.",
+        "Found a bug? Let us know!"
+    ];
+
+    function tip_changer(newtext) {
+        return new Promise((res, rej) => {
+            tips.innerHTML = `<p class='prev-tip'>${tips.innerHTML}</p>`;
+            window.setTimeout(() => {
+                tips.innerHTML = `<p class='new-tip'>${newtext}</p>`;
+                window.setTimeout(() => {
+                    tips.innerHTML = newtext;
+                    res();
+                }, 500);
+            }, 500);
+        });
+    }
+
     let [success, data] = await UserGateway.getuser();
     if(!success && data == "no session") {
         logout.remove();
@@ -77,40 +79,40 @@ function tip_changer(newtext) {
     if(document.readyState == "complete") {
         clearInterval(tipper);
         loader.remove();
-        return;
+    } else {
+        window.addEventListener("load", () => {
+            clearInterval(tipper);
+            loader.remove();
+        })
     }
-    window.addEventListener("load", () => {
-        clearInterval(tipper);
-        loader.remove();
-    })
-})();
 
 
-/*for(let i = 0; i < icons.length; i++) {
-    icons[i].addEventListener("mouseover", () => {
-        let ico = icons[i];
-        let rect = ico.getBoundingClientRect();
-        let [x, y] = [(rect.left + rect.right) / 2 + scrollX, (rect.top + rect.bottom) / 2 + scrollY];
+    /*for(let i = 0; i < icons.length; i++) {
+        icons[i].addEventListener("mouseover", () => {
+            let ico = icons[i];
+            let rect = ico.getBoundingClientRect();
+            let [x, y] = [(rect.left + rect.right) / 2 + scrollX, (rect.top + rect.bottom) / 2 + scrollY];
+        });
+    }*/
+
+    logout.addEventListener("mousedown", async () => {
+        await UserGateway.signout();
+        window.location.href = "";
     });
-}*/
-
-logout.addEventListener("mousedown", async () => {
-    await UserGateway.signout();
-    window.location.href = "";
-});
-pfp.addEventListener("mousedown", () => {
-    window.location.href = "/user/profile";
-});
-feedback.addEventListener("mousedown", () => {
-    feedback_dialog.showModal();
-});
-feedback_submit.addEventListener("mousedown", async () => {
-    let content = feedback_content.value;
-    await UserGateway.giveFeedback(content);
-    feedback_dialog.close();
-});
-window.onclick = (e) => {
-    if(e.target == feedback_dialog) {
+    pfp.addEventListener("mousedown", () => {
+        window.location.href = "/user/profile";
+    });
+    feedback.addEventListener("mousedown", () => {
+        feedback_dialog.showModal();
+    });
+    feedback_submit.addEventListener("mousedown", async () => {
+        let content = feedback_content.value;
+        await UserGateway.giveFeedback(content);
         feedback_dialog.close();
+    });
+    window.onclick = (e) => {
+        if(e.target == feedback_dialog) {
+            feedback_dialog.close();
+        }
     }
-}
+})();
