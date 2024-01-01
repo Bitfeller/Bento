@@ -47,9 +47,10 @@
         send_mail(
             $result['email'],
             "Reset Password", 
-            "Hey there!<br><br>Reset your password for $username <a href='https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=1&user=$uid'>here</a>.<br><br>If you didn't request this password reset, you can safely ignore this email.<br><br>Bento<br><span style='font-size: 10px; color: rgb(200, 200, 200)'>You can reply to this email to contact us.<br>You're receiving this email because your email was associated with this account.</span>", 
+            "Hey there!<br><br>Reset your password for <b>$username</b> <a href='https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=1&user=$uid'>here</a>.<br><br>If you didn't request this password reset, you can safely ignore this email.<br><br>Bento<br><span style='font-size: 10px; color: rgb(200, 200, 200)'>You can reply to this email to contact us.<br>You're receiving this email because your email was associated with this account.</span>", 
             "Hey there!\n\nReset your password for $username at https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=1&user=$uid.\nIf you didn't request this password reset, you can safely ignore this email.\n\nBento\n(You can reply to this email to contact us. You're receiving this email because your email was associated with this account.)"
         );
+        success();
     } catch(Exception $e) {
         fail("exception: " . $e->getMessage());
     }
