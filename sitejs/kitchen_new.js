@@ -283,11 +283,11 @@ async function preview(_this) {
             const deckExport = {
                 name: window.lib.decode(deck.name),
                 desc: window.lib.decode(deck.data.desc),
-                tags: window.lib.decode(deck.data.tags),
+                tags: window.lib.decode(deck.tags ?? []),
                 contnt: window.lib.recur_decode(deck.data.contnt)
             };
             const json = JSON.stringify(deckExport);
-            const file = new File([json], d.name+'.json', { type: 'text/plain' });
+            const file = new File([json], deckExport.name+'.json', { type: 'text/plain' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(file);
             link.href = url;
@@ -356,8 +356,8 @@ async function updateReviews(_this) {
 }
 function getSortFilter() {
     switch(sortOptions.value) {
-        case "time": return 1;
-        case "reverse-time": return 2;
+        case "new-time": return 1;
+        case "old-time": return 2;
         case "alphabet": return 3;
         case "reverse-alphabet": return 4;
     }
@@ -393,6 +393,7 @@ async function fetchDecks(start = 0) {
     await update();
 }
 
+// Color map
 const map = [
     [20, [255, 191, 0]],    // Amber
     [100, [255, 0, 127]],   // Pink
@@ -400,7 +401,7 @@ const map = [
     [0, [255, 0, 0]],       // Red
     [70, [0, 0, 255]],      // Blue
     [90, [255, 0, 255]],    // Magenta
-    [40, [50, 205, 50]],      // Light Green
+    [40, [50, 205, 50]],    // Light Green
     [30, [0, 255, 0]],      // Green
     [10, [255, 127, 0]],    // Orange
     [80, [127, 0, 255]],    // Violet
@@ -435,7 +436,25 @@ function generateTagColor(n) {
     })`;
 }
 
+async function appendTag(tag) {
+    let tagDiv = document.createElement('div');
+    tagDiv.className = 'tag remove-tag';
+    tagDiv.innerHTML = `
+        <div class='material-symbols-outlined'>remove</div>
+        <p class='tag-value'>${tag}</p>
+    `;
+    tagDiv.style.backgroundColor = generateTagColor(tag);
+    tagDiv.onclick = async () => {
+        tagDiv.remove();
+        await fetchDecks();
+    };
+    filteredTags.appendChild(tagDiv);
 
+    let query = searchBar.value;
+    if(query.length == 0)
+        pubDTitle.innerHTML = "Public Decks:";
+    await fetchDecks();
+}
 
 async function populateRecommended() {
     // Count tag occurrences from all loaded decks
@@ -473,18 +492,8 @@ async function populateRecommended() {
         `;
         tagDiv.style.backgroundColor = generateTagColor(tag);
         tagDiv.onclick = async () => {
-            filteredTags.innerHTML += `
-                <div class='tag remove-tag' onclick='this.remove()' style='background-color: ${generateTagColor(tag)}'>
-                    <div class='material-symbols-outlined'>remove</div>
-                    <p class='tag-value'>${tag}</p>
-                </div>
-            `;
-            
-            let query = searchBar.value;
-            if(query.length == 0)
-                pubDTitle.innerHTML = "Public Decks:";
-            await fetchDecks();
             tagDiv.remove();
+            await appendTag(tag);
         };
         predefinedTags.appendChild(tagDiv);
     }
@@ -530,21 +539,13 @@ tagSearch.addEventListener('keydown', async e => {
     let value = tagSearch.value.trim();
     if(e.key == 'Enter' && value != '' && allowedTags.indexOf(value) > -1) {
         e.preventDefault();
+
         if(tag_exists(value)) return;
-        filteredTags.innerHTML += `
-            <div class='tag remove-tag' onclick='this.remove()' style='background-color: ${generateTagColor(value)}'>
-                <div class='material-symbols-outlined'>remove</div>
-                <p class='tag-value'>${value}</p>
-            </div>
-        `;
+        await appendTag(value);
+        
         tagSearch.value = '';
         tagSearch.focus();
         tagSearch.style.color = "var(--light-text)";
-
-        let query = searchBar.value;
-        if(query.length == 0)
-            pubDTitle.innerHTML = "Public Decks:";
-        await fetchDecks();
     }
 });
 tagSearch.addEventListener('input', () => {

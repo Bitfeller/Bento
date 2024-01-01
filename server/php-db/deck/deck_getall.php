@@ -47,7 +47,7 @@
             $sql .= "AND (";
 
             $cond = [];
-            foreach((array) $tags as $tag) $cond[] = "JSON_CONTAINS(data, ?, '$.tags')";
+            foreach((array) $tags as $tag) $cond[] = "json_extract(data, '$.tags') LIKE CONCAT('%', ?, '%')";
             $sql .= implode(" OR ", $cond);
 
             $sql .= ") ";
@@ -69,10 +69,10 @@
         $sortType = "";
         switch($sortFilter) {
             case 1:
-                $sortType = "id ASC";
+                $sortType = "id DESC";
             break;
             case 2:
-                $sortType = "id DESC";
+                $sortType = "id ASC";
             break;
             case 3:
                 $sortType = "name ASC";
