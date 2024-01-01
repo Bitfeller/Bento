@@ -9,9 +9,9 @@
     <script type="module" src="../../sitejs/game.js"></script>
 </head>
 <body data-uo="true">
-    <?php require_once "../header.php"?>    
+    <?php require_once "../header.php"?>
+    <div id="left"></div>  
     <div id="main">
-        <div id="left"></div>
         <h2 id="problem"></h2>
         <div>
             <div id="a_container">

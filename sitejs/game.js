@@ -175,7 +175,10 @@ function refresh() {
         break;
     }
     var progress = Game.getProgress();
-    left.innerHTML = "New terms left to review: <b>" + progress.remaining + "</b>";
+    left.style.marginLeft = "5px";
+    left.innerHTML = `
+    ${progress.remaining} Remain
+    `;
 }
 function answerHandler() {
     if(Game.isDead()) window.location.href = "/home?l=lm&s=1";
