@@ -6,7 +6,15 @@ let user;
 let loaded = -1, loadedReviews = false;
 let decks = [];
 
+let allowedTags = [];
+
 const sidebar = document.getElementsByClassName("sidebar")[0];
+
+const filteredTags = document.getElementsByClassName('filtered-tags')[0];
+const predefinedTags = document.getElementsByClassName('predefined-tags')[0];
+const tagSearch = document.getElementById('tagSearch');
+const tagSuggestions = document.getElementById('tag-suggestions');
+const tagOk = document.getElementById('tag-ok');
 
 const searchBar = document.getElementById('searchBar');
 const regex = document.getElementsByName('regex')[0];
@@ -47,7 +55,7 @@ async function query(id) {
     return await q.req;
 }
 
-// ----------------- Typeset -----------------
+// ----------------- Typeset + Tags -----------------
 async function typeset(node) {
     if(Object.keys(MathJax.startup) == 0)
         await new Promise((res) => {
@@ -55,6 +63,9 @@ async function typeset(node) {
         });
     MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([node])).catch(e => console.warn("math formatting failed; reason:", e.message));
     return MathJax.startup.promise;
+}
+function tag_exists(tag) {
+    return Array(...document.querySelectorAll('.remove-tag .tag-value')).map(x => x.textContent).filter(x => x == tag).length > 0;
 }
 
 
@@ -351,9 +362,9 @@ function getSortFilter() {
     }
 }
 async function fetchDecks() {
-    let query = searchBar.value;
+    let query = searchBar.value.trim();
     let sort = getSortFilter();
-    let [success, data] = DeckGateway.getall(0, query?.split(" ") ?? [], regex.checked, caseSensitive.checked, [], sort, false, hasMc.checked, hasTxt.checked, hasRank.checked, hasMtch.checked);
+    let [success, data] = await DeckGateway.getall(0, query.length != '' ? query.split(" ") : [], regex.checked, caseSensitive.checked, Array(...document.querySelectorAll('.remove-tag .tag-value')).map(x => x.textContent), sort, false, hasMc.checked, hasTxt.checked, hasRank.checked, hasMtch.checked);
     if(!success) return;
     decks = data;
     loaded = -1;
@@ -366,6 +377,8 @@ async function fetchDecks() {
     if(!success && data == 'no session') return window.LOAD_ERROR("Please sign in.");
     if(!success) return window.LOAD_ERROR("Failed to fetch your user data.");
     user = data;
+    allowedTags = await DeckGateway.getAllowedTags();
+    allowedTags.map(x => tagSuggestions.innerHTML += `<option value='${x}'>`);
     [success, data] = await DeckGateway.getall(0);
     if(!success) return;
     if(data.length == 0) return window.LOAD_ERROR("There aren't any decks...? Odd.");
@@ -381,6 +394,45 @@ searchBar.addEventListener('keyup', async e => {
     if(query.length == 0)
         pubDTitle.innerHTML = "Public Decks:";
     await fetchDecks();
+});
+tagSearch.addEventListener('keydown', async e => {
+    let value = tagSearch.value.trim();
+    if(e.key == 'Enter' && value != '' && allowedTags.indexOf(value) > -1) {
+        e.preventDefault();
+        if(tag_exists(value)) return;
+        filteredTags.innerHTML += `
+            <div class='tag remove-tag' onclick='this.remove()'>
+                <div class='material-symbols-outlined'>remove</div>
+                <p class='tag-value'>${value}</p>
+            </div>
+        `;
+        tagSearch.value = '';
+        tagSearch.focus();
+        tagOk.style.display = 'none';
+
+        let query = searchBar.value;
+        if(query.length == 0)
+            pubDTitle.innerHTML = "Public Decks:";
+        await fetchDecks();
+    }
+});
+tagSearch.addEventListener('input', () => {
+    let value = tagSearch.value.trim();
+    if(value != '') {
+        if(tag_exists(value)) {
+            tagOk.style.display = 'block';
+            tagOk.innerHTML = 'Already added';
+            tagOk.style.color = 'red';
+        } else if(allowedTags.indexOf(value) > -1) {
+            tagOk.style.display = 'block';
+            tagOk.innerHTML = 'Valid';
+            tagOk.style.color = 'green';
+        } else {
+            tagOk.style.display = 'block';
+            tagOk.innerHTML = 'Invalid';
+            tagOk.style.color = 'red';
+        }
+    }
 });
 
 [regex, caseSensitive, hasMc, hasTxt, hasRank, hasMtch, sortOptions].map(x => x.addEventListener('change', async () => {

@@ -47,6 +47,18 @@
                 </div> -->
             </div>
             <div class="tags-box">
+                <p>Filtering by:</p>    
+                <div class="filtered-tags">
+                    <div class="tag remove-tag">
+                        <div class="material-symbols-outlined">remove</div>
+                        <p>Tag 1</p>
+                    </div>
+                    <div class="tag remove-tag">
+                        <div class="material-symbols-outlined">remove</div>
+                        <p>Tag 2</p>
+                    </div>
+                </div>
+                <div class="break-line"></div>
                 <p>Recommended Tags: </p>
                 <div class="predefined-tags">
                     <div class="tag add-tag">
@@ -59,17 +71,10 @@
                     </div>
                 </div>
                 <div class="break-line"></div>
-                <p>Other Tags:</p>
-                <div class="user-tags">
-                    <div class="tag add-tag">
-                        <div class="material-symbols-outlined">add</div>
-                        <p>Tag 1</p>
-                    </div>
-                    <div class="tag add-tag">
-                        <div class="material-symbols-outlined">add</div>
-                        <p>Tag 2</p>
-                    </div>
-                </div>
+                <p>Filter by tag:</p>
+                <input type="text" id="tagSearch" list="tag-suggestions" placeholder="Search...">
+                <datalist id="tag-suggestions"></datalist>
+                <p id="tag-ok"></p>
             </div>
             <div class="filters">
                 <p>Filters:</p>

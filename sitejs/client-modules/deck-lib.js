@@ -1,4 +1,4 @@
- import { UserGateway } from "../../server/client-gateway/user-gateway.js";
+import { UserGateway } from "../../server/client-gateway/user-gateway.js";
 import { DeckGateway } from "../../server/client-gateway/deck-gateway.js";
 
 const name = document.getElementById("name");
@@ -11,6 +11,8 @@ const fileselecttrigger = document.getElementById("fileselecttrigger");
 const picimg = document.getElementById("deckpic");
 const tags = document.getElementById("tags");
 const tagInput = document.getElementById("tagInput");
+const tagSuggestions = document.getElementById('tag-suggestions');
+const tagOk = document.getElementById('tag-ok');
 
 let cards = [], deckpic = '', drag;
 let user;
@@ -30,7 +32,7 @@ document.head.appendChild(dpscript);
 // --------------------------------------------------- \\
 
 
-// Essential functions to set up div + ranking functionality
+// Essential functions to set up div + ranking functionality + tags
 function computeCenter(el) {
     let rect = el.getBoundingClientRect();
     return {
@@ -102,6 +104,9 @@ async function renderable(input) {
     } catch(_) {
         return false;
     }
+}
+function tag_exists(tag) {
+    return Array(...document.getElementsByClassName('tag-value')).map(x => x.textContent).filter(x => x == tag).length > 0;
 }
 function init_div(div) {
     div.setAttribute('data-cnt', div.textContent);
@@ -572,17 +577,39 @@ resetpic.addEventListener('mousedown', () => {
     picimg.src = '../../img/defaultdeckpic.png';
 });
 tagInput.addEventListener('keydown', e => {
-    if(e.key == 'Enter' && tagInput.value.trim() != '') {
+    let value = tagInput.value.trim();
+    if(e.key == 'Enter' && value != '' && allowedTags.indexOf(value) > -1) {
         e.preventDefault();
+        if(tag_exists(value)) return;
         tags.innerHTML += `
             <div class='tag remove-tag' onclick='this.remove()'>
                 <div class='material-symbols-outlined'>remove</div>
-                <p class='tag-value'>${tagInput.value.trim()}</p>
+                <p class='tag-value'>${value}</p>
             </div>
         `;
         tagInput.value = '';
         tagInput.focus();
+        tagOk.style.display = 'none';
     }
+});
+tagInput.addEventListener('input', () => {
+    let value = tagInput.value.trim();
+    if(value != '') {
+        if(tag_exists(value)) {
+            tagOk.style.display = 'block';
+            tagOk.innerHTML = 'Already added';
+            tagOk.style.color = 'red';
+        } else if(allowedTags.indexOf(value) > -1) {
+            tagOk.style.display = 'block';
+            tagOk.innerHTML = 'Valid';
+            tagOk.style.color = 'green';
+        } else {
+            tagOk.style.display = 'block';
+            tagOk.innerHTML = 'Invalid';
+            tagOk.style.color = 'red';
+        }
+    }
+    else tagOk.style.display = 'none';
 });
 
 
@@ -721,7 +748,7 @@ function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
     data = {
         desc: description.value,
         contnt: data,
-        tags: Array(document.getElementsByClassName('tag-value')).map(x => x.textContent),
+        tags: Array(...document.getElementsByClassName('tag-value')).map(x => x.textContent),
     };
     if(isEmpty(data.contnt)) data.contnt = {};
     return [name.value, deckpic, data, isPublic.checked];
@@ -806,6 +833,16 @@ function appendToCards(contnt) {
         let carddiv = generateCard(contnt, d_keys, i, cards.length + 1);
         cardContain.appendChild(carddiv);
     }
+}
+function appendTags(tagsToAppend) {
+    tagsToAppend.map(tag => {
+        tags.innerHTML += `
+            <div class='tag remove-tag' onclick='this.remove()'>
+                <div class='material-symbols-outlined'>remove</div>
+                <p class='tag-value'>${tag}</p>
+            </div>
+        `;
+    });
 }
 
 
@@ -924,15 +961,7 @@ function continue_import_modal() {
         if(boxes[i].checked) data[boxes[i].dataset.q] = temp_contnt[boxes[i].dataset.q];
     if(temp_name) name.value = temp_name;
     if(temp_desc) description.value = temp_desc;
-    if(temp_tags) 
-        temp_tags.map(tag => {
-            tags.innerHTML += `
-                <div class='tag remove-tag' onclick='this.remove()'>
-                    <div class='material-symbols-outlined'>remove</div>
-                    <p class='tag-value'>${tag}</p>
-                </div>
-            `;
-        });
+    if(temp_tags) appendTags(temp_tags);
     try {
         appendToCards(data);
     } catch(e) {
@@ -1114,6 +1143,7 @@ async function init() {
     if(!success) return;
     user = data;
     allowedTags = await DeckGateway.getAllowedTags();
+    allowedTags.map(x => tagSuggestions.innerHTML += `<option value='${x}'>`);
     newCard();
     cards[cards.length - 1].getElementsByClassName('q')[0].focus();
     addCard.addEventListener('mousedown', newCard);
@@ -1140,7 +1170,8 @@ const DeckBind = {
     init_ranking,
     newCard,
     toDeck,
-    appendToCards
+    appendToCards,
+    appendTags
 };
 
 export { DeckBind };
