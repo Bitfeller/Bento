@@ -14,13 +14,13 @@ let keys = Object.keys(toFormat.contnt);
 for(let i = 0; i < keys.length; i++) {
     let item = toFormat.contnt[keys[i]];
     let newItem = {};
+    newItem.type = item.type;
+    if(item.op) newItem.op = item.op;
     switch(item.type) {
         case "mc": newItem.ans = [item.op.indexOf(item.ans)]; break;
         case "txt": newItem.ans = [item.ans]; break;
         default: newItem.ans = item.ans; break;
     }
-    newItem.type = item.type;
-    if(item.op) newItem.op = item.op;
     newContnt[keys[i]] = newItem;
 }
 
