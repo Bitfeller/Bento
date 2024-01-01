@@ -97,6 +97,24 @@ h2 {
 #reviewBtn:hover > h1 {
     color: var(--dark-text);
 }
+#intertiaBtn {
+    position: fixed;
+    background-color: var(--gray);
+    margin: 0;
+    padding: 0;
+    height: 60px;
+    width: 60px;
+    cursor: pointer;
+    bottom: 10px;
+    right: 10px;
+}
+#intertiaBtn:hover {
+    filter: hue-rotate(90deg);
+}
+#intertiaBtn > img {
+    width: 50px;
+    height: 50px;
+}
 @media only screen and (max-width: 1300px) {
     /* #settings-big-box {
         max-height: 100vh;
