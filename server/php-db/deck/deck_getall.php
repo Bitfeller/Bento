@@ -18,26 +18,6 @@
     // Make sure session exists
     session_start();
     if(!isset($_SESSION['uid'])) fail("no session");
-    function meets_req($hasMc, $hasTxt, $hasRanking, $hasMtch) {
-        global $strictly, $mc, $txt, $ranking, $mtch;
-        if($strictly == false) {
-            if($mc == true and $hasMc == true) return true;
-            if($txt == true and $hasTxt == true) return true;
-            if($ranking == true and $hasRanking == true) return true;
-            if($mtch == true and $hasMtch == true) return true;
-            if($mc == false and $txt == false and $ranking == false and $mtch == false) return true;
-            return false;
-        }
-        if($mc == true and $hasMc == false) return false;
-        if($txt == true and $hasTxt == false) return false;
-        if($ranking == true and $hasRanking == false) return false;
-        if($mtch == true and $hasMtch == false) return false;
-        if($mc == false and $hasMc == true) return false;
-        if($txt == false and $hasTxt == true) return false;
-        if($ranking == false and $hasRanking == true) return false;
-        if($mtch == false and $hasMtch == true) return false;
-        return true;
-    }
     try {
         $conf = get_server_config();
         $conn = connect_to_db();
@@ -47,16 +27,16 @@
         if(!empty($searchTerms)) {
             // Check name and owner
             $coll = $caseSensitive ? "latin1_general_cs" : "latin1_general_ci";
-            $comp = $regex ? "REGEXP" : "LIKE";
+            $comp = $regex ? "REGEXP ?" : "LIKE CONCAT('%', ?, '%')";
             
             $sql .= "AND (";
             
             $cond = [];
-            foreach((array) $searchTerms as $term) $cond[] = "name COLLATE $coll $comp CONCAT('%', ?, '%')";
+            foreach((array) $searchTerms as $term) $cond[] = "name COLLATE $coll $comp";
             $sql .= implode(" OR ", $cond);
             
             $cond = [];
-            foreach((array) $searchTerms as $term) $cond[] = "owner COLLATE $coll $comp CONCAT('%', ?, '%')";
+            foreach((array) $searchTerms as $term) $cond[] = "owner COLLATE $coll $comp";
             $sql .= " OR " . implode(" OR ", $cond);
             
             $sql .= ") ";
@@ -77,10 +57,10 @@
         if($mc or $txt or $ranking or $mtch) {
             $sql .= "AND (";
             $cond = [];
-            if($mc) $cond[] = `data LIKE '%"type":"mc"%'`;
-            if($txt) $cond[] = `data LIKE '%"type":"txt"%'`;
-            if($ranking) $cond[] = `data LIKE '%"type":"ranking"%'`;
-            if($mtch) $cond[] = `data LIKE '%"type":"mtch"%'`;
+            if($mc) $cond[] = 'data LIKE \'%"type":"mc"%\'';
+            if($txt) $cond[] = 'data LIKE \'%"type":"txt"%\'';
+            if($ranking) $cond[] = 'data LIKE \'%"type":"ranking"%\'';
+            if($mtch) $cond[] = 'data LIKE \'%"type":"mtch"%\'';
             $sql .= implode(" $conj ", $cond);
 
             $sql .= ") ";
@@ -115,21 +95,6 @@
             // Unload viewdata and only get views
             $views = sizeof(json_decode($row['viewdata'], true));
             $row['views'] = $views;
-
-            // Remove if they don't fit the filter
-            $hasMc = false;
-            $hasTxt = false;
-            $hasRanking = false;
-            $hasMtch = false;
-            $data = json_decode($row['data'], false);
-            foreach($data->contnt as $key => $val) {
-                if($val->type == "mc") $hasMc = true;
-                if($val->type == "txt") $hasTxt = true;
-                if($val->type == "ranking") $hasRanking = true;
-                if($val->type == "mtch") $hasMtch = true;
-                if(meets_req($hasMc, $hasTxt, $hasRanking, $hasMtch) == false) break;
-            }
-            if(!meets_req($hasMc, $hasTxt, $hasRanking, $hasMtch)) continue;
             
             unset($row['data']);
             unset($row['viewdata']);
