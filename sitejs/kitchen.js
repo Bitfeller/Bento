@@ -213,13 +213,13 @@ async function preview(_this, isAdded) {
             const question = keys[i];
             const questionData = content[keys[i]];
 
-            answer_list += /*html*/`
+            answer_list += `
                 <div class="question-box">
                    <p><b class="mathJax">Q | ${question}</b></p>
                     ${
                         content[keys[i]].type === "mc"
-                            ? /*html*/`<p>O | ${content[keys[i]].op
-                                .map(x => `<span class="mathJax">${x}</span>`).join(", ")}</p>`
+                            ? `<p>O | ${content[keys[i]].op
+                                .map(x => `<span class="mathJax">${x}</span>`).join(" | ")}</p>`
                             : ""
                     }
                    <p class="mathJax">A | 
@@ -227,7 +227,7 @@ async function preview(_this, isAdded) {
                         content[keys[i]].type === "mc"
                             ? content[keys[i]].ans.map(x => content[keys[i]].op[x])
                             : content[keys[i]].ans
-                    ).join(", ")}
+                    ).join(" | ")}
                     </p>
                 </div>
             `;

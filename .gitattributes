@@ -1,2 +1,9 @@
 * linguist-vendored
 *.js linguist-vendored = false
+
+# linguist-language=Other
+
+# *.roff linguist-vendored
+# *.json linguist-vendored
+# *.md linguist-vendored
+# phpmailer.lang-*.php linguist-vendored

@@ -765,7 +765,7 @@ function generateCard(contnt, d_keys, i, n) {
 }
 function appendToCards(contnt) {
     // Check if we only have one card first, and remove if so (cause it's annoying)
-    if(cards.length == 1) cards.splice(0, 1)[0].remove();
+    if(cards.length == 1 && Object.keys(toDeck(() => {}, true, true)[2].contnt).length == 0) cards.splice(0, 1)[0].remove();
     let d_keys = Object.keys(contnt);
     for(let i = 0; i < d_keys.length; i++)
         if(contnt[d_keys[i]].invfrom) {
@@ -826,19 +826,13 @@ function open_import_modal(contnt) {
             let card = contnt[q];
             let carddiv = document.createElement("div");
             carddiv.className = "import-card";
-            // carddiv.innerHTML = `
-            //     <div class='import-q'>${q}</div>
-            //     <div class='import-a'>${card.type == "mc" ? card.op.join(", ") : card.ans}</div>
-            //     ${card.type == "mc" ? "<div class='import-ans'>" + card.ans.map((t) => card.op[t]).join(', ') + "</div>" : ''}
-            //     <input type='checkbox' class='import-sel' data-q='${q}' checked>
-            // `;
-            carddiv.innerHTML = /*html*/`
+            carddiv.innerHTML = `
                 <div class="question-box">
-                    <input type="checkbox" name="infinite_mode" class="import-question-checkbox" checked>
+                    <input type="checkbox" name="infinite_mode" class="import-question-checkbox" data-q="${q}" checked>
                     <p><b class="mathJax">Q | ${q}</b></p>
                         ${
                             card.type === "mc"
-                                ? /*html*/`<p>O | ${card.op
+                                ? `<p>O | ${card.op
                                     .map(x => `<span class="mathJax">${x}</span>`).join(", ")}</p>`
                                 : ""
                         }
@@ -864,7 +858,7 @@ function open_import_modal(contnt) {
     }
 }
 function continue_import_modal() {
-    let boxes = document.getElementsByClassName('import-sel');
+    let boxes = document.getElementsByClassName('import-question-checkbox');
     if(boxes.length == 0) return close_import_modal();
     let data = {};
     for(let i = 0; i < boxes.length; i++)
