@@ -390,12 +390,15 @@ function answerHandler() {
                     contlabel();
                     refresh();
                 } else {
-                    if (!requireCorrect) objs[0].readOnly = true;
+                    if (!requireCorrect) {
+                        objs[0].readOnly = true;
+                        objs[0].blur();
+                    }
                     ans_a.style.display = "flex";
                     ans_a.innerHTML = cont_a.innerHTML;
                     cont_a.children[0].style.backgroundColor = `rgba(255, 0, 0, 0.5)`;
                     ans_a.children[0].style.backgroundColor = `rgba(0, 255, 0, 0.5)`;
-                    ans_a.children[0].innerHTML = data.ans.join(" • ");
+                    ans_a.children[0].value = data.ans.join(" • ");
                     ans_a.children[0].disabled = true;
                     answerbtn.innerHTML = "Continue >>> (Enter)";
                     if (requireCorrect) {

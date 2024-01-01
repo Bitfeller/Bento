@@ -87,12 +87,16 @@
                 </ul>
             </dialog>
         </section>
+        <div id="header:version" class="version">
+            <span class="new-version"></span>
+            <span class="version-number">v0.3.0</span>
+        </div>
         <section class="tutorial-container">
             <div id="tutorial-background"></div>
             <div id="tutorial-box-holder">
                 <div id="tutorial-box-main">
                     <div class="title-bar">
-                        <h2>Hey there, welcome to Bento!</h2>
+                        <h2>Welcome to Bento!</h2>
                     </div>
                     <div class="tutorial-dialog-main">
                         <p>Here are some things you can do:</p>
@@ -107,9 +111,5 @@
                 </div>
             </div>
         </section>
-        <div id="header:version" class="version">
-        <span class="new-version"></span>
-        <span class="version-number">v0.3.0</span>
-    </div>
 </body>
 </html>

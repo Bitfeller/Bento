@@ -9,15 +9,20 @@ failed; reason: ReferenceError: desc is not defined
 [X] no error feedback is shown for errors in bento importer
 [X] be able to sign up in login.php
 [X] error messages in profile.php
+[B] tutorial, so people know where to go (ui is a little bit confusing)
+
+
 [-] can't progress through mc if too long
-[-] ability to:
-    [-] view the questions you're importign before you import
-    [-] import certain questions only (maybe with a cehckbox or something)
-[-] add a back button on kitchen page (and back btns in general)
-[-] tutorial, so people know where to go (ui is a little bit confusing)
+[X] ability to:
+    [X] view the questions you're importign before you import
+    [X] import certain questions only (maybe with a cehckbox or something)
+    [-] Styling has to be done
+    [-] Ability to select or deselect all questions
+[/] add a back button on kitchen page (and back btns in general)
 
 
-[-] idk if this is intentional behavoiur, but when i log out and press the bento button in the top left, it sends me back to the login screen
-[-] labels undreneath buttons, (e.g. Kitchen: select decks)
+[X] idk if this is intentional behavoiur, but when i log out and press the bento button in the top left, it sends me back to the login screen
+[X] labels undreneath buttons, (e.g. Kitchen: select decks)
 [-] overflow issue in kitchen, review
 [-] overflow issue => file name
+[-] ability to add tags to decks when creating them
