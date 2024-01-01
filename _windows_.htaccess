@@ -24,3 +24,13 @@ RewriteRule ^(.*)$ /site/404.php [L]
 </IfModule>
 
 ErrorDocument 404 /site/404.php
+
+# Block all test folders
+RewriteRule ^.*\/test.*$ - [F]
+
+# Block server-related folders
+RewriteRule ^.*\/conf.*$ - [F]
+RewriteRule ^.*\/notif-service.*$ - [F]
+
+# Block dev folder
+RewriteRule ^.*dev.*$ - [F]
