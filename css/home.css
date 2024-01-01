@@ -3,6 +3,10 @@
     margin: 0;
     font-size: 24pt;
 }
+body {
+    overflow-x: hidden;
+    background: rgb(0, 0, 0, 0.4);
+}
 body > div {
     background: rgb(221,229,182);
     background: linear-gradient(145deg, rgba(221,229,182,1) 0%, rgba(173,193,120,1) 50%, rgba(64,125,176,1) 100%); 
@@ -52,9 +56,6 @@ button {
 .learning {
     font-size: 96pt;
     font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
-}
-#faster, #better {
-    /* margin-left: 15%; */
 }
 #faster-text {
     animation-name: faster-vroom;
@@ -127,10 +128,9 @@ hr {
 }
 #bottom-bar {
     background: rgb(10,57,57);
-    background: linear-gradient(0deg, rgba(10,57,57,1) 0%, rgba(10,57,57,0) 100%); 
-    height: 100px;
+    background: linear-gradient(0deg, rgba(10,57,57,0.8) 0%, rgba(10,57,57,0) 100%); 
+    height: 300px;
     display: flex;
-    justify-content: center;
     position: relative;
     margin: 0;
 }
@@ -139,7 +139,7 @@ hr {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%);
 }
 @keyframes faster-vroom {
     25% {transform: translate(500vh); visibility: hidden;}

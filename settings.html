@@ -15,9 +15,9 @@
     <div class="top-bar">
         <div class="top-bar-side">
             
-            <p class="logo" onclick="location.href='/home.html'">
-                Bento! 🍱
-            </p>
+            <div class="logo" onclick="location.href='/home.html'">
+                <img src="bento logo.svg" height="100%" alt="bento-logo" class="bento-logo">
+            </div>
         </div>
         <div class="top-bar-side">
 
@@ -34,21 +34,41 @@
             <input type="range" min="1" max="5" value="5" class="slider"  id="set-size-slider" oninput="displaySliderValue('set-size-slider', 'set-size-output')">
             <output id="set-size-output">5</output>
         </div>
-        <div class="setting-box">
-            Vocab Repetition
-            <input id="radio-1" name="radio" type="radio" checked>
-            <label for="radio-1" class="radio-label">Something</label>
-            
-            <input id="radio-2" name="radio" type="radio">
-            <p  for="radio-2" class="radio-label">Something Else</p>
+        <div class="setting-box" id="vocab-repetition-setting">
+            <div>Vocab Repetition:</div>
+            <div>
+                <input name="radio" type="radio" checked>
+                <span class="radio-label">Something</span>
+            </div>
+            <div>
+                <input name="radio" type="radio">
+                <span class="radio-label">Something Else</span>
+            </div>
         </div>
-        <div>Show Previous Vocab</div>
-        <div>Theme</div>
-        <div>Change Password</div>
-        <div>Change Username/Email</div>
-        <div>Delete Account</div>
-        <div>Reset Account</div>
-        <div>Vacation Mode</div>
+        <div class="setting-box">
+            <input type="checkbox">
+            Show Previous Vocab
+        </div>
+        <div class="setting-box">
+            <input type="checkbox">
+            Vacation Mode
+        </div>
+        <div class="setting-box">
+            <p>Change Password</p>
+            <input type="text" class="change-input">
+            <button>Submit</button>
+        </div>
+        <div class="setting-box">
+            <p>Change Username</p>
+            <input type="text" class="change-input">
+            <button>Submit</button>
+        </div>
+        <div class="setting-box">
+            <button>Delete Account</button>
+        </div>
+        <div class="setting-box">
+            <button>Reset Account</button>
+        </div>
 
 
     </div>
