@@ -26,9 +26,9 @@ jobs:
         mkdir -p ~/.ssh
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh -o StrictHostKeyChecking=no apple@76.130.195.232 -p 7797 'bash -s' << 'EOF'
+        ssh -o StrictHostKeyChecking=no orange@76.130.195.232 -p 7797 'bash -s' << 'EOF'
         # Commands to deploy your website
-        cd /home/apple/website/
+        cd /var/www/test
         git pull origin main
         # Any other deployment commands
         EOF
