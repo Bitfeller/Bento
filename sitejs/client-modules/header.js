@@ -49,6 +49,9 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         "You can find your profile in the top right corner.",
         "Started making a deck but didn't finish? Bento auto-saves your drafts, and you can find them on the right when cooking."
     ];
+    const errorMessages = {
+
+    };
 
     function tip_changer(newtext, color) {
         return new Promise((res, _) => {
@@ -74,6 +77,15 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         load_failed = true;
         clearInterval(tipper);
         tip_changer(err, "rgb(175, 100, 100)");
+    };
+    window.SHOW_ERROR = (err) => {
+        const msg = errorMessages[err] || err;
+        const errPopup = document.createElement("div");
+        errPopup.innerText = msg;
+        errPopup.className = "error-popup";
+
+        document.body.appendChild(errPopup);
+        setTimeout(() => errPopup.remove(), 2500);
     };
     window.lib = {};
     window.lib.decode = (str) => {

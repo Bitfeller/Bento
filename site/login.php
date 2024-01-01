@@ -58,7 +58,7 @@
             <input type="text" id="signInUsername" autofocus>
             <p>Password:</p>
             <input type="password" id="signInPassword">
-            <button class="submitBtn" id="signInBtnM">Login</button>
+            <button class="submitBtn" id="signInBtn">Login</button>
             <p class='login-box-selector' onclick="location.href='/user/resetpwd'">I forgot my password >></p>
             <p class='login-box-selector' onclick="location.href='/signup'">Create an account >></p>
             <p class="info-error" id="err"></p>
@@ -81,7 +81,7 @@
         
         const l_user = document.getElementById("signInUsername");
         const l_pass = document.getElementById("signInPassword");
-        const l_btn = document.getElementById("signInBtnM");
+        const l_btn = document.getElementById("signInBtn");
         const err = document.getElementById("err");
 
         async function login() {
