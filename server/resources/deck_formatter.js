@@ -1,8 +1,8 @@
 // RESOURCE: deck_formatter.js
 // Takes an old version of a data value and returns a new, optimized value.
 
-// ACCEPTS: SQL:decks.data => 0.1.0
-// RETURNS: SQL:decks.data => >0.2.0
+// ACCEPTS: SQL:decks.data => 0.2.0
+// RETURNS: SQL:decks.data => >0.3.0
 
 // Run via Node.js.
 
@@ -10,20 +10,21 @@ let toFormat = require('./deck_toformat.json');
 
 let newContnt = {};
 
-for(let i = 0; i < toFormat.deckData.length; i++) {
-    let item = toFormat.deckData[i];
+let keys = Object.keys(toFormat.contnt);
+for(let i = 0; i < keys.length; i++) {
+    let item = toFormat.contnt[keys[i]];
     let newItem = {};
     switch(item.type) {
-        case "selection": newItem.type = "mc"; break;
-        case "input": newItem.type = "txt"; break;
-        default: newItem.type = item.type; break;
+        case "mc": newItem.ans = [item.op.indexOf(item.ans)]; break;
+        case "input": newItem.ans = [item.ans]; break;
+        default: newItem.ans = item.ans; break;
     }
-    newItem.ans = item.correctAnswer || item.answer;
-    if(item.answers) newItem.op = item.answers;
-    newContnt[item.question] = newItem;
+    newItem.type = item.type;
+    if(item.op) newItem.op = item.op;
+    newContnt[keys[i]] = newItem;
 }
 
 console.log(JSON.stringify({
-    desc: toFormat.description,
+    desc: toFormat.desc,
     contnt: newContnt
-}))
+}));
