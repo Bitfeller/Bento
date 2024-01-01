@@ -10,19 +10,20 @@ const fileSelectTrigger = document.getElementById("fileselecttrigger");
 const newEmailField = document.getElementById("email");
 const emailCurrPassword = document.getElementById("email-curr-password");
 const emailbtn = document.getElementById("change-email");
+const emailerr = document.getElementById("email-error");
 
 const pwdfield = document.getElementById("password");
 const currentPassword = document.getElementById("password-curr-password");
-const passwordButton = document.getElementById("change-password");
+const passwordbtn = document.getElementById("change-password");
+const passwordError = document.getElementById("password-error");
 
 const usernameField = document.getElementById("new-username");
-const usernameButton = document.getElementById("submit-username");
+const usernamebtn = document.getElementById("submit-username");
 const usernameDisplay = document.getElementById("username");
+const usernameError = document.getElementById("username-error");
 
 const warningDialog = document.getElementById("warning-dialog");
-
 const deleteAccount = document.getElementById("delete-account");
-
 const resetAccount = document.getElementById("reset-account");
 
 
@@ -31,6 +32,11 @@ const coffeeMidnightRadio = document.getElementById("coffee-midnight-radio");
 const catppuccinRadio = document.getElementById("catppuccin-radio");
 // const grayscaleRadio = document.getElementById("grayscale-radio");
 
+async function changeTheme(current, theme) {
+    if(current == theme) return;
+    await UserGateway.editUser('theme', "" + theme);
+    window.location.reload();
+}
 // main
 (async () => {
     let [success, data] = await UserGateway.getuser(true, true, false, false);
@@ -44,7 +50,7 @@ const catppuccinRadio = document.getElementById("catppuccin-radio");
         pfp.src = "../../img/defaultpfp.png";
         await UserGateway.editUser("pfp", "");
         window.location.reload();
-    })
+    });
 
     fileSelectTrigger.addEventListener('change', () => {
         let files = fileSelectTrigger.files;
@@ -52,7 +58,7 @@ const catppuccinRadio = document.getElementById("catppuccin-radio");
             let file = files[0];
             if(!file.type.startsWith("image/")) return console.log('failed - file type; ' + file.type);
             let reader = new FileReader();
-            reader.onload = async (e) => {
+            reader.onload = async e => {
                 let content = e.target.result;
                 if(content.byteLength > 3 * 1000 * 100) return console.log("Failed! Past size limit of 3 MB.");
                 await UserGateway.editUser("pfp", content);
@@ -64,17 +70,62 @@ const catppuccinRadio = document.getElementById("catppuccin-radio");
 
     emailbtn.addEventListener("mousedown", async () => {
         if(newEmailField.value == "" || emailCurrPassword.value == "") return;
-        await UserGateway.editUser("email", newEmailField.value, emailCurrPassword.value);
+        let [success, err] = await UserGateway.editUser("email", newEmailField.value, emailCurrPassword.value);
+        if(!success) {
+            switch(err) {
+                case 'invalid pwd':
+                    emailerr.innerHTML = "Wrong password.";
+                break;
+                case 'invalid email':
+                    emailerr.innerHTML = "That email isn't valid.";
+                break;
+                case 'email taken':
+                    emailerr.innerHTML = "That email is already taken.";
+                break;
+                default:
+                    emailerr.innerHTML = "Look's like there's something wrong on our side. Try again later.";
+                break;
+            }
+            return;
+        }
         window.location.reload();
     });
-    passwordButton.addEventListener("mousedown", async () => {
+    passwordbtn.addEventListener("mousedown", async () => {
         if(pwdfield.value == "" || currentPassword.value == "") return;
-        await UserGateway.editUser("password", pwdfield.value, currentPassword.value);
+        let [success, err] = await UserGateway.editUser("password", pwdfield.value, currentPassword.value);
+        if(!success) {
+            switch(err) {
+                case "invalid pwd":
+                    passwordError.innerHTML = "Wrong password.";
+                break;
+                default:
+                    passwordError.innerHTML = "Look's like there's something wrong on our side. Try again later.";
+                break;
+            }
+            return;
+        }
         window.location.reload();
     });
-    usernameButton.addEventListener("mousedown", async () => {
+    usernamebtn.addEventListener("mousedown", async () => {
         if(usernameField.value == "") return;
-        await UserGateway.editUser("username", usernameField.value);
+        let [success, err] = await UserGateway.editUser("username", usernameField.value);
+        if(!success) {
+            switch(err) {
+                case "invalid username":
+                    usernameError.innerHTML = "Your username has characters that are not allowed.";
+                break;
+                case "flagged":
+                    usernameError.innerHTML = "Your username was flagged for inappropriate content.";
+                break;
+                case "username taken":
+                    usernameError.innerHTML = "That username is already taken.";
+                break;
+                default:
+                    usernameError.innerHTML = "Look's like there's something wrong on our side. Try again later.";
+                break;
+            }
+            return;
+        }
         window.location.reload();
     });
 
@@ -85,18 +136,31 @@ const catppuccinRadio = document.getElementById("catppuccin-radio");
             <p>This action is irreversible and will remove all of your data from our servers.</p>
             <br>
             <p>Enter your current password to continue...</p>
-            <input type="text" id="delete-account-password" placeholder="Current Password">
+            <input type="password" id="delete-account-password" placeholder="Current Password">
             <div class="dialog-button-container">
                 <button id="delete-account-confirm">Delete Account</button>
                 <button id="delete-account-cancel">Cancel</button>
             </div>
+            <p class="info-error" id="delete-account-error"></p>
         `;
         const deleteAccountPassword = document.getElementById("delete-account-password");
         const deleteAccountConfirm = document.getElementById("delete-account-confirm");
         const deleteAccountCancel = document.getElementById("delete-account-cancel");
+        const deleteAccountError = document.getElementById("delete-account-error");
         deleteAccountConfirm.addEventListener("mousedown", async () => {
             if(deleteAccountPassword.value == "") return;
-            await UserGateway.editUser("delete", "", deleteAccountPassword.value);
+            let [success, err] = await UserGateway.editUser("delete", "", deleteAccountPassword.value);
+            if(!success) {
+                switch(err) {
+                    case 'invalid pwd':
+                        deleteAccountError.innerHTML = "Wrong password.";
+                    break;
+                    default:
+                        deleteAccountError.innerHTML = "Look's like there's something wrong on our side. Try again later.";
+                    break;
+                }
+                return;
+            }
             window.location.reload();
         });
         deleteAccountCancel.addEventListener("mousedown", () => warningDialog.close());
@@ -108,27 +172,29 @@ const catppuccinRadio = document.getElementById("catppuccin-radio");
             <p>Once you reset your account, all of your user data and preferences (reviews, draft decks, theme preferences, etc.) will be deleted.</p>
             <br>
             <p>Enter your current password to continue...</p>
-            <input type="text" id="reset-account-password" placeholder="Current Password">
+            <input type="password" id="reset-account-password" placeholder="Current Password">
             <div class="dialog-button-container">
                 <button id="reset-account-confirm">Reset Account</button>
                 <button id="reset-account-cancel">Cancel</button>
             </div>
+            <p class="info-error" id="reset-account-error"></p>
         `;
         const resetAccountPassword = document.getElementById("reset-account-password");
         const resetAccountConfirm = document.getElementById("reset-account-confirm");
         const resetAccountCancel = document.getElementById("reset-account-cancel");
+        const resetAccountError = document.getElementById("reset-account-error");
         resetAccountConfirm.addEventListener("mousedown", async () => {
             if(resetAccountPassword.value == "") return;
-            await UserGateway.editUser("userdata", '{"reviews":{},"draftdecks":{},"theme":0}', resetAccountPassword.value);
+            let [success, err] = await UserGateway.editUser("userdata", '{"reviews":{},"draftdecks":{},"theme":0}', resetAccountPassword.value);
+            if(!success) {
+                resetAccountError.innerHTML = "Looks like there's something wrong on our side. Try again later.";
+                return;
+            }
             warningDialog.close();
             window.location.reload();
         });
         resetAccountCancel.addEventListener("mousedown", () => warningDialog.close());
     });
-    window.onclick = (e) => {
-        if(e.target == warningDialog) warningDialog.close();
-    }
-
     let currentTheme = data.userdata.theme;
     
     if(currentTheme == 0) nordRadio.checked = true;
@@ -141,10 +207,6 @@ const catppuccinRadio = document.getElementById("catppuccin-radio");
     catppuccinRadio.addEventListener("change", () => changeTheme(currentTheme, 2));
     // grayscaleRadio.addEventListener("change", () => changeTheme(currentTheme, 3));
 })();
-
-async function changeTheme(currentTheme, theme) {
-    if(currentTheme == theme) return;
-    currentTheme = theme;
-    await UserGateway.editUser('theme', "" + theme);
-    window.location.reload();
-}
+window.onclick = e => {
+    if(e.target == warningDialog) warningDialog.close();
+};

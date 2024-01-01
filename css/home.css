@@ -11,6 +11,27 @@
     width: calc(100% - 20px);
     margin: 20px auto;
 }
+.deck-container-mastered {
+    display: inline;
+}
+.green-box, .yellow-box, .red-box {
+    width: 25px;
+    height: 10px;
+    display: inline-block;
+}
+.green-box {
+    background-color: var(--accent-1);
+}
+.yellow-box {
+    background-color: var(--select-blue);
+}
+.red-box {
+    background-color: var(--danger-red);
+}
+.dc-masterbox {
+    margin-left: 5px;
+    margin-right: 100px;
+}
 .home-grid > div {
     & svg {
         max-width: 300px;
@@ -105,14 +126,6 @@
     grid-column: span 2;
     gap: 10px;
 }
-.deck-viewer {
-    display: none;
-    position: absolute;
-    left: calc(10% - 5px);
-    top: 65px;
-    width: 70%;
-    height: calc(100vh - 80px);
-}
 .graph-container {
     grid-column: span 3;
 }
@@ -137,6 +150,40 @@
 }
 #search-reviews {
     font-size: 12pt;
+}
+#tutorial-background, #tutorial-box-holder {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+#tutorial-background {
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.5);
+}
+#tutorial-box-holder {
+    z-index: 105;
+    background: transparent;
+}
+.lit-up {
+    z-index: 101 !important;
+    position: relative;
+}
+#tutorial-box-main {
+    background-color: var(--dark-gray);
+    padding: 2%;
+    border-radius: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 102;
+}
+button.next, button.skip {
+    padding: 0px 5px;
+    margin: 5px;
 }
 @keyframes sushi-shine {
     50% {

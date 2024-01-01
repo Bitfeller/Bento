@@ -5,10 +5,10 @@ const deckReminders = document.getElementsByClassName("review-schedule")[0].getE
 const searcher = document.getElementById('search-reviews');
 const deckViewer = document.getElementById('bento-modal');
 deckViewer.style.display = "none";
-// Tutorial required elements
-// const tutorialDialog = document.getElementById("tutorial-background");
-// const tutorialBoxHolder = document.getElementById("tutorial-box-holder");
-// const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
+
+const tutorialDialog = document.getElementById("tutorial-background");
+const tutorialBoxHolder = document.getElementById("tutorial-box-holder");
+const t_dialogmain = tutorialBoxHolder.getElementsByClassName("tutorial-dialog-main")[0];
 
 // const svgHolder = document.getElementsByClassName("bento-svg")[0];
 // const blankSvg = document.getElementById("blanksvg");
@@ -20,39 +20,98 @@ const version = document.getElementById('header:version');
 const version_info = document.getElementById('header:version_info');
 const feedback_dialog = document.getElementById("header:feedback_dialog");
 
-function show(user, deck) {
+let user;
+let decks = [], counts = [];
+
+const INFO_TERM_LIMIT = 10;
+const TYPEWRITE_SPEED = 1000 / 60; // 1000 / (char per second)
+let typewriteInterval, typewriteCurr;
+
+const tutorial = [
+    {
+        main: "<p>You're about to start the tutorial for Bento to guide you through the basics.</p><p>Or, if you're already familiar, you can skip.</p><p>(You can reactivate this tutorial in your settings.)</p>"
+    },
+    {
+        before: () => {
+            tutorialBoxHolder.style.display = "none";
+            deckViewer.style.display = "block";
+        },
+        main: "<p>Welcome to Bento! This is your home screen, where you can see all your upcoming reviews and decks.</p><p>Let's get started!</p>"
+    }
+];
+
+function show(deck) {
     deckViewer.style.display = 'block';
-    let review = user.userdata.reviews[deck.name];
+    let review = window.lib.recur_decode(user.userdata.reviews[deck.id]);
+    let keys = Object.keys(review);
     let name = deck.name;
+    let mastered = 0;
+    for(let i = 0; i < keys.length; i++) {
+        let term = review[keys[i]];
+        if(term.box > 3) mastered++;
+    }
+
+    let lister = (select, sorter) =>
+        keys.filter(select)
+            .filter(k => deck.data.contnt[k] ?? false)
+            .sort(sorter)
+            .slice(0, INFO_TERM_LIMIT)
+            .map(k => `<li>${k} => ${deck.data.contnt[k].type == 'mc' ? deck.data.contnt[k].ans.map(r => deck.data.contnt[k].op[r]).join(', ') : deck.data.contnt[k].ans} (recall rating: ${review[k].box} (of 6), score: ${review[k].score}, average time spent: ${review[k].time ? review[k].time + 's' : '[not tracked yet]'}, next review: ${UserGateway.calculateNTR(review[k].box, review[k].last) ? "now" : "in " + UserGateway.calculateNextReview(review[k].box, review[k].last) + " day(s)"})</li>`).join('');
+
+    let worst = lister(k => review[k].box <= 2, (a, b) => review[a].box + review[a].score / 100 - review[b].box - review[b].score / 100);
+    let learning = lister(k => review[k].box > 2 && review[k].box < 5, (a, b) => review[a].box + review[a].score / 100 - review[b].box - review[b].score / 100);
+    let best = lister(k => review[k].box >= 5, (a, b) => review[b].box + review[b].score / 100 - review[a].box - review[a].score / 100);
+
+    if(worst.length == 0) worst = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
+    if(learning.length == 0) learning = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
+    if(best.length == 0) best = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
+    
     deckViewer.innerHTML = `
         <div class='title deck-container-overview' id='deck-container-overview'>
             <h2>${name}</h2>
-            <p>By: &lt;unknown&gt;</p>
+            <p>By <b>${deck.owner}</b></p>
         <div><br>
         <hr><br>
         <div class='deck-container-main' id='deck-container-main'>
-            <p class='info-blank'>-- A cool new feature coming here soon... --</p>
+            <div class='deck-container-mastered'>
+                <div class='green-box'></div><span class='dc-masterbox'>Mastered ${mastered} terms</span>
+                <div class='yellow-box'></div><span class='dc-masterbox'>Learning ${keys.length - mastered} terms</span>
+                <div class='red-box'></div><span class='dc-masterbox'>Haven't seen ${deck.contnt_len - keys.length} terms</span>
+            </div>
+            <div>
+                <div class='deck-container-worst-terms'>
+                    <h3 style='color: var(--danger-red)'>Least mastered</h3>
+                    <ol class='deck-container-worst-terms-list'>
+                        ${worst}
+                    </ol>
+                </div>
+                <div class='deck-container-learning-terms'>
+                    <h3 style='color: var(--select-blue)'>Learning</h3>
+                    <ol class='deck-container-learning-terms-list'>
+                        ${learning}
+                    </ol>
+                </div>
+                <div class='deck-container-best-terms'>
+                    <h3 style='color: var(--accent-1)'>Most mastered</h3>
+                    <ol class='deck-container-best-terms-list'>
+                        ${best}
+                    </ol>
+                </div>
+            </div>
         </div>
     `;
 }
 function hide() {
     deckViewer.style.display = 'none';
 }
-async function update(search) {
-    let [success, data] = await UserGateway.getuser(false, true, true, false);
-    if(!success) return;
-    deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
-    let reviews = data.userdata.reviews;
-    
-    let r_keys = Object.keys(reviews);
-    let decks = [], counts = [];
-    
+function update(search) {
     search = search.toLowerCase();
     let searched = search != '';
     let coll = 0;
+
     deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
     for(let i = 0; i < decks.length; i++) {
-        if(counts[i] > 0 && decks[i].name.toLowerCase().includes(search)) {
+        if(counts[i] > 0 && window.lib.decode(decks[i].name).toLowerCase().includes(search)) {
             coll++;
             deckReminders.innerHTML += `
                 <div class="review-container">
@@ -62,32 +121,57 @@ async function update(search) {
         }
     }
     if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks for review that match." : "There aren't any decks to review."} --</p>`;
+    
     deckReminders.innerHTML += "<h3>All Decks</h3>";
     for(let i = coll = 0; i < decks.length; i++) {
-        if(decks[i].name.toLowerCase().includes(search)) {
+        if(window.lib.decode(decks[i].name).toLowerCase().includes(search)) {
             coll++;
             let div = document.createElement('div');
             div.className = 'review-container';
             div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>`;
             deckReminders.appendChild(div);
-            div.addEventListener('mouseenter', () => show(data, decks[i]));
-            div.addEventListener('mouseleave', hide);    
+            div.addEventListener('mouseenter', () => show(decks[i]));
+            div.addEventListener('mouseleave', hide);
         }
     }
-    if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks that match" : "You don't have any decks in your reviews."} --</p>`;
+    if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks that match." : "You don't have any decks in your reviews."} --</p>`;
+}
+function _finish() {
+    clearInterval(typewriteInterval);
+    // tutorial[typewriteCurr]
+}
+function _dialog(i, text) {
+    if(i >= text.length) return clearInterval(typewriteInterval);
+    if(text[i] == '<') {
+        let j = text.indexOf('>', i);
+        t_dialogmain.innerHTML += text.substring(i, j + 1);
+        return _dialog(j + 1, text);
+    }
+    t_dialogmain.innerHTML += text[i++];
+    if(i >= text.length)
+        clearInterval(typewriteInterval);
+    return i;
+}
+function write(text) {
+    let i = 0;
+    typewriteInterval = setInterval(() => i = _dialog(i, text), TYPEWRITE_SPEED);
+}
+function set(text) {
+    t_dialogmain.innerHTML = '';
+    write(text);
 }
 (async () => {
-    let [success, data] = await UserGateway.getuser(false, true, true, false);
+    let [success, _user] = await UserGateway.getuser(false, true, true, false);
     if(!success) return;
+    user = _user;
     deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
-    let reviews = data.userdata.reviews;
-    
+  
+    let reviews = user.userdata.reviews;
     let r_keys = Object.keys(reviews);
-    let decks = [], counts = [];
 
-    for(let i = 0; i < r_keys.length; i++) {
-        let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), false, false, true);
-        if(!success) continue;
+    let lazyloader = async (r_keys, i) => {
+        let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), true, false, true);
+        if(!success) return;
         decks.push(deck);
         let count = 0;
         let c_keys = Object.keys(reviews[r_keys[i]]);
@@ -97,9 +181,26 @@ async function update(search) {
         }
         count += deck.contnt_len - c_keys.length;
         counts.push(count);
-    }
-    update('');
+        update('');
+    };
+    for(let i = 0; i < r_keys.length; i++)
+        lazyloader(r_keys, i);
+  
     searcher.addEventListener('input', () => update(searcher.value));
+
+    // Tutorial
+    // Get options from browser URL
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('new')) {
+        // replace URL so that user doesn't accidentally re-activate tutorial later
+        history.replaceState(null, "", "home"); // /home?new=1  ==>  /home
+        // tutorial feature
+        tutorialDialog.style.display = "block";
+        tutorialBoxHolder.style.display = "block";
+
+        set("<p>You're about to start the tutorial for Bento to guide you through the basics.</p><p>Or, if you're already familiar, you can skip.</p><p>(You can reactivate this tutorial in your settings.)</p>");
+    }
+
     window.LOADED();
 })();
 version.addEventListener('mousedown', () => version_info.showModal());
