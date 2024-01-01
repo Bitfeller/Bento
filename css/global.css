@@ -272,6 +272,28 @@ input:checked + .slider:before {
     -ms-transform: translateX(24px);
     transform: translateX(24px);
 }
+dialog {
+    margin: auto;
+    padding: 30px;
+    border: none;
+    border-radius: 15px;
+    min-width: 450px;
+    background-color: var(--dark-gray);
+    h2 {
+        display: inline;
+    }
+    ul {
+        padding: 0px 10px;
+        margin: 0px 10px;
+    }
+    button {
+        font-size: 12pt;
+        height: 30px;
+        width: auto;
+        padding: 0px 5px;
+        margin: 0px 5px;
+    }
+}
 dialog::backdrop{
     background-color: rgba(0, 0, 0, 0.9);
 }
@@ -288,13 +310,9 @@ dialog::backdrop{
 .line-up-icons span {
     margin-left: 5px;
 }
-.feedback-dialog {
-    border: none;
+.feedback-dialog, .version_info {
     margin: 45px auto;
-    padding: 15px;
-    border-radius: 10px;
     min-width: 50%;
-    background-color: var(--dark-gray);
     & textarea {
         margin-top: 5px;
     }
@@ -306,6 +324,29 @@ dialog::backdrop{
         min-width: 62px;
         min-height: 38px;
     }
+}
+div.version {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    right: 0;
+    bottom: 0;
+    margin: 3px 5px;
+    width: auto;
+    font-family: kadwa !important;
+}
+div.version:hover {
+    cursor: pointer;
+}
+.new-version {
+    position: relative;
+    display: flex;
+    width: 5px;
+    height: 5px;
+    justify-content: center;
+    align-content: center;
+    background-color: red;
+    border-radius: 30px;
 }
 .reset-pwd {
     float: right;

@@ -10,6 +10,8 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     const feedback_dialog = document.getElementById("header:feedback_dialog");
     const feedback_content = document.getElementById("header:feedback_content");
     const feedback_submit = document.getElementById("header:feedback_submit");
+    const version = document.getElementById('header:version');
+    const version_info = document.getElementById('header:version_info')
     const uo = document.body.dataset.uo;
 
     const loader = document.getElementsByClassName("loader")[0];
@@ -144,9 +146,13 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         await UserGateway.giveFeedback(content);
         feedback_dialog.close();
     });
-    window.onclick = (e) => {
-        if(e.target == feedback_dialog) {
+    version.addEventListener('mousedown', () => {
+        version_info.showModal();
+    });
+    window.addEventListener('mousedown', (e) => {
+        if(e.target == feedback_dialog || e.target == version_info) {
             feedback_dialog.close();
+            version_info.close()
         }
-    }
+    });
 })();
