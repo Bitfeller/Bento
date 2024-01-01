@@ -1,0 +1,47 @@
+# This code is only to be utilized on the primary server.
+
+# Access Control headers
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS"
+# Cache Control headers
+Header set Cache-Control "no-cache, no-store, must-revalidate"
+Header set Pragma "no-cache"
+Header set Expires 0
+
+RewriteEngine on
+
+SetEnvIf REQUEST_URI /(.*) NEWURI=$1
+
+RewriteCond %{ENV:NEWURI} !^(.*)css\/(.*)$
+RewriteCond %{ENV:NEWURI} !^(.*)img\/(.*)$
+RewriteCond %{ENV:NEWURI} !^(.*)globalreqs.php(.*)$
+# exception to VPN'd users and server containers
+# RewriteCond %{REMOTE_ADDR} !^10\.
+RewriteRule ^(.*)$ /site/maintenance.php [END]
+
+# Block all test folders
+RewriteRule ^.*\/test.*$ - [F]
+
+# Block server-related folders
+RewriteRule ^.*\/.*config.*$ - [F]
+RewriteRule ^.*\/notif-service.*$ - [F]
+
+# Block dev folder
+RewriteRule ^.*dev.*$ - [F]
+
+# Redirect to page if exists under /site/ and does not exist under any other folder.
+RewriteCond %{DOCUMENT_ROOT}/../%{ENV:NEWURI} !-f
+RewriteCond %{DOCUMENT_ROOT}/../%{ENV:NEWURI} !-d
+RewriteCond %{DOCUMENT_ROOT}/%{ENV:NEWURI}\.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+# Redirect non-existent paths to 404.
+RewriteCond %{DOCUMENT_ROOT}/%{ENV:NEWURI} -d
+RewriteCond %{ENV:NEWURI} ^\s$
+RewriteRule ^(.*)$ 404.php [L]
+
+# Set directory index
+DirectoryIndex index.php
+
+# Set 404 page
+ErrorDocument 404 /site/404.php
