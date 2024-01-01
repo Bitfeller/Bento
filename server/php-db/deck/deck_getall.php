@@ -47,7 +47,7 @@
             $sql .= "AND (";
 
             $cond = [];
-            foreach((array) $tags as $tag) $cond[] = "JSON_CONTAINS(data, '\"?\"', '$.tags')";
+            foreach((array) $tags as $tag) $cond[] = "JSON_CONTAINS(data, ?, '$.tags')";
             $sql .= implode(" OR ", $cond);
 
             $sql .= ") ";

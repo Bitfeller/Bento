@@ -471,13 +471,18 @@ async function populateRecommended() {
             <p class='tag-value'>${tag}</p>
         `;
         tagDiv.style.backgroundColor = generateTagColor(tag);
-        tagDiv.onclick = () => {
+        tagDiv.onclick = async () => {
             filteredTags.innerHTML += `
                 <div class='tag remove-tag' onclick='this.remove()' style='background-color: ${generateTagColor(tag)}'>
                     <div class='material-symbols-outlined'>remove</div>
                     <p class='tag-value'>${tag}</p>
                 </div>
             `;
+            
+            let query = searchBar.value;
+            if(query.length == 0)
+                pubDTitle.innerHTML = "Public Decks:";
+            await fetchDecks();
             tagDiv.remove();
         };
         predefinedTags.appendChild(tagDiv);
