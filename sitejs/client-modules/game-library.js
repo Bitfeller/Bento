@@ -546,7 +546,8 @@ function check(answer) {
         case "txt":
             for(let i = 0; i < problem.ans.length; i++) {
                 let diff = strdist(answer.toLowerCase().replaceAll(/\s/g, ""), problem.ans[i].toLowerCase().replaceAll(/\s/g, ""));
-                if(problem.ans[i].toLowerCase().replaceAll(/\s/g, "").length < 4 && diff > 1) continue; else if(diff < 2) return true;
+                console.log(diff);
+                if(problem.ans[i].toLowerCase().replaceAll(/\s/g, "").length < 4 && diff > 0) continue; else if(diff < 2) return true;
                 //if(answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans[i].toLowerCase().replaceAll(/\s/g, "")) return true;
             }
             return false;
@@ -570,7 +571,8 @@ function isCorrect(answer) {
         case "txt":
             for(let i = 0; i < problem.ans.length; i++) {
                 let diff = strdist(answer.toLowerCase().replaceAll(/\s/g, ""), problem.ans[i].toLowerCase().replaceAll(/\s/g, ""));
-                if(problem.ans[i].toLowerCase().replaceAll(/\s/g, "").length < 4 && diff > 1) continue; else if(diff < 2) return updateLastCorrect(true);
+                console.log(diff);
+                if(problem.ans[i].toLowerCase().replaceAll(/\s/g, "").length < 4 && diff > 0) continue; else if(diff < 2) return updateLastCorrect(true);
                 //if(answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans[i].toLowerCase().replaceAll(/\s/g, "")) return updateLastCorrect(true);
             }
             return updateLastCorrect(false);
