@@ -103,6 +103,7 @@ button {
     color: var(--dark-text);
     cursor: pointer;
     transition: 0.3s;
+    padding: 0px 8px;
 }
 button:hover {
     filter: brightness(85%);
@@ -142,8 +143,10 @@ textarea {
     padding: 5px;
     background-color: var(--gray);
     color: var(--light-text);
-    width: calc(100% - 60px);
-    height: max-content;
+    width: calc(100% - 30px);
+    margin: 0px auto;
+    height: 30dvh;
+    resize: none;
 }
 select {
     border: none;
@@ -279,6 +282,9 @@ code {
 .right-header {
     float: right;
 }
+.left-header {
+    float: left;
+}
 .info-blank {
     color: color-mix(in srgb, var(--light-text) 90%, black 10%);
     font-style: italic;
@@ -295,6 +301,18 @@ code {
     margin-top: 5px;
     color: var(--select-blue);
     font-family: karla;
+}
+.error-popup {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    animation: error_show 2.5s ease forwards;
 }
 .switch {
     margin-top: 10px;
@@ -446,5 +464,22 @@ dialog::backdrop {
 @keyframes spin {
     100% {
         transform: rotate(360deg);
+    }
+}
+/* error_show - initially, position is at -10%. Then it moves it to 20% using ease, and then
+    2 seconds later moves it from 20% to -10% using ease.
+*/
+@keyframes error_show {
+    0% {
+        top: -80px;
+    }
+    30% {
+        top: 20px;
+    }
+    70% {
+        top: 20px;
+    }
+    100% {
+        top: -80px;
     }
 }

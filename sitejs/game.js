@@ -15,6 +15,7 @@ let mc_sel = [];
 let selected = true;
 let toProceed = false;
 let requireCorrect = false;
+let lazyCheck = false;
 
 // Ranking functionality (drag)
 let dragElements = [];
@@ -97,7 +98,7 @@ async function renderable(input) {
 function refresh() {
     hideDisplay();
     if(Game.isDead()) {
-        problem.innerHTML = "You completed Learn! Now go touch some <span>grass!</span>";
+        problem.innerHTML = "You completed Learn! Now go touch some <span>grass!</span><p class='small-text'>Enter to go home.</p><p class='small-text'>Space to restart.</p>";
         progressBar.style.width = `100%`;
         let progress = Game.getProgress();
         progressNumbers.style.marginLeft = "5px";
@@ -109,14 +110,17 @@ function refresh() {
         answerbtn.innerHTML = "Go back home >>>";
         for(let i = 0; i < objs.length; i++) objs[i].remove();
         setTimeout(() =>
-            window.addEventListener("keydown", e => e.key == "Enter" ? answerHandler() : null),
-            500);
+            window.addEventListener("keydown", e => {
+                if(e.key == "Enter") answerHandler();
+                if(e.key == " ") window.location.reload();
+            }),
+        200);
         return;
     }
 
     let data = Game.fetchProblem();
     problem.innerHTML = data.q;
-    if(data.type == 'mc' && data.req == 1) problem.innerHTML += "<p style='font-size: 15px;'>Select all correct answers.</p>";
+    if(data.type == 'mc' && data.req == 1) problem.innerHTML += "<p class='small-text'>Select all correct answers.</p>";
     typeset(problem);
     
     for(let i = 0; i < objs.length; i++) objs[i].remove();
@@ -137,7 +141,7 @@ function refresh() {
                 let i = data.op.indexOf(op);
                 let op_i = document.createElement("button");
                 op_i.className = "option";
-                op_i.innerHTML = `<p class="answer-symbol">&#${9312 + i}</p> <p>${op}</p>`;
+                op_i.innerHTML = `<p class="answer-symbol">&#${9312 + _i}</p> <p>${op}</p>`;
                 typeset(op_i);
                 op_i.id = "not-select";
                 op_i.setAttribute("i", i);
@@ -356,7 +360,6 @@ function answerHandler() {
                 if(data.req == 1) {
                     selected = false;
                     if(mc_sel.length == 0) return noAnswer();
-                    correct = Game.isCorrect(mc_sel);
                     if (correct) {
                         for(let i = 0; i < objs.length; i++)
                             if(data.ans.indexOf(parseInt(objs[i].getAttribute('i'))) > -1) objs[i].innerHTML = `<p class="answer-symbol">✅</p> ` + objs[i].getAttribute('orig');
@@ -383,7 +386,8 @@ function answerHandler() {
             case "txt":
                 selected = false;
                 if(objs[0].value === "") return noAnswer();
-                correct = Game.isCorrect(objs[0].value.toLowerCase());
+                if(lazyCheck) correct = Game.isLazyCorrect(objs[0].value.toLowerCase());
+                else correct = Game.isCorrect(objs[0].value.toLowerCase());
                 if(correct) {
                     Game.registerTick(Date.now() - startTick);
                     Game.continue();
@@ -398,7 +402,7 @@ function answerHandler() {
                     ans_a.innerHTML = cont_a.innerHTML;
                     cont_a.children[0].style.backgroundColor = `rgba(255, 0, 0, 0.5)`;
                     ans_a.children[0].style.backgroundColor = `rgba(0, 255, 0, 0.5)`;
-                    ans_a.children[0].value = data.ans.join(" • ");
+                    ans_a.children[0].value = window.lib.recur_decode(data.ans.join(" • "));
                     ans_a.children[0].disabled = true;
                     answerbtn.innerHTML = "Continue >>> (Enter)";
                     if (requireCorrect) {
@@ -519,31 +523,25 @@ window.addEventListener("dragover", e => {
     let [success, _] = await UserGateway.getuser(false, false, false, false);
     if (!success) return;
     const paramList = new URLSearchParams(window.location.search);
-    if (!paramList.get("ds")) {
-        problem.innerHTML = "Looks like there's something wrong. Go back to Learn Picker and go from there.";
-        progressNumbers.remove();
-        cont_a.remove();
-        ans_a.remove();
-        answerbtn.remove();
-        info.remove();
-        return;
-    }
+    if (!paramList.get("ds")) return window.location.href = "/home";
     let dsVal = paramList.get("ds").split(",");
     dsVal.forEach((val, idx) => dsVal[idx] = parseInt(val));
-    let m = parseFloat(paramList.get("m"));
-    let r = parseFloat(paramList.get("r"));
-    let sh = parseFloat(paramList.get("sh"));
-    let i = parseFloat(paramList.get("i"));
-    let rc = parseFloat(paramList.get("rc"));
+    let m = parseFloat(paramList.get("m")) ?? 0;
+    let r = parseFloat(paramList.get("r")) ?? 0;
+    let sh = parseFloat(paramList.get("sh")) ?? 1;
+    let i = parseFloat(paramList.get("i")) ?? 0;
+    let rc = parseFloat(paramList.get("rc")) ?? 0;
+    let lc = parseFloat(paramList.get("lc")) ?? 0;
     await Game.init(dsVal, {
         NTRonly: m == 1 ? true : false,
         randomTerms: sh == 1 ? true : false,
         deckSize: 8,
         cardRepeat: r == 1 ? 2 : 1,
-        infinite_mode: i == 1 ? true : false,
+        infinite_mode: i == 1 && m != 1 ? true : false,
         deckdistr: [6, 1, 1]
     });
     if (rc == 1) requireCorrect = true;
+    if (lc == 1) lazyCheck = true;
     refresh();
     window.LOADED();
 })();
@@ -571,7 +569,7 @@ reshowMarker.addEventListener("mousedown", () => {
     refresh();
 })
 let mc_keynum = "", prob;
-window.addEventListener("keydown", e => {
+window.addEventListener("keydown", async e => {
     let data = Game.fetchProblem();
     let nums = "0123456789";
     if(data.type == "mc" && (nums.indexOf(e.key) > -1 || e.key == "Enter") && !toProceed && !selected) {
@@ -584,13 +582,18 @@ window.addEventListener("keydown", e => {
             let len = data.op.length;
             let strlen = String(len);
             mc_keynum += e.key;
-            problem.innerHTML = data.q + (data.req == 1 ? "<p style='font-size: 15px;'>Select all correct answers.</p>" : '') + "<p style='font-size: 10px;'>" + mc_sel.join(",") + (mc_sel.length > 0 ? "," : "") + mc_keynum + "</p>";
+            problem.innerHTML = data.q + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : '') + "<p style='font-size: 10px;'>" + mc_sel.join(",") + (mc_sel.length > 0 ? "," : "") + mc_keynum + "</p>";
+            await typeset(problem);
             if (strlen.length > mc_keynum) return;
         }
-        if (mc_keynum.length == 0) return void (problem.innerHTML = data.q + (data.req == 1 ? "<p style='font-size: 15px;'>Select all correct answers.</p>" : ''));
+        if (mc_keynum.length == 0) {
+            problem.innerHTML = data.q + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : '');
+            return await typeset(problem);
+        }
         let num = parseInt(mc_keynum);
         if (num > data.op.length) {
-            problem.innerHTML = data.q + (data.req == 1 ? "<p style='font-size: 15px;'>Select all correct answers.</p>" : '');
+            problem.innerHTML = data.q + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : '');
+            await typeset(problem);
             mc_keynum = "";
             return;
         }

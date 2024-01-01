@@ -38,13 +38,12 @@
                 <span class="material-symbols-outlined" id="picReset">refresh</span>
             </div>
             <div>
-                <input type="checkbox" id="isPublic">
+                <input type="checkbox" id="isPublic" checked>
                 <span>| Public Deck</span>
             </div>
             <div id="cardcontain"></div>
             <button id="addcard">Add New Card</button>
             <button id="create">Create Deck!</button>
-            <p class="info-error" id="create-err"></p>
         </div>
         <div class="options-container">
             <p>Import Options</p>

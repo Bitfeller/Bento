@@ -1,9 +1,12 @@
 // Node.js script to generate regexes for filter words so they don't have to be re-calculated every single time.
 
+// Gets the absolute pathname of the current script.
+const spath = __dirname + '/';
+
 const fs = require('fs');
 
 // Read each line from config-filter.list and put it into an array.
-const list = fs.readFileSync('../config-filter.list', 'utf8').split('\n');
+const list = fs.readFileSync(spath + '../config-filter.list', 'utf8').split('\n');
 
 // Define all characters to replace
 const replace = {};
@@ -59,4 +62,4 @@ for(let line of list) {
 }
 
 // Write to new file
-fs.writeFileSync('../config-filter-regex.list', newList.join('\n'), 'utf8');
+fs.writeFileSync(spath + '../config-filter-regex.list', newList.join('\n'), 'utf8');
