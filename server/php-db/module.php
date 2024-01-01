@@ -146,7 +146,11 @@
         return $newContnt;
     }
     function _traverse_str_sanitize(string $content) {
-        return str_replace("\r", "", str_replace("\n", "", htmlspecialchars($content)));
+        $content = trim($content);
+        $content = htmlspecialchars($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $content = preg_replace('/\s/', ' ', $content);
+        $content = preg_replace('/\u00a0/', ' ', $content);
+        return $content;
     }
     function sanitize($content) {
         if(gettype($content) == "array") return _traverse_array_sanitize($content);
