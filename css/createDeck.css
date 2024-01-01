@@ -369,7 +369,7 @@ button {
     cursor: pointer;
 }
 input[type="file"] {
-    max-width: 200px;
+    max-width: 300px;
 }
 .rank-clone, .mtch-clone, .txt-clone, .mc-clone {
     .small-ico {
@@ -464,6 +464,17 @@ input[type="file"] {
         font-size: 22pt;
     }
 }
+#flush {
+    width: min-content;
+    height: min-content;
+    position: absolute;
+    right: 0px;
+    background-color: transparent;
+    span {
+        color: var(--danger-red);
+    }
+}
+
 @media only screen and (max-width: 1025px) {
     .options-container {
         margin: 10px 0px;

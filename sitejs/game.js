@@ -106,6 +106,11 @@ function refresh() {
             <p>${progress.seen}</p> <span class="material-symbols-outlined">check</span>
             <p>${progress.remaining}</p> <span class="material-symbols-outlined">box</span>
         `;
+        
+        let answerContainer = document.getElementById("a_container");
+        answerContainer.style.height = "initial";
+        answerContainer.style.display = "none";
+
         answerbtn.style.display = "block";
         answerbtn.innerHTML = "Go back home >>>";
         for(let i = 0; i < objs.length; i++) objs[i].remove();
