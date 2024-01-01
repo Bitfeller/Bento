@@ -5,6 +5,14 @@ input {
     color: var(--light-text);
     background-color: var(--select-blue);
 }
+.mc-option-sel {
+    background-color: var(--select-green);
+}
+.mc-option-sel > span {
+    font-size: 15px;
+    margin: 7px 0;
+    padding: 0;
+}
 button:hover {
     transition-duration: 0.2s;
     /* box-shadow: 0px 1px 4px rgba(255, 255, 255, 0.3); */

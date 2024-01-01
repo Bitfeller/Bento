@@ -5,7 +5,18 @@
     justify-content: center;
 }
 .bento-svg {
+    position: absolute;
+    left: 5px;
+    top: 70px;
+    width: 75%;
+    height: 80%;
     max-height: 90vh;
+    background: transparent;
+}
+.bento-svg svg {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 .svg-button {
     filter: drop-shadow(0 0 1rem black);
@@ -24,6 +35,9 @@
     animation-play-state: paused;
 }
 .home-side-div-holder {
+    position: absolute;
+    left: calc(80% + 10px);
+    top: 65px;
     width: 300px;
     margin: 10px;
     background-color: transparent;

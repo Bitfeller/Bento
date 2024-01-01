@@ -144,7 +144,7 @@ const t_dialogmain = tutorialDialog.getElementsByClassName("dialog-main")[0];
                     })
             },
             skipbtn: () => {
-                tutorialDialog.close();
+                tutorialDialog.style.display = "none";
             }
         })
     }
