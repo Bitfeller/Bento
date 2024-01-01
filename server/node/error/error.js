@@ -47,8 +47,16 @@ app.post('/error', async (req, res) => {
         return refuse(503, "failed to get session");
     }
     
+    let name = req.body.name;
     let error = req.body.error;
-    log.log('error.log', 'Error log:\n' + error);
+    let relatedData = req.body.relatedData;
+    
+    let rdStr = "";
+    let r_keys = Object.keys(relatedData);
+    for(let i = 0; i < r_keys.length; i++)
+        rdStr += "\t" + r_keys[i] + ": " + relatedData[r_keys[i]] + "\n";
+    
+    log.log('error.log', `Error in [${name}]:\n\`\`\`\n${error}\n\`\`\`\nRelated info: {\n${rdStr}\n}`);
 
     resolve(200, "logged");
 });
