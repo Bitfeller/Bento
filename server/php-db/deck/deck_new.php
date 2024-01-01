@@ -28,7 +28,7 @@
         if($stmt->get_result()->fetch_assoc()) fail("name exists");
         $stmt->close();
         // Check data is valid
-        $deckData = json_decode($deckData, false);
+        $deckData = json_decode($deckData, false, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags']);
         if($deckData === null) fail("invalid data");
         if(!isset($deckData->desc)) fail("invalid data");
         if(!isset($deckData->contnt)) fail("invalid data");

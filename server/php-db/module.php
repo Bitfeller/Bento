@@ -110,10 +110,12 @@
         return file_exists('../../conf/local-config.json');
     }
     function get_server_config() {
+        $cfg = json_decode(file_get_contents('../../conf/config.json'), true);
         if(is_local_config()) 
-            return json_decode(file_get_contents("../../conf/local-config.json"), true);
-        else 
-            return json_decode(file_get_contents('../../conf/config.json'), true);
+            $cfg = json_decode(file_get_contents("../../conf/local-config.json"), true);
+        require_once '../../conf/php-config.php';
+        $cfg['php_cfg'] = $PHP_CONFIG;
+        return $cfg;
     }
     function get_allowed_tags() {
         return json_decode(file_get_contents('../../conf/allowed_tags.json'), true);

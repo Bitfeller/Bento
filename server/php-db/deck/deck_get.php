@@ -28,10 +28,10 @@
                 $pfp = @file_get_contents($path);
                 $pfp === false ? $result['deckpic'] = $pfp = '' : $result['deckpic'] = json_encode($pfp);
             }
-            if($load_contnt_len == 1) $result['contnt_len'] = count(json_decode($result['data'], true)['contnt']);
+            if($load_contnt_len == 1) $result['contnt_len'] = count(json_decode($result['data'], true, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags'])['contnt']);
             if($load_data == 0) unset($result['data']);
             // Unload viewdata and only get views
-            $views = sizeof(json_decode($result['viewdata'], true));
+            $views = sizeof(json_decode($result['viewdata'], true, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags']));
             $result['views'] = $views;
             unset($result['viewdata']);
             success(json_encode($result));
