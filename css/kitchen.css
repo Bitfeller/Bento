@@ -153,9 +153,6 @@ span.views {
     margin-right: 15px;
     font-size: 21px;
 }
-.closeBtns {
-    padding: 0 1%;
-}
 #previewDialog_leave {
     color: var(--light-text);
     background-color: var(--danger-red);
