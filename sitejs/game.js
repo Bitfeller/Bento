@@ -141,7 +141,7 @@ function refresh() {
                 let i = data.op.indexOf(op);
                 let op_i = document.createElement("button");
                 op_i.className = "option";
-                op_i.innerHTML = `<p class="answer-symbol">&#${9312 + _i}</p> <p>${op}</p>`;
+                op_i.innerHTML = `<p class="answer-symbol">&#${9312 + _i}</p> <p class="mcop-text">${op}</p>`;
                 typeset(op_i);
                 op_i.id = "not-select";
                 op_i.setAttribute("i", i);
