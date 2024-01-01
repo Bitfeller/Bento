@@ -194,6 +194,7 @@ function newRandomDeck() {
             if(llsWrong.length > 0) {
                 llsWrong.splice(idx, 1);
                 if(llsShown.indexOf(p) > -1) llsShown.splice(llsShown.indexOf(p), 1);
+                if(wasWrong.indexOf(p) > -1) wasWrong.splice(wasWrong.indexOf(p), 1);
             } else if(wasWrong.length > 0 && idx !== undefined) {
                 wasWrong.splice(0, 1);
                 if(llsShown.indexOf(p) > -1) llsShown.splice(llsShown.indexOf(p), 1);
