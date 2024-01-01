@@ -54,7 +54,6 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         "You can edit the decks you own in the Kitchen.",
         "Decks can be deleted by going to the Kitchen.",
         "You can find the decks you've made in the Kitchen.",
-        "You can enable notifications on the home screen, and you'll get notified when you have to review.",
         "You can import sets from Quizlet into Bento when making a deck.",
         "This won't take long to load.",
         "Taking too long to load? Consider letting us know.",
@@ -176,18 +175,6 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         if(data.verified == 0) {
             verify_email.style.display = "inline-block";
             verify_email.addEventListener('mousedown', () => verify_dialog.showModal());
-        }
-    }
-    
-    // Initialize service-worker for notifications if allowed
-    if(Notification.permission == "granted" && data.notifsub != "0") {
-        try {
-            // Deprecated
-            navigator.serviceWorker.register(location.origin + "/sitejs/client-modules/service-worker.js", {
-                type: "module"
-            });
-        } catch(e) {
-            console.log("serviceworker_err:", e);
         }
     }
     
