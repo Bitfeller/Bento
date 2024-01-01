@@ -63,8 +63,8 @@ const l_pass = document.getElementById("signInPassword");
 const s_user = document.getElementById("signUpUsername");
 const s_pass = document.getElementById("signUpPassword");
 const s_email = document.getElementById("signUpEmail");
-const l_btn = document.getElementById("signInBtn");
-const s_btn = document.getElementById("signUpBtn");
+const l_btn = document.getElementById("signInBtnM");
+const s_btn = document.getElementById("signUpBtnM");
 
 l_btn.addEventListener("mousedown", async () => {
     let [success, reason] = await UserGateway.login(l_user.value, l_pass.value);

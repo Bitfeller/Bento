@@ -135,7 +135,7 @@
                 <input type="password" id="signUpPassword">
                 <p>Email:</p>
                 <input type="email" id="signUpEmail">
-                <button class="submitBtn" id="signUpBtn">Sign Up</button>
+                <button class="submitBtn" id="signUpBtnM">Sign Up</button>
             </div>
         </dialog>
         <dialog class="modal" id="signInModal">
@@ -145,7 +145,7 @@
                 <input type="text" id="signInUsername">
                 <p>Password:</p>
                 <input type="password" id="signInPassword">
-                <button class="submitBtn" id="signInBtn">Login</button>
+                <button class="submitBtn" id="signInBtnM">Login</button>
             </div>
         </dialog>
     </section>
