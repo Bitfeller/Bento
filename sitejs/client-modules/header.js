@@ -8,10 +8,7 @@ const uo = document.body.dataset.uo;
 /*const hover = document.createElement("div");
 hover.style = "background-color: rgb(150, 150, 150); position: absolute; width: auto; padding: 7px; height: auto;";*/
 
-const loader = document.createElement("div");
-loader.className = "loader";
-loader.innerHTML = "<div class='load-rot'></div>";
-document.body.appendChild(loader);
+const loader = document.getElementsByClassName("loader")[0];
 
 (async () => {
     let [success, data] = await UserGateway.getuser();

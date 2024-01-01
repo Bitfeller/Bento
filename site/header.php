@@ -6,3 +6,6 @@
     <span class="header-nav material-symbols-outlined right-header-ico" id="header:logout">logout</span>
   </div>
 </header>
+<div class="loader">
+  <div class="load-rot"></div>
+</div>
