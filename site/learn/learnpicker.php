@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learn Picker</title>
-    <?php require_once "globalReqs.php"?>
-    <link rel="stylesheet" href="/css/learnPicker.css"/>
-    <script type="module" src="/js/learnpicker.js"> </script>
+    <?php require_once "../globalReqs.php"?>
+    <link rel="stylesheet" href="../../css/learnPicker.css"/>
+    <script type="module" src="../../sitejs/learnpicker.js"> </script>
 </head>
 <body data-uo="true">
-    <?php require_once "header.php"?>
+    <?php require_once "../header.php"?>
     <div id="overall-container">
         <div class="big-box">
             <h2>Deck Picker</h2>

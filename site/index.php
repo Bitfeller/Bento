@@ -6,7 +6,7 @@
     <title>Bento!</title>
     <?php require_once "globalReqs.php"?>
     <link rel="stylesheet" href="/css/index.css"/>
-    <script type='module' src="/js/mainPageLogic.js"></script>
+    <script type='module' src="/sitejs/mainPageLogic.js"></script>
 </head>
 <body>
     <header>

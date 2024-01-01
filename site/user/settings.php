@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
-    <?php require_once "globalReqs.php"?>
-    <link rel="stylesheet" href="/css/settings.css"/>
+    <?php require_once "../globalReqs.php"?>
+    <link rel="stylesheet" href="../../css/settings.css"/>
 </head>
 <body data-uo="true">
-    <?php require_once "header.php"?>
+    <?php require_once "../header.php"?>
     <div id="settings-container">
         <div class="setting-box">
             <h2>Set Size:</h2>
@@ -57,5 +57,5 @@
     </div>
     <img id="settings-icon-nondescructive">
 </body>
-<script src="/js/settings.js"></script>
+<script src="/sitejs/settings.js"></script>
 </html>

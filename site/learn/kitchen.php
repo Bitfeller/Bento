@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kitchen</title>
-    <?php require_once "globalReqs.php"?>
-    <link rel="stylesheet" href="/css/kitchen.css"/>
-    <script src="../js/kitchen.js" type="module"></script>
+    <?php require_once "../globalReqs.php"?>
+    <link rel="stylesheet" href="../../css/kitchen.css"/>
+    <script src="../../sitejs/kitchen.js" type="module"></script>
 </head>
 <body data-uo="true">
-    <?php require_once "header.php"?>
+    <?php require_once "../header.php"?>
     <div class='container'>
         <div class="search-container">
             <input type="text" name="search" id="search" class="search-bar" placeholder="Search from the marketplace... 　(Enter)">
