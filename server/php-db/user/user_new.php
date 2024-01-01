@@ -67,6 +67,7 @@
         $_SESSION["username"] = $username;
         $_SESSION["pfp"] = "";
         $_SESSION["email"] = $email;
+        $_SESSION["userdata"] = $userdata;
         $_SESSION["verified"] = false;
         $_SESSION['creation_date'] = $date;
         $_SESSION['notifsub'] = "0";

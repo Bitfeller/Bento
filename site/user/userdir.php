@@ -9,9 +9,12 @@
 </head>
 <body>
     <?php require_once "../header.php"?>
-    <p>hey there! if you landed here, you came here from an email.</p>
-    <p>THIS IS A TESTING AREA (just saying)</p>
-    <p>real results are printed in the console.</p>
-    <p>have any questions? no.</p>
+    <section class="holder">
+        <h1>Let's reset your password.</h1>
+        <p>Create a new password for your account.</p>
+        <input id="new-password" placeholder="New password...">
+        <button id="changepwd">Set as my password</button>
+        <p class="info-error"></p>
+    </section>
 </body>
 </html>

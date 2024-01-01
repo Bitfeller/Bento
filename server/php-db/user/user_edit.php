@@ -228,6 +228,18 @@
                 session_unset();
                 session_destroy();
             break;
+            case 'sendverifemail':
+                $uid = $result['id'];
+                $username = $result['username'];
+                $email = $result['email'];
+                $hashVerif = $result['verif'];
+                send_mail(
+                    $email,
+                    "Email Verification", 
+                    "Hey there!<br><br>Verify your new email address for <b>$username</b> <a href='https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=0&user=$uid'>here</a>.<br><br>If this isn't your account, you can safely ignore this email.<br><br>Bento<br><span style='font-size: 10px; color: rgb(200, 200, 200)'>You can reply to this email to contact us.<br>You're receiving this email because your email was associated with this account.<br>You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.</span>", 
+                    "Hey there!\n\nVerify your new email address for $username at https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=0&user=$uid. If this isn't your account, you can safely ignore this email.\n\nBento\n(You can reply to this email to contact us. You're receiving this email because your email was associated with this account.)\n(You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.)"
+                );
+            break;
         }
         success();
     } catch(Exception $e) {

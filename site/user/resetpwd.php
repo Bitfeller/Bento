@@ -5,26 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento! - Reset Password</title>
     <?php require_once '../globalreqs.php'?>
-    <style>
-        section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 90vh;
-        }
-        button {
-            font-size: 24pt;
-            margin-top: 1%;
-            padding: 0.5%;
-            border-radius: 10px;
-            background-color: #cadda0;
-            color:#1e1e1e;
-        }
-    </style>
 </head>
 <body>
-    <?php require_once 'header.php'?>
+    <?php require_once '../header.php'?>
     <section>
         <h1>Let's reset your password.</h1>
         <p>Enter in the email you use for your account:</p>
@@ -38,8 +21,14 @@
         let success = document.getElementsByClassName('info-success')[0];
         document.getElementById('resetpwd').addEventListener('mousedown', async () => {
             if(email.value == '') return;
-            await UserGateway.resetPwd(email.value);
-            success.innerHTML = "If this user exists, we sent an email.";
+            let [s, data] = await UserGateway.resetPwd(email.value);
+            if(s) {
+                success.className = 'info-success';
+                success.innerHTML = "If this user exists, we sent an email.";
+            } else {
+                success.className = 'info-error';
+                success.innerHTML = "This email isn't verified yet, or there's an issue on our side.";
+            }
         });
     </script>
 </body>
