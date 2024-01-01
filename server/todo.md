@@ -29,6 +29,4 @@
 - randomTerms
 - deckSize
 - cardRepeat
-- curr_p
-- ls_p
-- lls_p
+- deckdistr

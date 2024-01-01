@@ -366,8 +366,8 @@ function get_pwsets() {
     let S_ll = Math.ceil((deckSize * cardRepeat + currWrong.length) / curr) + C_lw;
 
     // p functions: p_1 and p_2
-    let p_1 = currentSet > 1 ? 1 : 2;
-    let p_2 = currentSet > 1 ? 1 : 0;
+    let p_1 = currentSet > 1 ? ls : ls + lls;
+    let p_2 = currentSet > 1 ? lls : 0;
 
     let ls_rfactor = (S_ll - E_s) * p_1; // ls wrong: resolve factor
     let lls_rfactor = (S_ll - E_s) * p_2; // lls wrong: resolve factor
@@ -412,7 +412,7 @@ function getProgress() {
             gameData.length * cardRepeat            // d_s * r  (all cards)
             + currWrong.length                      // w        (all wrong cards)
             + S_l * prev                            // S_l(2)   (all previous cards shown)
-            + 2 * left,                             // 2 * (ls_w - (ceil(8r / 6) + cl_w - e_s)(p(c_d)))
+            + (ls + lls) * left,                    // 2 * (ls_w - (ceil(8r / 6) + cl_w - e_s)(p(c_d)))
         remaining: gameData.length * cardRepeat - seen
     };
 }
@@ -452,14 +452,14 @@ function incorrect() {
         let left = get_pwsets();
         if(left > C_pwsets) {
             C_pwsets = left;
-            seen -= 2 * C_pwsets;
+            seen -= (ls + lls) * C_pwsets;
         }
     } else {
         llsWrong.push(randomSet[card]);
         let left = get_pwsets();
         if(left > C_pwsets) {
             C_pwsets = left;
-            seen -= 2 * C_pwsets;
+            seen -= (ls + lls) * C_pwsets;
         }
     }
     if(totalWrong[randomSet[card]]) {
