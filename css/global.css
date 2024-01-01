@@ -81,6 +81,7 @@ body,
 .container {
     overflow-x: hidden;
     overflow-y: visible;
+    scrollbar-width: thin;
 }
 .quick-container {
     position: absolute;

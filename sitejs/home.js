@@ -71,7 +71,7 @@ function hide() {
     for(let i = 0; i < decks.length; i++) {
         deckReminders.innerHTML += `
             <div class="review-container">
-                <span class="review-name"><span class='material-symbols-outlined'>arrow_back_ios</span>${decks[i].name}</span>
+                <span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>
             </div>
         `;
     }
@@ -119,7 +119,7 @@ function hide() {
                     coll++;
                     let div = document.createElement('div');
                     div.className = 'review-container';
-                    div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>arrow_back_ios</span>${decks[i].name}</span>`;
+                    div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>`;
                     deckReminders.appendChild(div);
                     div.addEventListener('mouseenter', () => {
                         show(data, decks, decks[i].name);

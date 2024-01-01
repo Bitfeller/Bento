@@ -81,12 +81,12 @@ h2 {
 #deckSelectAll {
     font-size: 22px;
     float: inline-end;
-    color: #4a6f9b;
+    color: var(--accent-1);
     cursor: pointer;
     transition: 0.3s;
 }
 #deckSelectAll:hover {
-    color: #6591d2;
+    filter: brightness(1.15);
 }
 #reviewBtn {
     background-color: var(--light-gray);
@@ -123,6 +123,9 @@ h2 {
 #intertiaBtn > img {
     width: 50px;
     height: 50px;
+}
+.sb-radio, .deckCheck {
+    accent-color: var(--accent-1);
 }
 @media only screen and (max-width: 1200px) {
     #intertiaBtn {
