@@ -118,7 +118,7 @@ function refresh() {
     
     for(let i = 0; i < objs.length; i++) objs[i].remove();
     objs = [], dragElements = [], centroids = [];
-    startTIck = Date.now();
+    startTick = Date.now();
     dragging = undefined;
     answerbtn.style.display = "block";
     

@@ -185,7 +185,7 @@ async function init(_decks, info) {
                 if(!cache_scores[holder][card.q]) cache_scores[holder][card.q] = user.userdata.reviews[holder][card.q].score;
                 if(!cache_times[holder][card.q]) cache_times[holder][card.q] = user.userdata.reviews[holder][card.q].time ?? avg(filter_outliers(timeSpent[csKeys[i]]));
                 user.userdata.reviews[holder][card.q].last = Date.now();
-                let thisScore = cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] || 0)); // correct - wrong
+                let thisScore = cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] ?? 0)); // correct - wrong
                 user.userdata.reviews[holder][card.q].score = (cache_scores[holder][card.q] * 0.8 + thisScore * 1.1).toFixed(3);
                 user.userdata.reviews[holder][card.q].time = (cache_times[holder][card.q] * 0.8 + avg(filter_outliers(timeSpent[csKeys[i]])) * 1.1).toFixed(3);
                 if(user.userdata.reviews[holder][card.q].score < -1.25)
@@ -197,9 +197,11 @@ async function init(_decks, info) {
                     last: Date.now(),
                     box: 1,
                     time: avg(filter_outliers(timeSpent[csKeys[i]])),
-                    score: ((cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] || 0))) * 1.1).toFixed(3)
+                    score: ((cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] ?? 0))) * 1.1).toFixed(3)
                 }
-                newcard.box = newcard.score > 1.25 ? 2 : 1;
+                // console.log(Math.floor((cardsSeen[csKeys[i]] - (totalWrong[csKeys[i]] ?? 0)) / cardsSeen[csKeys[i]] * 5) + 1);
+                newcard.box = Math.floor((cardsSeen[csKeys[i]] - (totalWrong[csKeys[i]] ?? 0)) / cardsSeen[csKeys[i]] * 5) + 1;
+                // newcard.box = newcard.score > 1.25 ? 2 : 1;
                 cache_boxes[holder][card.q] = newcard.box;
                 cache_scores[holder][card.q] = newcard.score;
                 cache_times[holder][card.q] = newcard.time;
