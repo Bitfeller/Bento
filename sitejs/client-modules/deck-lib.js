@@ -86,11 +86,14 @@ function init_div(div) {
     div.setAttribute('data-cnt', div.textContent);
     // data-cnt updating
     div.addEventListener('focusout', (e) => {
+        if(div.getAttribute('focused') == true) return;
         div.setAttribute('data-cnt', div.textContent);
+        div.setAttribute('focused', false);
         typeset(div);
     });
     div.addEventListener('focus', () => {
         div.textContent = div.dataset.cnt;
+        div.setAttribute('focused', true);
     });
     div.addEventListener('input', () => div.setAttribute('data-cnt', div.textContent));
     // Prevent new lines
@@ -435,14 +438,14 @@ function newCard() {
     if(cn.includes('mcbtn')) init_mc(card, n);
         else if(cn.includes('txtbtn')) init_txt(card, n);
         else if(cn.includes('rankbtn')) init_ranking(card, n);
-        else initMc(card, n);
+        else init_mc(card, n);
 }
 
 
 // --------------------------------------------------- \\
 
 
-fileselecttrigger.addEventListener('click', () => {
+fileselecttrigger.addEventListener('change', () => {
     let files = fileselecttrigger.files;
     if(files && files[0]) {
         let file = files[0];
@@ -457,7 +460,7 @@ fileselecttrigger.addEventListener('click', () => {
         reader.readAsDataURL(file);
     }
 });
-editpic.addEventListener('mousedown', () => fileselecttrigger.click());
+// editpic.addEventListener('mousedown', () => fileselecttrigger.click());
 resetpic.addEventListener('mousedown', () => {
     deckpic = '';
     picimg.src = '../../img/defaultdeckpic.png';
@@ -557,6 +560,11 @@ function toDeck(err_assigner, is_draft = false, bypass = false) {
     return [name.value, deckpic, data, isPublic.checked];
 }
 function appendToCards(contnt) {
+    // Check if we only have one card first, and remove if so (cause it's annoying)
+    if(cards.length == 1) {
+        cards[0].remove();
+        cards = [];
+    }
     let d_keys = Object.keys(contnt);
     for(let i = 0; i < d_keys.length; i++)
         if(contnt[d_keys[i]].invfrom) {
@@ -620,6 +628,117 @@ function appendToCards(contnt) {
 // --------------------------------------------------- \\
 
 
+const b_modal = document.getElementById("bento-import-modal");
+const q_modal = document.getElementById("quizlet-import-modal");
+const g_modal = document.getElementById("gimkit-import-modal");
+
+const b_importbtn = document.getElementById("bento-import-btn");
+const b_replacename = document.getElementById("BI-replace-name");
+const b_replacedesc = document.getElementById("BI-replace-desc");
+const b_file = document.getElementById("BI-file");
+const b_createbtn = document.getElementById("BI-createBtn");
+const b_err = document.getElementById("BI-err");
+
+const q_importbtn = document.getElementById("quizlet-import-btn");
+const q_txt = document.getElementById("QI-importText");
+const q_createbtn = document.getElementById("QI-createBtn");
+const q_reverse = document.getElementById("QI-reverse");
+const q_err = document.getElementById("QI-err");
+
+const g_importbtn = document.getElementById("gimkit-import-btn");
+const g_txt = document.getElementById("GK-importText");
+const g_createbtn = document.getElementById("GK-createBtn");
+const g_err = document.getElementById("GK-err");
+
+b_importbtn.addEventListener("mousedown", () => b_modal.style.display = "block");
+q_importbtn.addEventListener("mousedown", () => q_modal.style.display = "block");
+g_importbtn.addEventListener("mousedown", () => g_modal.style.display = "block");
+
+b_createbtn.addEventListener("mousedown", () => {
+    let files = b_file.files;
+    if(files && files[0]) {
+        let file = files[0];
+        if(file.type !== "text/plain") return console.log('failed - file type; ' + file.type);
+        let reader = new FileReader();
+        reader.onload = (e) => {
+            let content = e.target.result;
+            try {
+                let main = JSON.parse(content);
+                if(main.name == undefined || main.desc == undefined || main.contnt == undefined) return void (b_err.innerHTML = "This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
+                let val_name = main.name;
+                let val_desc = main.desc;
+                let val_contnt = main.contnt;
+                if(b_replacename.checked) name.value = val_name;
+                if(b_replacedesc.checked) desc.value = val_desc;
+                try {
+                    appendToCards(val_contnt);
+                    b_modal.style.display = "none";
+                } catch(e) {
+                    return void (b_err.innerHTML = "This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
+                }
+            } catch(e) {
+                console.log("failed; reason:", e);
+            }
+        }
+        reader.readAsText(file);
+    }
+});
+q_createbtn.addEventListener("mousedown", () => {
+    let importText = q_txt.value;
+    let format = importText.split("^");
+    let contnt = {};
+    if(format.length == 1) return void (q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
+    format.pop();
+    let isValid = true;
+    format.forEach(card => {
+        if(!isValid) return;
+        const [q, ans] = card.split(">");
+        if(ans == undefined) {
+            q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.";
+            isValid = false;
+            return;
+        }
+        if(q_reverse.checked) contnt[ans] = {type: "txt", ans: [q]}; else contnt[q] = {type: "txt", ans: [ans]};
+    });
+    if(!isValid) return;
+    try {
+        appendToCards(contnt);
+    } catch(e) {
+        return void (q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
+    }
+    q_modal.style.display = "none";
+});
+g_createbtn.addEventListener("mousedown", () => {
+    let importText = g_txt.value;
+    let format = importText.split("\n");
+    let contnt = {};
+    let isValid = true;
+    format.forEach(card => {
+        if(!isValid) return;
+        const [q, ans] = card.split("\t");
+        if(ans == undefined) {
+            g_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.";
+            isValid = false;
+            return;
+        }
+        contnt[q] = {
+            type: "txt",
+            ans: [ans]
+        };
+    });
+    if(!isValid) return;
+    try {
+        appendToCards(contnt);
+    } catch(e) {
+        return void (g_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.");
+    }
+    g_modal.style.display = "none";
+});
+
+
+// --------------------------------------------------- \\
+
+
 window.addEventListener('dragover', (e) => {
     if(!drag) return;
     let list = drag.parentNode;
@@ -654,13 +773,20 @@ window.addEventListener("keydown", (e) => {
         mcbtns[mcbtns.length - 1].focus();
     }
 });
+window.addEventListener("mousedown", (e) => {
+    if(e.target === b_modal || e.target == q_modal || e.target == g_modal) {
+        b_modal.style.display = "none";
+        q_modal.style.display = "none";
+        g_modal.style.display = "none";
+    }
+});
 
 
 // --------------------------------------------------- \\
 
 
 async function init() {
-    let [success, data] = await UserGateway.getuser();
+    let [success, data] = await UserGateway.getuser(false, true, false, true);
     if(!success) return;
     user = data;
     newCard();
@@ -696,6 +822,7 @@ const DeckBind = {
     active,
     user: () => user,
     cards: () => cards,
+    deckpic: () => deckpic,
     computeCenter,
     init_card,
     typeset,

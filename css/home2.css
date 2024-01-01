@@ -87,6 +87,14 @@
     grid-column: span 2;
     gap: 10px;
 }
+.deck-viewer {
+    display: none;
+    position: absolute;
+    left: calc(10% - 5px);
+    top: 65px;
+    width: 70%;
+    height: calc(100vh - 80px);
+}
 .graph-container {
     grid-column: span 3;
 }

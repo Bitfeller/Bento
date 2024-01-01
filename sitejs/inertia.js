@@ -132,7 +132,7 @@ class Asteroid {
 }
 
 (async () => {
-    let [success, user] = await UserGateway.getuser();
+    let [success, user] = await UserGateway.getuser(false, true, true, false);
     if (!success) return;
     const paramList = new URLSearchParams(window.location.search);
     if(!paramList.get("ds")) return void (window.location.href = "/home");
@@ -156,8 +156,8 @@ class Asteroid {
             // Doesn't exist in our reviews? interesting... regardless, might as well add it if for some reason specified...?
             userReview = {};
             user.userdata.reviews[deck] = userReview;
-            let json = JSON.stringify(user.userdata);
-            await UserGateway.editUser("userdata", json);
+            let json = JSON.stringify(user.userdata.reviews);
+            await UserGateway.editUser("reviews", json);
         }
         let updateIdx = false;
         let r_keys = Object.keys(userReview);
@@ -188,8 +188,8 @@ class Asteroid {
         deckContnt.push(datalist);
     }
     if(updateReviews) {
-        let json = JSON.stringify(user.userdata);
-        await UserGateway.editUser("userdata", json);
+        let json = JSON.stringify(user.userdata.reviews);
+        await UserGateway.editUser("reviews", json);
     }
     // Add terms to deckContnt
     for(let i = 0; i < deckContnt.length; i++) {

@@ -29,7 +29,7 @@ const themeSelect = document.getElementById("theme-select");
 
 // main
 (async () => {
-    let [success, data] = await UserGateway.getuser();
+    let [success, data] = await UserGateway.getuser(true, true, false, false);
     if(!success) console.error(data);
     user = data;
     usernameEl.innerHTML = user.username;
@@ -52,6 +52,7 @@ const themeSelect = document.getElementById("theme-select");
                 let content = e.target.result;
                 if(content.byteLength > 3 * 1000 * 100) return console.log("Failed! Past size limit of 3 MB.");
                 await UserGateway.editUser("pfp", content);
+                window.location.reload();
             }
             reader.readAsDataURL(file);
         }
@@ -110,7 +111,7 @@ const themeSelect = document.getElementById("theme-select");
     themeSelect.selectedIndex = data.userdata.theme;
     themeSelect.addEventListener("change", async () => {
         data.userdata.theme = themeSelect.selectedIndex ?? 0;
-        await UserGateway.editUser('userdata', JSON.stringify(data.userdata));
+        await UserGateway.editUser('theme', "" + data.userdata.theme);
         window.location.reload();
     });
 })();

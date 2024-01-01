@@ -132,11 +132,13 @@
                 <p><u>Sign Up</u></p>
                 <p>Username:</p>
                 <input type="email" id="signUpUsername">
+                <p>Email:</p>
+                <input type="email" id="signUpEmail">
                 <p>Password:</p>
                 <input type="password" id="signUpPassword">
                 <p style="font-size: 13px; font-family: kadwa;">Your password is always secure. No one can see your password, not even us.</p>
-                <p>Email:</p>
-                <input type="email" id="signUpEmail">
+                <p>Confirm Password:</p>
+                <input type="password" id="signUpPassword2">
                 <button class="submitBtn" id="signUpBtnM">Sign Up</button>
                 <p class="info-error" id="signup-err"></p>
             </div>

@@ -3,6 +3,7 @@ import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 
 const deckReminders = document.getElementsByClassName("review-schedule")[0].getElementsByClassName('container')[0];
 const searcher = document.getElementById('search-reviews');
+const deckViewer = document.getElementById('viewer');
 // Tutorial required elements
 // const tutorialDialog = document.getElementById("tutorial-background");
 // const tutorialBoxHolder = document.getElementById("tutorial-box-holder");
@@ -18,12 +19,26 @@ const version = document.getElementById('header:version');
 const version_info = document.getElementById('header:version_info');
 const feedback_dialog = document.getElementById("header:feedback_dialog");
 
+function show(user, decks, deck) {
+    deckViewer.style.display = 'block';
+    let review = user.userdata.reviews[deck];
+    let name = deck;
+    deck = decks[deck];
+    deckViewer.innerHTML = `
+        <div class='title'>
+            ${name}
+        <div>
+    `;
+}
+function hide() {
+    deckViewer.style.display = 'none';
+}
 (async () => {
-    let [success, data] = await UserGateway.getuser();
+    let [success, data] = await UserGateway.getuser(false, true, true, false);
+    console.log(data.userdata);
     if(!success) return;
     deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
     let reviews = data.userdata.reviews;
-    
     
     let r_keys = Object.keys(reviews);
     let decks = [];
@@ -102,11 +117,16 @@ const feedback_dialog = document.getElementById("header:feedback_dialog");
             for(let i = 0; i < decks.length; i++) {
                 if(decks[i].name.toLowerCase().includes(searcher.value.toLowerCase())) {
                     coll++;
-                    deckReminders.innerHTML += `
-                        <div class="review-container">
-                            <span class="review-name"><span class='material-symbols-outlined'>arrow_back_ios</span>${decks[i].name}</span>
-                        </div>
-                    `;
+                    let div = document.createElement('div');
+                    div.className = 'review-container';
+                    div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>arrow_back_ios</span>${decks[i].name}</span>`;
+                    deckReminders.appendChild(div);
+                    div.addEventListener('mouseenter', () => {
+                        show(data, decks, decks[i].name);
+                    });
+                    div.addEventListener('mouseleave', () => {
+
+                    });
                 }
             }
             if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- There are't any decks that match. --</p>";

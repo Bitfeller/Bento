@@ -8,9 +8,10 @@
     $pwd = $data['pwd'];
     $email = $data['email'];
     try {
+        $conf = get_server_config();
         $conn = connect_to_db();
         // Check username
-        if(!preg_match("/^[A-Za-z0-9\-]*$/", $username)) {
+        if(!preg_match("/^[a-zA-Z0-9\-!@#$%^&*\(\)\[\]\{\}\.]*$/", $username)) {
             fail("invalid username");
         }
         // Check email
@@ -55,6 +56,7 @@
         $stmt->execute();
         $result = mysqli_fetch_assoc($stmt->get_result());
         if(!$result) {
+            // Theoretically should never happen.
             fail("autologin");
         }
         $userPwd = $result["password"];
@@ -62,6 +64,14 @@
         if(!$valid) {
             fail("autologin");
         }
+        // Create pfp for user
+        $pfp = $conf['file_db'] . 'pfps/' . $result['id'] . '.pfp';
+        $handle = fopen($pfp, "w");
+        if(!$handle) {
+            fail("CRITICAL: couldn't create pfp!");
+        }
+        fclose($handle);
+        // Start session
         session_start();
         $_SESSION["uid"] = $result["id"];
         $_SESSION["username"] = $username;
@@ -76,8 +86,8 @@
         send_mail(
             $email,
             "Email Verification", 
-            "Hey there!<br><br>Verify your new email address for $username <a href='https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=0&user=$uid'>here</a>.<br><br>If this isn't your account, you can safely ignore this email.<br><br>Bento<br><span style='font-size: 10px; color: rgb(200, 200, 200)'>You can reply to this email to contact us.<br>You're receiving this email because your email was associated with this account.<br>You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.</span>", 
-            "Hey there!\n\nVerify your new email address for $username at https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=0&user=$uid. If this isn't your account, you can safely ignore this email.\n\nBento\n(You can reply to this email to contact us. You're receiving this email because your email was associated with this account.)\n(You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.)"
+            "Hey there!<br><br>Verify your new email address for $username <a href='https://bento-app.uk/user/userdir?hash=$hashVerif&v=0&user=$uid'>here</a>.<br><br>If this isn't your account, you can safely ignore this email.<br><br>Bento<br><span style='font-size: 10px; color: rgb(200, 200, 200)'>You can reply to this email to contact us.<br>You're receiving this email because your email was associated with this account.<br>You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.</span>", 
+            "Hey there!\n\nVerify your new email address for $username at https://bento-app.uk/user/userdir?hash=$hashVerif&v=0&user=$uid. If this isn't your account, you can safely ignore this email.\n\nBento\n(You can reply to this email to contact us. You're receiving this email because your email was associated with this account.)\n(You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.)"
         );
         success();
     } catch(Exception $e) {

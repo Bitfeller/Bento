@@ -5,13 +5,22 @@ function err(func) {
     console.log("backend: " + func + "() received an improper response.");
 }
 class UserGateway {
-    static async getuser() {
+    static async getuser(getpfp = false, getudata = false, getreviews = true, getdrafts = false) {
+        if(typeof(getpfp) != "boolean" || typeof(getudata) !== "boolean" || typeof(getreviews) !== "boolean" || typeof(getdrafts) !== "boolean") {
+            return [false, "invalid params"];
+        }
         var success, data;
         await fetch(spath + "/php-db/user/user_get.php", {
-            method: "get",
+            method: "post",
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({
+                getpfp: getpfp,
+                getudata: getudata,
+                getreviews: getreviews,
+                getdrafts: getdrafts
+            })
         }).then(function(res) {
             if(!res.ok) {
                 err("getuser");
@@ -26,7 +35,7 @@ class UserGateway {
                 data = res.reason;
             } else {
                 data = res.data;
-                data.userdata = JSON.parse(data.userdata);
+                if(data.userdata) data.userdata = JSON.parse(data.userdata);
             }
         }).catch(function(err) {
             if(err == "none") {return;}
@@ -140,6 +149,40 @@ class UserGateway {
             }
         });
         return [true, undefined];
+    }
+    static async getDraftImage(time) {
+        if(typeof(time) !== "number") {
+            return [false, "invalid params"];
+        }
+        var success, data;
+        await fetch(spath + "/php-db/user/user_draft_getpic.php", {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                time
+            })
+        }).then(function(res) {
+            if(!res.ok) {
+                err("getDraftImage");
+                success = false;
+                data = 'fetch-err';
+                throw 'none';
+            }
+            return res.json();
+        }).then(function(res) {
+            success = (res.status == "success");
+            if(!success) {
+                data = res.reason;
+            } else {
+                data = res.data;
+            }
+        }).catch(function(err) {
+            if(err == "none") {return;}
+            console.log("backend: " + err);
+        });
+        return [success, data];
     }
     static async giveFeedback(feedback) {
         if(typeof(feedback) !== "string" || (feedback.length ?? 0) < 1) {

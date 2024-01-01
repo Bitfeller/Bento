@@ -50,8 +50,9 @@
             <p>Import Options</p>
             <button id="quizlet-import-btn">Import from Quizlet</button>
             <button id="gimkit-import-btn">Import from Gimkit</button>
-            <button id="bento-import-btn">Import a Bento Deck</button><br><br>
-            
+            <button id="bento-import-btn">Import a Bento Deck</button>
+            <p class="info-blank">Note importing <i>appends</i> to the list of cards, not replaces.</p><br><br>
+
             <p>Edit a Draft Deck</p>
             <div id="draftdecks-history">
                     <!-- <div id='draftdeck'>
@@ -63,7 +64,7 @@
             </div>
         </div>
     </div>
-    <div class="importModal" id="quizlet-import-modal">
+    <div class="import-modal" id="quizlet-import-modal">
         <div class="modal-content">
             <h1>Import from Quizlet</h1>
             <h3>To Export from Quizlet:</h3>
@@ -79,7 +80,7 @@
             <p class="info-error" id="QI-err"></p>
         </div>
     </div>
-    <div class="importModal" id="gimkit-import-modal">
+    <div class="import-modal" id="gimkit-import-modal">
         <div class="modal-content">
             <h1>Import from Gimkit</h1>
             <h3>To Export from Gimkit:</h3>
@@ -90,7 +91,7 @@
             <p class="info-error" id="GK-err"></p>
         </div>
     </div>
-    <div class="importModal" id="bento-import-modal">
+    <div class="import-modal" id="bento-import-modal">
         <div class="modal-content">
             <h1>Import from Bento</h1>
             <label class="switch">

@@ -13,6 +13,7 @@
     $val = $data['val'];
     $verifpwd = $data['verifpwd'];
     try {
+        $conf = get_server_config();
         $conn = connect_to_db();
         // Get user
         $sql = "SELECT * FROM users WHERE username = ? OR email = ?;";
@@ -33,6 +34,35 @@
             fail("no user");
         }
         $stmt->close();
+        // Check drafts
+        function check_drafts($conf, $result, $drafts) {
+            // Check for drafts without images
+            foreach($drafts as $key => $data) {
+                $path = $conf['file_db'] . 'drafts/' . $result['id'] . '-' . $key . '.pic';
+                if(!file_exists($path)) {
+                    fclose(fopen($path, "w"));
+                    // If image
+                    if(isset($data->img)) {
+                        file_put_contents($path, $data->img);
+                    }
+                }
+                if(isset($data->img)) {
+                    unset($data->img);
+                }
+            }
+            // Check for old drafts
+            $all = glob($conf['file_db'] . 'drafts/' . $result['id'] . '-*.pic');
+            if($all) {
+                foreach($all as $file) {
+                    $file = explode('-', $file);
+                    $file = explode('.', $file[1]);
+                    $file = $file[0];
+                    if(!isset($drafts->$file)) {
+                        unlink($conf['file_db'] . 'drafts/' . $result['id'] . '-' . $file . '.pic');
+                    }
+                }
+            }
+        }
         switch($setting) {
             case "username":
                 // Make sure username is valid
@@ -109,8 +139,8 @@
                 send_mail(
                     $val,
                     "Email Verification", 
-                    "Hey there!<br><br>Verify your new email address for $username <a href='https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=0&user=$uid'>here</a>.<br><br>If this isn't your account, you can safely ignore this email.<br><br>Bento<br><span style='font-size: 10px; color: rgb(200, 200, 200)'>You can reply to this email to contact us.<br>You're receiving this email because your email was associated with this account.<br>You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.</span>", 
-                    "Hey there!\n\nVerify your new email address for $username at https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=0&user=$uid. \nIf this isn't your account, you can safely ignore this email.\n\nBento\n(You can reply to this email to contact us. You're receiving this email because your email was associated with this account.)\n(You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.)"
+                    "Hey there!<br><br>Verify your new email address for $username <a href='https://bento-app.uk/user/userdir?hash=$hashVerif&v=0&user=$uid'>here</a>.<br><br>If this isn't your account, you can safely ignore this email.<br><br>Bento<br><span style='font-size: 10px; color: rgb(200, 200, 200)'>You can reply to this email to contact us.<br>You're receiving this email because your email was associated with this account.<br>You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.</span>", 
+                    "Hey there!\n\nVerify your new email address for $username at https://bento-app.uk/user/userdir?hash=$hashVerif&v=0&user=$uid. \nIf this isn't your account, you can safely ignore this email.\n\nBento\n(You can reply to this email to contact us. You're receiving this email because your email was associated with this account.)\n(You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.)"
                 );
             break;
             case "password":
@@ -134,30 +164,58 @@
             case 'userdata':
                 $val = json_decode($val, false);
                 $safeVal = sanitize($val);
+                check_drafts($conf, $result, $safeVal->drafts);
                 $safeVal = json_encode($safeVal);
-                // $val = json_decode($val, true);
-                // if(!isset($val)) {
-                //     fail("exception: data isn't valid JSON.");
-                // }
-                // $safeVal = (object) [];
-                // foreach($val as $dkey => $deck) {
-                //     $safeVal->$dkey = (object) [];
-                //     foreach($deck as $prob => $data) {
-                //         $newProb = htmlspecialchars(strip_tags($prob));
-                //         $newItem = [];
-                //         $newItem['last'] = (int)$data['last'];
-                //         $newItem['box'] = (int)$data['box'];
-                //         $newItem['score'] = (int)$data['score'];
-                //         $safeVal->$dkey->$newProb = $newItem;
-                //     }
-                // }
-                // $safeVal = json_encode($safeVal);
                 $sql = "UPDATE users SET userdata = ? WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("si", $safeVal, $_SESSION['uid']);
                 $stmt->execute();
                 $stmt->close();
                 $_SESSION['userdata'] = $safeVal;
+            break;
+            // Individual userdata actions
+            case 'draftdecks':
+                $val = json_decode($val, false);
+                $safeVal = sanitize($val);
+                check_drafts($conf, $result, $safeVal);
+                $safeVal = json_encode($safeVal);
+                $curr = $_SESSION['userdata'];
+                $curr = json_decode($curr, false);
+                $curr->draftdecks = json_decode($safeVal, false);
+                $curr = json_encode($curr);
+                $sql = "UPDATE users SET userdata = ? WHERE id = ?;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("si", $curr, $_SESSION['uid']);
+                $stmt->execute();
+                $stmt->close();
+                $_SESSION['userdata'] = $curr;
+            break;
+            case 'reviews':
+                $val = json_decode($val, false);
+                $safeVal = sanitize($val);
+                $safeVal = json_encode($safeVal);
+                $curr = $_SESSION['userdata'];
+                $curr = json_decode($curr, false);
+                $curr->reviews = json_decode($safeVal, false);
+                $curr = json_encode($curr);
+                $sql = "UPDATE users SET userdata = ? WHERE id = ?;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("si", $curr, $_SESSION['uid']);
+                $stmt->execute();
+                $stmt->close();
+                $_SESSION['userdata'] = $curr;
+            break;
+            case 'theme':
+                $curr = $_SESSION['userdata'];
+                $curr = json_decode($curr, false);
+                $curr->theme = (int)$val;
+                $curr = json_encode($curr);
+                $sql = "UPDATE users SET userdata = ? WHERE id = ?;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("si", $curr, $_SESSION['uid']);
+                $stmt->execute();
+                $stmt->close();
+                $_SESSION['userdata'] = $curr;
             break;
             case 'view':
                 $sql = "SELECT * FROM decks WHERE id = ?;";
@@ -189,7 +247,7 @@
                 }
             break;
             case 'pfp':
-                if($val !== "") {
+                if($val !== "" && $conf['check_image']) {
                     $data = explode(",", $val, 2);
                     $data = $data[1];
                     $decodedVal = base64_decode($data);
@@ -198,14 +256,13 @@
                         fail("exception: deckpic isn't a valid image. For security purposes, the server has denied the image.");
                     }
                 }
-                if(strlen($val) > 3 * 1000 * 1000) {
+                if(strlen($val) > 3 * 1000 * 1000 && $conf['check_image']) {
                     fail('size limit');
                 }
-                $sql = "UPDATE users SET pfp = ? WHERE id = ?;";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("si", $val, $_SESSION['uid']);
-                $stmt->execute();
-                $stmt->close();
+                // Edit user's pfp
+                $path = $conf['file_db'] . 'pfps/' . $_SESSION['uid'] . '.pfp';
+                file_put_contents($path, $val);
+                // Update user's pfp
                 $_SESSION['pfp'] = $val;
             break;
             case 'notifsub':
@@ -240,8 +297,8 @@
                 send_mail(
                     $email,
                     "Email Verification", 
-                    "Hey there!<br><br>Verify your new email address for <b>$username</b> <a href='https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=0&user=$uid'>here</a>.<br><br>If this isn't your account, you can safely ignore this email.<br><br>Bento<br><span style='font-size: 10px; color: rgb(200, 200, 200)'>You can reply to this email to contact us.<br>You're receiving this email because your email was associated with this account.<br>You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.</span>", 
-                    "Hey there!\n\nVerify your new email address for $username at https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=0&user=$uid. If this isn't your account, you can safely ignore this email.\n\nBento\n(You can reply to this email to contact us. You're receiving this email because your email was associated with this account.)\n(You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.)"
+                    "Hey there!<br><br>Verify your new email address for <b>$username</b> <a href='https://bento-app.uk/user/userdir?hash=$hashVerif&v=0&user=$uid'>here</a>.<br><br>If this isn't your account, you can safely ignore this email.<br><br>Bento<br><span style='font-size: 10px; color: rgb(200, 200, 200)'>You can reply to this email to contact us.<br>You're receiving this email because your email was associated with this account.<br>You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.</span>", 
+                    "Hey there!\n\nVerify your new email address for $username at https://bento-app.uk/user/userdir?hash=$hashVerif&v=0&user=$uid. If this isn't your account, you can safely ignore this email.\n\nBento\n(You can reply to this email to contact us. You're receiving this email because your email was associated with this account.)\n(You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.)"
                 );
             break;
         }

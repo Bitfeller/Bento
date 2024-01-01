@@ -82,6 +82,19 @@ body,
     overflow-x: hidden;
     overflow-y: visible;
 }
+.quick-container {
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 30px);
+    top: 60px;
+    background: rgb(17,26,35);
+}
+.status {
+    margin: 10px;
+    padding: 10px;
+    width: calc(100% - 40px);
+    background-color: rgb(50, 50, 50);
+}
 button {
     border-radius: 5px;
     border: none;

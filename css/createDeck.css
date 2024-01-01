@@ -145,7 +145,7 @@ button {
     background-color: var(--light-gray);
     color: var(--light-text);
 }
-.importModal {
+.import-modal {
     display: none;
     border: none;
     position: fixed;
@@ -251,7 +251,6 @@ button {
     color: #5992e8;
     font-size: 32px;
     transition: 0.3s;
-
 }
 #picAddBtn:hover, #picReset:hover {
     filter: brightness(85%);

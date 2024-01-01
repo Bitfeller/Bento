@@ -23,7 +23,7 @@ signout.addEventListener("mousedown", async function() {
     console.log("signout:", success, reason);
 });
 fetch.addEventListener("mousedown", async function() {
-    var [success, data] = await UserGateway.getuser();
+    var [success, data] = await UserGateway.getuser(true, true, true, true);
     console.log("fetch:", success, data);
 });
 edit.addEventListener("mousedown", async function() {
