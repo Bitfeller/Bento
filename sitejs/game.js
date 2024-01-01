@@ -87,7 +87,7 @@ async function renderable(input) {
 }
 function refresh() {
     hideDisplay();
-    if (Game.isDead()) {
+    if(Game.isDead()) {
         problem.innerHTML =
             "You completed Learn! Now go touch some <span>grass!</span>";
         progressBar.style.width = `100%`;
@@ -99,7 +99,7 @@ function refresh() {
         `;
         answerbtn.style.display = "block";
         answerbtn.innerHTML = "Go back home >>>";
-        for (var i = 0; i < objs.length; i++) {
+        for(let i = 0; i < objs.length; i++) {
             objs[i].remove();
         }
         setTimeout(() => {
@@ -114,6 +114,7 @@ function refresh() {
     }
     let data = Game.fetchProblem();
     problem.innerHTML = data.q;
+    console.log(problem.textContent);
     typeset(problem);
     for (var i = 0; i < objs.length; i++) {
         objs[i].remove();
@@ -167,7 +168,7 @@ function refresh() {
                 objs.push(op_i);
                 cont_a.appendChild(op_i);
             }
-            break;
+        break;
         case "txt":
             var input = document.createElement("div");
             input.contentEditable = true;
@@ -179,12 +180,12 @@ function refresh() {
             cont_a.appendChild(input);
             document.getElementsByClassName("op-input")[0].focus();
             input.addEventListener("keydown", (e) => {
-                if (e.key == "Enter" && !toProceed) answerHandler();
+                if(e.key == "Enter" && !toProceed) answerHandler();
             });
             input.addEventListener('keyup', async (e) => {
                 if((await renderable(input.innerHTML)) && input.innerHTML.match(/\$[^$]*\$/g)) showDisplay(input.innerHTML); else hideDisplay();
             });
-            break;
+        break;
         case "ranking":
             let list = document.createElement("div");
             list.id = "ranking-list";
@@ -250,9 +251,9 @@ function refresh() {
                 centroids.push(computeCenter(el));
                 dragElements.push(el);
             }
-            break;
+        break;
         case "matching":
-            break;
+        break;
     }
     var progress = Game.getProgress();
     progressNumbers.innerHTML = `
@@ -267,8 +268,8 @@ function answerHandler() {
     if (Game.isDead()) window.location.href = "/home?l=lm&s=1";
     if (toProceed) {
         if (Game.fetchProblem().type == "txt" && requireCorrect) {
-            let ans = Game.fetchProblem().ans;
-            if (objs[0].textContent == !ans) return;
+            let ans = Game.fetchProblem().ans[0];
+            if (!Game.getLastCorrect()) return;
         }
         Game.continue();
         answerMarker.style.display = "none";
@@ -279,18 +280,18 @@ function answerHandler() {
         refresh();
         return;
     }
-    if (!Game.isDead()) {
+    if(!Game.isDead()) {
         let data = Game.fetchProblem();
         let correct = false;
-        switch (data.type) {
+        switch(data.type) {
             case "txt":
                 selected = false;
-                if (objs[0].textContent === "") {
+                if(objs[0].textContent === "") {
                     noAnswer();
                     return;
                 }
                 correct = Game.isCorrect(objs[0].textContent.toLowerCase());
-                if (correct) {
+                if(correct) {
                     Game.continue();
                     contlabel();
                     refresh();
@@ -315,11 +316,11 @@ function answerHandler() {
                 break;
             case "ranking":
                 var answerList = [];
-                for (var i = 0; i < dragElements.length; i++) {
+                for(var i = 0; i < dragElements.length; i++) {
                     answerList.push(dragElements[i].textContent);
                 }
                 correct = Game.isCorrect(answerList);
-                if (correct) {
+                if(correct) {
                     Game.continue();
                     contlabel();
                     refresh();
@@ -329,7 +330,7 @@ function answerHandler() {
                     list.id = "ans-ranking-list";
                     list.className = "ranking-list";
                     ans_a.appendChild(list);
-                    for (let i = 0; i < data.ans.length; i++) {
+                    for(let i = 0; i < data.ans.length; i++) {
                         let item = data.ans[i];
                         let el = document.createElement("div");
                         el.className = "ranking-item";
@@ -352,19 +353,19 @@ function answerHandler() {
 answerbtn.addEventListener("mousedown", answerHandler);
 
 // Dragging event
-window.addEventListener("dragover", function (e) {
-    if (!dragging) return;
+window.addEventListener("dragover", (e) => {
+    if(!dragging) return;
     var list = document.getElementById("ranking-list");
-    if (dragLine.parentNode !== list) {
+    if(dragLine.parentNode !== list) {
         list.prepend(dragLine);
     }
     var top;
     var bottom;
     var y = e.pageY;
-    for (var i = 0; i < dragElements.length; i++) {
-        if (centroids[i].y < y) {
+    for(let i = 0; i < dragElements.length; i++) {
+        if(centroids[i].y < y) {
             continue;
-        } else if (i - 1 >= 0) {
+        } else if((i - 1) >= 0) {
             top = dragElements[i - 1];
             bottom = dragElements[i];
             list.insertBefore(dragLine, bottom);
@@ -376,7 +377,7 @@ window.addEventListener("dragover", function (e) {
             break;
         }
     }
-    if (!top) {
+    if(!top) {
         dragLine.remove();
         list.appendChild(dragLine);
     }
@@ -414,7 +415,7 @@ window.addEventListener("dragover", function (e) {
         // curr_p: 0.8,
         // ls_p: 0.1,
         // lls_p: 0.1,
-        deckdistr: [6, 1, 1],
+        deckdistr: [6, 1, 1]
     });
     if (rc == 1) requireCorrect = true;
     refresh();
@@ -511,12 +512,12 @@ window.addEventListener("keydown", (e) => {
         refresh();
     }
 });
-window.addEventListener("keyup", () => {
+window.addEventListener("input", () => {
     if(selected) return;
     if(!toProceed) return;
     if(Game.fetchProblem().type == "txt" && requireCorrect) {
-        let ans = Game.fetchProblem().ans;
-        if (objs[0].textContent.toLowerCase().replaceAll(/\s/g, "") != ans.toLowerCase().replaceAll(/\s/g, "")) {
+        let ans = objs[0].textContent.toLowerCase().replaceAll(/\s/g, "");
+        if (!Game.check(ans)) {
             answerbtn.innerHTML = "Enter the correct answer before advancing.";
             answerbtn.disabled = true;
             return;
