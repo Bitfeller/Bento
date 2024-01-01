@@ -6,6 +6,23 @@
     <title>Bento!</title>
     <?php require_once "../globalreqs.php"?>
     <script type="module" src="../../sitejs/userdir.js" type="text/javascript" data-loading="true"></script>
+    <style>
+        section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 90vh;
+        }
+        a {
+            font-size: 24pt;
+            margin-top: 1%;
+            padding: 0.5%;
+            border-radius: 10px;
+            background-color: #cadda0;
+            color:#1e1e1e;
+        }
+    </style>
 </head>
 <body>
     <?php require_once "../header.php"?>
