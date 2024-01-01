@@ -23,7 +23,7 @@ class Logger {
     setMetadata(metadata = "[{script}, {timestamp}] - ") {
         this.metadata = metadata;
     }
-    log(file, log, metadata) {
+    log(file = "misc.log", log = "", metadata = {}) {
         if(this.logSrc == "")
             return false;
         
