@@ -153,6 +153,12 @@ select {
     color: var(--light-text);
     width: 200px;
 }
+code {
+    background-color: var(--gray);
+    color: var(--accent-1);
+    padding: 5px;
+    border-radius: 5px;
+}
 .loader {
     margin: 0;
     padding: 0;

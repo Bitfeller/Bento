@@ -39,7 +39,6 @@ input, button {
 }
 input[type="checkbox"], input[type="radio"] {
   margin-left: 0;
-  accent-color: var(--accent-1);
 }
 input[type="checkbox"] {
   width: min-content;

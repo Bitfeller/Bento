@@ -4,35 +4,39 @@ let user;
 
 const pfp = document.getElementById("pfp");
 const editpfp = document.getElementById("pfpAddBtn");
-const pfpReset = document.getElementById("pfpReset");
+const pfpReset = document.getElementById("pfpResetBtn");
 const fileSelectTrigger = document.getElementById("fileselecttrigger");
 
-const emailfield = document.getElementById("emailfield");
-const e_currpwd = document.getElementById("e_currpwd");
-const emailbtn = document.getElementById("emailbtn");
-const pwdfield = document.getElementById("pwdfield");
-const currPwd = document.getElementById("currpwd");
-const pwdbtn = document.getElementById("pwdbtn");
-const userfield = document.getElementById("userfield");
-const userbtn = document.getElementById("userbtn");
+const newEmailField = document.getElementById("email");
+const emailCurrPassword = document.getElementById("email-curr-password");
+const emailbtn = document.getElementById("change-email");
 
-const delacc = document.getElementById("delacc");
-const resetacc = document.getElementById("resetacc");
+const pwdfield = document.getElementById("password");
+const currentPassword = document.getElementById("password-curr-password");
+const passwordButton = document.getElementById("change-password");
 
-const warningDialog = document.getElementById("warningdialog");
-const leaveBtn = document.getElementById("leave");
-const wd_main = document.getElementsByClassName("main")[0];
+const usernameField = document.getElementById("new-username");
+const usernameButton = document.getElementById("submit-username");
+const usernameDisplay = document.getElementById("username");
 
-const usernameEl = document.getElementById("username");
+const warningDialog = document.getElementById("warning-dialog");
 
-const themeSelect = document.getElementById("theme-select");
+const deleteAccount = document.getElementById("delete-account");
+
+const resetAccount = document.getElementById("reset-account");
+
+
+const nordRadio = document.getElementById("nord-radio");
+const coffeeMidnightRadio = document.getElementById("coffee-midnight-radio");
+const catppuccinRadio = document.getElementById("catppuccin-radio");
 
 // main
 (async () => {
     let [success, data] = await UserGateway.getuser(true, true, false, false);
     if(!success) console.error(data);
     user = data;
-    usernameEl.innerHTML = user.username;
+
+    usernameDisplay.innerHTML = user.username;
     if(user.pfp && user.pfp.length > 0) pfp.src = user.pfp;
     editpfp.addEventListener("mousedown", () => fileSelectTrigger.click()); // show file upload option
     pfpReset.addEventListener("mousedown", async () => {
@@ -40,6 +44,7 @@ const themeSelect = document.getElementById("theme-select");
         await UserGateway.editUser("pfp", "");
         window.location.reload();
     })
+
     fileSelectTrigger.addEventListener('change', () => {
         let files = fileSelectTrigger.files;
         if(files && files[0]) {
@@ -55,65 +60,88 @@ const themeSelect = document.getElementById("theme-select");
             reader.readAsDataURL(file);
         }
     });
+
     emailbtn.addEventListener("mousedown", async () => {
-        if(emailfield.value == "" || e_currpwd.value == "") return;
-        await UserGateway.editUser("email", emailfield.value, e_currpwd.value);
+        if(newEmailField.value == "" || emailCurrPassword.value == "") return;
+        await UserGateway.editUser("email", newEmailField.value, emailCurrPassword.value);
         window.location.reload();
     });
-    pwdbtn.addEventListener("mousedown", async () => {
-        if(pwdfield.value == "" || currPwd.value == "") return;
-        await UserGateway.editUser("password", pwdfield.value, currPwd.value);
+    passwordButton.addEventListener("mousedown", async () => {
+        if(pwdfield.value == "" || currentPassword.value == "") return;
+        await UserGateway.editUser("password", pwdfield.value, currentPassword.value);
         window.location.reload();
     });
-    userbtn.addEventListener("mousedown", async () => {
-        if(userfield.value == "") return;
-        await UserGateway.editUser("username", userfield.value);
+    usernameButton.addEventListener("mousedown", async () => {
+        if(usernameField.value == "") return;
+        await UserGateway.editUser("username", usernameField.value);
         window.location.reload();
     });
-    delacc.addEventListener("mousedown", () => {
+
+    deleteAccount.addEventListener("mousedown", async () => {
         warningDialog.showModal();
-        wd_main.innerHTML = `
-            <p>Once you delete your account, you won't be able to recover it again.</p><br>
+        warningDialog.innerHTML = `
+            <h2>Are You Sure?</h2>
+            <p>This action is irreversible and will remove all of your data from our servers.</p>
+            <br>
             <p>Enter your current password to continue...</p>
-            <input type='password' class='password-field' placeholder='Current Password'><br><br><br>
-            <button class='confirm'>Delete Account</button> or 
-            <button class='go_back'>Go Back</button>
+            <input type="text" id="delete-account-password" placeholder="Current Password">
+            <div class="dialog-button-container">
+                <button id="delete-account-confirm">Delete Account</button>
+                <button id="delete-account-cancel">Cancel</button>
+            </div>
         `;
-        const pwd = wd_main.getElementsByClassName('password-field')[0];
-        const confirm = wd_main.getElementsByClassName('confirm')[0];
-        const goBack = wd_main.getElementsByClassName('go_back')[0];
-        confirm.addEventListener("mousedown", async () => {
-            if(pwd.value == "") return;
-            await UserGateway.editUser('delete', '', pwd.value); // got too lazy to make another script for this function
+        const deleteAccountPassword = document.getElementById("delete-account-password");
+        const deleteAccountConfirm = document.getElementById("delete-account-confirm");
+        const deleteAccountCancel = document.getElementById("delete-account-cancel");
+        deleteAccountConfirm.addEventListener("mousedown", async () => {
+            if(deleteAccountPassword.value == "") return;
+            await UserGateway.editUser("delete", "", deleteAccountPassword.value);
             window.location.reload();
         });
-        goBack.addEventListener("mousedown", () => warningDialog.close());
+        deleteAccountCancel.addEventListener("mousedown", () => warningDialog.close());
     });
-    resetacc.addEventListener("mousedown", () => {
+    resetAccount.addEventListener("mousedown", async () => {
         warningDialog.showModal();
-        wd_main.innerHTML = `
-            <p>Once you reset your account, all of your user data and preferences (reviews, draft decks, theme preferences, etc.) will be deleted.</p><br><br>
-            <button class='confirm'>Reset Account</button> or 
-            <button class='go_back'>Go Back</button>
+        warningDialog.innerHTML = `
+            <h2>Are You Sure?</h2>
+            <p>Once you reset your account, all of your user data and preferences (reviews, draft decks, theme preferences, etc.) will be deleted.</p>
+            <br>
+            <p>Enter your current password to continue...</p>
+            <input type="text" id="reset-account-password" placeholder="Current Password">
+            <div class="dialog-button-container">
+                <button id="reset-account-confirm">Reset Account</button>
+                <button id="reset-account-cancel">Cancel</button>
+            </div>
         `;
-        const confirm = wd_main.getElementsByClassName('confirm')[0];
-        const goBack = wd_main.getElementsByClassName('go_back')[0];
-        confirm.addEventListener("mousedown", async () => {
-            await UserGateway.editUser("userdata", '{"reviews":{},"draftdecks":{},"theme":0}');
+        const resetAccountPassword = document.getElementById("reset-account-password");
+        const resetAccountConfirm = document.getElementById("reset-account-confirm");
+        const resetAccountCancel = document.getElementById("reset-account-cancel");
+        resetAccountConfirm.addEventListener("mousedown", async () => {
+            if(resetAccountPassword.value == "") return;
+            await UserGateway.editUser("userdata", '{"reviews":{},"draftdecks":{},"theme":0}', resetAccountPassword.value);
             warningDialog.close();
             window.location.reload();
         });
-        goBack.addEventListener("mousedown", () => warningDialog.close());
+        resetAccountCancel.addEventListener("mousedown", () => warningDialog.close());
     });
-    leaveBtn.addEventListener("mousedown", () => warningDialog.close());
-    themeSelect.selectedIndex = data.userdata.theme;
-    themeSelect.addEventListener("change", async () => {
-        data.userdata.theme = themeSelect.selectedIndex ?? 0;
-        await UserGateway.editUser('theme', "" + data.userdata.theme);
-        window.location.reload();
-    });
+    window.onclick = (e) => {
+        if(e.target == warningDialog) warningDialog.close();
+    }
+
+    let currentTheme = data.userdata.theme;
+    
+    if(currentTheme == 0) nordRadio.checked = true;
+    else if(currentTheme == 1) coffeeMidnightRadio.checked = true;
+    else if(currentTheme == 2) catppuccinRadio.checked = true;
+
+    nordRadio.addEventListener("change", () => changeTheme(currentTheme, 0));
+    coffeeMidnightRadio.addEventListener("change", () => changeTheme(currentTheme, 1));
+    catppuccinRadio.addEventListener("change", () => changeTheme(currentTheme, 2));
 })();
 
-window.onclick = e => {
-    if(e.target == warningDialog) warningDialog.close();
+async function changeTheme(currentTheme, theme) {
+    if(currentTheme == theme) return;
+    currentTheme = theme;
+    await UserGateway.editUser('theme', "" + theme);
+    window.location.reload();
 }

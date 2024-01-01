@@ -35,7 +35,11 @@
                 <div class="preview-container"></div>
             </dialog>
         </section>
-        <button id="loadBtn">Load more decks...</button>
+
+        
     </div>
+    <footer>
+            <button id="loadBtn"><h3>Load more decks...</h3></button>
+    </footer>
 </body>
 </html>

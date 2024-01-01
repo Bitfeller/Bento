@@ -87,7 +87,7 @@ async function update() {
             }
             reviewDecks.push(deck);
             // Add phony loader
-            let newBox = box(deck.id, true, deck.name, awaitLoad ? "../../img/loading.png" : deck.deckpic, deck.owner, true);
+            let newBox = box(deck.id, true, deck.name, awaitLoad ? "../../img/defaultdeckpic.png" : deck.deckpic, deck.owner, true);
             addedDecksContainer.appendChild(newBox);
         }
         if(update) {
@@ -133,7 +133,7 @@ async function update() {
         if(data.length == 0) return void (loadBtn.innerHTML = "No more decks to load...");
         decks.push(...data);
         await update();
-        loadBtn.innerHTML = "Load more decks...";
+        loadBtn.innerHTML = "<h3>Load more decks...</h3>";
     });
     search.addEventListener("keyup", async (e) => {
         if(e.key !== "Enter") return;
@@ -160,7 +160,7 @@ async function update() {
         let loaded = data.length;
         let s_loadBtn = document.createElement("button");
         s_loadBtn.id = "search_loadBtn";
-        s_loadBtn.innerHTML = "Load more decks...";
+        s_loadBtn.innerHTML = "<h3>Load more decks...</h3>";
         searchedDecksContainer.appendChild(s_loadBtn);
         s_loadBtn.addEventListener("mousedown", async () => {
             let [success, data] = await DeckGateway.getall(loaded, orig);
