@@ -12,7 +12,7 @@
     --gray: #212121;
     --light-gray: #292E32;
     --lighter-gray: #383838;
-    --light-green: #CADDA0;
+    --accent-1: #CADDA0;
 } */
 /* Catppuccin Mocha */
 /* :root {
@@ -27,7 +27,7 @@
     --gray: #1e1e2e;
     --light-gray: #313244;
     --lighter-gray: #45475a;
-    --light-green: #a6e3a1;
+    --accent-1: #a6e3a1;
 } */
 /* Nord */
 :root { 
@@ -43,7 +43,10 @@
     --gray: #10151a;
     --light-gray: #1e2831;
     --lighter-gray: #222c37;
-    --light-green: #CADDA0;
+
+    --accent-1: #CADDA0;
+    /* #CADDA0 */
+    --accent-2: rgb(80, 80, 240);
 }
 * {
     color: var(--light-text);
@@ -89,7 +92,7 @@ body, .container {
 button {
     border-radius: 5px;
     border: none;
-    background-color: var(--light-green);
+    background-color: var(--accent-1);
     color: var(--dark-text);
     cursor: pointer;
     transition: 0.3s;
@@ -191,7 +194,7 @@ input {
     font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 200, "opsz" 48;
 }
 .header span:hover {
-    color: var(--light-green);
+    color: var(--accent-1);
 }
 .logo {
     cursor: pointer;

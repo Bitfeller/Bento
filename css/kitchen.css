@@ -50,7 +50,7 @@ body > h2 {
     height: 235px;
     width: 235px;
     border-radius: 10px;
-    background-color: var(--light-green);
+    background-color: var(--accent-1);
 }
 .ingredient-box {
     display: flex;

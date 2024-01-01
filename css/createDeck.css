@@ -74,7 +74,7 @@ button {
 }
 .create-container > ::placeholder {
     opacity: 0.4;
-    color: var(--light-green)
+    color: var(--accent-1)
 } 
 .create-container > .mcbtn {
     margin-left: 0px;
@@ -95,7 +95,7 @@ button {
     max-width: 700px;
 }
 #create {
-    background-color: var(--light-green);
+    background-color: var(--accent-1);
 }
 .card {
     margin-top: 10px;

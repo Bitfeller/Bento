@@ -82,7 +82,7 @@ h2 {
     transition: 0.3s;
 }
 #reviewBtn:hover {
-    background-color: var(--light-green);
+    background-color: var(--accent-1);
 }
 #reviewBtn:hover > h1 {
     color: var(--dark-text);
