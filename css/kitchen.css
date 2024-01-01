@@ -103,6 +103,11 @@ body > h2 {
     position: relative;
     background-color: var(--light-gray);
 }
+#overview > h2 {
+    max-width: calc(100% - 55px);
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
 .title-bar {
     display: flex;
     justify-content: space-between;
@@ -183,7 +188,7 @@ img {
     color: var(--dark-text);
     gap: 5px;
 }
-#overview > h2, #description > p, .ingredient-box h2, #cards p {
+#oveview > h2, #description > p, .ingredient-box h2, #cards p {
     overflow: hidden;
 }
 @media screen and (max-width: 768px) {
