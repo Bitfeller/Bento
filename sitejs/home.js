@@ -26,7 +26,7 @@ const t_dialogmain = tutorialDialog.getElementsByClassName("dialog-main")[0];
         if(count > 0) {
             deckReminders.innerHTML += `
                 <div class="dr-deck">
-                    <span class="dr-dname">${deck.name}</span><span class="dr-dterms">${count} terms</span>
+                    <span class="dr-dname">${deck.name}</span><span class="dr-dterms">${count}</div></span>
                 </div>
             `;
         }
@@ -41,7 +41,7 @@ const t_dialogmain = tutorialDialog.getElementsByClassName("dialog-main")[0];
         notifText.innerHTML = `<span class='material-symbols-outlined'>notifications_off</span>You've turned off notifications. Bento can't show you notifications unless you agree to them.</span>`;
         return;
     }
-    notifText.innerHTML = `<span class='material-symbols-outlined'>${data.notifsub == "0" ? "notifications_off" : "notifications_active"}</span>${data.notifsub == "0" ? "Don't notify me to review." : (data.notifsub == "1" ? "Remind me everyday when I have to review." : (data.notifsub == "2" ? "Remind me every 3 days when I have to review." : "Remind me every week when I have to review."))}</span>`;
+    notifText.innerHTML = `<span class='material-symbols-outlined'>${data.notifsub == "0" ? "notifications_off" : "notifications_active"}</span>${data.notifsub == "0" ? "<p>Don't notify me to review.</p>" : (data.notifsub == "1" ? "<p>Remind me everyday when I have to review.</p>" : (data.notifsub == "2" ? "<p>Remind me every 3 days when I have to review.</p>" : "<p>Remind me every week when I have to review.</p>"))}</span>`;
     notifText.addEventListener("mousedown", async () => {
         curr++;
         if(curr > 3) curr = 0;

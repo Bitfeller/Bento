@@ -22,18 +22,14 @@ function box(idx, inReviews = false, deckName, deckpic, author, ofAddedDecks = f
     let a = document.createElement("div");
     a.className = "ingredient-box";
     a.setAttribute("data-idx", idx);
+    a.style.backgroundImage = `url(${deckpic && deckpic.length > 0 ? deckpic : "../../img/defaultdeckpic.png"})`;
     a.innerHTML = `
         <div>
-            <img src="${deckpic && deckpic.length > 0 ? deckpic : "../../img/defaultdeckpic.png"}" alt="Deck image">
-            <div>
-                <h2>${deckName}</h2>
-                <p>by <span class='username'>${author}</p>
-            </div>
+            <h2>${deckName}</h2>
+            <p>by <span class='username'>${author}</p>
         </div>
-        <div>
-            <button class="previewBtns" data-idx="${idx}">View</button>
-            <button class="userReviewsUpdateBtns" data-idx="${idx}">${inReviews ? "Remove" : "Add"}</button>
-        </div>
+        <button class="previewBtns" data-idx="${idx}"><div class='material-symbols-outlined'>visibility</div></button>
+        <button class="userReviewsUpdateBtns" data-idx="${idx}">${inReviews ? "<div class='material-symbols-outlined'>remove</div>" : "<div class='material-symbols-outlined'>add</div>"}</button>
     `;
     a.getElementsByClassName("previewBtns")[0].addEventListener("mousedown", (e) => {preview(e.currentTarget, ofAddedDecks);});
     a.getElementsByClassName("userReviewsUpdateBtns")[0].addEventListener("mousedown", (e) => {reviews_update(e.currentTarget, ofAddedDecks);});
@@ -267,7 +263,7 @@ async function reviews_update(_this, isAdded) {
         let divs = document.getElementsByClassName("ingredient-box");
         for(let j = 0; j < divs.length; j++) {
             if(divs[j].dataset.idx == deck.id) {
-                divs[j].getElementsByClassName("userReviewsUpdateBtns")[0].innerHTML = "Add";
+                divs[j].getElementsByClassName("userReviewsUpdateBtns")[0].innerHTML = "<div class='material-symbols-outlined'>add</div>";
                 break;
             }
         }
@@ -278,7 +274,7 @@ async function reviews_update(_this, isAdded) {
         let newBox = box(deck.id, true, deck.name, deck.deckpic, deck.owner, true);
         if(addedDecksContainer.children.length == 1 && addedDecksContainer.children[0].className == "info-blank") addedDecksContainer.innerHTML = "";
         addedDecksContainer.appendChild(newBox);
-        _this.innerHTML = "Remove";
+        _this.innerHTML = "<div class='material-symbols-outlined'>remove</div>";
     }
     let json = JSON.stringify(user.reviews);
     await UserGateway.editUser("reviews", json);

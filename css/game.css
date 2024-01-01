@@ -1,6 +1,23 @@
 * {
     overflow: hidden;
 }
+#progressNumbers {
+    display: absolute;
+    float: right;
+}
+#progressNumbers .material-symbols-outlined {
+    font-size: 12pt;
+    margin-right: 15px;
+    height: 18px;
+}
+#progressBar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 5px;
+    background-color: var(--light-text);
+    margin-top: 10px;
+}
 #main {
     display: flex;
     flex-direction: column;

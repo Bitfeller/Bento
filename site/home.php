@@ -623,11 +623,11 @@
         </div>
         <div class="home-side-div-holder">
             <div class="deck-reminders-holder home-side-div">
-                <h3>Decks to review</h3>
+                <h3>Reviews</h3>
                 <div class="deck-reminders" id="deck-reminders"></div>
             </div>
             <div class="notifications-holder home-side-div">
-                <span id="text"><span class="material-symbols-outlined">notifications_off</span>Don't give me notifications</span>
+                <span id="text" class="line-up-icons"><span class="material-symbols-outlined">notifications_off</span></span>
             </div>
         </div>
     </div>
