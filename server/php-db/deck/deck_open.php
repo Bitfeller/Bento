@@ -2,7 +2,7 @@
     require_once '../module.php';
     validate_request();
     $data = get_data('id');
-    require_types('nbb', 'id', 'load_pic', 'load_data');
+    require_types('nbbb', 'id', 'load_pic', 'load_data', 'load_contnt_len');
     // Make sure session exists
     session_start();
     if(!isset($_SESSION['uid'])) {
@@ -10,8 +10,9 @@
     }
     // Get body values
     $id = $data['id'];
-    $load_pic = $data['load_pic'] or false;
-    $load_data = $data['load_data'] or true;
+    $load_pic = $data['load_pic'] ? 1 : 0;
+    $load_data = $data['load_data'] ? 1 : 0;
+    $load_contnt_len = $data['load_contnt_len'] ? 1 : 0;
     $owner = $_SESSION['username'];
     try {
         $conn = connect_to_db();
@@ -23,10 +24,14 @@
         $stmt->execute();
         $result = mysqli_fetch_assoc($stmt->get_result());
         if($result) {
-            if($load_pic == false) {
+            if($load_pic == 0) {
                 unset($result['deckpic']);
             }
-            if($load_data == false) {
+            if($load_contnt_len == 1) {
+                $data = json_decode($result['data'], true);
+                $result['contnt_len'] = count($data['contnt']);
+            }
+            if($load_data == 0) {
                 unset($result['data']);
             }
             success(json_encode($result));

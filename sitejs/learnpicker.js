@@ -55,7 +55,7 @@ function updateDecks(decks) {
                 let term = reviews[r_keys[i]][c_keys[j]];
                 if (UserGateway.calculateNTR(term.box, term.last)) count++;
             }
-            count += Object.keys(deck.data.contnt).length - c_keys.length;
+            count += deck.contnt_len - c_keys.length;
             if (count > 0) {
                 deckContainer.innerHTML += `
                     <div class="deck-box" data-idx='${deck.id}'>
@@ -124,7 +124,7 @@ function updateDecks(decks) {
     let r_keys = Object.keys(reviews);
     for (let i = 0; i < r_keys.length; i++) {
         let id = parseInt(r_keys[i]);
-        let [success, deck] = await DeckGateway.get(id, true, false);
+        let [success, deck] = await DeckGateway.get(id, false, false, true);
         if (!success) {
             decks.push(0);
             continue;
@@ -136,7 +136,7 @@ function updateDecks(decks) {
             let term = reviews[r_keys[i]][c_keys[j]];
             if (UserGateway.calculateNTR(term.box, term.last)) count++;
         }
-        count += Object.keys(deck.data.contnt).length - c_keys.length;
+        count += deck.contnt_len - c_keys.length;
         if (count > 0) {
             deckContainer.innerHTML += `
                 <div class="deck-box" data-idx='${deck.id}'>
