@@ -442,16 +442,17 @@ function getProgress() {
 
     let left = get_pwsets();
 
-    return {
+    let obj = {
         seen,
         total: 
             // Initially based on a 16-card deck w/ deckSize 8:
             gameData.length * cardRepeat            // d_s * r  (all cards)
             + realWrong                             // w        (all wrong cards)
             + S_l * prev                            // S_l(2)   (all previous cards shown)
-            + prev * left,                          // 2 * (ls_w - (ceil(8r / 6) + cl_w - e_s)(p(c_d)))
-        remaining: gameData.length * cardRepeat - seen
+            + prev * left,                          // 2 * (ls_w - (ceil(8r / 6) + cl_w - e_s)(p(c_d)))  
     };
+    obj.remaining = obj.total - obj.seen;
+    return obj;
 }
 function updateLastCorrect(bool) {
     lastCorrect = bool;
