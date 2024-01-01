@@ -24,7 +24,7 @@ async function init() {
         applicationServerKey: 'BK2goia_RGT26Nq5Blmc9yrejx_Cq4GpuWUcwZ9sn5DsaT8HfFqyql6Ss1D5K3T1W9Tow2JIVzigsVI4g-UyQBE'
     }).then(_sub => {
         sub = _sub;
-        fetch("http://" + location.hostname + ":3000/notify", {
+        fetch("https://bentoapi.valleynas.uk:443/notify", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -45,7 +45,7 @@ self.addEventListener("push", async (e) => {
         // Check if the user has blocked notifications; if so, exit.
         if(Notification.permission != "granted") {
             sub.unsubscribe();
-            fetch("http://" + location.hostname + ":3000/notify", {
+            fetch("https://bentoapi.valleynas.uk:443/notify", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
