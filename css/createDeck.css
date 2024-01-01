@@ -295,8 +295,6 @@ button {
     background-color: var(--danger-red);
     border-radius: 0px 5px 5px 0px;
 }
-.card-main {
-}
 @media only screen and (max-width: 1025px) {
     .options-container {
         margin: 10px 0px;

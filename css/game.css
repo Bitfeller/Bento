@@ -52,6 +52,7 @@
     margin: auto;
     margin-bottom: 0.5%;
     height: 45px;
+    padding: 0px !important;
     font-size: 18pt;
     text-align: center;
     margin-top: 5px;
