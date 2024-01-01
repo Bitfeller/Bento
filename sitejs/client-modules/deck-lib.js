@@ -159,6 +159,9 @@ function toNew() {
 
 
 // --------------------------------------------------- \\
+// Builders builds the card structure
+// Generators generate answers
+// Cloners clone cards
 
 
 // Cloner
@@ -177,6 +180,7 @@ function generator_mc(cardmc, card, allcorr, t, txt) {
     let newop = document.createElement('div');
     newop.className = "mcop";
     newop.innerHTML = `
+        <div class="drag-handle">:</div>
         <div contenteditable="true" type='input' class='mcop-val' placeholder='...'></div>
         <button class='mcop-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
         <button class='mcop-corr mcop-${t ? 'sel' : 'nosel'}' tabindex="-1"><span class="material-symbols-outlined">${t ? 'check' : 'check_indeterminate_small'}</span></button>
@@ -222,6 +226,7 @@ function generator_txt(card, i_anslist, r, p, txt) {
     let newans = document.createElement('div');
     newans.className = "txt-ans-cont" + (p == i_anslist ? "-inv" : "");
     newans.innerHTML = `
+        <div class="drag-handle">:</div>
         <div contenteditable="true" type='input' class='txtans ansdiv' placeholder='...'></div>
         ${r ? `<button class='txtans-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>` : ``}
     `;
@@ -246,6 +251,7 @@ function generator_rank(card, ranklist, txt) {
     item.className = 'ranking-item';
     item.setAttribute('draggable', true);
     item.innerHTML = `
+        <div class="drag-handle">:</div>
         <div contenteditable="true" type='input' class='rank-item-txt ansdiv' placeholder='...'></div>
         <button class='rank-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
     `;
@@ -426,10 +432,10 @@ function init_txt(card, n, q) {
 
     init_div(inverse.getElementsByClassName('q')[0]);
 
-    // Cloner
+    // Local Cloner
     card.getElementsByClassName('txt-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card) + 1));
     
-    // Generator
+    // Local Generator
     let generator = (r, p, t) => generator_txt(card, i_anslist, r, p, t);
     let inverse_ch = t => {
         cardsel.style.display = cardmain.style.display = t ? "none" : "block";
