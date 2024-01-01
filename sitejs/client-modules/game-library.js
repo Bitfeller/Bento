@@ -511,6 +511,7 @@ function isDead() {
 }
 // -- Local functions
 function correct() {
+    lastCorrect = false;
     let success = iterateProblem();
     if(!success) active = false;
     return true;
