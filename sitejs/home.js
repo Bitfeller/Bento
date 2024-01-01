@@ -17,7 +17,7 @@ const rightSushi = document.getElementById("Right_Sushi");
     let [success, data] = await UserGateway.getuser();
     if(!success) return;
     deckReminders.innerHTML = "";
-    let reviews = data.reviews;
+    let reviews = data.userdata.reviews;
     let r_keys = Object.keys(reviews);
     for(let i = 0; i < r_keys.length; i++) {
         let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]));

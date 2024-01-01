@@ -18,7 +18,7 @@ input, div[contenteditable="true"] {
     align-items: center;
     gap: 5px;
 }
-.mc-option-del, .mc-option-input, .mc-option-nosel, .mc-option-sel, .ranking-item-del {
+.mc-option-del, .mc-option-input, .mc-option-nosel, .mc-option-sel, .txt-op-del, .ranking-item-del {
     height: 27px;
     width: 27px;
     padding: 0px;
@@ -26,7 +26,7 @@ input, div[contenteditable="true"] {
 .mc-option-sel, .selbtn-select {    
     background-color: var(--select-blue);
 }
-.mc-option-del, .ranking-item-del {
+.mc-option-del, .txt-op-del, .ranking-item-del {
     background-color: var(--danger-red);
 }
 .mc-option-sel{
@@ -41,7 +41,7 @@ input, div[contenteditable="true"] {
 .mc-option-nosel {
     background-color: var(--light-gray);
 }
-.mc-option-sel > span, .mc-option-del > span, .mc-option-nosel > span, .ranking-item-del > span {
+.mc-option-sel > span, .mc-option-del > span, .mc-option-nosel > span, .txt-op-del > span, .ranking-item-del > span {
     font-size: 15px;
     margin: 7px 0;
     padding: 0;

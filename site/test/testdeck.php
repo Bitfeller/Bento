@@ -8,7 +8,6 @@
     <script type="module" src="../sitejs/test_deck.js" type="text/javascript"></script>
 </head>
 <body>
-    <?php require_once "../header.php"?>
     <p>deck testing thing</p>
     <p>you must be logged in to do some things</p>
     <input type="text" id="name">

@@ -242,13 +242,13 @@ async function init(_decks, info) {
             console.error("Encountered while attempting to fetch deck of d_id(" + deck + "):", data);
             return false;
         }
-        let userReview = user.reviews[deck];
+        let userReview = user.userdata.reviews[deck];
         if(!userReview) {
             // Doesn't exist in our reviews? interesting... regardless, might as well add it if for some reason specified...?
             userReview = {};
-            user.reviews[deck] = userReview;
+            user.userdata.reviews[deck] = userReview;
             let json = JSON.stringify(user.reviews);
-            await UserGateway.editUser("reviews", json);
+            await UserGateway.editUser("userdata", json);
         }
         let updateIdx = false;
         let r_keys = Object.keys(userReview);
@@ -268,7 +268,7 @@ async function init(_decks, info) {
                 updateIdx = true;
             }
         }
-        if(updateIdx) user.reviews[deck] = userReview;
+        if(updateIdx) user.userdata.reviews[deck] = userReview;
         let d_keys = Object.keys(data.data.contnt);
         let datalist = [];
         for(let i = 0; i < d_keys.length; i++) {
@@ -281,7 +281,7 @@ async function init(_decks, info) {
     }
     if(updateReviews) {
         let json = JSON.stringify(user.reviews);
-        await UserGateway.editUser("reviews", json);
+        await UserGateway.editUser("userdata", json);
     }
     // Add terms to deckInfo
     for(let i = 0; i < deckInfo.length; i++) {
@@ -325,17 +325,17 @@ async function init(_decks, info) {
             if(!cache_boxes[holder]) cache_boxes[holder] = {};
             if(!cache_scores[holder]) cache_scores[holder] = {};
             // Update card
-            let userCard = user.reviews[holder][card.q];
+            let userCard = user.userdata.reviews[holder][card.q];
             if(userCard) {
-                if(!cache_boxes[holder][card.q]) cache_boxes[holder][card.q] = user.reviews[holder][card.q].box;
-                if(!cache_scores[holder][card.q]) cache_scores[holder][card.q] = user.reviews[holder][card.q].score;
-                user.reviews[holder][card.q].last = Date.now();
+                if(!cache_boxes[holder][card.q]) cache_boxes[holder][card.q] = user.userdata.reviews[holder][card.q].box;
+                if(!cache_scores[holder][card.q]) cache_scores[holder][card.q] = user.userdata.reviews[holder][card.q].score;
+                user.userdata.reviews[holder][card.q].last = Date.now();
                 let thisScore = cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] || 0)); // correct - wrong
-                user.reviews[holder][card.q].score = (cache_scores[holder][card.q] * 0.8 + thisScore * 1.1).toFixed(3);
-                if(user.reviews[holder][card.q].score < -1.25) {
-                    user.reviews[holder][card.q].box = Math.max(cache_boxes[holder][card.q] - 1, 1);
-                } else if(user.reviews[holder][card.q].score > 1.25) {
-                    user.reviews[holder][card.q].box = Math.min(cache_boxes[holder][card.q] + 1, 6);
+                user.userdata.reviews[holder][card.q].score = (cache_scores[holder][card.q] * 0.8 + thisScore * 1.1).toFixed(3);
+                if(user.userdata.reviews[holder][card.q].score < -1.25) {
+                    user.userdata.reviews[holder][card.q].box = Math.max(cache_boxes[holder][card.q] - 1, 1);
+                } else if(user.userdata.reviews[holder][card.q].score > 1.25) {
+                    user.userdata.reviews[holder][card.q].box = Math.min(cache_boxes[holder][card.q] + 1, 6);
                 }
             } else {
                 let newcard = {
@@ -346,11 +346,11 @@ async function init(_decks, info) {
                 newcard.box = newcard.score > 1.25 ? 2 : 1;
                 cache_boxes[holder][card.q] = newcard.box;
                 cache_scores[holder][card.q] = newcard.score;
-                user.reviews[holder][card.q] = newcard;
+                user.userdata.reviews[holder][card.q] = newcard;
             }
         }
         let json = JSON.stringify(user.reviews);
-        await UserGateway.editUser("reviews", json);
+        await UserGateway.editUser("userdata", json);
     };
     updateFunc = update;
     const updater = window.setInterval(() => {
@@ -487,9 +487,14 @@ function isCorrect(answer) {
     let problem = gameData[randomSet[card]];
     switch(problem.type) {
         case "mc":
-            return problem.op[answer] == problem.ans ? updateLastCorrect(true) : updateLastCorrect(false);
+            return problem.ans.indexOf(answer) > -1 ? updateLastCorrect(true) : updateLastCorrect(false);
+            // return problem.op[answer] == problem.ans ? updateLastCorrect(true) : updateLastCorrect(false);
         case "txt":
-            return answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans.toLowerCase().replaceAll(/\s/g, "") ? updateLastCorrect(true) : updateLastCorrect(false);
+            for(let i = 0; i < problem.ans.length; i++) {
+                if(answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans.toLowerCase().replaceAll(/\s/g, "")) return updateLastCorrect(true);
+            }
+            return updateLastCorrect(false);
+            // return answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans.toLowerCase().replaceAll(/\s/g, "") ? updateLastCorrect(true) : updateLastCorrect(false);
         case "ranking":
             let isCorrect = true;
             for(let i = 0; i < answer.length; i++) {
@@ -539,11 +544,7 @@ function incorrect() {
             C_pwsets = left;
         }
     }
-    if(totalWrong[randomSet[card]]) {
-        totalWrong[randomSet[card]]++;
-    } else {
-        totalWrong[randomSet[card]] = 1;
-    }
+    if(totalWrong[randomSet[card]]) totalWrong[randomSet[card]]++; else totalWrong[randomSet[card]] = 1;
     correct();
     return false;
 }

@@ -169,22 +169,24 @@ function initMc(newDiv, n, q) {
             cards[cards.length - 1].getElementsByClassName('question')[0].focus();
         })
         delBtn.addEventListener("mousedown", function() {
-            if(cardmc.getElementsByClassName('mc-option').length <= 2) {
-                return;
-            }
-            if(newOp.getElementsByClassName("mc-option-sel").length > 0) {
+            if(cardmc.getElementsByClassName('mc-option').length <= 2) return;
+            if(newOp.getElementsByClassName("mc-option-sel").length == 1) {
                 // get random option to assign to
                 let newCorrect = cardmc.getElementsByClassName("mc-option-nosel")[0];
                 newCorrect.className = "mc-option-correct mc-option-sel";
+                newCorrect.innerHTML = "<span class='material-symbols-outlined'>check</span>";
             }
             newOp.remove();
         });
         correctBtn.addEventListener("mousedown", function() {
-            let current = cardmc.getElementsByClassName("mc-option-sel")[0];
-            current.className = "mc-option-correct mc-option-nosel";
-            current.innerHTML = `<span class="material-symbols-outlined">check_indeterminate_small</span>`;
-            correctBtn.className = "mc-option-correct mc-option-sel";
-            correctBtn.innerHTML = "<span class='material-symbols-outlined'>check</span>";
+            if(correctBtn.className.includes('mc-option-sel')) {
+                if(cardmc.getElementsByClassName('mc-option-sel').length == 1) return;
+                correctBtn.className = "mc-option-correct mc-option-nosel";
+                correctBtn.innerHTML = `<span class="material-symbols-outlined">check_indeterminate_small</span>`;
+            } else {
+                correctBtn.className = "mc-option-correct mc-option-sel";
+                correctBtn.innerHTML = "<span class='material-symbols-outlined'>check</span>";
+            }
         });
     });
     let ops = cardmc.getElementsByClassName("mc-option");
@@ -205,22 +207,24 @@ function initMc(newDiv, n, q) {
             cards[cards.length - 1].getElementsByClassName('question')[0].focus();
         });
         delBtn.addEventListener("mousedown", function() {
-            if(cardmc.getElementsByClassName('mc-option').length <= 2) {
-                return;
-            }
-            if(div.getElementsByClassName("mc-option-sel").length > 0) {
+            if(cardmc.getElementsByClassName('mc-option').length <= 2) return;
+            if(div.getElementsByClassName("mc-option-sel").length == 1) {
                 // get random option to assign to
                 let newCorrect = cardmc.getElementsByClassName("mc-option-nosel")[0];
                 newCorrect.className = "mc-option-correct mc-option-sel";
+                newCorrect.innerHTML = "<span class='material-symbols-outlined'>check</span>";
             }
             div.remove();
         });
         correctBtn.addEventListener("mousedown", function() {
-            let current = cardmc.getElementsByClassName("mc-option-sel")[0];
-            current.className = "mc-option-correct mc-option-nosel";
-            current.innerHTML = `<span class="material-symbols-outlined">check_indeterminate_small</span>`;
-            correctBtn.className = "mc-option-correct mc-option-sel";
-            correctBtn.innerHTML = "<span class='material-symbols-outlined'>check</span>";
+            if(correctBtn.className.includes('mc-option-sel')) {
+                if(cardmc.getElementsByClassName('mc-option-sel').length == 1) return;
+                correctBtn.className = "mc-option-correct mc-option-nosel";
+                correctBtn.innerHTML = `<span class="material-symbols-outlined">check_indeterminate_small</span>`;
+            } else {
+                correctBtn.className = "mc-option-correct mc-option-sel";
+                correctBtn.innerHTML = "<span class='material-symbols-outlined'>check</span>";
+            }
         });
     }
 }
@@ -235,9 +239,15 @@ function initTxt(newDiv, n, q) {
             <div class="card-question-container">
                 Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div>
             </div>
-            Answer: <div contenteditable="true" type='input' class='txt-answer' placeholder='...'></div>
+            All answers:
+            <div class='card-txt'>
+                <div class='txt-ans-cont'>
+                    <div contenteditable="true" type='input' class='txt-answer' placeholder='...'></div>
+                </div>
+            </div>
+            <button class='txt-add' tabindex='-1'>+</button>
+            <button class='card-del' tabindex='-1'>Delete Card</button>
         </div>
-        <button class='card-del' tabindex='-1'>Delete Card</button>
         <div class='deck-divider'></div>
     `;
     // Set up selector
@@ -248,16 +258,45 @@ function initTxt(newDiv, n, q) {
         problem.setAttribute('data-html', q);
         typeset(problem);
     }
-    // Configure tabbing
-    let txtAns = newDiv.getElementsByClassName('txt-answer')[0];
+    // Configure text card
+    let ansList = newDiv.getElementsByClassName('card-txt')[0];
+    let addBtn = newDiv.getElementsByClassName('txt-add')[0];
+    addBtn.addEventListener('mousedown', () => {
+        let newAns = document.createElement('div');
+        newAns.className = 'txt-ans-cont';
+        newAns.innerHTML = `
+            <div contenteditable="true" type='input' class='txt-answer' placeholder='...'></div>
+            <button class='txt-op-del' tabindex="-1"><span class='material-symbols-outlined'>close</span></button>
+        `;
+        ansList.appendChild(newAns);
+        let input = newAns.getElementsByClassName('txt-answer')[0];
+        let delBtn = newAns.getElementsByClassName('txt-op-del')[0];
+        init_div(input);
+        input.addEventListener('keydown', (e) => {
+            if(e.key !== "Tab" || e.shiftKey) return;
+            if(cards.indexOf(newDiv) < cards.length - 1) return;
+            let ans = Array(...ansList.getElementsByClassName("txt-ans-cont"));
+            let idx = ans.indexOf(newAns);
+            if(idx < ans.length - 1) return;
+            e.preventDefault();
+            newCard();
+            cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+        });
+        delBtn.addEventListener('mousedown', () => newAns.remove());
+    });
+    let currAns = ansList.getElementsByClassName('txt-ans-cont')[0];
+    let txtAns = currAns.getElementsByClassName('txt-answer')[0];
     init_div(txtAns);
     txtAns.addEventListener('keydown', (e) => {
         if(e.key !== "Tab" || e.shiftKey) return;
         if(cards.indexOf(newDiv) < cards.length - 1) return;
+        let ans = Array(...ansList.getElementsByClassName("txt-ans-cont"));
+        let idx = ans.indexOf(currAns);
+        if(idx < ans.length - 1) return;
         e.preventDefault();
         newCard();
         cards[cards.length - 1].getElementsByClassName('question')[0].focus();
-    })
+    });
 }
 function initRanking(newDiv, n, q) {
     newDiv.innerHTML = `
@@ -476,14 +515,14 @@ createBtn.addEventListener("mousedown", async function() {
             let cardData = {
                 type: 'mc',
                 op: [],
-                ans: ''
+                ans: []
             };
             let question = card.getElementsByClassName('question')[0];
             if(!question) {
                 errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                 return;
             }
-            // cardData.question = question.value;
+            // cardData.question = question;
             let answers = card.getElementsByClassName('mc-option');
             if(answers.length < 2) {
                 errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
@@ -498,22 +537,29 @@ createBtn.addEventListener("mousedown", async function() {
                 cardData.op.push(answer.dataset.html);
                 let isCorrect = answers[j].getElementsByClassName('mc-option-sel');
                 if(isCorrect.length > 0) {
-                    cardData.ans = answer.dataset.html;
+                    cardData.ans.push(j);
                 }
             }
             data[question.dataset.html] = cardData;
         } else if(classNames.includes('txtbtn')) {
             let cardData = {
                 type: 'txt',
-                ans: ''
+                ans: []
             };
             let question = card.getElementsByClassName('question')[0];
-            let answer = card.getElementsByClassName('txt-answer')[0];
-            if(!question || !answer) {
+            let answers = card.getElementsByClassName('txt-ans-cont');
+            if(answers.length < 1) {
                 errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                 return;
             }
-            cardData.ans = answer.dataset.html;
+            for(let j = 0; j < answers.length; j++) {
+                let answer = answers[j].getElementsByClassName('txt-answer')[0];
+                if(!answer) {
+                    errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                    return;
+                }
+                cardData.ans.push(answer.dataset.html);
+            }
             data[question.dataset.html] = cardData;
         } else if(classNames.includes('rankbtn')) {
             let cardData = {
@@ -525,7 +571,7 @@ createBtn.addEventListener("mousedown", async function() {
                 errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                 return;
             }
-            // cardData.question = question.innerHTML;
+            // cardData.question = question;
             let items = card.getElementsByClassName('ranking-item');
             for(let j = 0; j < items.length; j++) {
                 let item = items[j];
@@ -649,8 +695,8 @@ addCard.addEventListener("mousedown", newCard);
                     newOp.className = "mc-option";
                     newOp.innerHTML = `
                         <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'>${card.op[i]}</div>
-                        <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                        <button class='mc-option-correct ${card.ans == card.op[i] ? 'mc-option-sel' : 'mc-option-nosel'}'>${card.ans == card.op[i] ? '<span class="material-symbols-outlined">check</span>' : '<span class="material-symbols-outlined">check_indeterminate_small</span>'}</button>
+                        <button class='mc-option-del' tabindex="-1"><span class='material-symbols-outlined'>close</span></button>
+                        <button class='mc-option-correct ${card.ans.indexOf(i) > -1 ? 'mc-option-sel' : 'mc-option-nosel'}' tabindex="-1">${card.ans.indexOf(i) > -1 ? '<span class="material-symbols-outlined">check</span>' : '<span class="material-symbols-outlined">check_indeterminate_small</span>'}</button>
                     `;
                     cardmc.appendChild(newOp);
                     let input = newOp.getElementsByClassName('mc-option-input')[0];
@@ -670,20 +716,24 @@ addCard.addEventListener("mousedown", newCard);
                         cards[cards.length - 1].getElementsByClassName('question')[0].focus();
                     })
                     delBtn.addEventListener("mousedown", function() {
-                        if(cardmc.getElementsByClassName('mc-option').length <= 2) {
-                            return;
-                        }
-                        if(newOp.getElementsByClassName("mc-option-sel").length > 0) {
+                        if(cardmc.getElementsByClassName('mc-option').length <= 2) return;
+                        if(newOp.getElementsByClassName("mc-option-sel").length == 1) {
                             // get random option to assign to
                             let newCorrect = cardmc.getElementsByClassName("mc-option-nosel")[0];
                             newCorrect.className = "mc-option-correct mc-option-sel";
+                            newCorrect.innerHTML = "<span class='material-symbols-outlined'>check</span>";
                         }
                         newOp.remove();
                     });
                     correctBtn.addEventListener("mousedown", function() {
-                        let current = cardmc.getElementsByClassName("mc-option-sel")[0];
-                        current.className = "mc-option-correct mc-option-nosel";
-                        correctBtn.className = "mc-option-correct mc-option-sel";
+                        if(correctBtn.className.includes('mc-option-sel')) {
+                            if(cardmc.getElementsByClassName('mc-option-sel').length == 1) return;
+                            correctBtn.className = "mc-option-correct mc-option-nosel";
+                            correctBtn.innerHTML = `<span class="material-symbols-outlined">check_indeterminate_small</span>`;
+                        } else {
+                            correctBtn.className = "mc-option-correct mc-option-sel";
+                            correctBtn.innerHTML = "<span class='material-symbols-outlined'>check</span>";
+                        }
                     });
                 }
             break;
@@ -692,18 +742,37 @@ addCard.addEventListener("mousedown", newCard);
                 newDiv.getElementsByClassName('question')[0].setAttribute('data-html', q);
                 newDiv.getElementsByClassName('question')[0].innerHTML = q;
                 typeset(newDiv.getElementsByClassName('question')[0]);
-                let txtAns = newDiv.getElementsByClassName('txt-answer')[0];
-                init_div(txtAns);
-                txtAns.setAttribute('data-html', card.ans);
-                txtAns.innerHTML = card.ans;
-                typeset(txtAns);
-                txtAns.addEventListener('keydown', (e) => {
-                    if(e.key !== "Tab" || e.shiftKey) return;
-                    if(cards.indexOf(newDiv) < cards.length - 1) return;
-                    e.preventDefault();
-                    newCard();
-                    cards[cards.length - 1].getElementsByClassName('question')[0].focus();
-                });
+                let ansList = newDiv.getElementsByClassName('card-txt');
+                if(card.ans.length == 0) continue;
+                let firstAns = ansList.getElementsByClassName('txt-ans-cont')[0];
+                firstAns.innerHTML = card.ans[0];
+                typeset(firstAns);
+                for(let i = 1; i < card.ans.length; i++) {
+                    let newAns = document.createElement('div');
+                    newAns.className = 'txt-ans-cont';
+                    newAns.innerHTML = `
+                        <div contenteditable="true" type='input' class='txt-answer' placeholder='...'></div>
+                        <button class='txt-op-del' tabindex="-1"><span class='material-symbols-outlined'>close</span></button>
+                    `;
+                    ansList.appendChild(newAns);
+                    let input = newAns.getElementsByClassName('txt-answer')[0];
+                    let delBtn = newAns.getElementsByClassName('txt-op-del')[0];
+                    init_div(input);
+                    input.setAttribute('data-html', card.ans);
+                    input.innerHTML = card.ans;
+                    typeset(input);
+                    input.addEventListener('keydown', (e) => {
+                        if(e.key !== "Tab" || e.shiftKey) return;
+                        if(cards.indexOf(newDiv) < cards.length - 1) return;
+                        let ans = Array(...ansList.getElementsByClassName("txt-ans-cont"));
+                        let idx = ans.indexOf(newAns);
+                        if(idx < ans.length - 1) return;
+                        e.preventDefault();
+                        newCard();
+                        cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+                    });
+                    delBtn.addEventListener('mousedown', () => newAns.remove());
+                }
             break;
             case "ranking":
                 initRanking(newDiv, n);
@@ -718,7 +787,7 @@ addCard.addEventListener("mousedown", newCard);
                     item.setAttribute("draggable", true);
                     item.innerHTML = `
                         <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'>${card.ans[i]}</div>
-                        <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
+                        <button class='ranking-item-del' tabindex="-1"><span class='material-symbols-outlined'>close</span></button>
                     `;
                     rankingList.appendChild(item);
                     item.addEventListener("dragstart", function() {

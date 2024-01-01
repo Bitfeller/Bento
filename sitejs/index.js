@@ -3,7 +3,7 @@ import { UserGateway } from "../server/client-gateway/user-gateway.js";
 // Check if user is signed in
 
 (async () => {
-    let [success, reason] = await UserGateway.getuser();
+    let [success, _] = await UserGateway.getuser();
     if(success) window.location.href = "/home";
 })();
 
@@ -16,18 +16,18 @@ const signUpBtn = document.getElementById('signUpBtn');
 const ctaButton = document.getElementById('cta-button');
 const signInBtn = document.getElementById('signInBtn');
 
-signInBtn.onclick = function() {
+signInBtn.onclick = () => {
     signInModal.style.display = "block";
 }
-signUpBtn.onclick = function() {
+signUpBtn.onclick = () => {
     signUpModal.style.display = "block";
 }
-ctaButton.onclick = function() {
+ctaButton.onclick = () => {
     signUpModal.style.display = "block";
 }
 
-window.onclick = function(event) {
-    if (event.target === signInModal || event.target === signUpModal) {
+window.onclick = (e) => {
+    if (e.target === signInModal || e.target === signUpModal) {
         signInModal.style.display = "none";
         signUpModal.style.display = "none";
     }
@@ -37,9 +37,7 @@ window.onclick = function(event) {
 
 const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('show');
-        }
+        if (entry.isIntersecting) entry.target.classList.add('show');
     })
 });
 

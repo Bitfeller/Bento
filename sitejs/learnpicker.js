@@ -20,7 +20,7 @@ const settingsBoxs = document.getElementsByClassName("setting-box");
 let user;
 
 function updateDecks(decks) {
-    let reviews = user.reviews;
+    let reviews = user.userdata.reviews;
     if (o_mode[1].checked == true) {
         o_infinite_mode.disabled = false;
         o_infinite_mode.checked = o_infinite_mode.getAttribute("data-enabled") == "true" ? true : false;
@@ -108,7 +108,7 @@ function updateDecks(decks) {
     }
     deckContainer.innerHTML = "";
     user = data;
-    let reviews = user.reviews;
+    let reviews = user.userdata.reviews;
     if (reviews.length == 0) {
         window.location.href = "/learn/kitchen";
         return;
