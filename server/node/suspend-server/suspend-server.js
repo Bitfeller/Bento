@@ -5,7 +5,7 @@ const log = new Logger('shutdown-server.js', '../logs', '');
 
 function set_htaccess(name) {
     try { fs.unlinkSync('../../../.htaccess'); } catch(_) {}
-    fs.copyFileSync(`./temp-htaccess/${name}.htaccess`, '../../../.htaccess');
+    fs.copyFileSync(`./htaccess/${name}.htaccess`, '../../../.htaccess');
 }
 function get_state() {
     let state = fs.readFileSync('../../conf/config-suspend-server', 'utf8');

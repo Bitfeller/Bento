@@ -99,7 +99,7 @@ app.post('/notify', async (req, res) => {
         uid: session.uid,
         rand_identifier: req.body.rand_identifier
     })
-    fs.writeFileSync('./server/notif-service/sub-save.json', JSON.stringify(subList));
+    fs.writeFileSync('./sub-save.json', JSON.stringify(subList));
     res.status(201).json({status: "success"});
 });
 app.listen(port, () => {
