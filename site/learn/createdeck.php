@@ -44,6 +44,7 @@
             <div id="cardcontain"></div>
             <button id="addcard">Add New Card</button>
             <button id="create">Create Deck!</button>
+            <button id="export">Export Deck</button>
             <p class="info-error" id="create-err"></p>
         </div>
         <div class="options-container">
