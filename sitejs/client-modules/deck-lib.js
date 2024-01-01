@@ -5,6 +5,7 @@ const isPublic = document.getElementById("isPublic");
 const description = document.getElementById("description");
 const cardContain = document.getElementById("cardcontain");
 const addCard = document.getElementById("addcard");
+const flushDeck = document.getElementById("flush");
 const resetpic = document.getElementById("picReset");
 const fileselecttrigger = document.getElementById("fileselecttrigger");
 const picimg = document.getElementById("deckpic");
@@ -12,6 +13,8 @@ const picimg = document.getElementById("deckpic");
 let cards = [], deckpic = '', drag;
 let user;
 const sizeLimit = 2 * 1000 * 1000; // NOTE: must be same as max_image_size in server/conf/config.json
+
+let flushTick = 0;
 
 const dragline = document.createElement('div');
 dragline.style = 'display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;';
@@ -152,10 +155,6 @@ function toNew() {
     newCard();
     document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
     cards[cards.length - 1].getElementsByClassName('q')[0].focus();
-}
-
-function flush_deck() {
-    // TODO: flush button
 }
 
 // --------------------------------------------------- \\
@@ -997,6 +996,22 @@ g_createbtn.addEventListener("mousedown", () => {
 // --------------------------------------------------- \\
 
 
+flushDeck.addEventListener('mousedown', () => {
+    if(cards.length == 0) return;
+    if(Date.now() - flushTick >= 3000) {
+        flushTick = Date.now();
+        window.SHOW_ERROR("Press again to delete all cards.");
+        return;
+    } else if(Date.now() - flushTick < 500) {
+        window.SHOW_ERROR("Don't press too fast - wait half a second.");
+        return;
+    }
+    flushTick = Date.now();
+    cards.forEach(card => card.remove());
+    cards = [];
+    newCard();
+    safety_check();
+});
 window.addEventListener('dragover', e => {
     if(!drag) return;
     let list = drag.parentNode;
