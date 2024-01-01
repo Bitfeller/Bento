@@ -3,15 +3,16 @@ import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 
 // User, decks
 let user;
-let loaded = -1;
-let decks = {};
+let loaded = -1, loadedReviews = false;
+let decks = [];
 
 const sidebar = document.getElementsByClassName("sidebar")[0];
 
 const deckContainer = document.getElementById("decks-container");
 const ownedDecks = document.getElementsByClassName("owned-decks")[0];
 const pubDTitle = document.getElementById("pub-d-title");
-const pubDecks = document.getElementsByName("popular-decks")[0];
+const pubDecks = document.getElementsByClassName("popular-decks")[0];
+const previewDialog = document.getElementById("preview-dialog"); 
 
 // ----------------- Image Query -----------------
 let queries = [];
@@ -20,7 +21,7 @@ let handler;
 async function query(id) {
     let q;
     if(handler) await handler;
-    handler = await new Promise((res) => {
+    handler = await new Promise((res, _) => {
         for(let curr of queries) {
             if(curr.id == id) {
                 q = curr;
@@ -52,7 +53,7 @@ function box(id, killfn = (box) => box.remove()) {
     let b = document.createElement('div');
     b.className = "ingredient-box";
     b.setAttribute("data-id", id);
-    b.style.backgroundImage = 'url("../../img/defaultdeckpic.png")';
+    b.style.backgroundImage = 'url("../../img/loading.gif")';
     b.innerHTML = `
         <div>
             <h2 class='name'>.</h2>
@@ -61,11 +62,11 @@ function box(id, killfn = (box) => box.remove()) {
                 <div class='deck-tags'></div>
             </div>
         </div>
-        <button class="preview-button">
+        <button class="preview-button" data-id='${id}'>
             <div class="material-symbols-outlined">visibility</div>
         </button>
-        <button class="add-button">
-            <div class="material-symbols-outlined">add</div>
+        <button class="add-button" data-id='${id}'>
+            <div class="material-symbols-outlined">${user.userdata.reviews[id] ? "remove" : "add"}</div>
         </button>
     `;
 
@@ -84,18 +85,21 @@ function box(id, killfn = (box) => box.remove()) {
         window.clearInterval(int);
         if(!success) {
             killfn(b);
-            b.getElementsByClassName('name')[0].style.color = 'var(--danger-red)';
-            b.getElementsByClassName('name')[0].style.fontStyle = 'italic';
-            b.getElementsByClassName('name')[0].innerHTML = "doesn't exist";
-            b.getElementsByClassName('username')[0].parentNode.remove();
+            name.style.color = 'var(--danger-red)';
+            name.style.fontStyle = 'italic';
+            if(data == 'no deck')
+                name.innerHTML = "doesn't exist";
+            else
+            name.innerHTML = "couldn't fetch";
+            username.parentNode.remove();
             b.style.backgroundImage = 'url("../../img/defaultdeckpic.png")';
             b.getElementsByClassName('preview-button')[0].remove();
             b.getElementsByClassName('add-button')[0].remove();
             return;
         }
         
-        b.getElementsByClassName('name')[0].innerHTML = data.name;
-        b.getElementsByClassName('username')[0].innerHTML = `<u>${data.owner}</u>`;
+        name.innerHTML = data.name;
+        username.innerHTML = `<u>${data.owner}</u>`;
         b.style.backgroundImage = `url(${data.deckpic && data.deckpic.length > 0 ? data.deckpic : "../../img/defaultdeckpic.png"})`;
         if(data.data.tags) {
             for(let tag of data.data.tags)
@@ -103,33 +107,246 @@ function box(id, killfn = (box) => box.remove()) {
         }
 
         b.getElementsByClassName('preview-button')[0].addEventListener('click', e => preview(e.currentTarget));
-        b.getElementsByClassName('add-button')[0].addEventListener('click', e => reviews_update(e.currentTarget));
+        b.getElementsByClassName('add-button')[0].addEventListener('click', e => updateReviews(e.currentTarget));
     }
-    _load();
 
-    return b;
+    return {
+        box: b,
+        loader: _load()
+    };
 }
 function removeBox(id) {
     let b = ownedDecks.querySelector(`.ingredient-box[data-id="${id}"]`);
     if(b) b.remove();
+    if(ownedDecks.children.length == 0)
+        ownedDecks.innerHTML = `<p class='info-blank'>You haven't added any decks to your reviews yet.</p>`;
     b = pubDecks.querySelector(`.ingredient-box[data-id="${id}"]`);
     if(b) b.remove();
 }
 
-function update() {
+async function update() {
     if(loaded >= decks.length - 1) return void (loaded = decks.length - 1);
 
-    if(loaded == -1) {
-        let keys = Object.keys(user.userdata.reviews);
-        let update = false;
-        for(let key of keys) {
-            let id = parseInt(keys[i]);
+    let reviews_heap = [];
+    let updateReviews = false;
+
+    if(!loadedReviews) {
+        for(let key in user.userdata.reviews) {
+            let id = parseInt(key);
+            let review = box(id, (node) => {
+                node.remove();
+                delete user.userdata.reviews[id];
+                updateReviews = true;
+            });
+            reviews_heap.push(review.loader);
+            ownedDecks.append(review.box);
         }
     }
+
+    for(let i = loaded + 1; i < decks.length; i++)
+        pubDecks.append(box(decks[i].id).box);
+
+    // Await reviews pile
+    if(!loadedReviews) {
+        loadedReviews = true;
+        await Promise.all(reviews_heap);
+        reviews_heap = [];
+        if(updateReviews) {
+            let json = JSON.stringify(window.lib.recur_decode(user.userdata.reviews));
+            await UserGateway.editUser('reviews', json);
+        }
+    }
+
+    loaded = decks.length - 1;
+}
+async function preview(_this) {
+    previewDialog.showModal();
+    previewDialog.innerHTML = `
+        <div class='title-bar'>
+            <h2>...</h2>
+        </div>
+    `;
+    let id = parseInt(_this.dataset.id), deck = await query(id);
+    if(!deck[0]) {
+        previewDialog.innerHTML = `
+            <div class='title-bar'>
+                <h2>Hmm.</h2>
+                <button id='preview-dialog-leave'><span class='material-symbols-outlined'>close</span></button>
+            </div>
+            <div class='preview-container'>
+                <div class='preview-container-part id='overview'>
+                    <p>We couldn't load this deck.</p>
+                </div>
+            </div>
+        `;
+        document.getElementById('preview-dialog-leave').addEventListener('click', previewDialog.close);
+        return;
+    }
+    deck = deck[1];
+
+    await UserGateway.editUser("view", String(id));
+    
+    let answer_list = "";
+    if(!deck.contnt) answer_list = `<p class='info-blank'>This deck appears to be corrupt.</p>`;
+    else {
+        let contnt = deck.contnt;
+        for(let q in contnt) {
+            answer_list += `
+                <div class='question-box'>
+                    <p><b class='mathJax'>Q: ${q}</b></p>
+                    ${
+                        contnt[q].type == 'mc'
+                            ? `<p>O | ${contnt[q].op
+                                .map(x => `<span class='mathJax'>${x}</span>`)
+                                .join(' | ')}</p>`
+                            : ``    
+                    }
+                    <p class='mathJax'>A | 
+                    ${(
+                        contnt[q].type == 'mc'
+                            ? contnt[q].ans
+                                .map(x => contnt[q].op[x])
+                            : contnt[q].ans
+                    ).join(" | ")}
+                </div>
+            `;
+        }
+    }
+    previewDialog.innerHTML = `
+        <div class='title-bar'>
+            <h2>Preview</h2>
+            <button id='preview-dialog-leave'><span class='material-symbols-outlined'>close</span></button>
+        </div>
+        <div class='preview-container'>
+            <div class='preview-container-part' id='overview'>
+                <h2>${deck.name}</h2>
+                <p>by: <span class='username'><u>${deck.owner}</u></span>${deck.public == 0 ? `<span class='private-deck>private</span>` : ''}</p>
+                <div class='line-up-icons view-container'><span class='views'>${deck.views ?? 0}</span> <span class="material-symbols-outlined views-icon">visibility</span></div>
+                ${user.username == deck.owner
+                    ? ` <div class='preview-btns'>
+                            <button class='preview-btn' id='preview-export-btn'>
+                                <div class='line-up-icons'>
+                                    <span class='preview-ico material-symbols-outlined'>download</span> Export
+                                </div>
+                            </button>
+                            <button class='preview-btn' id='preview-edit-btn'>
+                                <div class='line-up-icons'>
+                                    <span class='preview-ico material-symbols-outlined'>edit</span> Edit
+                                </div>
+                            </button>
+                            <button class='preview-btn' id='preview-delete-btn'>
+                                <div class='line-up-icons'>
+                                    <span class='preview-ico material-symbols-outlined'>delete</span> Delete
+                                </div>
+                            </button>
+                        </div>`
+                    : ""
+                }
+            </div>
+            ${data.desc
+                ?  `<div class='preview-container-part' id='description'
+                        <p>${data.desc}</p>
+                    </div>`
+                : ""
+            }
+            <div class='preview-container-part' id='cards'>
+                ${answer_list}
+            </div>
+        </div>
+    `;
+    Array(previewDialog.getElementsByClassName('mathJax')).map(x => typeset(x));
+    document.getElementById('preview-dialog-leave').addEventListener('click', previewDialog.close);
+    if(user.username == deck.owner) {
+        let warned = false;
+        document.getElementById('preview-export-btn').addEventListener('click', () => {
+            const deckExport = {
+                name: window.lib.decode(deck.name),
+                desc: window.lib.decode(data.desc),
+                contnt: window.lib.recur_decode(data.contnt)
+            };
+            const json = JSON.stringify(deckExport);
+            const file = new File([json], d.name+'.json', { type: 'text/plain' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(file);
+            link.href = url;
+            link.download = file.name;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        });
+        document.getElementById('preview-edit-btn').addEventListener('click', () => window.location.href = '/learn/editdeck?d=' + id);
+        
+        let deleteBtn = document.getElementById('preview-delete-btn');
+        deleteBtn.addEventListener('click', async () => {
+            if(!warned) {
+                deleteBtn.innerHTML = `
+                    <div class='line-up-icons'>
+                        <span class='preview-ico material-symbols-outlined'>delete_forever</span> Are you sure?
+                    </div>
+                `;
+                warned = true;
+                return;
+            }
+            previewDialog.innerHTML = `
+                <div class='title-bar'>
+                    <h2>... deleting this deck ...</h2>
+                </div>
+            `;
+            await DeckGateway.modify(id, 'delete', '');
+            previewDialog.close();
+            removeBox(id);
+        });
+    }
+}
+async function updateReviews(_this) {
+    let id = _this.dataset.id;
+    if(user.userdata.reviews[id]) {
+        delete user.userdata.reviews[id];
+        removeBox(id);
+    } else {
+        user.userdata.reviews[id] = {};
+        let [success, _] = await DeckGateway.get(id, false, false, false);
+        if(!success) {
+            previewDialog.showModal();
+            previewDialog.innerHTML = `
+                <div class='title-bar'>
+                    <h2>Hmm.</h2>
+                    <button id='preview-dialog-leave'><span class='material-symbols-outlined'>close</span></button> 
+                </div>
+                <div class='preview-container'>
+                    <div class='preview-container-part' id='overview'>
+                        <p>This deck was deleted by its owner, or there's an issue on our side.</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('preview-dialog-leave').addEventListener('click', previewDialog.close)
+            removeBox(id);
+            return;
+        }
+        if(ownedDecks.children.length == 1 && ownedDecks.children[0].className == "info-blank")
+            ownedDecks.innerHTML = ``;
+        ownedDecks.append(box(id).box);
+        _this.innerHTML = `<div class='material-symbols-outlined'>remove</div>`;
+    }
+    let json = JSON.stringify(window.lib.recur_decode(user.userdata.reviews));
+    await UserGateway.editUser('reviews', json);
 }
 
-ownedDecks.append(box(1, () => {}));
-ownedDecks.append(box(7));
-ownedDecks.append(box(7));
-// ownedDecks.append(box(7, "Test Deck", "Test Author"));
-window.LOADED();
+(async () => {
+    let [success, data] = await UserGateway.getuser(false, true, true, false);
+    if(!success && data == 'no session') return window.LOAD_ERROR("Please sign in.");
+    if(!success) return window.LOAD_ERROR("Failed to fetch your user data.");
+    user = data;
+    [success, data] = await DeckGateway.getall(0);
+    if(!success) return;
+    if(data.length == 0) return window.LOAD_ERROR("There aren't any decks...? Odd.");
+    decks.push(...data);
+    await update();
+    window.LOADED();
+})();
+
+window.addEventListener('mousedown', e => {
+    if(e.target == previewDialog)
+        previewDialog.close();
+});
