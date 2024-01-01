@@ -19,39 +19,38 @@ function computeCenter(el) {
 }
 function initMc(newDiv, n) {
     newDiv.innerHTML = `
-        <div id='c${n}-s' class='card-sel'>
-            <button id='c${n}-s-1' class='mcbtn selbtn selbtn-select'>Multiple Choice</button>
-            <button id='c${n}-s-2' class='txtbtn selbtn selbtn-noselect'>Text</button>
-            <button id='c${n}-s-3' class='rankbtn selbtn selbtn-noselect'>Ranking</button>
+        <div class='card-sel'>
+            <button class='mcbtn selbtn selbtn-select'>Multiple Choice</button>
+            <button class='txtbtn selbtn selbtn-noselect'>Text</button>
+            <button class='rankbtn selbtn selbtn-noselect'>Ranking</button>
         </div>
-        <div id='c${n}-h' class='card-main'>
-            Question: <input type='input' id='c${n}-h-p' class='question' placeholder='The question...'><br>
-            <div id='c${n}-h-b' class='card-mc'>
-                <div id='c${n}-h-b-a' class='mc-option'>
-                    <input type='input' id='c${n}-h-b-a-i' class='mc-option-input' placeholder='...'>
-                    <button id='c${n}-h-b-a-d' class='mc-option-del'>X</button>
-                    <button id='c${n}-h-b-a-c' class='mc-option-correct mc-option-sel'>C</button>
+        <div class='card-main'>
+            Question: <input type='input' class='question' placeholder='The question...'><br>
+            <div class='card-mc'>
+                <div class='mc-option'>
+                    <input type='input' class='mc-option-input' placeholder='...'>
+                    <button class='mc-option-del'>X</button>
+                    <button class='mc-option-correct mc-option-sel'>C</button>
                 </div>
-                <div id='c${n}-h-b-a' class='mc-option'>
-                    <input type='input' id='c${n}-h-b-a-i' class='mc-option-input' placeholder='...'>
-                    <button id='c${n}-h-b-a-d' class='mc-option-del'>X</button>
-                    <button id='c${n}-h-b-a-c' class='mc-option-correct mc-option-nosel'>C</button>
+                <div class='mc-option'>
+                    <input type='input' class='mc-option-input' placeholder='...'>
+                    <button class='mc-option-del'>X</button>
+                    <button class='mc-option-correct mc-option-nosel'>C</button>
                 </div>
-                <div id='c${n}-h-b-a' class='mc-option'>
-                    <input type='input' id='c${n}-h-b-a-i' class='mc-option-input' placeholder='...'>
-                    <button id='c${n}-h-b-a-d' class='mc-option-del'>X</button>
-                    <button id='c${n}-h-b-a-c' class='mc-option-correct mc-option-nosel'>C</button>
+                <div class='mc-option'>
+                    <input type='input' class='mc-option-input' placeholder='...'>
+                    <button class='mc-option-del'>X</button>
+                    <button class='mc-option-correct mc-option-nosel'>C</button>
                 </div>
-                <div id='c${n}-h-b-a' class='mc-option'>
-                    <input type='input' id='c${n}-h-b-a-i' class='mc-option-input' placeholder='...'>
-                    <button id='c${n}-h-b-a-d' class='mc-option-del'>X</button>
-                    <button id='c${n}-h-b-a-c' class='mc-option-correct mc-option-nosel'>C</button>
+                <div class='mc-option'>
+                    <input type='input' class='mc-option-input' placeholder='...'>
+                    <button class='mc-option-del'>X</button>
+                    <button class='mc-option-correct mc-option-nosel'>C</button>
                 </div>
             </div>
-            <button id='c${n}-h-b-add' class='mc-add'>+</button>
-            <button id='c${n}-del' class='card-del'>Delete Card</button>
+            <button class='mc-add'>+</button>
+            <button class='card-del'>Delete Card</button>
         </div>
-
     `;
     // Set up selector
     newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
@@ -124,16 +123,16 @@ function initMc(newDiv, n) {
 }
 function initTxt(newDiv, n) {
     newDiv.innerHTML = `
-        <div id='c${n}-s' class='card-sel'>
-            <button id='c${n}-s-1' class='mcbtn selbtn selbtn-noselect'>Multiple Choice</button>
-            <button id='c${n}-s-2' class='txtbtn selbtn selbtn-select'>Text</button>
-            <button id='c${n}-s-3' class='rankbtn selbtn selbtn-noselect'>Ranking</button>
+        <div class='card-sel'>
+            <button class='mcbtn selbtn selbtn-noselect'>Multiple Choice</button>
+            <button class='txtbtn selbtn selbtn-select'>Text</button>
+            <button class='rankbtn selbtn selbtn-noselect'>Ranking</button>
         </div>
-        <div id='c${n}-h' class='card-main'>
-            Question: <input type='input' id='c${n}-h-p' class='question' placeholder='The question...'><br>
-            Answer: <input type='input' id='c${n}-h-a' class='txt-answer' placeholder='...'>
+        <div class='card-main'>
+            Question: <input type='input' class='question' placeholder='The question...'><br>
+            Answer: <input type='input' class='txt-answer' placeholder='...'>
+            <button class='card-del'>Delete Card</button>
         </div>
-        <button id='c${n}-del' class='card-del'>Delete Card</button>
     `;
     // Set up selector
     newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
@@ -153,26 +152,26 @@ function initTxt(newDiv, n) {
 }
 function initRanking(newDiv, n) {
     newDiv.innerHTML = `
-        <div id='c${n}-s' class='card-sel'>
-            <button id='c${n}-s-1' class='mcbtn selbtn selbtn-noselect'>Multiple Choice</button>
-            <button id='c${n}-s-2' class='txtbtn selbtn selbtn-noselect'>Text</button>
-            <button id='c${n}-s-3' class='rankbtn selbtn selbtn-select'>Ranking</button>
+        <div class='card-sel'>
+            <button class='mcbtn selbtn selbtn-noselect'>Multiple Choice</button>
+            <button class='txtbtn selbtn selbtn-noselect'>Text</button>
+            <button class='rankbtn selbtn selbtn-select'>Ranking</button>
         </div>
-        <div id='c${n}-h' class='card-main'>
-            Question: <input type='input' id='c${n}-h-p' class='question' placeholder='The question...'><br>
-            <div id='c${n}-h-r' class='card-rank ranking-list'>
-                <div id='c${n}-h-r-e' draggable='true' class='ranking-item'>
-                    <input type='text' id='c${n}-h-r-e-i' class='ranking-item-txt' placeholder='...'>
-                    <button id='c${n}-h-r-e-d' class='ranking-item-del'>X</button>
+        <div class='card-main'>
+            Question: <input type='input' class='question' placeholder='The question...'><br>
+            <div class='card-rank ranking-list'>
+                <div draggable='true' class='ranking-item'>
+                    <input type='text' class='ranking-item-txt' placeholder='...'>
+                    <button class='ranking-item-del'>X</button>
                 </div>
-                <div id='c${n}-h-r-e' draggable='true' class='ranking-item'>
-                    <input type='text' id='c${n}-h-r-e-i' class='ranking-item-txt' placeholder='...'>
-                    <button id='c${n}-h-r-e-d' class='ranking-item-del'>X</button>
+                <div draggable='true' class='ranking-item'>
+                    <input type='text' class='ranking-item-txt' placeholder='...'>
+                    <button class='ranking-item-del'>X</button>
                 </div>
             </div>
-            <button id='c${n}-h-add' class='rank-add'>+</button>
+            <button class='rank-add'>+</button>
+            <button class='card-del'>Delete Card</button>
         </div>
-        <button id='c${n}-del' class='card-del'>Delete Card</button>
     `;
     // Set up selector
     newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
@@ -294,7 +293,6 @@ function initRanking(newDiv, n) {
 function newCard() {
     var newDiv = document.createElement("div");
     var n = cards.length + 1;
-    newDiv.id = "c" + n;
     newDiv.className = "card";
     cardContain.appendChild(newDiv);
     cards.push(newDiv);
