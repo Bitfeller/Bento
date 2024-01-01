@@ -170,12 +170,24 @@
     font-size: 22.5px;
     margin: 8px 0;
 }
+.preview-btns {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
 .preview-btn {
+    gap: 5px;
     padding: 3px;
+    padding-right: 5px;
+    div {
+        display: flex;
+        gap: 5px;
+        color: var(--dark-text);
+    }
 }
 .preview-ico {
     font-size: 15px !important;
-    color: black !important;
+    color: var(--dark-text);
 }
 .ingredient-box > div {
     background-color: transparent;
@@ -196,6 +208,15 @@
     display: flex;
     flex-direction: row;
     gap: 5px;
+    overflow-x: hidden;
+}
+.deck-tags {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+.deck-tags > *:nth-child(n+4) {
+    display: none;
 }
 .owned-decks, .popular-decks {
     display: flex;
