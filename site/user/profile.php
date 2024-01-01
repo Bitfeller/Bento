@@ -80,7 +80,7 @@
             <h2>Miscellaneous</h2>
             <div id="global-back-box">
                 <label for="enable-global-back">
-                    <input type="checkbox" id="enable-global-back" disabled>
+                    <input type="checkbox" id="enable-global-back" enabled>
                     Enable Global Back Button
                 </label>
                 <p>Appears to the left of the Bento!, logo on every page, and is not assured to enhance user experience.</p>

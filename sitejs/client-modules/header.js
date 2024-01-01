@@ -6,7 +6,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     if(document.getElementById('header') == null) return;
 
     // Elements
-    // const back = document.getElementById("header:back");
+    const back = document.getElementById("header:back");
     const logout = document.getElementById("header:logout");
     const pfp = document.getElementById("header:pfp");
     const feedback = document.getElementById("header:feedback");
@@ -17,13 +17,24 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     const verify_dialog = document.getElementById('header:verify_email');
     const resend_email = document.getElementById('header:resend_verif_email');
     const resend_success = document.getElementById('header:resend_success');
+    const beta_text = document.getElementById('header:beta-text');
+    const logo = document.getElementById('header:logo');
 
     // Page data
     const current_page = window.location.pathname;
     
     // Load previous pages
     const previous_pages = JSON.parse(localStorage.getItem("previous_pages")) || [];
-    
+    // !! is a boolean cast
+    const backEnabled = !!localStorage.getItem("enable-global-back") && previous_pages.length > 0;
+    if (!backEnabled) {
+        // instantly hide back button
+        back.style.opacity = 0
+        logo.style.transform = "translateX(-48px)";
+    } else {
+        beta_text.style.transform = "translateX(48px)"; // 48px is the width of back button
+    }
+
     // Decode parser
     const parser = document.createElement('span');
 
@@ -31,7 +42,6 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     const loader = document.getElementsByClassName("loader")[0];
     const tips = document.getElementsByClassName("tips")[0];
     
-
     // Load state vars
     let load_failed = false;
     let loadingScripts = false;
@@ -192,19 +202,21 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     }
 
     // Listeners for back button/previous_pages functionality
-    // window.addEventListener("beforeunload", async () => {
-    //     // Add to array of visited pages before leaving current page and save
-    //     previous_pages.push(current_page); // Add current page to array
-    //     localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
-    // });
-    // back.addEventListener("mousedown", async () => {
-    //     // Set this to the most recently visited page 
-    //     window.location.href = previous_pages[previous_pages.length - 1];
-    //     // Remove current page from array and save it
-    //     previous_pages.pop();
-    //     previous_pages.pop();
-    //     localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
-    // });
+    window.addEventListener("beforeunload", async () => {
+        // Add to array of visited pages before leaving current page and save
+        previous_pages.push(current_page); // Add current page to array
+        localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
+    });
+    if (backEnabled) {
+        back.addEventListener("mousedown", async () => {
+            // Set this to the most recently visited page 
+            window.location.href = previous_pages[previous_pages.length - 1];
+            // Remove current page from array and save it
+            previous_pages.pop();
+            previous_pages.pop();
+            localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
+        });
+    }
 
     // Logout functionality
     logout.addEventListener("mousedown", async () => {

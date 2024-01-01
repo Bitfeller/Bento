@@ -223,6 +223,9 @@ code {
     position: relative;
     z-index: 10;
 }
+[id="header:beta-text"] {
+    transition: 0s;
+}
 .header > * {
     padding-top: 12px;
     z-index: 10;
