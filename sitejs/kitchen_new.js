@@ -378,7 +378,7 @@ searchBar.addEventListener('keyup', async e => {
         return;
     }
     if(query.length == 0) return;
-    saveDecks = decks;
+    if(saveDecks.length == 0) saveDecks = decks;
     pubDTitle.innerHTML = "Search Results:";
     let [success, data] = await DeckGateway.getall(0, query.split(" "), regex.checked, caseSensitive.checked, [], getSortFilter(), false, hasMc.checked, hasTxt.checked, hasRank.checked, hasMtch.checked);
     if(!success) return;
