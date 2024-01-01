@@ -10,7 +10,7 @@ input, div[contenteditable="true"] {
     margin: 15px 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
 }
 .card-q-cont {
     margin-top: 10px;
