@@ -8,7 +8,7 @@ const { connect, query } = require('./sql.js');
     let updated = 0;
     for(let row of users) {
         let last = row.userdata;
-        row.userdata = row.userdata.replaceAll('\\n', '').replaceAll('\\r', '');
+        row.userdata = row.userdata.replaceAll('\\n', '').replaceAll('\\r', '').replaceAll('\u0009', '');
         if(last != row.userdata) {
             updated++;
             await query("UPDATE users SET userdata = '" + row.userdata + "' WHERE id = " + row.id);
