@@ -5,54 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
     <?php require_once "globalReqs.php"?>
-    <link rel="stylesheet" href="/css/settings.css" />
+    <link rel="stylesheet" href="/css/settings.css"/>
 </head>
 <body>
     <?php require_once "header.php"?>
     <div id="settings-container">
         <div class="setting-box">
-            <p>Set Size:</p>
-            <input type="range" min="1" max="5" value="5" class="slider"  id="set-size-slider" oninput="displaySliderValue('set-size-slider', 'set-size-output')">
-            <output id="set-size-output">5</output>
+            <h2>Set Size:</h2>
+            <div id="set-size-slider-stuff">
+                <output id="set-size-output">5</output>
+                <input type="range" min="1" max="5" value="5" class="slider"  id="set-size-slider" oninput="displaySliderValue('set-size-slider', 'set-size-output')">
+            </div>
         </div>
         <div class="setting-box" id="vocab-repetition-setting">
             <div>Vocab Repetition:</div>
             <div>
                 <input name="radio" type="radio" checked>
-                <span class="radio-label">Something</span>
+                <span class="radio-label">| Something</span>
             </div>
             <div>
                 <input name="radio" type="radio">
-                <span class="radio-label">Something Else</span>
+                <span class="radio-label">| Something Else</span>
             </div>
         </div>
         <div class="setting-box">
-            <input type="checkbox">
-            Show Previous Vocab
+            <div>
+                <input type="checkbox">
+                | Show Previous Vocab
+            </div>
         </div>
         <div class="setting-box">
-            <input type="checkbox">
-            Vacation Mode
+            <div>
+                <input type="checkbox">
+                | Vacation Mode
+            </div>
         </div>
         <div class="setting-box">
-            <p>Change Password</p>
-            <input type="text" class="change-input">
+            <h2>Change Password</h2>
+            <input type="text" class="change-input" placeholder="Password">
             <button>Submit</button>
         </div>
         <div class="setting-box">
-            <p>Change Username</p>
-            <input type="text" class="change-input">
+            <h2>Change Username</h2>
+            <input type="text" class="change-input" placeholder="Username">
             <button>Submit</button>
         </div>
-        <div class="setting-box">
+        <div class="setting-box" id="dangerZoneBox">
+            <h2>Danger Zone</h2>
             <button>Delete Account</button>
-        </div>
-        <div class="setting-box">
             <button>Reset Account</button>
         </div>
-
-
     </div>
 </body>
-<script src="js/settings.js"></script>
+<script src="/js/settings.js"></script>
 </html>
