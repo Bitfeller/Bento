@@ -553,7 +553,6 @@ async function populateRecommended() {
 })();
 
 searchBar.addEventListener('keyup', async e => {
-    if(e.key != 'Enter') return;
     let query = searchBar.value;
     // Reset to defaults
     if(query.length == 0)
