@@ -54,10 +54,7 @@ function decodeHTMLEncVal(obj) {
 }
 
 async function update() {
-    if(loaded >= decks.length - 1) {
-        loaded = decks.length - 1;
-        return;
-    }
+    if(loaded >= decks.length - 1) return void (loaded = decks.length - 1);
 
     // Update decks in the user's review list
     if(reviewDecks.length == 0) {
@@ -66,11 +63,7 @@ async function update() {
         for(let i = 0; i < keys.length; i++) {
             let deckid = parseInt(keys[i]);
             let success = true, deck;
-            for(let i = 0; i < decks.length; i++) {
-                if(decks[i].id == deckid) {
-                    deck = decks[i];
-                }
-            }
+            for(let i = 0; i < decks.length; i++) if(decks[i].id == deckid) deck = decks[i];
             if(!deck) [success, deck] = await DeckGateway.get(deckid);
             if(!success) continue;
             reviewDecks.push(deck);
@@ -90,11 +83,7 @@ async function update() {
 }
 (async () => {
     let [success, data] = await UserGateway.getuser();
-    if(!success && data == "no session") {
-        mainContainer.remove();
-        document.body.innerHTML += "You must be signed in to view decks!";
-        return;
-    }
+    if(!success && data == "no session") return window.LOAD_ERROR("You must be signed in to view decks!");
     user = data;
     // For deck fetching, the system lazy loads primary deck info and actually fetches the deck when accessed/viewed
     [success, data] = await DeckGateway.getall(0);
@@ -109,10 +98,7 @@ async function update() {
         loadBtn.innerHTML = "Loading more decks...";
         let [success, data] = await DeckGateway.getall(decks.length);
         if(!success) return;
-        if(data.length == 0) {
-            loadBtn.innerHTML = "No more decks to load...";
-            return;
-        }
+        if(data.length == 0) return void (loadBtn.innerHTML = "No more decks to load...");
         decks.push(...data);
         await update();
         loadBtn.innerHTML = "Load more decks...";
@@ -147,10 +133,7 @@ async function update() {
         s_loadBtn.addEventListener("mousedown", async () => {
             let [success, data] = await DeckGateway.getall(loaded, orig);
             if(!success) return;
-            if(data.length == 0) {
-                s_loadBtn.innerHTML = "No more decks to load...";
-                return;
-            }
+            if(data.length == 0) return void (s_loadBtn.innerHTML = "No more decks to load...");
             for(let i = 0; i < data.length; i++) {
                 let deck = data[i];
                 let inReviews = user.userdata.reviews[deck.id] ? true : false;
@@ -198,14 +181,11 @@ async function preview(_this, isAdded) {
     }
     await UserGateway.editUser("view", String(deck.id));
     let answer_list = "";
-    if(!data.contnt) {
-        answer_list = "[This deck appears to be corrupt...]";
-    } else {
+    if(!data.contnt) answer_list = "[This deck appears to be corrupt...]";
+    else {
         let contnt = data.contnt;
         let keys = Object.keys(contnt);
-        for(let i = 0; i < keys.length; i++) {
-            answer_list += `<p><b>Q |  ${keys[i]}</b></p>${contnt[keys[i]].type == "mc" ? "<p>" + contnt[keys[i]].op.join(", ") + "</p>" : ""}<p>A |  ${(contnt[keys[i]].type == "mc" ? contnt[keys[i]].ans.map(x => contnt[keys[i]][x]) : contnt[keys[i]].ans).join(", ")}</p><div class='deck-divider' style='margin: 7px 3px; background-color: rgb(230, 230, 230); height: 2px;'></div>`;
-        }
+        for(let i = 0; i < keys.length; i++) answer_list += `<p><b>Q |  ${keys[i]}</b></p>${contnt[keys[i]].type == "mc" ? "<p>" + contnt[keys[i]].op.join(", ") + "</p>" : ""}<p>A |  ${(contnt[keys[i]].type == "mc" ? contnt[keys[i]].ans.map(x => contnt[keys[i]][x]) : contnt[keys[i]].ans).join(", ")}</p><div class='deck-divider' style='margin: 7px 3px; background-color: rgb(230, 230, 230); height: 2px;'></div>`;
     }
     previewDialog.innerHTML = `
         <div class='title-bar'>
@@ -227,9 +207,7 @@ async function preview(_this, isAdded) {
             </div>
         </div>
     `;
-    previewDialog.getElementsByClassName("closeBtns")[0].addEventListener("mousedown", () => {
-        previewDialog.close();
-    });
+    previewDialog.getElementsByClassName("closeBtns")[0].addEventListener("mousedown", () => previewDialog.close());
     if(user.username == deck.owner) {    
         previewDialog.getElementsByClassName("export-btn")[0].addEventListener("mousedown", () => {
             const d = {
@@ -248,9 +226,7 @@ async function preview(_this, isAdded) {
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url); 
         });
-        previewDialog.getElementsByClassName("edit-btn")[0].addEventListener("mousedown", () => {
-            window.location.href = "/learn/editdeck?d=" + deck.id; 
-        });
+        previewDialog.getElementsByClassName("edit-btn")[0].addEventListener("mousedown", () => window.location.href = "/learn/editdeck?d=" + deck.id);
         previewDialog.getElementsByClassName("delete-btn")[0].addEventListener("mousedown", async () => {
             await DeckGateway.modify(deck.id, "delete", "");
             previewDialog.close();
@@ -276,11 +252,7 @@ async function preview(_this, isAdded) {
 async function reviews_update(_this, isAdded) {
     let deck;
     let target = isAdded ? reviewDecks : decks;
-    for(let i = 0; i < target.length; i++) {
-        if(target[i].id == _this.dataset.idx) {
-            deck = target[i];
-        }
-    }
+    for(let i = 0; i < target.length; i++) if(target[i].id == _this.dataset.idx) deck = target[i];
     if(user.userdata.reviews[deck.id]) {
         delete user.userdata.reviews[deck.id];
         // find in list of reviewDecks
@@ -309,7 +281,7 @@ async function reviews_update(_this, isAdded) {
     } else {
         user.userdata.reviews[deck.id] = {};
         // Make sure deck still exists
-        let [success, data] = await DeckGateway.get(deck.id, false, false);
+        let [success, _] = await DeckGateway.get(deck.id, false, false);
         if(!success) {
             previewDialog.showModal();
             previewDialog.innerHTML = `

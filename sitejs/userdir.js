@@ -16,18 +16,12 @@ const passwordInputs = document.getElementsByClassName('password-inputs')[0];
     let mode = params.get("v") == 0 ? "emailverif" : "pwdrecover";
     let user = parseInt(params.get("user"));
     let [success, _] = await UserGateway.userdir(mode, user, hash);
-    if(!success) {
-        window.LOAD_ERROR("Looks like that URL is invalid. Did you come here from an email?");
-        return;
-    }
+    if(!success) return window.LOAD_ERROR("Looks like that URL is invalid. Did you come here from an email?");
     if(mode == 'emailverif') {
         section.innerHTML = "<h1>You're all set!</h1><p>Your email's been verified. Thanks!</p><p>You can close this window when you're done.</p>";
         passwordInputs.style.display = 'none';
-        window.LOADED();
-        return;
-    } else if (mode == 'pwdrecover') {
-        section.innerHTML = "<h1>Reset your password</h1>";
-    }
+        return window.LOADED();
+    } else if (mode == 'pwdrecover') section.innerHTML = "<h1>Reset your password</h1>";
     let handled = false;
     resetPwdBtn.addEventListener('mousedown', async () => {
         if(handled) return;

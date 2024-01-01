@@ -36,10 +36,7 @@ const themeSelect = document.getElementById("theme-select");
     if(user.pfp && user.pfp.length > 0) {
         pfp.src = user.pfp;
     }
-    editpfp.addEventListener("mousedown", () => {
-        // show file upload option
-        fileSelectTrigger.click();
-    });
+    editpfp.addEventListener("mousedown", () => fileSelectTrigger.click()); // show file upload option
     pfpReset.addEventListener("mousedown", async () => {
         pfp.src = "../../img/defaultpfp.png";
         await UserGateway.editUser("pfp", "");
@@ -49,17 +46,11 @@ const themeSelect = document.getElementById("theme-select");
         let files = fileSelectTrigger.files;
         if(files && files[0]) {
             let file = files[0];
-            if(!file.type.startsWith("image/")) {
-                console.log('failed - file type; ' + file.type);
-                return;
-            }
+            if(!file.type.startsWith("image/")) return console.log('failed - file type; ' + file.type);
             let reader = new FileReader();
             reader.onload = async (e) => {
                 let content = e.target.result;
-                if(content.byteLength > 3 * 1000 * 100) {
-                    console.log("Failed! Past size limit of 2 MB.");
-                    return;
-                }
+                if(content.byteLength > 3 * 1000 * 100) return console.log("Failed! Past size limit of 3 MB.");
                 await UserGateway.editUser("pfp", content);
             }
             reader.readAsDataURL(file);
@@ -97,9 +88,7 @@ const themeSelect = document.getElementById("theme-select");
             await UserGateway.editUser('delete', '', pwd.value); // got too lazy to make another script for this function
             window.location.reload();
         });
-        goBack.addEventListener("mousedown", () => {
-            warningDialog.close();
-        });
+        goBack.addEventListener("mousedown", () => warningDialog.close());
     });
     resetacc.addEventListener("mousedown", () => {
         warningDialog.showModal();
@@ -115,13 +104,9 @@ const themeSelect = document.getElementById("theme-select");
             warningDialog.close();
             window.location.reload();
         });
-        goBack.addEventListener("mousedown", () => {
-            warningDialog.close();
-        });
+        goBack.addEventListener("mousedown", () => warningDialog.close());
     });
-    leaveBtn.addEventListener("mousedown", () => {
-        warningDialog.close();
-    })
+    leaveBtn.addEventListener("mousedown", () => warningDialog.close());
     themeSelect.selectedIndex = data.userdata.theme;
     themeSelect.addEventListener("change", async () => {
         data.userdata.theme = themeSelect.selectedIndex ?? 0;

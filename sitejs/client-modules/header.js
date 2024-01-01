@@ -43,7 +43,9 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         "You can import sets from Quizlet into Bento when making a deck.",
         "This won't take long to load.",
         "Taking too long to load? Consider letting us know.",
-        "Found a bug? Let us know!"
+        "Found a bug? Let us know!",
+        "You can find your profile in the top right corner.",
+        "Started making a deck but didn't finish? Bento auto-saves your drafts, and you can find them on the right when cooking."
     ];
 
     function tip_changer(newtext, color) {
@@ -63,6 +65,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     }
 
     window.LOADED = () => {
+        if(load_failed) return;
         clearInterval(tipper);
         loader.remove();
     };
@@ -73,7 +76,8 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     };
 
     tips.innerHTML = tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)];
-    let tipper = setInterval(async () => await tip_changer(tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)]), 5000);
+    let tip_fn = async () => await tip_changer(tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)]);
+    let tipper = setInterval(tip_fn, 3000);
 
     let [success, data] = await UserGateway.getuser();
     if(!success && data == "no session") {
@@ -89,25 +93,6 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         // update pfp
         if(data.pfp && data.pfp.length > 0) {
             pfp.src = data.pfp;
-        }
-        // Load theme
-        let theme = data.userdata.theme;
-        // Reference:
-        // 0 = Nord
-        // 1 = Coffee-Midnight
-        // 2 - Catppuccin
-        // 3 - Classic
-        // We don't check for Nord as it's already loaded in global.css; we simply load overrides if we need to for other themes
-        switch(theme) {
-            case 1:
-                document.head.innerHTML += `<link rel='stylesheet' href='../css/themes/coffee-midnight.css'>`;
-            break;
-            case 2:
-                document.head.innerHTML += `<link rel='stylesheet' href='../css/themes/catppuccin.css'>`;
-            break;
-            case 3:
-                document.head.innerHTML += `<link rel='stylesheet' href='../css/themes/classic.css'>`;
-            break;
         }
         // update verify_email_alert
         if(data.verified == 0) {
@@ -161,8 +146,6 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         if(data == 'verified') location.reload();
     });
     window.addEventListener('mousedown', (e) => {
-        if(e.target == verify_dialog) {
-            verify_dialog.close();
-        }
+        if(e.target == verify_dialog) verify_dialog.close();
     });
 })();

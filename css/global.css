@@ -206,6 +206,9 @@ select {
         "GRAD" 200,
         "opsz" 48;
 }
+.small-ico {
+    font-size: 11px;
+}
 .header > span.info {
     position: absolute;
     left: 157px;
