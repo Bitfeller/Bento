@@ -10,22 +10,22 @@ const fileSelectTrigger = document.getElementById("fileselecttrigger");
 const newEmailField = document.getElementById("email");
 const emailCurrPassword = document.getElementById("email-curr-password");
 const emailbtn = document.getElementById("change-email");
-const emailerr = document.getElementById("email-error");
 
 const pwdfield = document.getElementById("password");
 const currentPassword = document.getElementById("password-curr-password");
 const passwordbtn = document.getElementById("change-password");
-const passwordError = document.getElementById("password-error");
 
 const usernameField = document.getElementById("new-username");
 const usernamebtn = document.getElementById("submit-username");
 const usernameDisplay = document.getElementById("username");
-const usernameError = document.getElementById("username-error");
 
 const warningDialog = document.getElementById("warning-dialog");
 const deleteAccount = document.getElementById("delete-account");
 const resetAccount = document.getElementById("reset-account");
 
+const changeOption = document.getElementById("change-option");
+const changeEmailBox = document.getElementById("change-email-box");
+const changePasswordBox = document.getElementById("change-password-box");
 
 const nordRadio = document.getElementById("nord-radio");
 const coffeeMidnightRadio = document.getElementById("coffee-midnight-radio");
@@ -40,7 +40,7 @@ async function changeTheme(current, theme) {
 // main
 (async () => {
     let [success, data] = await UserGateway.getuser(true, true, false, false);
-    if(!success) console.error(data);
+    if(!success) return void (console.error(data));
     user = data;
 
     usernameDisplay.innerHTML = user.username;
@@ -74,16 +74,16 @@ async function changeTheme(current, theme) {
         if(!success) {
             switch(err) {
                 case 'invalid pwd':
-                    emailerr.innerHTML = "Wrong password.";
+                    window.SHOW_ERROR("Wrong password.");
                 break;
                 case 'invalid email':
-                    emailerr.innerHTML = "That email isn't valid.";
+                    window.SHOW_ERROR("That email isn't valid.");
                 break;
                 case 'email taken':
-                    emailerr.innerHTML = "That email is already taken.";
+                    window.SHOW_ERROR("That email is already taken.");
                 break;
                 default:
-                    emailerr.innerHTML = "Look's like there's something wrong on our side. Try again later.";
+                    window.SHOW_ERROR("Look's like there's something wrong on our side. Try again later.");
                 break;
             }
             return;
@@ -96,10 +96,10 @@ async function changeTheme(current, theme) {
         if(!success) {
             switch(err) {
                 case "invalid pwd":
-                    passwordError.innerHTML = "Wrong password.";
+                    window.SHOW_ERROR("Wrong password.");
                 break;
                 default:
-                    passwordError.innerHTML = "Look's like there's something wrong on our side. Try again later.";
+                    window.SHOW_ERROR("Look's like there's something wrong on our side. Try again later.");
                 break;
             }
             return;
@@ -112,16 +112,16 @@ async function changeTheme(current, theme) {
         if(!success) {
             switch(err) {
                 case "invalid username":
-                    usernameError.innerHTML = "Your username has characters that are not allowed.";
+                    window.SHOW_ERROR("Your username has characters that are not allowed.");
                 break;
                 case "flagged":
-                    usernameError.innerHTML = "Your username was flagged for inappropriate content.";
+                    window.SHOW_ERROR("Your username was flagged for inappropriate content.");
                 break;
                 case "username taken":
-                    usernameError.innerHTML = "That username is already taken.";
+                    window.SHOW_ERROR("That username is already taken.");
                 break;
                 default:
-                    usernameError.innerHTML = "Look's like there's something wrong on our side. Try again later.";
+                    window.SHOW_ERROR("Look's like there's something wrong on our side. Try again later.");
                 break;
             }
             return;
@@ -206,6 +206,16 @@ async function changeTheme(current, theme) {
     coffeeMidnightRadio.addEventListener("change", () => changeTheme(currentTheme, 1));
     catppuccinRadio.addEventListener("change", () => changeTheme(currentTheme, 2));
     // grayscaleRadio.addEventListener("change", () => changeTheme(currentTheme, 3));
+
+    changeOption.addEventListener("change", () => {
+        if (changeOption.value === "email") {
+            changeEmailBox.style.display = "";
+            changePasswordBox.style.display = "none";
+        } else if (changeOption.value === "password") {
+            changeEmailBox.style.display = "none";
+            changePasswordBox.style.display = "";
+        }
+    });
 })();
 window.onclick = e => {
     if(e.target == warningDialog) warningDialog.close();

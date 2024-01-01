@@ -354,7 +354,7 @@ function init_mc(card, n, q) {
     let allcorr = card.getElementsByClassName('mc-allcorr')[0];
     allcorr.style.display = "none";
     // Cloner
-    card.getElementsByClassName('mc-clone')[0].addEventListener('mousedown', () => cloner(card, n));
+    card.getElementsByClassName('mc-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card)));
     // Local generator
     let generator = t => generator_mc(cardmc, card, allcorr, t);
     addbtn.addEventListener('mousedown', () => generator(false));
@@ -421,7 +421,7 @@ function init_txt(card, n, q) {
     init_div(inverse.getElementsByClassName('q')[0]);
 
     // Cloner
-    card.getElementsByClassName('txt-clone')[0].addEventListener('mousedown', () => cloner(card, n));
+    card.getElementsByClassName('txt-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card)));
     
     // Generator
     let generator = (r, p, t) => generator_txt(card, i_anslist, r, p, t);
@@ -478,7 +478,7 @@ function init_ranking(card, n, q) {
     let ranklist = card.getElementsByClassName('ranking-list')[0];
     let addbtn = card.getElementsByClassName('rank-add')[0];
     // Cloner
-    card.getElementsByClassName('rank-clone')[0].addEventListener('mousedown', () => cloner(card, n));
+    card.getElementsByClassName('rank-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card)));
     // Local generator
     let generator = () => generator_rank(card, ranklist);
     addbtn.addEventListener('mousedown', generator);
@@ -511,7 +511,7 @@ function init_mtch(card, n, q) {
     let pairlist = card.getElementsByClassName('card-mtch')[0];
     let addbtn = card.getElementsByClassName('mtch-add')[0];
     // Cloner
-    card.getElementsByClassName('mtch-clone')[0].addEventListener('mousedown', () => cloner(card, n));
+    card.getElementsByClassName('mtch-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card)));
     // Local generator
     let generator = (r) => generator_mtch(card, pairlist, r);
     addbtn.addEventListener('mousedown', () => generator(true));
@@ -763,18 +763,15 @@ const b_replacename = document.getElementById("BI-replace-name");
 const b_replacedesc = document.getElementById("BI-replace-desc");
 const b_file = document.getElementById("BI-file");
 const b_createbtn = document.getElementById("BI-createBtn");
-const b_err = document.getElementById("BI-err");
 
 const q_importbtn = document.getElementById("quizlet-import-btn");
 const q_txt = document.getElementById("QI-importText");
 const q_createbtn = document.getElementById("QI-createBtn");
 const q_reverse = document.getElementById("QI-reverse");
-const q_err = document.getElementById("QI-err");
 
 const g_importbtn = document.getElementById("gimkit-import-btn");
 const g_txt = document.getElementById("GK-importText");
 const g_createbtn = document.getElementById("GK-createBtn");
-const g_err = document.getElementById("GK-err");
 
 const import_modal = document.getElementById('importing-modal');
 const i_import = document.getElementById('i-import');
@@ -852,21 +849,21 @@ b_file.addEventListener('change', () => {
         b_createbtn.disabled = true;
 })
 b_createbtn.addEventListener("mousedown", () => {
-    if(!DOMPurify) return void (b_err.innerHTML = "The system is loading a module. Please try again later. (code: fetching_dompurify?)");
+    if(!DOMPurify) return window.SHOW_ERROR("The system is loading a module. Please try again later. (code: fetching_dompurify?)");
     let dp = DOMPurify;
     let files = b_file.files;
     if(files && files[0]) {
         let file = files[0];
         if(file.type !== "application/json") {
             console.log('failed - file type; ' + file.type);
-            return void (b_err.innerHTML = "Bento expects a JSON file - the file type we export and support.");
+            return window.SHOW_ERROR("Bento expects a JSON file - the file type we export and support.");
         }
         let reader = new FileReader();
         reader.onload = e => {
             let content = e.target.result;
             try {
                 let main = JSON.parse(content);
-                if(main.name == undefined || main.desc == undefined || main.contnt == undefined) return void (b_err.innerHTML = "This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
+                if(main.name == undefined || main.desc == undefined || main.contnt == undefined) return window.SHOW_ERROR("This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
                 let val_name = window.lib.dpwrapper(dp, main.name);
                 let val_desc = window.lib.dpwrapper(dp, main.desc);
                 let val_contnt = window.lib.dpwrapper(dp, main.contnt);
@@ -877,7 +874,7 @@ b_createbtn.addEventListener("mousedown", () => {
             } catch(e) {
                 safety_check();
                 console.log("failed; reason:", e);
-                return void (b_err.innerHTML = "This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
+                return window.SHOW_ERROR("This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
             }
             safety_check();
         }
@@ -885,19 +882,19 @@ b_createbtn.addEventListener("mousedown", () => {
     }
 });
 q_createbtn.addEventListener("mousedown", () => {
-    if(!DOMPurify) return void (b_err.innerHTML = "The system is loading a module. Please try again later. (code: fetching_dompurify?)");
+    if(!DOMPurify) return window.SHOW_ERROR("The system is loading a module. Please try again later. (code: fetching_dompurify?)");
     let dp = DOMPurify;
     let importText = q_txt.value;
     let format = importText.split("^");
     let contnt = {};
-    if(format.length == 1) return void (q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
+    if(format.length == 1) return window.SHOW_ERROR("This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
     format.pop();
     let isValid = true;
     format.forEach(card => {
         if(!isValid) return;
         const [q, ans] = card.split(">");
         if(ans == undefined) {
-            q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.";
+            window.SHOW_ERROR("This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
             isValid = false;
             return;
         }
@@ -909,13 +906,13 @@ q_createbtn.addEventListener("mousedown", () => {
         open_import_modal(contnt);
     } catch(_) {
         safety_check();
-        return void (q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
+        return window.SHOW_ERROR("This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
     }
     safety_check();
     q_modal.style.display = "none";
 });
 g_createbtn.addEventListener("mousedown", () => {
-    if(!DOMPurify) return void (b_err.innerHTML = "The system is loading a module. Please try again later. (code: fetching_dompurify?)");
+    if(!DOMPurify) return window.SHOW_ERROR("The system is loading a module. Please try again later. (code: fetching_dompurify?)");
     let dp = DOMPurify;
     let importText = g_txt.value;
     let format = importText.split("\n");
@@ -925,7 +922,7 @@ g_createbtn.addEventListener("mousedown", () => {
         if(!isValid) return;
         const [q, ans] = card.split("\t");
         if(ans == undefined) {
-            g_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.";
+            window.SHOW_ERROR("This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.");
             isValid = false;
             return;
         }
@@ -939,7 +936,7 @@ g_createbtn.addEventListener("mousedown", () => {
         open_import_modal(contnt);
     } catch(_) {
         safety_check();
-        return void (g_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.");
+        return window.SHOW_ERROR("This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.");
     }
     safety_check();
     g_modal.style.display = "none";

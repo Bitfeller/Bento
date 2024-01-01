@@ -68,11 +68,15 @@
                 </div>
             </div>
             <div class="big-box" id="settings-big-box">
-                <h2>Assistive Tools <i style='color: rgb(200, 0, 0); font-size: 25px;'>NEW</i></h2>
+                <h2>Assistive Tools </h2>
                 <div class="settings-container">
                     <div class="setting-box">
                         <input type="checkbox" name="require_correct" class="sb-radio require_correct">
-                        <p>| (Text questions only) Require correct answer before advancing</p>
+                        <p>| (Text only) Require correct answer before advancing</p>
+                    </div>
+                    <div class="setting-box">
+                        <input type="checkbox" name="lazy_check" class="sb-radio lazy_check">
+                        <p>| (Text only) Allow answers up to 2 characters off</p>
                     </div>
                 </div>
             </div>

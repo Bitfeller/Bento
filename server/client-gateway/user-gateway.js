@@ -26,7 +26,7 @@ async function isCommon(pwd) {
 let UserGateway = {
     getuser: async (getpfp = false, getudata = false, getreviews = true, getdrafts = false) => {
         if(!types("bbbb", getpfp, getudata, getreviews, getdrafts)) return [false, "invalid params"];
-        if(!await sameUser()) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "no session"];
         let success = false, data = 'fetch-err';
         await fetch(spath + "/php-db/user/user_get.php", {
             method: "post",
@@ -99,7 +99,7 @@ let UserGateway = {
     },
     editUser: async (setting, val, pwd = "") => {
         if(!types("Sss", setting, val, pwd)) return [false, "invalid params"];
-        if(!await sameUser()) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "no session"];
         let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/user/user_edit.php", {
             method: 'post',
@@ -131,7 +131,7 @@ let UserGateway = {
     },
     getDraftImage: async time => {
         if(!types("n", time)) return [false, "invalid params"];
-        if(!await sameUser()) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "no session"];
         let success = false, data = 'fetch-err';
         await fetch(spath + "/php-db/user/user_draft_getpic.php", {
             method: 'post',
@@ -153,7 +153,7 @@ let UserGateway = {
     },
     giveFeedback: async feedback => {
         if(!types("S", feedback)) return [false, "invalid params"];
-        if(!await sameUser()) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "no session"];
         let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/feedback/feedback_new.php", {
             method: 'post',
@@ -230,7 +230,7 @@ let UserGateway = {
             if(!success) reason = res.reason;
         }).catch(e => console.log('backend:', e));
         return [success, reason];
-    },
+    }
 }
 
 export { UserGateway };
