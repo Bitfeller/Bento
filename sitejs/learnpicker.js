@@ -32,6 +32,12 @@ let user;
         return;
     }
     let decks = [];
+    deckContainer.innerHTML = "";
+    o_infinite_mode.disabled = true;
+    o_infinite_mode.setAttribute("data-enabled", String(o_infinite_mode.checked));
+    o_infinite_mode.checked = false;
+    infinite_mode_text.innerHTML =
+        "You can't use Infinite Mode when learning decks to review.<br><i>Support for this feature may be added in the future</i>";
     let r_keys = Object.keys(reviews);
     for (let i = 0; i < r_keys.length; i++) {
         let id = parseInt(r_keys[i]);
@@ -41,12 +47,21 @@ let user;
             continue;
         }
         decks.push(deck);
-        deckContainer.innerHTML += `
-            <div class='deck-box' data-idx='${id}'>
-                <p>${deck.name}</p>
-                <input type='checkbox' class='deckCheck'>
-            </div>
-        `;
+        let count = 0;
+        let c_keys = Object.keys(reviews[r_keys[i]]);
+        for (let j = 0; j < c_keys.length; j++) {
+            let term = reviews[r_keys[i]][c_keys[j]];
+            if (UserGateway.calculateNTR(term.box, term.last)) count++;
+        }
+        count += Object.keys(deck.data.contnt).length - c_keys.length;
+        if (count > 0) {
+            deckContainer.innerHTML += `
+                <div class="deck-box" data-idx='${deck.id}'>
+                    <p>${decks[i].name}</p>
+                    <input type='checkbox' class='deckCheck'>
+                </div>
+            `;
+        }
     }
     // Settings box input box click event
     for(let i = 0; i < settingsBoxs.length; i++) {
@@ -54,7 +69,7 @@ let user;
         if (box.querySelectorAll('input[type="radio"]')[0]) {
             let radioButton = box.querySelectorAll('input[type="radio"]')[0];
             box.addEventListener("mousedown", () => {
-                radioButton.checked = !radioButton.checked;
+                radioButton.checked = true;
             });
         } else if (box.querySelectorAll('input[type="checkbox"]').length > 0) {
             let checkbox = box.querySelectorAll('input[type="checkbox"]')[0];
@@ -92,8 +107,8 @@ let user;
             }
         });
     }
-    o_mode[0].addEventListener("change", () => {
-        if (o_mode[0].checked == true) {
+    o_mode[1].addEventListener("change", () => {
+        if (o_mode[1].checked == true) {
             o_infinite_mode.disabled = false;
             o_infinite_mode.checked = o_infinite_mode.getAttribute("data-enabled") == "true" ? true : false;
             infinite_mode_text.innerHTML = "| Infinite Mode";
@@ -141,8 +156,8 @@ let user;
             }
         }
     });
-    o_mode[1].addEventListener("change", () => {
-        if (o_mode[1].checked == true) {
+    o_mode[0].addEventListener("change", () => {
+        if (o_mode[0].checked == true) {
             deckContainer.innerHTML = "";
             o_infinite_mode.disabled = true;
             o_infinite_mode.setAttribute("data-enabled", String(o_infinite_mode.checked));

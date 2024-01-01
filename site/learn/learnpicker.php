@@ -16,11 +16,11 @@
                 <h2>Learn Mode</h2>
                 <div class="settings-container">
                     <div class="setting-box">
-                        <input type="radio" name="mode" class="sb-radio mode" id="2">
+                        <input type="radio" name="mode" class="sb-radio mode" id="2" checked="true">
                         <p> Review terms that need to be reviewed </p>
                     </div>
                     <div class="setting-box">
-                        <input type="radio" name="mode" class="sb-radio mode" id="1" checked="true">
+                        <input type="radio" name="mode" class="sb-radio mode" id="1">
                         <p> Review select decks </p>
                     </div>
                 </div>
