@@ -1,4 +1,3 @@
-<?php $_X_UO = true; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +23,7 @@
     </script>
     <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
-<body>
+<body data-uo="true">
     <?php require_once "header.php"?>
     <div class="home-grid">
         <div id="bento-modal"></div>

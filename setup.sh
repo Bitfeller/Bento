@@ -39,31 +39,27 @@ cd ../../..
 
 # =================== Node ===================
 # Install Node.js dependencies
-cd ./server/node
+cd ./server/notif-service
 npm install
 
 # Remove all README files
 rm -R README.md
 
 # Make sure all log files exist
-cd logs
-touch backup.log
-touch misc.log
-touch sql.log
-touch suspend-server.log
-touch log-collector.log
-touch log-collector-info.log
-touch error.log
-touch error-reports.log
-cd ..
+# cd logs
+# touch backup.log
+# touch misc.log
+# touch sql.log
+# touch suspend-server.log
+# cd ..
 
 # Set normal state for server
-echo "0" > ../conf/config-suspend-server
+# echo "0" > ../conf/config-suspend-server
 
 # Start all Node.js scripts
-pm2 start ./backup/backup.js --name backup
-pm2 start ./suspend-server/suspend-server.js --name suspend-server
-pm2 start ./log-collector/log-collector.js --name log-collector
+# pm2 start ./backup/backup.js --name backup
+# pm2 start ./suspend-server/suspend-server.js --name suspend-server
+pm2 start server-notif-main.js --name server-notif-main
 pm2 save
 
 cd ../..
@@ -82,22 +78,18 @@ php -r "unlink('composer-setup.php');"
 
 # Install phpmailer
 php composer.phar require phpmailer/phpmailer
-php composer.phar require predis/predis
 
 # Remove composer-generated files
 rm composer*
 
 # Move phpmailer to temp and remove vendor
 mv vendor/phpmailer ./temp
-mv vendor/predis ./temp
 rm vendor -R
 
 # Get real phpmailer in lib
 mv temp/phpmailer .
-mv temp/predis .
 rm temp -R
 
 # Remove files not needed
 rm phpmailer/*.md
 rm phpmailer/.editorconfig
-rm predis/*.md

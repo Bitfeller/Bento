@@ -1,4 +1,4 @@
-import { types, sameUser, senderror } from './gateway-mod.js';
+import { types, sameUser } from './gateway-mod.js';
 
 const moduleurl = new URL(import.meta.url);
 const spath = moduleurl.pathname + "/../..";
@@ -25,7 +25,7 @@ function similar(s1, s2) {
 let DeckGateway = {
     getall: async (offset = 0, searchTerms = []) => {
         if(!types("Na", offset, searchTerms)) return [false, "invalid params"];
-        let success = false, data = 'fetch-err', fres;
+        let success = false, data = 'fetch-err';
         await fetch(spath + "/php-db/deck/deck_getall.php", {
             method: 'post',
             headers: {
@@ -37,7 +37,6 @@ let DeckGateway = {
             })
         }).then((res) => {
             if(!res.ok) throw "couldn't fetch! (bad response)";
-            fres = res.clone();
             return res.json();
         }).then((res) => {
             success = res.status == 'success';
@@ -60,20 +59,13 @@ let DeckGateway = {
                     data = data.sort((a, b) => scores[data.indexOf(a)] - scores[data.indexOf(b)]);
                 }
             }
-        }).catch(async e => {
-            console.log('backend[deck-gateway.js:getall]:', e);
-            senderror("deck-gateway.js:getall", await fres.text(), {
-                plain: e,
-                offset: offset,
-                searchTerms: searchTerms
-            });
-        });
+        }).catch((e) => console.log('backend[deck-gateway.js:getall]:', e));
         return [success, data];
     },
     add: async (name, deckpic, data, isPublic) => {
         if(!types("SsSb", name, deckpic, data, isPublic)) return [false, "invalid params"];
         if(!await sameUser()) return [false, "no session"];
-        let success = false, reason = 'fetch-err', fres;
+        let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/deck/deck_new.php", {
             method: 'post',
             headers: {
@@ -87,26 +79,16 @@ let DeckGateway = {
             })
         }).then(res => {
             if(!res.ok) throw "couldn't fetch! (bad response)";
-            fres = res.clone();
             return res.json();
         }).then(res => {
             success = res.status == 'success', reason = '';
             if(!success) reason = res.reason;
-        }).catch(async e => {
-            console.log('backend[deck-gateway.js:add]:', e);
-            senderror("deck-gateway.js:add", await fres.text(), {
-                plain: e,
-                name: name,
-                deckpic: deckpic,
-                data: data,
-                isPublic: isPublic
-            });
-        });
+        }).catch(e => console.log('backend[deck-gateway.js:add]:', e));
         return [success, reason];
     },
     get: async (id, load_data = true, load_pic = false, load_contnt_len = false) => {
         if(!types("Nbbb", id, load_pic, load_data, load_contnt_len)) return [false, "invalid params"];
-        let success = false, data = 'fetch-err', fres;
+        let success = false, data = 'fetch-err';
         await fetch(spath + "/php-db/deck/deck_get.php", {
             method: 'post',
             headers: {
@@ -120,7 +102,6 @@ let DeckGateway = {
             })
         }).then(res => {
             if(!res.ok) throw "couldn't fetch! (bad response)";
-            fres = res.clone();
             return res.json();
         }).then(res => {
             success = res.status == 'success';
@@ -130,22 +111,13 @@ let DeckGateway = {
                 if(data.data) data.data = JSON.parse(data.data);
                 if(data.deckpic) data.deckpic = JSON.parse(data.deckpic);
             }
-        }).catch(async e => {
-            console.log('backend[deck-gateway.js:get]:', e);
-            senderror("deck-gateway.js:get", await fres.text(), {
-                plain: e,
-                id: id,
-                load_data: load_data,
-                load_pic: load_pic,
-                load_contnt_len: load_contnt_len
-            });
-        });
+        }).catch(e => console.log('backend[deck-gateway.js:get]:', e));
         return [success, data];
     },
     modify: async (d_id, setting, val) => {
         if(!types("NSs", d_id, setting, val)) return [false, "invalid params"];
         if(!await sameUser()) return [false, "no session"];
-        let success = false, reason = 'fetch-err', fres;
+        let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/deck/deck_edit.php", {
             method: 'post',
             headers: {
@@ -158,20 +130,11 @@ let DeckGateway = {
             })
         }).then(res => {
             if(!res.ok) throw "couldn't fetch! (bad response)";
-            fres = res.clone();
             return res.json();
         }).then(res => {
             success = res.status == 'success', reason = '';
             if(!success) reason = res.reason;
-        }).catch(async e => {
-            console.log('backend[deck-gateway.js:modify]:', e);
-            senderror("deck-gateway.js:modify", await fres.text(), {
-                plain: e,
-                d_id: d_id,
-                setting: setting,
-                val: val
-            });
-        })
+        }).catch(e => console.log('backend[deck-gateway.js:modify]:', e))
         return [success, reason];
     }
 };

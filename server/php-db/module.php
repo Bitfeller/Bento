@@ -6,30 +6,6 @@
     require_once '../lib/phpmailer/src/SMTP.php';
 
     use PHPMailer\PHPMailer\PHPMailer;
-    use Predis\Client as Redis;
-
-    // Redis
-    global $redis;
-    function build_redis() {
-        $conf = get_server_config();
-        $GLOBALS['redis'] = new Redis([
-            'scheme' => 'tcp',
-            'host' => $conf['redis']['host'],
-            'port' => $conf['redis']['port'],
-            'password' => $conf['redis']['password']
-        ]);
-        $GLOBALS['redis']->connect();
-        return $GLOBALS['redis'];
-    }
-    function get_redis() {
-        if(!isset($GLOBALS['redis'])) return build_redis();
-        return $GLOBALS['redis'];
-    }
-    function close_redis() {
-        $redis = get_redis();
-        $redis->disconnect();
-        $GLOBALS['redis'] = null;
-    }
 
     // Essential functions
     //      Success and fail return functions
@@ -103,9 +79,6 @@
     }
 
     //      Get server config
-    function is_local_config() {
-        return file_exists('../../conf/local-config.json');
-    }
     function get_server_config() {
         if(file_exists('../../conf/local-config.json')) return json_decode(file_get_contents("../../conf/local-config.json"), true);
         else return json_decode(file_get_contents('../../conf/config.json'), true);
@@ -213,38 +186,4 @@
         if(isset($alt_body)) $mail->AltBody = $alt_body;
         if(!$mail->send()) return false;
         return true;
-    }
-    
-    // File/log updater
-    function increment($file) {
-        // Do not affect if using local_config
-        if(file_exists('../../conf/local-config.json')) return;
-        $current = file_get_contents($file);
-        $current++;
-        file_put_contents($file, $current);
-    }
-    
-    // Sets a key in redis db
-    function redis_set($key, $value) {
-        if(is_local_config()) return;
-        $redis = get_redis();
-        $redis->set($key, $value);
-    }
-    // Sets an expirable key in redis db
-    function redis_setex($key, $value, $time) {
-        if(is_local_config()) return;
-        $redis = get_redis();
-        $redis->setex($key, $time, $value);
-    }
-    // Gets a key from redis db
-    function redis_get($key) {
-        if(is_local_config()) return false;
-        $redis = get_redis();
-        return $redis->get($key);
-    }
-    // Deletes a key from redis db
-    function redis_del($key) {
-        if(is_local_config()) return;
-        $redis = get_redis();
-        $redis->del($key);
     }

@@ -5,11 +5,6 @@
         "password": "",
         "db": "bento"
     },
-    "redis": {
-        "host": "",
-        "port": -1,
-        "password": ""
-    },
     "allowed_hosts": "*",
     "session_path": "",
     "bento_notif_url": "",

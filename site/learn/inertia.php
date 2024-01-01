@@ -1,4 +1,3 @@
-<?php $_X_UO = true; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +8,7 @@
     <link rel="stylesheet" href="../../css/intertia.css"/>
     <script type="module" src="../../sitejs/inertia.js" data-loading="true"></script>
 </head>
-<body>
+<body data-uo="true">
     <?php require_once "../header.php"?>
     <div>
         <div id="left-div">

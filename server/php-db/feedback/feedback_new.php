@@ -14,7 +14,6 @@
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("iss", $id, $username, $feedback);
         $stmt->execute();
-        increment('../info/feedback_creates');
         success();
     } catch (Throwable $e) {
         fail("exception: " . $e->getMessage());

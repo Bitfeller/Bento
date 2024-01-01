@@ -259,9 +259,10 @@ function check(answer) {
     switch(problem.type) {
         case "mc":
             if(problem.req == 1) {
+                let c = true;
                 for(let i = 0; i < problem.ans.length; i++) 
-                    if(answer.indexOf(problem.ans[i]) < 0) return false;
-                return true;
+                    if(answer.indexOf(problem.ans[i]) < 0) c = false;
+                return c;
             } else return problem.ans.indexOf(answer) > -1;
         case "txt":
             for(let i = 0; i < problem.ans.length; i++)
@@ -291,6 +292,7 @@ function lazyCheck(answer) {
         default:
             return check(answer);
     }
+
 }
 function isLazyCorrect(answer) {
     if(!active) return { dead: true };

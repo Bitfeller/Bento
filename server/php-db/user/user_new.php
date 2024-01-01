@@ -58,7 +58,6 @@
         if(!$handle) fail("CRITICAL: couldn't create pfp!");
         fclose($handle);
         // Start session
-        increment('../info/user_signups');
         session_start();
         $_SESSION["uid"] = $result["id"];
         $_SESSION["username"] = $username;
