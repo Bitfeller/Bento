@@ -19,9 +19,15 @@ SetEnvIf REQUEST_URI /(.*) NEWURI=$1
 # RewriteCond %{REMOTE_ADDR} !^10\.     # exception to VPN'd users and server containers
 # RewriteRule ^(.*)$ /site/maintenance.php [END]
 
-RewriteRule ^testdeck\.php$ - [F]
+# Block all test folders
+RewriteRule ^.*\/test.*$ - [F]
 
-RewriteRule ^testuser\.php$ - [F]
+# Block server-related folders
+RewriteRule ^.*\/conf.*$ - [F]
+RewriteRule ^.*\/notif-service.*$ - [F]
+
+# Block dev folder
+RewriteRule ^.*dev.*$ - [F]
 
 RewriteCond %{DOCUMENT_ROOT}/../%{ENV:NEWURI} !-f
 RewriteCond %{DOCUMENT_ROOT}/../%{ENV:NEWURI} !-d
