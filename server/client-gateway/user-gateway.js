@@ -27,6 +27,7 @@ class UserGateway {
             } else {
                 data = res.data;
                 data.reviews = JSON.parse(data.reviews);
+                data.draftdecks = JSON.parse(data.draftdecks);
             }
         }).catch(function(err) {
             if(err == "none") {return;}

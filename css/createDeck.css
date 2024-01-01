@@ -252,6 +252,42 @@ textarea {
     color: var(--light-text);
     background-color: var(--danger-red);
 }
+.draftdeck {
+    width: 150px;
+    height: 85px;
+    background-color: var(--light-gray);
+    margin-top: 10px;
+    border-radius: 5px;
+}
+.draftdeck p {
+    width: 100%;
+    text-align: center;
+    text-overflow: ellipsis;
+    bottom: 0;
+    left: 5px;
+    line-height: 36px;
+}
+.draftdeck button {
+    padding: 0;
+    margin: 0;
+    margin-top: 5px;
+    height: 48px;
+    width: 73px;
+}
+.draftdeck .material-symbols-outlined {
+    line-height: 40px;
+    font-size: 24pt;
+    color: var(--dark-text);
+    margin: 0;
+}
+.show {
+    background-color: var(--select-blue);
+    border-radius: 5px 0px 0px 5px;
+}
+.del {
+    background-color: var(--danger-red);
+    border-radius: 0px 5px 5px 0px;
+}
 @media only screen and (max-width: 1025px) {
     .options-container {
         margin: 10px 0px;
@@ -282,5 +318,12 @@ textarea {
 @media only screen and (max-width: 700px) {
     .options-container {
         width: calc(93%);
+    }
+    .draftdeck {
+        height: 90px;
+        width: 100%;
+    }
+    .draftdeck button {
+        width: 49.40%;
     }
 }

@@ -52,9 +52,14 @@
                 success();
             break;
             case "deckpic":
+                $val = explode(";", $val, 1);
+                $type = $val[0];
+                $val = $val[1];
+                $val = substr($val, 7);
                 $decodedVal = base64_decode($val);
                 $safeVal = htmlspecialchars(strip_tags($decodedVal));
                 $safeVal = base64_encode($safeVal);
+                $safeVal = $type . "base64," . $safeVal;
                 if(strlen($safeVal) > 2 * 1000 * 1000) {
                     fail('size limit');
                 }
@@ -121,7 +126,7 @@
             case 'delete':
                 $sql = "DELETE FROM decks WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("i", $d_id);
+                $stmt->bind_param("i", $id);
                 $stmt->execute();
                 $stmt->close();
                 success();

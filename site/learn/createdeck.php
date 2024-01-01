@@ -34,6 +34,7 @@
         <div class="options-container">
             <p>Import Options</p>
             <button id="quizlet-import-btn">Import from Quizlet</button>
+            <button id="gimkit-import-btn">Import from Gimkit</button>
             <button id="bento-import-btn">Import a Bento Deck</button><br><br>
             
             <p>Edit a Draft Deck</p>
@@ -43,7 +44,7 @@
                         <button id='show'><span class="material-symbols-outlined">save</span></button>
                         <button id='del'><span class="material-symbols-outlined">delete</span></button>
                     </div> -->
-                <p>None</p>
+                <p class='info-blank'>-- You don't have any draft decks. You'll see one if you start making a deck but don't finish. --</p>
             </div>
         </div>
     </div>
@@ -56,6 +57,16 @@
             <p>#3 - copy the text and paste it here.</p>
             <textarea type="text" placeholder="Paste Quizlet Export Here" id="QI-importText"></textarea>
             <button id="QI-createBtn">Import</button> 
+        </div>
+    </div>
+    <div class="importModal" id="gimkit-import-modal">
+        <div class="modal-content">
+            <h1>Import from Gimkit</h1>
+            <h3>To Export from Gimkit:</h3>
+            <p>#1 - While viewing the deck, click on "Export" on the left menu.</p>
+            <p>#2 - Copy the text and paste it here. (Make sure to keep it in Question/Answer format)</p>
+            <textarea type="text" placeholder="Paste Gimkit Export Here" id="GK-importText"></textarea>
+            <button id="GK-createBtn">Import</button> 
         </div>
     </div>
     <div class="importModal" id="bento-import-modal">

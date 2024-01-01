@@ -30,9 +30,14 @@
         }
         $stmt->close();
         // Sanitize values
+        $deckpic = explode(";", $deckpic, 1);
+        $type = $deckpic[0];
+        $deckpic = $deckpic[1];
+        $deckpic = substr($deckpic, 7);
         $decodedpic = base64_decode($deckpic);
         $deckpic = htmlspecialchars(strip_tags($decodedpic));
         $deckpic = base64_encode($deckpic);
+        $deckpic = $type . "base64," . $deckpic;
         $deckData = json_decode($deckData, true);
         if($deckData == null) {
             fail("exception: data isn't valid JSON.");
