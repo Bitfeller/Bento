@@ -15,8 +15,6 @@ const loadBtn = document.getElementById("loadBtn");
 // Search
 const search = document.getElementById("search");
 const searchText = document.getElementById("searchText");
-// HTML Decoder
-const decoder = document.createElement('textarea');
 
 function box(idx, inReviews = false, deckName, deckpic, author, ofAddedDecks = false) {
     let a = document.createElement("div");
@@ -34,20 +32,6 @@ function box(idx, inReviews = false, deckName, deckpic, author, ofAddedDecks = f
     a.getElementsByClassName("previewBtns")[0].addEventListener("mousedown", (e) => {preview(e.currentTarget, ofAddedDecks);});
     a.getElementsByClassName("userReviewsUpdateBtns")[0].addEventListener("mousedown", (e) => {reviews_update(e.currentTarget, ofAddedDecks);});
     return a;
-}
-function decodeHTML(val) {
-    decoder.innerHTML = val;
-    return decoder.value;
-}
-function decodeHTMLEncVal(obj) {
-    if(typeof obj == 'string')
-        return decodeHTML(obj);
-    else if(Array.isArray(obj))
-        return obj.map(decodeHTMLEncVal);
-    else if(typeof obj == 'object' && obj !== null)
-        return Object.fromEntries(
-            Object.entries(obj).map(([key, value]) => [decodeHTMLEncVal(key), decodeHTMLEncVal(value)])
-        );
 }
 
 function end_phony_loading(deck) {
@@ -91,7 +75,7 @@ async function update() {
             addedDecksContainer.appendChild(newBox);
         }
         if(update) {
-            let json = JSON.stringify(user.userdata.reviews);
+            let json = JSON.stringify(window.lib.recur_decode(user.userdata.reviews));
             await UserGateway.editUser("reviews", json);
         }
     }
@@ -237,12 +221,12 @@ async function preview(_this, isAdded) {
     if(user.username == deck.owner) {    
         previewDialog.getElementsByClassName("export-btn")[0].addEventListener("mousedown", () => {
             const d = {
-                name: deck.name,
-                desc: data.desc,
-                contnt: decodeHTMLEncVal(data.contnt)
+                name: window.lib.decode(deck.name),
+                desc: window.lib.decode(data.desc),
+                contnt: window.lib.recur_decode(data.contnt)
             };
             const json = JSON.stringify(d);
-            const file = new File([json], deck.name+'.txt', {type: "text/plain"});
+            const file = new File([json], d.name+'.json', {type: "text/plain"});
             const link = document.createElement("a");
             const url = URL.createObjectURL(file);
             link.href = url;
@@ -352,7 +336,7 @@ async function reviews_update(_this, isAdded) {
         addedDecksContainer.appendChild(newBox);
         _this.innerHTML = "<div class='material-symbols-outlined'>remove</div>";
     }
-    let json = JSON.stringify(user.userdata.reviews);
+    let json = JSON.stringify(window.lib.recur_decode(user.userdata.reviews));
     await UserGateway.editUser("reviews", json);
 }
 

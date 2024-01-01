@@ -79,10 +79,10 @@ createBtn.addEventListener('mousedown', async () => {
     let [success, contnt] = await DeckGateway.get(deck, true, true);
     if(!success) window.location.href = "/home";
     if(contnt.owner != data.username) window.location.href = "/home";
-    name.value = contnt.name;
+    name.value = window.lib.decode(contnt.name);
     if(contnt.deckpic && contnt.deckpic.length > 0) picimg.src = contnt.deckpic;
     isPublic.checked = contnt.public;
-    description.value = contnt.data.desc;
+    description.value = window.lib.decode(contnt.data.desc);
     cardContain.innerHTML = "";
     DeckBind.appendToCards(contnt.data.contnt);
     window.LOADED();

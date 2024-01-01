@@ -1,5 +1,5 @@
-file_db/**/*.pfp
-file_db/**/*.pic
+db/**/*.pfp
+db/**/*.pic
 **/node_modules/*
 **/target
 

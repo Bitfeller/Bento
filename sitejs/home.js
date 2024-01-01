@@ -27,7 +27,7 @@ const INFO_TERM_LIMIT = 10;
 
 function show(deck) {
     deckViewer.style.display = 'block';
-    let review = user.userdata.reviews[deck.id];
+    let review = window.lib.recur_decode(user.userdata.reviews[deck.id]);
     let keys = Object.keys(review);
     let name = deck.name;
     let mastered = 0;
@@ -35,12 +35,22 @@ function show(deck) {
         let term = review[keys[i]];
         if(term.box > 3) mastered++;
     }
-    let worst = keys.filter(k => review[k].box <= 2).sort((a, b) => review[a].box + review[a].score / 100 - review[b].box - review[b].score / 100).slice(0, INFO_TERM_LIMIT).map(k => `<li>${deck.data.contnt[k] ? k : ""} => ${deck.data.contnt[k].type == 'mc' ? deck.data.contnt[k].ans.map(r => deck.data.contnt[k].op[r]).join(', ') : deck.data.contnt[k].ans} (recall rating: ${review[k].box} (of 6), score: ${review[k].score}, average time spent: ${review[k].time}, next review: ${UserGateway.calculateNTR(review[k].box, review[k].last) ? "now" : "in " + UserGateway.calculateNextReview(review[k].box, review[k].last) + " day(s)"})</li>`).join('');
-    let learning = keys.filter(k => review[k].box > 2 && review[k].box < 5).sort((a, b) => review[a].box + review[a].score / 100 - review[b].box - review[b].score / 100).slice(0, INFO_TERM_LIMIT).map(k => `<li>${deck.data.contnt[k] ? k : ""} => ${deck.data.contnt[k].type == 'mc' ? deck.data.contnt[k].ans.map(r => deck.data.contnt[k].op[r]).join(', ') : deck.data.contnt[k.replace('&amp;', '&')].ans} (recall rating: ${review[k].box} (of 6), score: ${review[k].score}, average time spent: ${review[k].time}, next review: ${UserGateway.calculateNTR(review[k].box, review[k].last) ? "now" : "in " + UserGateway.calculateNextReview(review[k].box, review[k].last) + " day(s)"})</li>`).join('');
-    let best = keys.filter(k => review[k].box >= 5).sort((a, b) => review[b].box + review[b].score / 100 - review[a].box - review[a].score / 100).slice(0, INFO_TERM_LIMIT).map(k => `<li>${deck.data.contnt[k] ? k : ""} => ${deck.data.contnt[k].type == 'mc' ? deck.data.contnt[k].ans.map(r => deck.data.contnt[k].op[r]).join(', ') : deck.data.contnt[k].ans} (recall rating: ${review[k].box} (of 6), score: ${review[k].score}, average time spent: ${review[k].time}, next review: ${UserGateway.calculateNTR(review[k].box, review[k].last) ? "now" : "in " + UserGateway.calculateNextReview(review[k].box, review[k].last) + " day(s)"})</li>`).join('');
+
+    let lister = (select, sorter) =>
+        keys.filter(select)
+            .filter(k => deck.data.contnt[k] ?? false)
+            .sort(sorter)
+            .slice(0, INFO_TERM_LIMIT)
+            .map(k => `<li>${k} => ${deck.data.contnt[k].type == 'mc' ? deck.data.contnt[k].ans.map(r => deck.data.contnt[k].op[r]).join(', ') : deck.data.contnt[k].ans} (recall rating: ${review[k].box} (of 6), score: ${review[k].score}, average time spent: ${review[k].time ? review[k].time + 's' : '[not tracked yet]'}, next review: ${UserGateway.calculateNTR(review[k].box, review[k].last) ? "now" : "in " + UserGateway.calculateNextReview(review[k].box, review[k].last) + " day(s)"})</li>`).join('');
+
+    let worst = lister(k => review[k].box <= 2, (a, b) => review[a].box + review[a].score / 100 - review[b].box - review[b].score / 100);
+    let learning = lister(k => review[k].box > 2 && review[k].box < 5, (a, b) => review[a].box + review[a].score / 100 - review[b].box - review[b].score / 100);
+    let best = lister(k => review[k].box >= 5, (a, b) => review[b].box + review[b].score / 100 - review[a].box - review[a].score / 100);
+
     if(worst.length == 0) worst = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
     if(learning.length == 0) learning = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
     if(best.length == 0) best = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
+    
     deckViewer.innerHTML = `
         <div class='title deck-container-overview' id='deck-container-overview'>
             <h2>${name}</h2>
@@ -86,7 +96,7 @@ function update(search) {
 
     deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
     for(let i = 0; i < decks.length; i++) {
-        if(counts[i] > 0 && decks[i].name.toLowerCase().includes(search)) {
+        if(counts[i] > 0 && window.lib.decode(decks[i].name).toLowerCase().includes(search)) {
             coll++;
             deckReminders.innerHTML += `
                 <div class="review-container">
@@ -99,7 +109,7 @@ function update(search) {
     
     deckReminders.innerHTML += "<h3>All Decks</h3>";
     for(let i = coll = 0; i < decks.length; i++) {
-        if(decks[i].name.toLowerCase().includes(search)) {
+        if(window.lib.decode(decks[i].name).toLowerCase().includes(search)) {
             coll++;
             let div = document.createElement('div');
             div.className = 'review-container';
