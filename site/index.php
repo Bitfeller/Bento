@@ -131,7 +131,7 @@
             <div class="modal-content">
                 <p><u>Sign Up</u></p>
                 <p>Username:</p>
-                <input type="email" id="signUpUsername">
+                <input type="text" id="signUpUsername">
                 <p>Email:</p>
                 <input type="email" id="signUpEmail">
                 <p>Password:</p>
@@ -147,11 +147,11 @@
             <div class="modal-content">
                 <p><u>Login</u></p>
                 <p>Username:</p>
-                <input type="email" id="signInUsername">
+                <input type="text" id="signInUsername">
                 <p>Password:</p>
                 <input type="password" id="signInPassword">
                 <button class="submitBtn" id="signInBtnM">Login</button>
-                <p class='reset-pwd' onclick="location.href='/user/resetpwd'">I forgot my password >></p>
+                <p class='login-box-selector' onclick="location.href='/user/resetpwd'">I forgot my password >></p>
                 <p class="info-error" id="login-err"></p>
             </div>
         </dialog>

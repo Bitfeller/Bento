@@ -562,9 +562,9 @@ resetpic.addEventListener('mousedown', () => {
 // --------------------------------------------------- \\
 
 
-function toDeck(err_assigner, is_draft = false, bypass = false, setCard, cloning = false) {
+function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
     if(!user) return void err_assigner("Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)");
-    if(name.value == '' && !is_draft) return void err_assigner("You haven't named your deck yet.");
+    if(name.value == '' && !is_temp) return void err_assigner("You haven't named your deck yet.");
     let data = {};
     for(let i = setCard ?? 0; i < cards.length && (setCard == undefined ? true : i == setCard); i++) {
         let card = cards[i];
@@ -585,12 +585,13 @@ function toDeck(err_assigner, is_draft = false, bypass = false, setCard, cloning
             for(let j = 0; j < answers.length; j++) {
                 let ans = answers[j].getElementsByClassName('mcop-val')[0];
                 if(!ans) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
-                if(ans.dataset.cnt.length > 0) cdata.op.push(ans.dataset.cnt);
+                if(ans.dataset.cnt.length > 0 || is_temp) cdata.op.push(ans.dataset.cnt);
+                    else continue;
                 if(answers[j].getElementsByClassName('mcop-sel').length > 0) cdata.ans.push(j);
             }
             if(q.dataset.cnt.length == 0 && cdata.op.length == 0) continue;
             if(card.getElementsByClassName('active').length > 0 && cdata.ans.length > 1) cdata.req = 1;
-            if(data[q.dataset.cnt] && !cloning) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('txtbtn')) {
             let cdata = {
@@ -603,7 +604,7 @@ function toDeck(err_assigner, is_draft = false, bypass = false, setCard, cloning
             for(let j = 0; j < answers.length; j++) {
                 let ans = answers[j].getElementsByClassName('txtans')[0];
                 if(!ans) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
-                if(ans.dataset.cnt.length > 0) cdata.ans.push(ans.dataset.cnt);
+                if(ans.dataset.cnt.length > 0 || is_temp) cdata.ans.push(ans.dataset.cnt);
             }
             if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
             let i_cdata = {
@@ -613,18 +614,18 @@ function toDeck(err_assigner, is_draft = false, bypass = false, setCard, cloning
             }
             let inv = card.getElementsByClassName('inverse')[0];
             let ans = inv.getElementsByClassName('txt-ans-cont-inv')
-            if(inv.style.display == "block" && (!bypass || is_draft)) return void err_assigner("Looks like there's a text card still in inverse mode; we can't configure it yet. (Or, try again to bypass this warning and force-configure the card.)");
+            if(inv.style.display == "block" && (!bypass || is_temp)) return void err_assigner("Looks like there's a text card still in inverse mode; we can't configure it yet. (Or, press again to bypass this warning and force-build the card.)");
             if(ans.length > 0) {
                 i_cdata.ans = [];
                 for(let j = 0; j < ans.length; j++) {
                     let a = ans[j].getElementsByClassName('txtans')[0];
                     if(!a) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
-                    if(a.dataset.cnt.length > 0) i_cdata.ans.push(a.dataset.cnt);
+                    if(a.dataset.cnt.length > 0 || is_temp) i_cdata.ans.push(a.dataset.cnt);
                 }
-                if(data[inv.getElementsByClassName('q')[0].dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+                if(data[inv.getElementsByClassName('q')[0].dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
                 data[inv.getElementsByClassName('q')[0].dataset.cnt] = i_cdata;
             }
-            if(data[q.dataset.cnt] && !cloning) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('rankbtn')) {
             let cdata = {
@@ -637,10 +638,10 @@ function toDeck(err_assigner, is_draft = false, bypass = false, setCard, cloning
             for(let j = 0; j < items.length; j++) {
                 let txt = items[j].getElementsByClassName('rank-item-txt')[0];
                 if(!txt) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
-                if(txt.dataset.cnt.length > 0) cdata.ans.push(txt.dataset.cnt);
+                if(txt.dataset.cnt.length > 0 || is_temp) cdata.ans.push(txt.dataset.cnt);
             }
             if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
-            if(data[q.dataset.cnt] && !cloning) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('mtchbtn')) {
             let cdata = {
@@ -654,10 +655,10 @@ function toDeck(err_assigner, is_draft = false, bypass = false, setCard, cloning
                 let term = pairs[j].getElementsByClassName('mtchpair-term')[0];
                 let def = pairs[j].getElementsByClassName('mtchpair-def')[0];
                 if(!term || !def) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
-                if(term.dataset.cnt.length > 0 && def.dataset.cnt.length > 0) cdata.ans.push([term.dataset.cnt, def.dataset.cnt]);
+                if(term.dataset.cnt.length > 0 && def.dataset.cnt.length > 0 || is_temp) cdata.ans.push([term.dataset.cnt, def.dataset.cnt]);
             }
             if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
-            if(data[q.dataset.cnt] && !cloning) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
         }
     }
