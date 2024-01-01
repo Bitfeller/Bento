@@ -60,7 +60,7 @@
         </div>
         <div id="answers">
             <!-- Text -->
-            <input type="text" id="answerText" placeholder="Type your answer here..." autocomplete="off">
+            <!-- <input type="text" id="answerText" placeholder="Type your answer here..." autocomplete="off"> -->
 
             <!-- Multiple Choice -->
             <!-- <div class="mc-option">The Correct Answer</div>
@@ -81,14 +81,17 @@
             <div class="matching-option">3. That goes where?</div> -->
 
             <!-- More?! -->
-            <div class="answer-options">
+        </div>
+        <div id="answerInfo">
+            Please input a valid answer
+        </div>
+        <div class="answer-options">
                 <span id="reshow">
                     Show Question Again <span class="shortcut">R</span>
                 </span>
                 <span id="markCorrect">
                     Mark Answer as Correct <span class="shortcut">_</span>
                 </span>
-            </div>
         </div>
         <!-- 
             Multiple choice:
