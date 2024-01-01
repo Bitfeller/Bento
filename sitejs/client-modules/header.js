@@ -49,7 +49,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     ];
 
     function tip_changer(newtext, color) {
-        return new Promise((res, rej) => {
+        return new Promise((res, _) => {
             tips.innerHTML = `<p class='prev-tip'>${tips.innerHTML}</p>`;
             window.setTimeout(() => {
                 if(color) tips.style.color = color;

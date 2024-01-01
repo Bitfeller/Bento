@@ -10,21 +10,17 @@ let deckSize = 5;
 let curr = 0;
 let infinite_mode = false;
 
-let currSet = [];
-let currWrong = [];
-let lastWrong = [];
+let currSet = [], currWrong = [], lastWrong = [];
 let card = 0;
 let active = false;
 
-let seen = 0;
-let C_w = 0;
+let seen = 0, C_w = 0;
 
 const totalWrong = {};
 const cardsSeen = {};
 let updateFn;
 
-let lastCorrect = false;
-let reshow_correct = undefined;
+let lastCorrect = false, reshow_correct = undefined;
 
 // -------------------------------------------------------- \\
 
