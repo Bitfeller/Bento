@@ -34,7 +34,19 @@
         <div class="options-container">
             <p>Import Options</p>
             <button id="quizlet-import-btn">Import from Quizlet</button>
-            <button id="bento-import-btn">Import a Bento Deck</button><br>
+            <button id="bento-import-btn">Import a Bento Deck</button><br><br>
+            
+            <p>Edit a Draft Deck</p>
+            <div id="draftdecks-history">
+                <!--
+                    <div id='draftdeck'>
+                        <p>Yesterday</p>
+                        <button id='show'>S</button>
+                        <button id='del'>D</button>
+                    </div>
+                -->
+                <p>None</p>
+            </div>
         </div>
     </div>
     <div class="importModal" id="quizlet-import-modal">

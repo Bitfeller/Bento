@@ -6,6 +6,6 @@
         fail('no session');
     } else {
         success(
-            ["uid"=>$_SESSION['uid'], "username"=>$_SESSION['username'], "pfp"=>$_SESSION['pfp'], "email"=>$_SESSION['email'], "reviews"=>$_SESSION['reviews'], "verified"=>$_SESSION['verified'], "creation_date"=>$_SESSION['creation_date'], "notifsub"=>$_SESSION['notifsub']]
+            ["uid"=>$_SESSION['uid'], "username"=>$_SESSION['username'], "pfp"=>$_SESSION['pfp'], "email"=>$_SESSION['email'], "reviews"=>$_SESSION['reviews'], "draftdecks"=>$_SESSION['draftdecks'], "verified"=>$_SESSION['verified'], "creation_date"=>$_SESSION['creation_date'], "notifsub"=>$_SESSION['notifsub']]
         );
     }
