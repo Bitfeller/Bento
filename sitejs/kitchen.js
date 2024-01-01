@@ -133,7 +133,7 @@ function box(id, killfn = (box) => box.remove()) {
         b.getElementsByClassName('add-button')[0].addEventListener('click', e => updateReviews(e.currentTarget));
 
         // Update reviews tags
-        if(user.userdata.reviews[id]) {
+        if(user.userdata.reviews[id] && data.data.tags) {
             for(let tag of data.data.tags)
                 reviewsTags[tag] = (reviewsTags[tag] ?? 0) + 1;
         }
