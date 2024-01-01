@@ -27,15 +27,46 @@ function show(user, deck) {
     deckViewer.innerHTML = `
         <div class='title deck-container-overview' id='deck-container-overview'>
             <h2>${name}</h2>
-            <p>By: a user</p>
-        <div>
+            <p>By: &lt;unknown&gt;</p>
+        <div><br>
+        <hr><br>
         <div class='deck-container-main' id='deck-container-main'>
-
+            <p class='info-blank'>-- A cool new feature coming here soon... --</p>
         </div>
     `;
 }
 function hide() {
     deckViewer.style.display = 'none';
+}
+function update(search) {
+    search = search.toLowerCase();
+    let searched = search != '';
+    let coll = 0;
+    deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
+    for(let i = 0; i < decks.length; i++) {
+        if(counts[i] > 0 && decks[i].name.toLowerCase().includes(search)) {
+            coll++;
+            deckReminders.innerHTML += `
+                <div class="review-container">
+                    <span class="review-name">${decks[i].name}</span><span class="review-number">${counts[i]}</span>
+                </div>
+            `;
+        }
+    }
+    if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks for review that match." : "There aren't any decks to review."} --</p>`;
+    deckReminders.innerHTML += "<h3>All Decks</h3>";
+    for(let i = coll = 0; i < decks.length; i++) {
+        if(decks[i].name.toLowerCase().includes(search)) {
+            coll++;
+            let div = document.createElement('div');
+            div.className = 'review-container';
+            div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>`;
+            deckReminders.appendChild(div);
+            div.addEventListener('mouseenter', () => show(data, decks[i]));
+            div.addEventListener('mouseleave', hide);    
+        }
+    }
+    if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks that match" : "You don't have any decks in your reviews."} --</p>`;
 }
 (async () => {
     let [success, data] = await UserGateway.getuser(false, true, true, false);
@@ -44,7 +75,7 @@ function hide() {
     let reviews = data.userdata.reviews;
     
     let r_keys = Object.keys(reviews);
-    let decks = [], counts = [], coll = 0;
+    let decks = [], counts = [];
 
     for(let i = 0; i < r_keys.length; i++) {
         let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), false, false, true);
@@ -58,89 +89,13 @@ function hide() {
         }
         count += deck.contnt_len - c_keys.length;
         counts.push(count);
-        if(count > 0) {
-            coll++;
-            deckReminders.innerHTML += `
-                <div class="review-container">
-                    <span class="review-name">${deck.name}</span><span class="review-number">${count}</span>
-                </div>
-            `;
-        }
     }
-    if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- There aren't any decks to review. --</p>";
-    deckReminders.innerHTML += "<h3>All Decks</h3>";
-    coll = 0;
-    for(let i = 0; i < decks.length; i++) {
-        coll++;
-        let div = document.createElement('div');
-        div.className = 'review-container';
-        div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>`;
-        deckReminders.appendChild(div);
-        div.addEventListener('mouseenter', () => show(data, decks[i]));
-        div.addEventListener('mouseleave', hide);
-    }
-    if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- You don't have any decks in your reviews. --</p>";
-    searcher.addEventListener('input', () => {
-        if(searcher.value == '') {
-            let coll = 0;
-            deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
-            for(let i = 0; i < decks.length; i++) {
-                if(counts[i] > 0) {
-                    coll++;
-                    deckReminders.innerHTML += `
-                        <div class="review-container">
-                            <span class="review-name">${decks[i].name}</span><span class="review-number">${counts[i]}</span>
-                        </div>
-                    `;
-                }
-            }
-            if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- There aren't any decks to review. --</p>";
-            deckReminders.innerHTML += "<h3>All Decks</h3>";
-            coll = 0;
-            for(let i = 0; i < decks.length; i++) {
-                coll++;
-                let div = document.createElement('div');
-                div.className = 'review-container';
-                div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>`;
-                deckReminders.appendChild(div);
-                div.addEventListener('mouseenter', () => show(data, decks[i]));
-                div.addEventListener('mouseleave', hide);
-            }
-            if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- You don't have any decks in your reviews. --</p>";
-        } else {
-            let coll = 0;
-            deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
-            for(let i = 0; i < decks.length; i++)
-                if(counts[i] > 0 && decks[i].name.toLowerCase().includes(searcher.value.toLowerCase())) {
-                    coll++;
-                    deckReminders.innerHTML += `
-                        <div class="review-container">
-                            <span class="review-name">${decks[i].name}</span><span class="review-number">${counts[i]}</span>
-                        </div>
-                    `;
-                }
-            if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- There are't any decks for review that match. --</p>";
-            deckReminders.innerHTML += "<h3>All Decks</h3>";
-            coll = 0;
-            for(let i = 0; i < decks.length; i++)
-                if(decks[i].name.toLowerCase().includes(searcher.value.toLowerCase())) {
-                    coll++;
-                    let div = document.createElement('div');
-                    div.className = 'review-container';
-                    div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>`;
-                    deckReminders.appendChild(div);
-                    div.addEventListener('mouseenter', () => show(data, decks[i]));
-                    div.addEventListener('mouseleave', hide);
-                }
-            if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- There are't any decks that match. --</p>";
-        }
-    });
+    update('');
+    searcher.addEventListener('input', () => update(searcher.value));
     window.LOADED();
 })();
-version.addEventListener('mousedown', () => {
-    version_info.showModal();
-});
-window.addEventListener('mousedown', (e) => {
+version.addEventListener('mousedown', () => version_info.showModal());
+window.addEventListener('mousedown', e => {
     if(e.target == feedback_dialog || e.target == version_info) {
         feedback_dialog.close();
         version_info.close();
