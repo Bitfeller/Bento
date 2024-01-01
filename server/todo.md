@@ -1,11 +1,10 @@
 # TODO: 
 
 ### Feature Tasks:
-- Verification system for emails
-- Password reset system
+- Verification + password reset system via email
+- Scientific format/math format for answers/in cards
 
 - Add more interactive games?
-- TEST EVERYTHING
 
 - Allow cards to be shown both ways
 - Allow grouping; random selection for incorrect options
@@ -13,20 +12,5 @@
 
 - Google account integration?
 
-- Fix UI
-
 ### Feature Improvement Tasks:
-
-### Bugs:
-- Create proper error handling(?)
-- prevent XSS?
-### Extra:
-- likes on decks?
-- kitchen searching algorithm - adjust for min score comparison per name term to search term; compare and give result?
-
-# info references:
-- NTRonly
-- randomTerms
-- deckSize
-- cardRepeat
-- deckdistr
+- None
