@@ -29,7 +29,6 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     const tips = document.getElementsByClassName("tips")[0];
     
     const previous_pages = JSON.parse(localStorage.getItem("previous_pages")) || [];
-    console.log(previous_pages);
 
     // loading variables
     let load_failed = false;
@@ -231,7 +230,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     });
     window.addEventListener('mousedown', (e) => {
         // click outside of popup: close the popup
-        if (e.target != verify_dialog) verify_dialog.close();
-        if (e.target != feedback_dialog) feedback_dialog.close();
+        if (e.target == verify_dialog) verify_dialog.close();
+        if (e.target == feedback_dialog) feedback_dialog.close();
     });
 })();

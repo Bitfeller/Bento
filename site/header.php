@@ -7,7 +7,7 @@
         <span class='header-nav material-symbols-outlined right-header-ico' id='header:feedback' title='Give A Suggestion'>feedback</span>
         <span class="header-nav material-symbols-outlined right-header-ico" id="header:logout" title="Logout">logout</span>
     </div>
-    <!-- if you oppose rtl order, kys -->
+    <!-- this is loaded after everything to place it as far as possible to the left -->
     <div class="left-header">
         <span class="header-nav material-symbols-outlined" id="header:back" title="Black Button">keyboard_double_arrow_left</span>
     </div>
@@ -23,7 +23,6 @@
         <textarea placeholder="Give feedback here..." id="header:feedback_content"></textarea>
         <button id='header:feedback_submit' class="feedback-submit-button">Submit!</button>
     </dialog>
-        <!-- 2nd comment, because the other one would be the only one if not for this one. So Skibidi!! -->
     <dialog id="header:verify_email" class="header-dialog">
         <h2>Verify your email!</h2>
         <p>Verifying your account with Bento allows us to identify that email as the true owner of this account, making account-related processes like password resetting much more faster and secure.</p>
