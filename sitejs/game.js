@@ -5,6 +5,7 @@ var cont_a = document.getElementById("cont_a");
 var answerbtn = document.getElementById("answerbtn");
 var progressNumbers = document.getElementById("progressNumbers");
 let progressBar = document.getElementById("progressBar");
+const answerMarker = document.getElementById("answer_marker");
 var info = document.getElementById("answer_info");
 var ans_a = document.getElementById("ans_a");
 
@@ -216,6 +217,7 @@ function answerHandler() {
                     ans_a.children[0].value = data.ans;
                     ans_a.children[0].disabled = true;
                     answerbtn.innerHTML = "Continue >>>";
+                    answerMarker.style.display = "block";
                     toProceed = true;
                 }
             break;
@@ -318,6 +320,12 @@ window.addEventListener("dragover", function(e) {
 })();
 let mc_keynum = "";
 let prob;
+answerMarker.addEventListener("mousedown", () => {
+    
+    answerMarker.style.display = "none";
+    contlabel();
+    refresh();
+});
 window.addEventListener("keydown", (e) => {
     if(selected) return;
     let data = Game.fetchProblem();
