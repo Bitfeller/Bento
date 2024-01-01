@@ -56,18 +56,39 @@
             <button id="submit-username">Change</button>
         </div>
         <div class="grid-box change-box">
-            <h2>Change Email</h2>
+            <h2>Change Email/Password</h2>
+            <select id="change-option">
+                <option value="email" selected>Change Email</option>
+                <option value="password">Change Password</option>
+            </select>
+            <div id="change-email-box">
                 <input type="text" id="email-curr-password" placeholder="Current Password">
                 <input type="text" id="email" placeholder="Email">
-            <p>Changing your email will require you to verify the new email address so make sure you can access it.</p>
-            <button id="change-email">Change</button>
+                <p>Changing your email will require you to verify the new email address so make sure you can access it.</p>
+                <button id="change-email">Change</button>
+            </div>
+            <div id="change-password-box" style="display: none;">
+                <input type="password" id="password-curr-password" placeholder="Current Password">
+                <input type="password" id="password" placeholder="New Password">
+                <p>Passwords must be at least 8 characters long <p><i>for now...</i></p></p>
+                <button id="change-password">Change</button>
+            </div>
         </div>
         <div class="grid-box change-box">
-            <h2>Change Password</h2>
-            <input type="text" id="password-curr-password" placeholder="Current Password">
-            <input type="text" id="password" placeholder="New Password">
-            <p>Passwords must be at least 8 characters long <p><i>for now...</i></p></p>
-            <button id="change-password">Change</button>
+            <h2>Miscellaneous</h2>
+            <div id="global-back-box">
+                <label for="enable-global-back">
+                    <input type="checkbox" id="enable-global-back" disabled>
+                    Enable Global Back Button
+                </label>
+                <p>Appears to the left of the Bento!, logo on every page, and is not assured to enhance user experience.</p>
+            </div>
+            <div>
+                <button id="restart-tutorial" onclick="window.location.href='/home?new=1'">Restart Tutorial</button>
+                <p>
+                    Teaches you how to use Bento! about various terminology and the programs features.
+                </p>
+            </div>
         </div>
         <div class="grid-box change-box danger-box">
             <h2>Danger Zone</h2>
@@ -75,11 +96,13 @@
                 <h3>Account Deletion:</h3>
                 <p>Deleting your account will remove all of your data from our servers. This action is irreversible.</p>
                 <button id="delete-account">Delete Account</button>
+                <p class="info-error" id="delete-account-error"></p>
             </div>
             <div>
                 <h3>Reset Account:</h3>
                 <p>This will reset all of your reviews data and preferences.</p>
                 <button id="reset-account">Reset Account</button>
+                <p class="info-error" id="reset-account-error"></p>
                 <img id="settings-icon-nondescructive">
             </div>
         </div>
@@ -90,7 +113,7 @@
             <p>This action is irreversible and will remove all of your data from our servers.</p>
             <br>
             <p>Enter your current password to continue...</p>
-            <input type="text" id="delete-account-password" placeholder="Current Password">
+            <input type="password" id="delete-account-password" placeholder="Current Password">
             <br>
             <button id="delete-account-confirm">Delete Account</button>
             <button id="delete-account-cancel">Cancel</button>

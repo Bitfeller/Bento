@@ -7,12 +7,28 @@
     <?php require_once "../globalreqs.php"?>
     <link rel="stylesheet" href="../../css/kitchen.css"/>
     <script src="../../sitejs/kitchen.js" type="module" data-loading="true"></script>
+    <link rel="preload" href="../../img/loading.gif" as="image">
+    <!-- MathJax -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: []
+            },
+            svg: {
+                fontCache: 'global',
+                scale: 1,
+            },
+            startup: {}
+        };
+    </script>
+    <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body data-uo="true">
     <?php require_once "../header.php"?>
     <div class='container'>
         <div class="search-container">
-            <input type="text" name="search" id="search" class="search-bar" placeholder="Search from the marketplace... 　(Enter)">
+            <input type="text" name="search" id="search" class="search-bar" placeholder="Search the marketplace... 　(Enter)">
         </div>
         <h2 style="display: none;" id="searchText" class="left-text">Search Results</h2>
         <div style="display: none;" class="ingredients-container" id="searched_decks">

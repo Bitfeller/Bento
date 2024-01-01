@@ -2,8 +2,7 @@
     require '../module.php';
     validate_request();
     $data = get_data('feedback');
-    require_types('s', 'feedback'); // professional code right here
-    // wouldn't you agree?
+    require_types('s', 'feedback');
     session_start();
     if(!isset($_SESSION['uid'])) fail('no session');
     $id = $_SESSION['uid'];
