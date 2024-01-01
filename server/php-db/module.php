@@ -89,3 +89,64 @@
             return json_decode(file_get_contents('../../conf/config.json'), true);
         }
     }
+    function _traverse_array_sanitize(array $content) {
+        $newContnt = [];
+        foreach($content as $val) {
+            $newVal = null;
+            if(gettype($val) == "array") {
+                $newVal = _traverse_array_sanitize($val);
+            }
+            if(gettype($val) == "object") {
+                $newVal = _traverse_object_sanitize($val);
+            }
+            if(gettype($val) == "string") {
+                $newVal = htmlspecialchars(strip_tags($val));
+            }
+            if(gettype($val) == "double" || gettype($val) == "integer") {
+                $newVal = $val;
+            }
+            $newContnt[] = $newVal;
+        }
+        return $newContnt;
+    }
+    function _traverse_object_sanitize(object $content) {
+        $newContnt = (object) [];
+        foreach($content as $key => $val) {
+            $newKey = htmlspecialchars(strip_tags($key));
+            $newVal = null;
+            if(gettype($val) == "array") {
+                $newVal = _traverse_array_sanitize($val);
+            }
+            if(gettype($val) == "object") {
+                $newVal = _traverse_object_sanitize($val);
+            }
+            if(gettype($val) == "string") {
+                $newVal = htmlspecialchars(strip_tags($val));
+            }
+            if(gettype($val) == "double" || gettype($val) == "integer") {
+                $newVal = $val;
+            }
+            $newContnt->$newKey = $newVal;
+        }
+        return $newContnt;
+    }
+    function sanitize($content) {
+        if(gettype($content) == "array") {
+            return _traverse_array_sanitize($content);
+        }
+        if(gettype($content) == "object") {
+            return _traverse_object_sanitize($content);
+        }
+        if(gettype($content) == "string") {
+            return htmlspecialchars(strip_tags($content));
+        }
+        return null;
+    }
+    function connect_to_db() {
+        $conf = get_server_config();
+        $conn = mysqli_connect($conf['mysql']['host'], $conf['mysql']['user'], $conf['mysql']['password'], $conf['mysql']['db']);
+        if(!$conn) {
+            fail("conn: ". mysqli_connect_error());
+        }
+        return $conn;
+    }

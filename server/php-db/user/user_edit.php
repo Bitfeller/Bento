@@ -1,5 +1,5 @@
 <?php
-    require_once '../funcs.php';
+    require_once '../module.php';
     validate_request();
     $data = get_data('setting', 'val');
     require_types('sss', 'setting', 'val', 'verifpwd');
@@ -13,7 +13,7 @@
     $val = $data['val'];
     $verifpwd = $data['verifpwd'];
     try {
-        require_once '../dbh.php';
+        $conn = connect_to_db();
         // Get user
         $sql = "SELECT * FROM users WHERE username = ? OR email = ?;";
         $stmt = $conn->prepare($sql);
@@ -102,23 +102,26 @@
                 $stmt->close();
             break;
             case 'reviews':
-                $val = json_decode($val, true);
-                if(!isset($val)) {
-                    fail("exception: data isn't valid JSON.");
-                }
-                $safeVal = (object) [];
-                foreach($val as $dkey => $deck) {
-                    $safeVal->$dkey = (object) [];
-                    foreach($deck as $prob => $data) {
-                        $newProb = htmlspecialchars(strip_tags($prob));
-                        $newItem = [];
-                        $newItem['last'] = (int)$data['last'];
-                        $newItem['box'] = (int)$data['box'];
-                        $newItem['score'] = (int)$data['score'];
-                        $safeVal->$dkey->$newProb = $newItem;
-                    }
-                }
+                $val = json_decode($val, false);
+                $safeVal = sanitize($val);
                 $safeVal = json_encode($safeVal);
+                // $val = json_decode($val, true);
+                // if(!isset($val)) {
+                //     fail("exception: data isn't valid JSON.");
+                // }
+                // $safeVal = (object) [];
+                // foreach($val as $dkey => $deck) {
+                //     $safeVal->$dkey = (object) [];
+                //     foreach($deck as $prob => $data) {
+                //         $newProb = htmlspecialchars(strip_tags($prob));
+                //         $newItem = [];
+                //         $newItem['last'] = (int)$data['last'];
+                //         $newItem['box'] = (int)$data['box'];
+                //         $newItem['score'] = (int)$data['score'];
+                //         $safeVal->$dkey->$newProb = $newItem;
+                //     }
+                // }
+                // $safeVal = json_encode($safeVal);
                 $sql = "UPDATE users SET reviews = ? WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("si", $safeVal, $_SESSION['uid']);

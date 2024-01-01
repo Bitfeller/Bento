@@ -421,7 +421,7 @@ function getProgress() {
     let len = gameData.length - currentSet * deckSize;
     let real_deckSize = (len < deckSize && currentSet == 0) ? len : deckSize;
     let curr_deckSize = len < deckSize ? len : deckSize;
-    let wmod = currentSet == 1 ? 0 : 1;
+    let wmod = currentSet < 1 ? 0 : 1;
     let c_free = Math.max(curr_deckSize - E_s * curr, 0);
     // Due to cardRepeat, questions from currWrong may also count as normal questions which will be counted as normally seen; therefore, actual extra questions will differ.
     // We will have to use rndSetData and currWrong to see which ones have been fully marked by rndSetData and aren't eligible to be seen normally, and then mark those as

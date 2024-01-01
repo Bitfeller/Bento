@@ -1,5 +1,5 @@
 <?php
-    require_once '../funcs.php';
+    require_once '../module.php';
     validate_request();
     $data = get_data('username', 'pwd', 'email');
     require_types('sss', 'username', 'pwd', 'email');
@@ -8,7 +8,7 @@
     $pwd = $data['pwd'];
     $email = $data['email'];
     try {
-        require_once '../dbh.php';
+        $conn = connect_to_db();
         // Check username
         if(!preg_match("/^[A-Za-z0-9\-]*$/", $username)) {
             fail("invalid username");

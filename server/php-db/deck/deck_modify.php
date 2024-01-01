@@ -1,5 +1,5 @@
 <?php
-    require_once '../funcs.php';
+    require_once '../module.php';
     validate_request();
     $data = get_data('d_id', 'setting', 'val');
     require_types('nss', 'd_id', 'setting', 'val');
@@ -14,7 +14,7 @@
     $setting = $data['setting'];
     $val = $data['val'];
     try {
-        require_once '../dbh.php';
+        $conn = connect_to_db();
         // Fetch deck
         $sql = "SELECT * FROM decks WHERE id = ? AND owner = ?;";
         $stmt = $conn->prepare($sql);
@@ -30,10 +30,8 @@
                 if($result['name'] == $val) {
                     success();
                 }
-                // Check if name is valid
-                if(!preg_match("/^[\-A-Za-z0-9\s]*$/", $val)) {
-                    fail("invalid name");
-                }
+                // Sanitize name
+                $val = htmlspecialchars(strip_tags($val));
                 // Check if name is already taken by another deck from same user
                 $sql = "SELECT * FROM decks WHERE name = ? AND owner = ?;";
                 $stmt = $conn->prepare($sql);
@@ -75,40 +73,43 @@
                 $stmt->close();
                 success();
             case "data":
-                $val = json_decode($val, true);
-                if(!isset($val)) {
-                    fail("exception: data isn't valid JSON.");
-                }
-                $safeVal = [];
-                $safeVal['desc'] = htmlspecialchars(strip_tags($val['desc']));
-                $safeVal['contnt'] = (object) [];
-                // Check for duplicate questions
-                $problems = [];
-                foreach($val['contnt'] as $prob => $data) {
-                    $newProb = htmlspecialchars(strip_tags($prob));
-                    if(in_array($newProb, $problems)) {
-                        fail('same problem');
-                    }
-                    $problems[] = $newProb;
-                    $newItem = [];
-                    $newItem['type'] = htmlspecialchars(strip_tags($data['type']));
-                    if(isset($data['op'])) {
-                        $newItem['op'] = [];
-                        foreach($data['op'] as $op) {
-                            $newItem['op'][] = htmlspecialchars(strip_tags($op));
-                        }
-                    }
-                    if(gettype($data['ans']) == 'array') {
-                        $newItem['ans'] = [];
-                        foreach($data['ans'] as $ans) {
-                            $newItem['ans'][] = htmlspecialchars(strip_tags($ans));
-                        }
-                    } else {
-                        $newItem['ans'] = htmlspecialchars(strip_tags($data['ans']));
-                    }
-                    $safeVal['contnt']->$newProb = $newItem;
-                }
+                $val = json_decode($val, false);
+                $safeVal = sanitize($val);
                 $safeVal = json_encode($safeVal);
+                // $val = json_decode($val, true);
+                // if(!isset($val)) {
+                //     fail("exception: data isn't valid JSON.");
+                // }
+                // $safeVal = [];
+                // $safeVal['desc'] = htmlspecialchars(strip_tags($val['desc']));
+                // $safeVal['contnt'] = (object) [];
+                // // Check for duplicate questions
+                // $problems = [];
+                // foreach($val['contnt'] as $prob => $data) {
+                //     $newProb = htmlspecialchars(strip_tags($prob));
+                //     if(in_array($newProb, $problems)) {
+                //         fail('same problem');
+                //     }
+                //     $problems[] = $newProb;
+                //     $newItem = [];
+                //     $newItem['type'] = htmlspecialchars(strip_tags($data['type']));
+                //     if(isset($data['op'])) {
+                //         $newItem['op'] = [];
+                //         foreach($data['op'] as $op) {
+                //             $newItem['op'][] = htmlspecialchars(strip_tags($op));
+                //         }
+                //     }
+                //     if(gettype($data['ans']) == 'array') {
+                //         $newItem['ans'] = [];
+                //         foreach($data['ans'] as $ans) {
+                //             $newItem['ans'][] = htmlspecialchars(strip_tags($ans));
+                //         }
+                //     } else {
+                //         $newItem['ans'] = htmlspecialchars(strip_tags($data['ans']));
+                //     }
+                //     $safeVal['contnt']->$newProb = $newItem;
+                // }
+                // $safeVal = json_encode($safeVal);
                 $sql = "UPDATE decks SET data = ? WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("si", $safeVal, $id);

@@ -1,5 +1,5 @@
 <?php
-    require_once '../funcs.php';
+    require_once '../module.php';
     validate_request();
     $data = get_data('username', 'pwd');
     require_types('ss', 'username', 'pwd');
@@ -7,7 +7,7 @@
     $username = $data['username'];
     $pwd = $data['pwd'];
     try {
-        require_once '../dbh.php';
+        $conn = connect_to_db();
         // Get user
         $sql = "SELECT * FROM users WHERE username = ? OR email = ?;";
         $stmt = $conn->prepare($sql);
