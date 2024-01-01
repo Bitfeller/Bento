@@ -29,6 +29,7 @@ const resetAccount = document.getElementById("reset-account");
 const nordRadio = document.getElementById("nord-radio");
 const coffeeMidnightRadio = document.getElementById("coffee-midnight-radio");
 const catppuccinRadio = document.getElementById("catppuccin-radio");
+// const grayscaleRadio = document.getElementById("grayscale-radio");
 
 // main
 (async () => {
@@ -133,10 +134,12 @@ const catppuccinRadio = document.getElementById("catppuccin-radio");
     if(currentTheme == 0) nordRadio.checked = true;
     else if(currentTheme == 1) coffeeMidnightRadio.checked = true;
     else if(currentTheme == 2) catppuccinRadio.checked = true;
+    // else if(currentTheme == 3) grayscaleRadio.checked = true;
 
     nordRadio.addEventListener("change", () => changeTheme(currentTheme, 0));
     coffeeMidnightRadio.addEventListener("change", () => changeTheme(currentTheme, 1));
     catppuccinRadio.addEventListener("change", () => changeTheme(currentTheme, 2));
+    // grayscaleRadio.addEventListener("change", () => changeTheme(currentTheme, 3));
 })();
 
 async function changeTheme(currentTheme, theme) {

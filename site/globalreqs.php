@@ -17,7 +17,7 @@
                 echo "<link rel='stylesheet' href='../css/themes/catppuccin.css'>";
             break;
             case 3:
-                echo "<link rel='stylesheet' href='../css/themes/classic.css'>";
+                echo "<link rel='stylesheet' href='../css/themes/grayscale.css'>";
             break;
         }
     }
