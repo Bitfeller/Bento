@@ -159,14 +159,14 @@ function refresh() {
                         typeset(answerInfo);
                 }
 
-                option.addEventListener("click", async () => {
+                option.addEventListener("click", () => {
                     option.id = "selectedOption";
                     answerHandler();
                 });
 
                 answers.push(option);
             });
-
+            break;
         case "ranking":
             // Handle ranking question
             break;
