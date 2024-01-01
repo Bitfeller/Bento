@@ -383,7 +383,7 @@ function get_pwsets() {
     }
 
     let len = gameData.length - deckSize;
-    let real_deckSize = (len < deckSize && currentSet == 0);
+    let real_deckSize = (len < deckSize && currentSet == 0) ? len : deckSize;
     let s_curr = curr;
 
     if(currentSet < 1) s_curr = real_deckSize;
