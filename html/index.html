@@ -4,80 +4,131 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento!</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="/css/home.css" />
+    <link rel="stylesheet" href="/css/home.css"/>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="/css/global.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Kadwa:wght@400;700&family=Karla:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script defer src="/js/mainPageLogic.js"></script>
 </head>
 <body>
-    <div class="top-bar">
-        <div class="top-bar-side">
-        
-            <div class="logo" onclick="location.href='/html/'">
-                <img src="/img/bento logo white.svg" height="100%" alt="bento-logo" class="bento-logo">
-            </div>
+    <header>
+        <div class="left-header">
+            <img id="logo" alt="Bento! Logo" src="/img/bento logo white.svg" height="40px" onclick="location.href='/html/'">
         </div>
-        <div class="top-bar-side">
-            <button id="signInBtn">Login</button>
-            <button id="signUpBtn">Sign Up</button>
+        <div class="right-header">
+            <button class="header-button" id="signInBtn">Login</button>
+            <nav>
+                <a class="header-nav">About Us</a>
+                <a class="header-nav">Science</a>
+            </nav>
         </div>
-    </div>
-    <div>
+    </header>
+    <section id="hero">
+        <div id="hero-elements">
+            <h1>
+                Accelerate <u>your</u> learning
+            </h1>
+            <h2>
+                Learn in <mark>simple, bite sized <p></p></mark>pieces so you really <mark>remember<p></p> </mark>what you study
 
-        <div id="description">
-            <div id="sales-pitch">
-                <p class="learning">Learn:</p>
-                <div id="faster-text" class="learning"> Faster.
-                    <div id="better-text" class="learning">Better.</div>                    
-                </div>
-            </div>
+            </h2>
+            <button id="signUpBtn"><p>Sign Up</p></button>
+        </div>
+    </section>
+    
+    <section class="pitch">
+        <h1 class="content-header">
+            Ace Your Next Class With Hands-Free SRS
             <hr>
-            <div class="bento-pitch">
-                <div class="bento-description">
-                    <p><i>Bento!</i> uses the power of <b>SRS</b> and specialty algorithms to <i><b>accelerate</b></i> your learning to the extreme.</p>
+        </h1>
+
+        <div class="pitch-container">
+            <div class="pitch-box">
+                <p>
+                    <b>Spaced Repetition System.</b> Designed to help you review knowledge just before you forget it so when the time comes it will be easy to remember 
+                </p>
+                <img alt="SRS Diagram" src="/img/SRS Diagram.svg">
+            </div>
+            <div class="pitch-box">
+                <p>
+                    <b>Hands-Free Learning.</b> Just pick whatever you want to learn and let the system determine what you need to review and when. 
+                </p>
+                <img alt="Neuron Activation Diagram" src="/img/neuron activation.jpg">
+            </div>
+        </div>
+    </section>
+
+    <section id="feature-set" class="pitch">
+        <h1>
+            Bento!'s Features
+            <hr>
+        </h1>
+
+        <div class="bento-feature-container">
+            <div class="bento-feature-bento hidden" id="feature-bento-1">
+                <span class="material-symbols-outlined">rocket_launch</span>
+                <div>
+                    <h2>Custom Decks</h2>
+                    <p>Create your own custom deck to learn anything you want. From Russian scientific vocabulary to plant genuses.</p>
                 </div>
-                <br>
-                <!-- <p>If you:</p>
-                <p> • Struggle to remember things</p> -->
+            </div>
+            <div class="bento-feature-bento hidden" id="feature-bento-2">
+                <span class="material-symbols-outlined">groups</span>
+                <div>
+                    <h2>Thriving Community</h2>
+                    <p>Many community-made decks to further your own learning and collaborate with others.</p>
+                </div>
+            </div>
+            <div class="bento-feature-bento hidden" id="feature-bento-3">
+                <span class="material-symbols-outlined">sentiment_very_satisfied</span>
+                <div>
+                    <h2>Engaging Learning</h2>
+                    <p>Custom web interface to promote fun and engaging learning.</p>
+                </div>
+            </div>
+            <div class="bento-feature-bento hidden" id="feature-bento-4">
+                <span class="material-symbols-outlined">bolt</span>
+                <div>
+                    <h2>Learn With Ease</h2>
+                    <p>Review lots of information in small pieces everyday</p>
+                </div>
+            </div>
+            <div class="bento-feature-bento hidden" id="feature-bento-5">
+                <span class="material-symbols-outlined">tune</span>
+                <div>
+                    <h2>Customization</h2>
+                    <p>In depth settings to create the experience that helps you learn best</p>
+                </div>
+            </div>
+            <div class="bento-feature-bento hidden" id="feature-bento-6">
+                <span class="material-symbols-outlined">lan</span>
+                <div>
+                    <h2>Play To Learn</h2>
+                    <p>A variety of different learning gamemodes like matching, input, selection, and ranking that help you continue to be motivated to learn even when you are running on 4 coffees and 3 hours of sleep.</p>
+                </div>
             </div>
         </div>
-        <div id="bento-explainer">
-            <div class="explainer-box hidden" id="top-explainer-box">
-                <p>Use Bento! to learn difficult concepts so you really <b>remember</b></p>
-                <img src="/img/difficult-concepts.gif">
-            </div>
-            <div class="explainer-box hidden" id="mid-explainer-box">
-                <img src="https://i.gifer.com/origin/a2/a2e6cc5639345b77380f46248c0d95c8.gif">
-                <p><b>Continuous</b> learning for <i>continually</i> better recall</p>
-            </div>
-            <div class="explainer-box hidden" id="bot-explainer-box">
-                <p>Win all the in-class games like you always wanted</p>
-                <img src="/img/winner.png">
-            </div>
-        </div>
-        <br>
+        <section id="cta">
+            <h1>Sign Up NOW</h1>
+            <button id="cta-button">Sign Up</button>
+        </section>
         <hr>
-        <br>
-        <div id="call-to-action-container">
-            <div>
-                <p id="call-to-action">sign. up. now.</p>
-                <br>
-                <div id="big-button-container">
-                    <button id="bigBtn">Sign Up...</button>
-                </div>
-            </div>
-            <p id="bottom-text">「　┳━┳ ノ( ゜-゜ノ)　」</p>
-        </div>
-        <br>
-        <div id="bottom-bar">
-            <div id="bottom-bar-text">
-                Made by Valley & Bitfeller
-            </div>
-        </div>
-    </div>
+    </section>
+    <!-- <div id="contact-box">
+        <h1>Contact Us</h1>
+        <input placeholder="Name:">
+        <input type="email" placeholder="Email:">
+        <textarea placeholder="Message:"></textarea>
+        <button id="contactSubmitButton">Submit</button>
+    </div> -->
+
+    <footer>
+        <hr>
+        <p>Created By: Bitfeller and Valley</p>
+    </footer>
 
     <section id="modals">
         <div class="modal" id="signUpModal">
