@@ -18,8 +18,9 @@
                 <input class="file-selector" accept="image/png,image/jpeg" id="fileselecttrigger" type="file">
                 <span class="material-symbols-outlined" id="pfpAddBtn">add_a_photo</span>
                 <span class="material-symbols-outlined" id="pfpResetBtn">refresh</span>
+                <div class="pfp-background"></div>
             </div>
-            
+
             <h1 id="username">Username</h1>
         </div>
         <div class="grid-box">

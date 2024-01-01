@@ -11,9 +11,9 @@
     display: flex;
     justify-content: space-evenly;
     flex-direction: column;
-    border: var(--gray) 3px solid; 
+    border: var(--gray) 3px solid;
     border-radius: 5px;
-    background-color: var(--dark-gray); 
+    background-color: var(--dark-gray);
     padding: 10px;
     z-index: 2;
 }
@@ -45,6 +45,15 @@
     color: #5992e8;
     height: 50px;
 }
+.pfp-background {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    margin: 5px;
+    width: 98px;
+    border-radius: 5px;
+    background-color: var(--lighter-gray);
+}
 #pfpResetBtn {
     right: 55px;
 }
@@ -60,19 +69,19 @@
     gap: 5px;
 }
 .nord {
-    background: linear-gradient(to right, #cadda0, #2a72dc, #070a0e);
+    background: linear-gradient(to right, #cadda0, #2a72dc);
     label {
         color: #0c0e0f;
     }
 }
 .coffee-midnight {
-    background: linear-gradient(to right, oklch(77.06% 0.031 293.99), oklch(40.33% 0.039 356.43), oklch(16.79% 0.013 292.64));
+    background: linear-gradient(to right, oklch(77.06% 0.031 293.99), oklch(40.33% 0.039 356.43));
     label {
         color: #0c0e0f;
     }
 }
 .catppuccin-mocha-ish {
-    background: linear-gradient(to right, #74c7ec, #89b4fa, #11111b);
+    background: linear-gradient(to right, #74c7ec, #89b4fa);
     label {
         color: #0c0e0f;
     }
