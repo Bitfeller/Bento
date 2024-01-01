@@ -138,6 +138,10 @@ class UserGateway {
         });
         return [true, undefined];
     }
+    static calculateNTR(successCount, lastSeen) {
+        // NEED TO WORK ON!
+        return true;
+    }
     constructor() {
         console.log("backend: invalid call of class.");
         throw new Error("backend");
