@@ -26,6 +26,15 @@ import { UserGateway } from "../server/client-gateway/user-gateway.js";
 //         signUpModal.style.display = "none";
 //     }
 // }
+window.SHOW_ERROR = err => {
+    const msg = err;
+    const errPopup = document.createElement("div");
+    errPopup.innerText = msg;
+    errPopup.className = "error-popup";
+
+    document.body.appendChild(errPopup);
+    setTimeout(() => errPopup.remove(), 2500);
+};
 
 // Scroll Animation Code
 const observer = new IntersectionObserver(entries => {
