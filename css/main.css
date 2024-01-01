@@ -1,51 +1,11 @@
-* {
-    padding: 0;
-    margin: 0;
-    font-size: 3vh;  
-    color: rgb(56, 38, 26);
-    border-color: rgb(56, 38, 26);
-}
-.logo {
-    color: white;
-    font-size: 28pt;
-}
-body {
-    background-color: rgba(221, 184, 146, 0.55);
-    font-family: "Noto Sans", sans-serif;
-}
-.top-bar {
-    color: white;
-    background-color: rgb(127, 85, 57);
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-bottom: 5px;
-    border-color: rgb(127, 85, 57);
-    border-style: solid;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    font-weight: bold;
-}
-.top-bar-side {
-    cursor: pointer;
-    display: flex;
-    flex-direction: row;
-    gap: 8%;
-    margin-right: 1.5%;
-    margin-left: 2%;
-}
-.top-bar-icons {
-    font-size: 37pt; 
-    margin-top: 0.5vh;
-}
 .main-bento {
-    margin-top: 1%;
+    margin-top: 0.5%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 .bento-svg {
-    width: 90%;
+    max-height: 91vh;
 }
 .svg-button {
     filter: drop-shadow(0 0 1rem black);
