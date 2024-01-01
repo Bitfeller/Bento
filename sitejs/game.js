@@ -137,6 +137,7 @@ function refresh() {
                 op_i.addEventListener("mousedown", () => {
                     if (selected) return;
                     selected = true;
+                    console.log(op_i.textContent, op_i.getAttribute('i'));
                     let correct = Game.isCorrect(
                         parseInt(op_i.getAttribute("i")),
                     );
@@ -185,18 +186,18 @@ function refresh() {
             });
             break;
         case "ranking":
-            var list = document.createElement("div");
+            let list = document.createElement("div");
             list.id = "ranking-list";
             list.className = "ranking-list";
             cont_a.appendChild(list);
             objs.push(list);
-            var answerList = data.ans.slice();
-            for (var i = 0; i < data.ans.length; i++) {
-                var idx = Math.floor(
+            let answerList = data.ans.slice();
+            for (let i = 0; i < data.ans.length; i++) {
+                let idx = Math.floor(
                     Math.random() * (answerList.length - 1) + 0.5,
                 );
-                var item = answerList[idx];
-                var el = document.createElement("div");
+                let item = answerList[idx];
+                let el = document.createElement("div");
                 el.className = "ranking-item";
                 el.id = "item" + i;
                 el.setAttribute("draggable", "true");
@@ -204,20 +205,19 @@ function refresh() {
                 typeset(el);
                 answerList.splice(idx, 1);
                 list.appendChild(el);
-                el.addEventListener("dragstart", function (e) {
+                el.addEventListener("dragstart", (e) => {
                     dragging = el;
                     list.prepend(dragLine);
                 });
-                el.addEventListener("dragend", function (e) {
-                    if (dragging !== el) {
-                        return;
-                    }
+                el.addEventListener("dragend", (e) => {
+                    if (dragging !== el) return;
                     el.style["background-color"] = "";
                     dragLine.remove();
-                    var top;
-                    var bottom;
-                    var y = e.pageY;
-                    for (var i = 0; i < dragElements.length; i++) {
+                    let top;
+                    let bottom;
+                    let y = e.pageY;
+                    for (let i = 0; i < dragElements.length; i++) {
+                        console.log(dragElements[i], centroids[i].y, y);
                         if (centroids[i].y < y) {
                             continue;
                         } else if (i - 1 >= 0) {
@@ -238,12 +238,12 @@ function refresh() {
                     }
                     dragging = undefined;
                     dragElements.sort((a, b) => {
-                        var centerA = computeCenter(a);
-                        var centerB = computeCenter(b);
+                        let centerA = computeCenter(a);
+                        let centerB = computeCenter(b);
                         return centerA.y - centerB.y;
                     });
                     centroids = [];
-                    dragElements.forEach(function (val) {
+                    dragElements.forEach((val) => {
                         centroids.push(computeCenter(val));
                     });
                 });
