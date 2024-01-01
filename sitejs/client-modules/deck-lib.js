@@ -828,7 +828,7 @@ function open_import_modal(contnt) {
             carddiv.className = "import-card";
             carddiv.innerHTML = `
                 <div class="question-box">
-                    <input type="checkbox" name="infinite_mode" class="import-question-checkbox" data-q="${q}" checked>
+                    <input type="checkbox" class="import-question-checkbox" data-q="${q}" checked>
                     <p><b class="mathJax">Q | ${q}</b></p>
                         ${
                             card.type === "mc"

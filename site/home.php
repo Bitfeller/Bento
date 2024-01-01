@@ -7,6 +7,21 @@
     <?php require_once "globalreqs.php"?>
     <link rel="stylesheet" href="/css/home.css"/>
     <script type="module" src="../sitejs/home.js" data-loading="true"></script>
+    <!-- MathJax -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: []
+            },
+            svg: {
+                fontCache: 'global',
+                scale: 1,
+            },
+            startup: {}
+        };
+    </script>
+    <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body data-uo="true">
     <?php require_once "header.php"?>
@@ -27,9 +42,7 @@
         </div>
         <div class="bento-box review-schedule" id="deck-reminders">
             <input type='text' id='search-reviews' placeholder='Search...'>
-            <div class="bento-box container">
-
-            </div>
+            <div class="bento-box container"></div>
             <!-- Sample test data: -->
             <!-- <div class="review-container">
                 <span>Test Deck Here</span>
@@ -50,40 +63,35 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 486.19 278.03" class="create-sushi" onclick="location.href='/learn/createdeck'"><defs><style>.cls-1{fill:#fcc26f;}.cls-2{fill:#fefefe;}.cls-3{opacity:.67;}.cls-4{fill:#fba032;}.cls-5{isolation:isolate;}.cls-6{fill:#ffcb97;opacity:.5;}.cls-7{fill:#d1d3d4;}.cls-8{mix-blend-mode:multiply;}.cls-9{fill:#1b1464;stroke:#000;stroke-miterlimit:10;}</style></defs><g class="cls-5"><g id="Layer_2"><g id="Layer_1-2"><g id="Bottom_Sushi"><path class="cls-2" d="M50.7,255.17c2.85,2.07,4.61,5.51,7.75,7.1,4.38,2.22,9.7.09,14.56.85,5.43.85,9.62,5.18,14.73,7.16,10.86,4.22,22.91-2.76,34.52-1.82,9.57.77,18.12,6.87,27.7,7.56,6.92.5,13.68-1.87,20.48-3.21,10.92-2.15,22.17-1.67,33.29-1.17,14.97.67,29.93,1.33,44.9,2,4.09.18,8.18.36,12.24.84,5.13.6,10.31,1.65,15.41.85,6.05-.96,11.79-4.51,17.87-3.75,6.71.84,12.28,6.81,19.04,6.45,6.4-.34,11.6-6.36,18.01-6.18,4.65.13,9.33,3.54,13.61,1.7,2.57-1.1,4.06-3.8,6.34-5.42,2.5-1.78,5.71-2.11,8.76-2.43,14.6-1.54,29.09-4.12,43.32-7.71,19-4.79,37.73-11.47,54.11-22.22,5.39-3.54,10.59-7.59,14.22-12.91,4.69-6.86,6.44-15.28,7.47-23.52,6.05-48.38-9.32-97.33-32.68-140.12-5.79-10.61-12.41-21.3-22.52-27.92-5.29-3.47-11.31-5.64-17.28-7.74C373.98,12.07,340.4,2.03,305.89.79c-6.06-.22-12.16-.16-18.16.78-4.65.73-9.22,1.99-13.91,2.38-8.92.75-17.77-1.64-26.64-2.87-30.35-4.21-61.05,5.22-91.66,3.72-5.98-.29-11.97-1.01-17.95-.65-5.93.35-11.75,1.75-17.53,3.14-16.51,3.98-33.02,7.95-49.53,11.92-11.45,2.76-23.62,5.93-31.52,14.65-7.08,7.82-9.45,18.69-11.55,29.03-5.16,25.39-10.33,51.04-9.67,76.94.36,13.97,2.42,27.92,1.55,41.87-.93,15-8.47,35.04-2.16,49.58,2.4,5.54,7.88,10.8,12.52,14.44,6.44,5.05,14.74,4.89,21.02,9.45Z"/><path class="cls-4" d="M451.96,233.62c8.18-1.84,16.76-4.05,22.72-9.93,7.26-7.16,9.01-18.08,9.92-28.23,3.44-38,.59-76.25-2.25-114.3-1.48-19.84-4.18-42.06-19.79-54.39-13-10.26-31.03-10.38-47.58-10.04-81.34,1.7-162.69,3.41-244.03,5.11-53.53,1.05-98.25,14.42-150.47,18.61-2.84.23-5.86.53-8.08,2.31-2.97,2.38-3.55,6.6-3.89,10.4C2.88,116.27-24.44,247.96,62.39,253.3c41.32,2.54,82.94,3.39,124.33,3.72,85.45.7,182.88,2.61,265.25-23.41Z"/><path class="cls-1" d="M401.4,131.76c3.31-30.71,6.42-59.75,19-85.51,5.07-10.4,11.92-19.91,19.87-28.44-8.25-1.3-16.95-1.26-25.28-1.08-1.67.04-3.34.07-5.01.11-4.18,5.99-8.07,12.19-11.3,18.8-14.42,29.58-17.92,62.1-21.3,93.53-.87,8.08-1.73,16.12-2.78,24.1-4.61,35.16-12.49,65.2-24.09,91.88-1.28,2.95-2.57,5.49-3.86,8.11,9.36-.85,18.62-1.97,27.86-3.2,11.45-27.57,19.41-58.19,24.06-93.62,1.07-8.17,1.96-16.42,2.85-24.68Z"/><path class="cls-1" d="M268.86,85.26l1.21-4.54c5.61-20.89,10.91-40.62,20.32-58.52.55-1.04,1.23-1.89,1.81-2.9-9.11.19-18.22.38-27.33.57-8.04,17.74-13.26,36.4-18.15,54.58l-1.2,4.51c-12.86,47.54-27.81,95.07-44.42,141.28-4.32,12.02-9.24,24.45-14.69,36.78.1,0,.2,0,.29,0,8.57.07,17.33.14,26.11.21,4.09-9.96,7.79-19.77,11.04-28.82,16.82-46.82,31.96-94.98,45-143.15Z"/><path class="cls-1" d="M128.88,112.06c4.41-18.27,8.57-35.56,14.9-52.27,4.99-13.16,11.73-25.49,19.22-37.38-10,.43-19.88,1.01-29.42,2.09-4.6,8.68-8.91,17.53-12.39,26.74-6.87,18.11-11.41,36.94-15.8,55.14-1.59,6.58-3.17,13.14-4.86,19.69-11.15,43.08-27.16,84.94-47.57,124.45-.2.38-.41.76-.61,1.14,3.25.65,6.41,1.41,10.05,1.63,5.22.32,10.48.41,15.71.68,19.42-38.88,34.93-79.77,45.82-121.85,1.73-6.67,3.34-13.37,4.96-20.07Z"/><g class="cls-8"><path class="cls-7" d="M62.39,253.3c41.32,2.54,82.94,3.39,124.33,3.73,85.45.7,182.88,2.61,265.25-23.41,8.17-1.84,16.76-4.04,22.72-9.93,1.06-1.05,1.78-2.32,2.63-3.51-46.19,8.7-92.92,14.46-139.86,13.8-15.77-.22-31.89-1.24-46.43-7.34-5.33-2.24-10.44-5.16-16.1-6.39-4.64-1.01-9.44-.84-14.19-.67-18.18.67-36.35,1.33-54.53,2-4.84.18-9.72.36-14.43,1.5-4.57,1.11-8.86,3.1-13.22,4.87-29.35,11.9-61.7,13.61-93.35,14.61-17.43.55-35.18.9-51.96-3.86-4.15-1.18-8.21-2.74-12.11-4.62,9.46,10.86,22.6,18.08,41.24,19.22Z"/></g><path class="cls-6" d="M175.77,44.88c7.82.44,16.19,1.27,22.21,6.29,1.67,1.39,3.17,3.27,3.16,5.44-.03,3.85-4.45,5.91-8.15,6.99-25.98,7.61-53.56,13.39-74.76,30.22-8.73,6.92-16.09,15.57-21.53,25.29-3.37,6.02-6.02,12.45-9.84,18.19s-9.1,10.89-15.75,12.72c-8.2,2.26-17.03-.94-24.03-5.78-18.61-12.87-27.37-36.22-29.44-58.76-.68-7.4-1.18-20.41,6.09-24.94,8.84-5.51,25.03-6.23,35.19-8.12,24.7-4.6,49.75-7.3,74.86-8.07,14-.43,28.01-.26,41.99.52Z"/><path class="cls-6" d="M408.99,44.74c4.58.02,9.19.04,13.68.92,16.41,3.22,28.85,17.74,33.95,33.67,5.1,15.93,4.05,33.13,2,49.73-1.46,11.8-3.44,23.66-7.88,34.69-2.45,6.07-6.24,12.37-12.5,14.27-6.46,1.97-13.44-1.5-18.28-6.22-12.15-11.82-14.87-30.04-22.39-45.24-5.16-10.43-12.79-19.64-22.08-26.65-7.15-5.39-15.2-9.48-22.41-14.8-9.74-7.19-27.63-31.82-8.66-39.58,7.97-3.26,19.86-.99,28.23-.95,12.11.05,24.22.1,36.34.15Z"/><g class="cls-3"><path class="cls-9" d="M93.23,171.22c-8.03-.28-14.67-1.81-19.93-4.6s-9.14-6.81-11.64-12.08c-2.5-5.27-3.62-11.79-3.35-19.56.3-8.72,1.84-16.64,4.6-23.77,2.76-7.13,6.53-13.23,11.31-18.31,4.78-5.08,10.38-8.95,16.82-11.6,6.43-2.66,13.47-3.85,21.12-3.58,9.49.33,16.76,4,21.8,11.02l-9.54,9.15c-3.98-5.38-8.83-8.18-14.54-8.38-6.91-.24-13.17,1.57-18.76,5.44-5.6,3.87-10.08,9.27-13.46,16.2-3.38,6.93-5.23,14.89-5.54,23.86-.18,5.24.57,9.64,2.25,13.2,1.68,3.56,4.27,6.28,7.78,8.14,3.5,1.86,7.92,2.89,13.24,3.07,7.3.25,14.8-.77,22.49-3.08l.51,11.37c-8.35,2.63-16.73,3.8-25.15,3.51Z"/><path class="cls-9" d="M159.96,173.55c-7.6-.27-13.46-2.65-17.58-7.16-4.12-4.51-6.05-10.65-5.77-18.42.51-14.51,4.14-25.72,10.91-33.61,6.77-7.89,15.91-11.63,27.41-11.23,7.6.27,13.46,2.71,17.58,7.32,4.12,4.62,6.04,10.92,5.76,18.9-.5,14.3-4.12,25.34-10.86,33.12-6.74,7.78-15.89,11.47-27.44,11.07ZM162.77,161.46c6.44.22,11.57-2.29,15.39-7.56,3.82-5.26,5.89-12.68,6.23-22.26.17-4.98-.76-8.92-2.81-11.8-2.05-2.89-5.03-4.4-8.94-4.54-6.61-.23-11.87,2.27-15.77,7.51-3.9,5.24-6.02,12.65-6.35,22.22-.18,5.02.81,8.98,2.97,11.87,2.16,2.89,5.25,4.41,9.29,4.55Z"/><path class="cls-9" d="M237.26,176.25c-7.6-.27-13.46-2.65-17.58-7.16-4.12-4.51-6.05-10.65-5.77-18.42.51-14.51,4.14-25.72,10.91-33.61,6.77-7.89,15.91-11.63,27.41-11.23,7.6.27,13.46,2.71,17.58,7.32,4.12,4.62,6.04,10.92,5.76,18.9-.5,14.3-4.12,25.34-10.86,33.12-6.74,7.78-15.89,11.47-27.44,11.07ZM240.07,164.16c6.44.22,11.57-2.29,15.39-7.56,3.82-5.26,5.89-12.68,6.23-22.26.17-4.98-.76-8.92-2.81-11.8-2.05-2.89-5.03-4.4-8.94-4.54-6.61-.23-11.87,2.27-15.77,7.51-3.9,5.24-6.02,12.65-6.35,22.22-.18,5.02.82,8.98,2.97,11.87,2.16,2.89,5.25,4.41,9.29,4.55Z"/><path class="cls-9" d="M286.78,176.62l16.28-76.56c.67-3.29.57-5.7-.3-7.23-.87-1.54-2.62-2.35-5.24-2.44-1.07-.04-2.14-.02-3.19.05-1.06.07-2.12.22-3.21.44l-1.09-11.13c1.64-.33,3.29-.54,4.92-.63,1.64-.09,3.27-.11,4.9-.05,7.47.26,12.52,2.24,15.14,5.95,2.62,3.7,3.11,9.53,1.45,17.46l-15.83,74.65-13.85-.48ZM343.8,179.97c-8.03-.28-14.36-2.97-19-8.08-4.64-5.11-7.46-12.3-8.47-21.58,8.73-3.82,14.78-7.74,18.15-11.75,3.37-4.01,5.11-7.78,5.23-11.3.14-4.08-2.1-6.2-6.74-6.36-2.49-.09-5.09.5-7.8,1.76-2.71,1.26-5.31,3.15-7.81,5.66-2.5,2.51-4.71,5.62-6.65,9.31-1.94,3.7-3.39,7.91-4.38,12.65l3.77-23.02,2.51.09c1.08-3.87,2.81-7.22,5.19-10.04s5.24-4.98,8.58-6.47c3.34-1.5,6.97-2.17,10.87-2.04,5.11.18,9.15,1.87,12.11,5.07,2.96,3.2,4.35,7.35,4.18,12.46-.24,6.87-2.48,12.83-6.72,17.89-4.24,5.05-10.1,9.36-17.57,12.93l-.3-9.88c1.12,7.39,2.95,12.61,5.48,15.67,2.54,3.06,6.32,4.67,11.34,4.85,1.25.04,2.22.04,2.93,0,.71-.04,1.47-.09,2.29-.15l.82,11.7c-1.21.22-2.44.39-3.69.52-1.25.13-2.69.16-4.33.11Z"/><path class="cls-9" d="M393.59,181.71c-2.62-.09-4.83-1.1-6.63-3.04-1.8-1.93-2.66-4.21-2.57-6.83.09-2.66,1.11-4.88,3.04-6.67s4.21-2.63,6.83-2.54c2.66.09,4.88,1.1,6.67,3.01,1.78,1.91,2.63,4.2,2.53,6.86-.09,2.62-1.09,4.83-3,6.63-1.91,1.8-4.2,2.66-6.86,2.57ZM393.5,151.01l11.27-62.42,13.85.48-15.33,62.28-9.79-.34Z"/></g></g></g></g></g></svg>
             <img src="../../img/soy-sauce.svg">
         </div>
-        <div class="bento-box graph-container">
-            <!-- <img src="../../img/decorative-sushi.svg" class="decorative-sushi"> -->
-            <h2>Something Here Soon...</h2>
+        <div class="bento-box changelog">
+            <h2>v0.3.2 - What's new<span style="margin-left: 10px;">2/15/25</span></h2>
+            <p>- Better layout and design fixes.</p>
+            <p>- Moderation, filtering, and account bug fixes</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- All usernames and user-generated content are now filtered.</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Weak passwords, like `password`, are highly discouraged and not allowed for the sake of your account's security.</p>
+            <p>- Bug fixes for drafts</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Images are now properly stored.</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Titles for drafts and sanitation issues are fixed.</p>
+            <p>- Data fixes - characters like "&" will never be rendered as "\&amp;" when editing a deck, exporting a deck, or viewing a deck.</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- The same applies for all special characters.</p>
+            <p>- Review fixes - Bento now properly calculates your accuracy with every question and now properly determines when you should next review a question.</p>
+            <p>- Enhanced statistics - Bento now analyzes and stores more nuanced information about how you do with each question, providing you with more informed overviews of how you're doing.</p>
+            <p>- Deck overview - hover over a deck in your reviews (on the home page) for basic overviews of how you're doing.</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Full information pages to see all statistics are yet to be implemented!</p>
+            <p>- Issues with changing a username are now resolved.</p>
+            <p>- Issues with accounts randomly breaking are now resolved.</p>
+            <p>- Issues with adding and modifying deck images are fixed.</p>
+            <p>- Minor fixes with Learn Mode.</p>
+            <p>- Fixes with searching decks.</p>
+            <p>- You can now see your reviews in the home page!</p>
+            <p>- Fixes in learn picker.</p>
+            <p>- Import and export issues have been fixed.</p>
+            <p>- A tutorial now exists on the home page.</p>
+            <p>- Lazy checks now exist in Learn Mode, which you can activate.</p>
         </div>
 
         <section class="global-headers">
-            <dialog id='header:version_info' class="header-dialog">
-                <h2>v0.3.2 - What's new</h2>
-                <span style="margin-left: 10px;">10/--/24</span>
-                <ul>
-                    <li>From v1.0.0 to v0.3.1, we tested a specific problem generator for our learn mode and have concluded it doesn't provide any visible benefits. We've switched over to a better one - thanks to all of our testers who helped us!</li>
-                </ul>
-                <br><hr><br>
-                <h2>v0.3.1 - What's new</h2>
-                <span style="margin-left: 10px;">9/28/24</span>
-                <ul>
-                    <li>Fixed several bugs with formatting, deck creationg/editing, and with learn mode.</li>
-                    <li>Improved learn mode system.</li>
-                    <li>Added performance fixes that reduced loading times by 5% to 70%.</li>
-                </ul>
-                <br><hr><br>
-                <h2>v0.3.0 - What's new</h2>
-                <span style="margin-left: 10px;">9/6/24</span>
-                <ul>
-                        <li>Fixed 14 more bugs, ranging from styling to functionality.</li>
-                        <li>Multiple answers for multiple choice and text cards.</li>
-                        <li>Math and scientific formatting, using MathJax, simply by putting two <code>$</code> around the content you want to format.</li>
-                        <li>Created an email verification and password reset system.</li>
-                        <li>Two-way cards for text cards, so both ways are shown. <b>Note: Minor features, such as SRS support in some situations, may be limited. This feature is still under development.</b></li>
-                        <li>Themes (found in your profile)</li>
-                        <li>More user-friendly deck creation, with easier tabbing and automatic card creation when you tab from the last input box on the last card.</li>
-                        <li>A new study game: Inertia, found in the bottom right corner of Learn mode. <b>Note: Not stable. Still under testing.</b></li>
-                </ul>
-            </dialog>
+            <dialog id="header:version_info_deprecated" class="header-dialog deprecated"></dialog>
         </section>
         <div id="header:version" class="version">
             <span class="new-version"></span>

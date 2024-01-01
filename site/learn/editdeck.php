@@ -38,7 +38,7 @@
                 <span class="material-symbols-outlined" id="picReset">refresh</span>    
             </div>
             <div>
-                <input type="checkbox" id="isPublic">
+                <input type="checkbox" id="isPublic" checked>
                 <span>| Public Deck</span>
             </div>
             <div id="cardcontain"></div>
@@ -103,7 +103,7 @@
             <p>Below is every question about to be imported. Uncheck any you don't want.</p>
             <button id="i-import">Continue >>></button>
             <button id="i-cancel">Cancel</button><br>
-            <span class="material-symbols-outlined" id="qSelectAll">check_box_outline_blank</span>
+            <!-- <span class="material-symbols-outlined" id="qSelectAll">check_box_outline_blank</span> -->
             <div id="importing-questions">
                 <!-- <div class="importing-question">
                     <p class="q">What is the capital of France?</p>
