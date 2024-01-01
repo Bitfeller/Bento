@@ -1,6 +1,5 @@
 # 
 # Sets up server for production.
-# Some processes, like starting server-notif-main.js, are done by the server handler.
 # 
 
 
@@ -60,10 +59,11 @@ cd ..
 # Set normal state for server
 echo "0" > ../conf/config-suspend-server
 
-# Start all Node.js scripts
-pm2 start ./backup/backup.js --name backup
-pm2 start ./suspend-server/suspend-server.js --name suspend-server
-pm2 start ./log-collector/log-collector.js --name log-collector
+# Start all Node.js scripts individually
+cd ./backup && pm2 start ./backup.js --name backup && cd ..
+cd ./suspend-server && pm2 start ./suspend-server.js --name suspend-server && cd ..
+cd ./log-collector && pm2 start ./log-collector.js --name log-collector && cd ..
+cd ./error && pm2 start ./error.js --name error && cd ..
 pm2 save
 
 cd ../..
