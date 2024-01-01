@@ -17,7 +17,7 @@ const app = express();
 const port = 3000;
 
 // Init subList
-const subList = subsave || {};
+const subList = subsave || [];
 
 // Set vapid details + init MySQL server
 webpush.setVapidDetails(
@@ -60,14 +60,15 @@ app.post('/notify', async (req, res) => {
     if(!cookies) return refuse(400, "invalid cookies.");
     // Require session
     if(!cookies.PHPSESSID || typeof cookies.PHPSESSID == "undefined") return refuse(400, "invalid PHPSESSID.");
-    // Check for existing subscription
-    if(subList[sessionId]) {
-        // Check if the user wants to unsubscribe
-        if(req.body.unsubscribe) {
-            delete subList[sessionId];
-            return resolve(200, "subscription destroyed");
+    // Check for subscription destruction
+    if(req.body.unsubscribe) {
+        for(let i = 0; i < subList.length; i++) {
+            if(subList[i].sub.auth == req.body.auth && subList[i].rand_identifier == req.body.rand_identifier) {
+                subList.splice(i, 1);
+                return resolve(200, "subscription destroyed");
+            }
         }
-        return resolve(208, "subscription exists");
+        return refuse(503, "couldn't find session.");
     }
     // Find session
     let sessionId = cookies.PHPSESSID;
@@ -82,12 +83,14 @@ app.post('/notify', async (req, res) => {
     if(!req.body.subscription) return refuse(400, "invalid body");
     const sub = req.body.subscription;
     if(!sub.keys) return refuse(400, "invalid body.");
-    if(!sub.keys.auth || !sub.keys.p256dh) return refuse(400, "invalid body.")
+    if(!sub.keys.auth || !sub.keys.p256dh) return refuse(400, "invalid body.");
+    if(!req.body.rand_identifier) return refuse(400, "invalid body.");
     // Add subscription to list
-    subList[sessionId] = {
+    subList.push({
         sub,
-        uid: session.uid
-    };
+        uid: session.uid,
+        rand_identifier: req.body.rand_identifier
+    })
     fs.writeFileSync('./server/notif-service/sub-save.json', JSON.stringify(subList));
     res.status(201).json({status: "success"});
 });
@@ -127,11 +130,10 @@ const calculateNTR = (box, lastSeen) => {
     }
 }
 
-const elapsedDays = {};
+const elapsedDays = [];
 const job = schedule.scheduleJob("0 0 12 * * *", () => {
-    const keys = Object.keys(subList);
-    for(let i = 0; i < keys.length; i++) {
-        let obj = subList[keys[i]];
+    for(let i = 0; i < subList.length; i++) {
+        let obj = subList[i];
         let sub = obj.sub;
         let uid = obj.uid;
         // Fetch details
@@ -156,27 +158,27 @@ const job = schedule.scheduleJob("0 0 12 * * *", () => {
                 if(count > 0) deckcount++;
             }
             
-            if(!elapsedDays[keys[i]]) elapsedDays[keys[i]] = 0;
-            elapsedDays[keys[i]] += 1;
+            if(!elapsedDays[i]) elapsedDays[i] = 0;
+            elapsedDays[i] += 1;
             if(deckcount == 0) return;
             switch(user.notifsub) {
                 case "0":
-                    delete subList[keys[i]];
-                    delete elapsedDays[keys[i]];
+                    subList.splice(i, 1);
+                    elapsedDays.splice(i, 1);
                     i -= 1;
                     fs.writeFileSync('./server/notif-service/sub-save.json', JSON.stringify(subList));
-                    webpush.sendNotification(subList[keys[i]], JSON.stringify({
+                    webpush.sendNotification(sub, JSON.stringify({
                         type: "unsubscribe"
                     }))
                     return;
                 case "2":
-                    if(elapsedDays % 3 != 0) return;
+                    if(elapsedDays[i] % 3 != 0) return;
                 break;
                 case "3":
-                    if(elapsedDays % 7 != 0) return;
+                    if(elapsedDays[i] % 7 != 0) return;
                 break;
             }
-            webpush.sendNotification(subList[keys[i]], JSON.stringify({
+            webpush.sendNotification(sub, JSON.stringify({
                 type: "reviewnotifcheck",
                 deckcount
             }));
