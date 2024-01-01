@@ -836,7 +836,7 @@ function close_import_modal() {
     import_q.innerHTML = "";
     temp_name = undefined, temp_desc = undefined, temp_contnt = undefined;
 }
-i_import.addEventListener("mousedown", () => continue_import_modal(content));
+i_import.addEventListener("mousedown", () => continue_import_modal(temp_contnt));
 i_cancel.addEventListener("mousedown", close_import_modal);
 
 function safety_check() {
