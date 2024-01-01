@@ -1,13 +1,23 @@
 .ingredient-box {
-    width: 30%;
+    width: 28vw;
     height: 30vh;
-    cursor: pointer;
     background-color: rgb(221, 184, 146);
     border-radius: 20px;
     border-style: solid;
     border-width: 5px;
     border-color: rgb(127, 85, 57);
     display: flex;
+    gap: 5px;
+}
+#ingredient-box-container {
+    display: flex;
+    flex-direction: row;
+}
+img {
+    border-radius: 15px;
+}
+button {
+    cursor: pointer;
 }
 #ingredient-flexbox {
     margin: 1vh;
@@ -21,15 +31,28 @@
 }
 .ingredient-box-button {
     border-radius: 15px;
-    margin-top: 4%;
-    height: 45%;
-    width: 100%;
+    margin-top: 7%;
+    margin-left: 10%;
+    height: 40%;
+    width: 80%;
+    font-size: 1.7vw;
 }
 .ingredient-box-description {
-    font-size: 10pt;
+    font-size: 1vw;
+    width: 19vw;
+    height: 20vh;
 }
 .ingredient-box-image {
-    margin-top: 2%;
+    margin-top: 3.5%;
     margin-left: 2%;
-    border-radius: 15px;
+    width: 19vw;
+    height: 17vh;
+}
+.ingredient-box-icon {
+    float: left;
+    margin-right: 10px;
+    margin-top: 5px;
+}
+.ingredient-box-description-flexbox {
+    margin-left: 2%;
 }
