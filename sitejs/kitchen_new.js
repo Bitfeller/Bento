@@ -14,13 +14,14 @@ const filteredTags = document.getElementsByClassName('filtered-tags')[0];
 const predefinedTags = document.getElementsByClassName('predefined-tags')[0];
 const tagSearch = document.getElementById('tagSearch');
 const tagSuggestions = document.getElementById('tag-suggestions');
-const tagOk = document.getElementById('tag-ok');
 
+const checkboxBoxes = document.getElementsByClassName('checkbox-box');
 const searchBar = document.getElementById('searchBar');
 const regex = document.getElementsByName('regex')[0];
 const caseSensitive = document.getElementsByName('case-sensitive')[0];
 const sortOptions = document.getElementById('sortOptions');
 
+const strictSlider = document.getElementById('strictMachingSlider');
 const hasMc = document.getElementById('mcCheckbox');
 const hasTxt = document.getElementById('textCheckbox');
 const hasRank = document.getElementById('rankCheckbox');
@@ -255,8 +256,7 @@ async function preview(_this) {
                                 </div>
                             </button>
                             <button class='preview-btn' id='preview-delete-btn'>
-                                <div class='line-up-icons'>
-                                    <span class='preview-ico material-symbols-outlined'>delete</span> Delete
+                                <div class='preview-ico material-symbols-outlined'>delete</span> Delete
                                 </div>
                             </button>
                         </div>`
@@ -321,7 +321,7 @@ async function preview(_this) {
     }
 }
 async function updateReviews(_this) {
-    let id = _this.dataset.id;
+    let id = parseInt(_this.dataset.id);
     if(user.userdata.reviews[id]) {
         delete user.userdata.reviews[id];
         removeBox(id);
@@ -372,6 +372,51 @@ async function fetchDecks() {
     await update();
 }
 
+async function populateRecommended() {
+    // Count tag occurrences from all loaded decks
+    const tagCounts = {};
+    
+    for (const deck of decks) {
+        if (deck.data && deck.data.tags) {
+            for (const tag of deck.data.tags) {
+                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+            }
+        }
+    }
+    
+    // Sort tags by count to find the most popular ones
+    const topTags = Object.keys(tagCounts)
+        .sort((a, b) => tagCounts[b] - tagCounts[a])
+        .slice(0, 3);
+    
+    // If no tags were found in decks, use 3 random tags from allowed tags
+    if (topTags.length === 0 && allowedTags.length > 0) {
+        const shuffled = [...allowedTags].sort(() => 0.5 - Math.random());
+        topTags.push(...shuffled.slice(0, 3));
+    }
+    
+    // Add each top tag to the filteredTags container
+    for (const tag of topTags) {
+        // Skip if the tag is already in the filtered tags
+        if (tag_exists(tag)) continue;
+        
+        predefinedTags.innerHTML += `
+            <div class='tag add-tag' 
+                onclick='
+                    this.className = "tag remove-tag";
+                    this.children[0].innerHTML = "remove";
+                    document.getElementsByClassName("filtered-tags")[0].appendChild(this);
+                '>
+                <div class='material-symbols-outlined'>add</div>
+                <p class='tag-value'>${tag}</p>
+            </div>
+        `;
+    }
+    
+    // Refresh the deck list with these tags
+    await fetchDecks();
+}
+
 (async () => {
     let [success, data] = await UserGateway.getuser(false, true, true, false);
     if(!success && data == 'no session') return window.LOAD_ERROR("Please sign in.");
@@ -385,6 +430,7 @@ async function fetchDecks() {
     decks.push(...data);
     await update();
     window.LOADED();
+    populateRecommended();
 })();
 
 searchBar.addEventListener('keyup', async e => {
@@ -408,7 +454,7 @@ tagSearch.addEventListener('keydown', async e => {
         `;
         tagSearch.value = '';
         tagSearch.focus();
-        tagOk.style.display = 'none';
+        tagSearch.style.color = "var(--light-text)";
 
         let query = searchBar.value;
         if(query.length == 0)
@@ -420,20 +466,28 @@ tagSearch.addEventListener('input', () => {
     let value = tagSearch.value.trim();
     if(value != '') {
         if(tag_exists(value)) {
-            tagOk.style.display = 'block';
-            tagOk.innerHTML = 'Already added';
-            tagOk.style.color = 'red';
+            tagSearch.style.color = "var(--danger-red)";
         } else if(allowedTags.indexOf(value) > -1) {
-            tagOk.style.display = 'block';
-            tagOk.innerHTML = 'Valid';
-            tagOk.style.color = 'green';
+            tagSearch.style.color = "#2a72dc";
         } else {
-            tagOk.style.display = 'block';
-            tagOk.innerHTML = 'Invalid';
-            tagOk.style.color = 'red';
+            tagSearch.style.color = "var(--danger-red)";
         }
     }
 });
+
+strictSlider.addEventListener('click', () => {
+    if(strictSlider.children[0].style.right == "")
+        strictSlider.children[0].style.right = "0";
+    else strictSlider.children[0].style.right = "";
+});
+
+for(let i = 0; i < checkboxBoxes.length; i++) {
+    let box = checkboxBoxes[i];
+    let checkbox = box.querySelectorAll('input[type="checkbox"]')[0];
+    box.addEventListener("mousedown", (e) => {
+        if (e.target != checkbox) checkbox.checked = !checkbox.checked;
+    });
+}
 
 [regex, caseSensitive, hasMc, hasTxt, hasRank, hasMtch, sortOptions].map(x => x.addEventListener('change', async () => {
     let query = searchBar.value;
