@@ -437,7 +437,7 @@ function getProgress() {
 
     // Globally
     // 5 / 8?
-    let leftover = gameData.length - Math.floor(gameData.length / real_deckSize - 1) * real_deckSize;
+    let leftover = gameData.length - Math.floor(gameData.length / real_deckSize) * real_deckSize;
     let S_l = Math.ceil(real_deckSize / curr) * Math.floor(gameData.length / real_deckSize - 1) + Math.ceil(leftover / curr) - Math.ceil(curr_deckSize / curr) + Math.ceil((curr_deckSize + realWrong) / curr) + C_gw;
     let S_l_std = Math.ceil(real_deckSize / curr) * Math.floor(gameData.length / real_deckSize - 1) + Math.ceil(leftover / curr) + C_gw + C_lw;
     if(S_l < 0) S_l = 0;

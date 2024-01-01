@@ -40,7 +40,15 @@ conn.connect((err) => {
 app.use(express.json());
 app.use(cookieParser());
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', conf.allowed_hosts);
+    if(conf.allowed_hosts == "*") {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+    } else {
+        let origin = req.get("Origin");
+        origin = origin.replaceAll(/http[s]*:\/\//, "").replaceAll(/:[0-9]+/, "");
+        if(conf.allowed_hosts.indexOf(origin) > -1) {
+            res.setHeader("Access-Control-Allow-Origin", origin);
+        }
+    }
     res.header('Access-Control-Allow-Methods', 'POST');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.header('Access-Control-Allow-Credentials', true);

@@ -5,7 +5,7 @@
         "password": "*7ED54C88139248C900757D5540148B5AA2DBF4F2",
         "db": "bento"
     },
-    "allowed_hosts": "*",
+    "allowed_hosts": ["bento.valleynas.uk", "bentoapi.valleynas.uk"],
     "session_path": "/var/lib/php/sessions",
     "bento_notif_url": "https://bento.valleynas.uk/report",
     "vapid_details": {
