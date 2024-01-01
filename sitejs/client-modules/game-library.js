@@ -77,20 +77,16 @@ function newRandomDeck() {
     let len = gameData.length - currentSet * deckSize;
     let s_curr = curr, s_ls = ls, s_lls = lls;
     // if no last set OR last last set
-    console.log(s_curr, s_ls, s_lls);
     if(currentSet < 2) {
         s_ls += s_lls;
         s_lls = 0;
     }
-    console.log(s_curr, s_ls, s_lls);
     if(currentSet < 1) {
         s_curr += s_ls;
         s_ls = 0;
     }
-    console.log(s_curr, s_ls, s_lls);
     // If currentSet = 0 and len < deckSize; less problems than deckSize, so adjust accordingly
     if(currentSet == 0 && len < deckSize) s_curr = len;
-    console.log(s_curr, s_ls, s_lls);
     // Get problems
     randomSet = [];
     let problems = [];
@@ -375,13 +371,11 @@ function get_pwsets() {
     // ACTUAL wrong questions.
     let realWrong = currWrong.length;
     if(cardRepeat > 1) {
-        console.log("ran here!")
         realWrong = 0;
         for(let i = 0; i < currWrong.length; i++) {
             let seen = rndSetData[currWrong[i]];
             if(seen >= cardRepeat) realWrong++;
         }
-        console.log(currWrong.length, realWrong);
     }
 
     let len = gameData.length - deckSize;
