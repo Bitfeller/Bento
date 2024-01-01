@@ -13,7 +13,7 @@ var dragElements = [];
 var centroids = [];
 var dragging;
 var dragLine = document.createElement("div");
-dragLine.style = "display: flex; background-color: rgb(0, 150, 255); width: 100px; height: 1px;";
+dragLine.style = "display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;";
 function computeCenter(el) {
     var rect = el.getBoundingClientRect();
     return {
@@ -69,7 +69,7 @@ function refresh() {
             cont_a.appendChild(input);
         break;
         case "ranking":
-            var list = document.createElement("ul");
+            var list = document.createElement("div");
             list.id = "ranking-list";
             list.className = "ranking-list";
             cont_a.appendChild(list);
@@ -78,7 +78,7 @@ function refresh() {
             for(var i = 0; i < data.answer.length; i++) {
                 var idx = Math.floor(Math.random() * (answerList.length - 1) + 0.5);
                 var item = answerList[idx];
-                var el = document.createElement("li");
+                var el = document.createElement("div");
                 el.className = "ranking-item";
                 el.id = "item"+i;
                 el.setAttribute("draggable", "true");

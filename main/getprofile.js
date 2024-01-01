@@ -3,6 +3,6 @@ var profile = {
     userId: "0",
     userStatus: "none",
     decks: [],
-    recentlyViewed: [],
+    recentlyViewed: []
 };
 export {profile};
