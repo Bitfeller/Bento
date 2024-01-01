@@ -166,7 +166,6 @@ function updateDecks(decks, counts) {
         let selectedDecks = [], shuffle;
         for (let i = 0; i < deckContainer.children.length; i++) {
             let item = deckContainer.children[i];
-            console.log(item);
             let idx = item.dataset.idx;
             let checkbox = item.getElementsByClassName("deckCheck")[0];
             if (checkbox.checked) selectedDecks.push(parseInt(idx));
