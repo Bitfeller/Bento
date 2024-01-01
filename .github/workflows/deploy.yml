@@ -28,7 +28,7 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         ssh -o StrictHostKeyChecking=no orange@76.130.195.232 -p 7797 'bash -s' << 'EOF'
         # Commands to deploy your website
-        cd /var/www/test
-        git pull origin main
+        cd /home/orange/
+        ./server_update.sh
         # Any other deployment commands
         EOF
