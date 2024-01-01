@@ -311,17 +311,22 @@ select, option {
     color: var(--select-blue);
     font-family: karla;
 }
-.error-popup {
+.error-popup, .success-popup {
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: rgba(255, 0, 0, 0.8);
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
     z-index: 1000;
     animation: error_show 2.5s ease forwards;
+}
+.error-popup {
+    background-color: rgba(255, 0, 0, 0.8);
+}
+.success-popup {
+    background-color: rgba(0, 255, 0, 0.8);
 }
 .switch {
     margin-top: 10px;
