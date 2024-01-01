@@ -366,6 +366,7 @@ function answerHandler() {
                 if(data.req == 1) {
                     selected = false;
                     if(mc_sel.length == 0) return noAnswer();
+                    correct = Game.isCorrect(mc_sel);
                     if (correct) {
                         for(let i = 0; i < objs.length; i++)
                             if(data.ans.indexOf(parseInt(objs[i].getAttribute('i'))) > -1) objs[i].innerHTML = `<p class="answer-symbol">✅</p> ` + objs[i].getAttribute('orig');
