@@ -19,6 +19,7 @@ dragline.style = 'display: flex; background-color: rgb(0, 150, 255); width: 100%
 // Load DOMPurify for imports
 const dpscript = document.createElement('script');
 dpscript.src = 'https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js';
+document.head.appendChild(dpscript);
 
 
 // --------------------------------------------------- \\
@@ -778,13 +779,28 @@ b_importbtn.addEventListener("mousedown", () => b_modal.style.display = "block")
 q_importbtn.addEventListener("mousedown", () => q_modal.style.display = "block");
 g_importbtn.addEventListener("mousedown", () => g_modal.style.display = "block");
 
+function safety_check() {
+    if(cards.length == 0) {
+        newCard();
+        cards[cards.length - 1].getElementsByClassName('q')[0].focus();
+    }
+}
+b_file.addEventListener('change', () => {
+    if(b_file.files.length > 0)
+        b_createbtn.disabled = false;
+    else
+        b_createbtn.disabled = true;
+})
 b_createbtn.addEventListener("mousedown", () => {
     if(!DOMPurify) return void (b_err.innerHTML = "The system is loading a module. Please try again later. (code: fetching_dompurify?)");
     let dp = DOMPurify;
     let files = b_file.files;
     if(files && files[0]) {
         let file = files[0];
-        if(file.type !== "text/plain") return console.log('failed - file type; ' + file.type);
+        if(file.type !== "application/json") {
+            console.log('failed - file type; ' + file.type);
+            return void (b_err.innerHTML = "Bento expects a JSON file - the file type we export and support.");
+        }
         let reader = new FileReader();
         reader.onload = e => {
             let content = e.target.result;
@@ -795,16 +811,15 @@ b_createbtn.addEventListener("mousedown", () => {
                 let val_desc = window.lib.dpwrapper(dp, main.desc);
                 let val_contnt = window.lib.dpwrapper(dp, main.contnt);
                 if(b_replacename.checked) name.value = val_name;
-                if(b_replacedesc.checked) desc.value = val_desc;
-                try {
-                    appendToCards(val_contnt);
-                    b_modal.style.display = "none";
-                } catch(e) {
-                    return void (b_err.innerHTML = "This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
-                }
+                if(b_replacedesc.checked) description.value = val_desc;
+                appendToCards(val_contnt);
+                b_modal.style.display = "none";
             } catch(e) {
+                safety_check();
                 console.log("failed; reason:", e);
+                return void (b_err.innerHTML = "This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
             }
+            safety_check();
         }
         reader.readAsText(file);
     }
@@ -832,9 +847,11 @@ q_createbtn.addEventListener("mousedown", () => {
     if(!isValid) return;
     try {
         appendToCards(contnt);
-    } catch(e) {
+    } catch(_) {
+        safety_check();
         return void (q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
     }
+    safety_check();
     q_modal.style.display = "none";
 });
 g_createbtn.addEventListener("mousedown", () => {
@@ -859,10 +876,12 @@ g_createbtn.addEventListener("mousedown", () => {
     });
     if(!isValid) return;
     try {
+        safety_check();
         appendToCards(contnt);
-    } catch(e) {
+    } catch(_) {
         return void (g_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.");
     }
+    safety_check();
     g_modal.style.display = "none";
 });
 
