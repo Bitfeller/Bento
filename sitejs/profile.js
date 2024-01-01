@@ -23,6 +23,9 @@ const warningDialog = document.getElementById("warning-dialog");
 const deleteAccount = document.getElementById("delete-account");
 const resetAccount = document.getElementById("reset-account");
 
+const changeOption = document.getElementById("change-option");
+const changeEmailBox = document.getElementById("change-email-box");
+const changePasswordBox = document.getElementById("change-password-box");
 
 const nordRadio = document.getElementById("nord-radio");
 const coffeeMidnightRadio = document.getElementById("coffee-midnight-radio");
@@ -203,6 +206,16 @@ async function changeTheme(current, theme) {
     coffeeMidnightRadio.addEventListener("change", () => changeTheme(currentTheme, 1));
     catppuccinRadio.addEventListener("change", () => changeTheme(currentTheme, 2));
     // grayscaleRadio.addEventListener("change", () => changeTheme(currentTheme, 3));
+
+    changeOption.addEventListener("change", () => {
+        if (changeOption.value === "email") {
+            changeEmailBox.style.display = "";
+            changePasswordBox.style.display = "none";
+        } else if (changeOption.value === "password") {
+            changeEmailBox.style.display = "none";
+            changePasswordBox.style.display = "";
+        }
+    });
 })();
 window.onclick = e => {
     if(e.target == warningDialog) warningDialog.close();

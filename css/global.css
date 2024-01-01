@@ -103,6 +103,7 @@ button {
     color: var(--dark-text);
     cursor: pointer;
     transition: 0.3s;
+    padding: 0px 8px;
 }
 button:hover {
     filter: brightness(85%);
