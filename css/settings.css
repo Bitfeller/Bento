@@ -1,0 +1,16 @@
+.set-size-setting {
+    border-radius: 20px;
+    margin-left: 0.5%;
+    margin-top: 2vh;
+    background-color: aqua;
+    display: flex;
+    flex-direction: row;
+    width: 50%;
+    height: 10vh;
+    gap: 2%
+
+}
+.set-size-setting>p {
+    margin-left: 1%;
+    margin-top: 3%;
+}
