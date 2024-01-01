@@ -23,7 +23,7 @@ var closeBtn = document.getElementsByClassName('closeBtn');
 
 signInBtn.onclick = function() {
     signInModal.style.display = "block";
-}  
+}
 signUpBtn.onclick = function() {
     signUpModal.style.display = "block";
 }
