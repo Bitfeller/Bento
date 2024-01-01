@@ -461,7 +461,7 @@ window.addEventListener("keyup", () => {
     if(!toProceed) return;
     if(Game.fetchProblem().type == "txt" && requireCorrect) {
         let ans = Game.fetchProblem().ans;
-        if (objs[0].value != ans) {
+        if (objs[0].value.toLowerCase().replaceAll(/\s/g, "") != ans.toLowerCase().replaceAll(/\s/g, "")) {
             answerbtn.innerHTML = "Enter the correct answer before advancing.";
             answerbtn.disabled = true;
             return;
