@@ -34,7 +34,7 @@ jobs:
         
         # [[ Apache server ]]
         cd /home/orange/
-        ./server_update.sh
+        ./update_bento.sh
         
         cd /var/www/bento.valleynas.uk
 
