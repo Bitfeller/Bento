@@ -795,6 +795,7 @@ function appendToCards(contnt) {
 
 const b_modal = document.getElementById("bento-import-modal");
 const q_modal = document.getElementById("quizlet-import-modal");
+const g_modal = document.getElementById("gimkit-import-modal");
 
 const b_importbtn = document.getElementById("bento-import-btn");
 const b_replacename = document.getElementById("BI-replace-name");
@@ -806,8 +807,13 @@ const q_importbtn = document.getElementById("quizlet-import-btn");
 const q_txt = document.getElementById("QI-importText");
 const q_createbtn = document.getElementById("QI-createBtn");
 
+const g_importbtn = document.getElementById("gimkit-import-btn");
+const g_txt = document.getElementById("GK-importText");
+const g_createbtn = document.getElementById("GK-createBtn");
+
 b_importbtn.addEventListener("mousedown", () => b_modal.style.display = "block");
 q_importbtn.addEventListener("mousedown", () => q_modal.style.display = "block");
+g_importbtn.addEventListener("mousedown", () => g_modal.style.display = "block");
 
 b_createbtn.addEventListener("mousedown", () => {
     let files = b_file.files;
@@ -850,11 +856,26 @@ q_createbtn.addEventListener("mousedown", () => {
     });
     appendToCards(contnt);
     q_modal.style.display = "none";
-})
+});
+g_createbtn.addEventListener("mousedown", () => {
+    let importText = g_txt.value;
+    let format = importText.split("\n");
+    let contnt = {};
+    format.forEach(card => {
+        const [q, ans] = card.split("\t");
+        contnt[q] = {
+            type: "txt",
+            ans
+        };
+    });
+    appendToCards(contnt);
+    g_modal.style.display = "none";
+});
 
 window.addEventListener("mousedown", (e) => {
-    if(e.target === b_modal || e.target == q_modal) {
+    if(e.target === b_modal || e.target == q_modal || e.target == g_modal) {
         b_modal.style.display = "none";
         q_modal.style.display = "none";
+        g_modal.style.display = "none";
     }
 });
