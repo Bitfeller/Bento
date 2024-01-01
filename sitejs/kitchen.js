@@ -281,8 +281,8 @@ async function reviews_update(_this, isAdded) {
 }
 
 // Close dialogs when user presses outside dialog
-window.onclick = function(event) {
-    if (event.target === previewDialog) {
+window.addEventListener("mousedown", (e) => {
+    if(e.target === previewDialog) {
         previewDialog.close();
     }
-}
+});

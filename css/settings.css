@@ -20,7 +20,11 @@ button:hover {
   background-color: var(--gray);
 }
 .setting-box > button, .setting-box > input {
-  width: 45%;
+  width: 100%;
+  margin: 5px auto;
+}
+.setting-box h2 {
+  text-align: center;
 }
 #vocab-repetition-setting {
   flex-direction: column;
@@ -41,11 +45,9 @@ input[type="checkbox"] {
 }
 .change-input {
   color: var(--light-text);
-  margin-top: 2%;
-  margin-bottom: 2%;
 }
 #dangerZoneBox > button {
-  margin-top: 2%;
+  margin-top: 10px;
   background-color: #E01F15;
   color: var(--light-text);
 }
@@ -70,23 +72,20 @@ input[type="checkbox"] {
   10% {opacity: 0;}
   100% {opacity: 1;}
 }
-@media only screen and (max-width: 1400px) {
-  #settings-container {
-    max-height: initial;
-    margin-left: 0;
-    z-index: 1;
-  }
-  .setting-box {
-    margin: auto;
-    margin-top: 15px;
-    width: 87%;
-    padding: 2%;
-  }
-  .setting-box > button, .setting-box > input, #set-size-slider-stuff, .radio-container, .checkbox-container {
-    max-width: 95%;
-    margin-left: 2.5%;
-  }
-  .setting-box > button, .setting-box > input, #set-size-slider-stuff, .radio-container, .checkbox-container, .setting-box > p, .setting-box > h2, .setting-box {
-    z-index: 2;
-  }
+#settings-container {
+  max-height: initial;
+  margin-left: 0;
+  z-index: 1;
+}
+.setting-box {
+  margin: auto;
+  margin-top: 15px;
+  max-width: 740px;
+  width: 87%;
+}
+.setting-box > button, .setting-box > input, #set-size-slider-stuff, .radio-container, .checkbox-container {
+  max-width: 95%;
+}
+.setting-box > button, .setting-box > input, #set-size-slider-stuff, .radio-container, .checkbox-container, .setting-box > p, .setting-box > h2, .setting-box {
+  z-index: 2;
 }

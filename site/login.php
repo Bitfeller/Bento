@@ -19,7 +19,7 @@
             flex-direction: column;
             justify-content: space-between;
             gap: 1dvh;
-            background-color: rgb(33, 33, 33);
+            background-color: var(--dark-gray);
             border-style: none;
             margin: 15% auto; 
             padding: 30px;
@@ -34,7 +34,6 @@
         .modal-content > input {
             border: none;
             font-size: 18pt;
-            background-color: rgb(56, 56, 56);
             border-radius: 5px;
             padding-left: 1%;
         }
@@ -42,6 +41,11 @@
             margin-top: 1.5dvh;
             height: 44px;
             font-size: 18pt;
+        }
+        @media screen and (max-width: 1000px) {
+            .modal-content {
+                width: 80%;
+            }
         }
     </style>
 </head>

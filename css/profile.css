@@ -82,7 +82,7 @@ dialog {
   background-color: var(--danger-red);
   color: var(--light-text);
 }
-@media screen and (max-width: 1400px) {
+@media screen and (max-width: 1250px) {
   #profile-container {
     flex-direction: column;
   }

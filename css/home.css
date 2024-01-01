@@ -103,36 +103,11 @@
     white-space: nowrap;
     color: rgb(150, 150, 50);
 }
-dialog {
-    position: fixed;
-    top: calc(-100% + 50px);
-    left: 50%;
-    transform: translate(-50%, 50%);
-    max-height: 85%;
-    width: 30%;
-    margin: auto;
-    padding: 15px;
-    border: none;
-    border-radius: 10px;
-    background-color: var(--dark-gray);
-    width: 50%;
-    /* h2 {
-        display: inline;
-    }
-    button {
-        font-size: 12pt;
-        height: 30px;
-        width: 30px;
-    } */
-}
 dialog p {
     line-height: 300%;
 }
 dialog button {
     padding: 5px;
-}
-dialog::backdrop {
-    background: rgba(0, 0, 0, 0);
 }
 #tutorial-background {
     display: none;
@@ -203,7 +178,7 @@ dialog::backdrop {
 }
 @media screen and (max-width: 800px) {
     .main-bento {
-        min-height: 100vh;
+        margin-top: 5px;
         width: 100vw;
     }
     .bento-svg {
@@ -214,13 +189,15 @@ dialog::backdrop {
     .main-bento {
         flex-direction: column;
     }
+    .home-side-div {
+        margin: 0px 0px 10px 0px;
+    }
     .home-side-div-holder {
-        margin-left: 10px;
-        width: calc(100% - 20px);
+        margin: 0 2.5%;
+        width: 95%;
     }
 }
 @media only screen and (max-width: 1366px) {
-    .home-side-div-holder {
-        width: calc(100px);
-    }
+
+
 }

@@ -217,15 +217,6 @@ button {
 #cardcontain {
     transition: 0.3s;
 }
-textarea {
-    border: none;
-    border-radius: 5px;
-    padding: 5px;
-    background-color: var(--gray);
-    color: var(--light-text);
-    width: calc(100% - 60px);
-    height: max-content;
-}
 .deck-divider {
     margin: 20px 5px;
 }
@@ -317,12 +308,5 @@ textarea {
 @media only screen and (max-width: 700px) {
     .options-container {
         width: calc(93%);
-    }
-    .draftdeck {
-        height: 90px;
-        width: 100%;
-    }
-    .draftdeck button {
-        width: 49.40%;
     }
 }
