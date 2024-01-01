@@ -1,0 +1,17 @@
+Regarding new-struct:
+
+data = 
+{
+    desc: "Yay!",
+    data: [
+        {
+            "q": ...,
+            "op": ...,
+            "ans": ...
+        },
+        {
+            "q": ...,
+            "ans": ...
+        }
+    ]
+}
