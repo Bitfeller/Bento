@@ -86,7 +86,6 @@ body {
 body, .container {
     overflow-x: hidden;
     overflow-y: visible;
-    scrollbar-color: rgb(37, 46, 55);
     scrollbar-width: thin;
 }
 button {
