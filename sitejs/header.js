@@ -18,7 +18,10 @@ document.body.appendChild(loader);
     if(!success && data == "no session") {
         logout.remove();
         pfp.remove();
-        if(uo == "true") window.location.href = "/login";
+        if(uo == "true") {
+            window.location.href = "/login";
+            return;
+        }
     } else {
         // update pfp
         if(data.pfp && data.pfp.length > 0) {

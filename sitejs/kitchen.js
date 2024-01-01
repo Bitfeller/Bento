@@ -12,7 +12,6 @@ const addedDecksContainer = document.getElementById("added_decks");
 const marketplace = document.getElementById("marketplace");
 // Dialogs
 const previewDialog = document.getElementById("previewDialog");
-const reviews_updateDialog = document.getElementById("reviews_updateDialog");
 // Load btn
 const loadBtn = document.getElementById("loadBtn");
 // Search
@@ -73,7 +72,7 @@ async function update() {
     }
     loaded = decks.length - 1;
 }
-async function init() {
+(async () => {
     let [success, data] = await UserGateway.getuser();
     if(!success && data == "no session") {
         mainContainer.remove();
@@ -158,8 +157,7 @@ async function init() {
             loaded += data.length;
         });
     });
-}
-init();
+})();
 async function preview(_this, isAdded) {
     previewDialog.showModal();
     let deck;
@@ -205,7 +203,6 @@ async function preview(_this, isAdded) {
     });
 }
 async function reviews_update(_this, isAdded) {
-    // reviews_updateDialog.showModal();
     let deck;
     let target = isAdded ? reviewDecks : decks;
     for(let i = 0; i < target.length; i++) {
@@ -214,11 +211,9 @@ async function reviews_update(_this, isAdded) {
         }
     }
     let inReviews = false;
-    let info = "This deck has now been added to your list of reviews.";
     for(let i = 0; i < user.reviews.length; i++) {
         if(user.reviews[i].deckid == deck.id) {
             inReviews = true;
-            info = "This deck has now been removed from your list of reviews.";
             // update reviews
             user.reviews.splice(i, 1);
             // find in list of reviewDecks
@@ -259,20 +254,11 @@ async function reviews_update(_this, isAdded) {
     }
     let json = JSON.stringify(user.reviews);
     await UserGateway.editUser("reviews", json);
-    // reviews_updateDialog.innerHTML = `
-    //     <button class='closeBtns' id='ruDialog_leave'>x</button>
-    //     <br>
-    //     <h2>${info}</h2>
-    // `;
-    // reviews_updateDialog.getElementsByClassName("closeBtns")[0].addEventListener("mousedown", () => {
-    //     reviews_updateDialog.close();
-    // });
 }
 
 // Close dialogs when user presses outside dialog
 window.onclick = function(event) {
-    if (event.target === previewDialog || event.target === reviews_updateDialog) {
+    if (event.target === previewDialog) {
         previewDialog.close();
-        // reviews_updateDialog.close();
     }
 }
