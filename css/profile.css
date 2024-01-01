@@ -1,0 +1,52 @@
+#profile-container {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	width: 100vw;
+  height: calc(100vh - 63px);
+}
+#profile-container > div {
+  height: 100%;
+	display: flex;
+}
+#left-div {
+  width: 35%;
+}
+#right-div {
+  width: 65%;
+  flex-direction: row;
+}
+#left-div > * {
+	margin: 30px auto;
+}
+.profile-picture {
+	border-radius: 50%;
+	height: 50vh;
+	width: 50vh;
+}
+.setting-box {
+  height: min-content;
+}
+#pfpAddBtn {
+  cursor: pointer;
+  color: #5992e8;
+}
+@media screen and (max-width: 1300px) {
+  #profile-container {
+    flex-direction: column;
+  }
+  #left-div {
+    width: 100%;
+  }
+  #right-div {
+    width: 100%;
+    flex-direction: column;
+  }
+  .profile-picture {
+    height: 30vh;
+    width: 30vh;
+  }
+  .setting-box > input, .setting-box > button {
+    width: 95%;
+  }
+}

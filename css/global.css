@@ -80,6 +80,7 @@ input {
     animation: spin 2s linear infinite;
 }
 .header {
+    height: 63px;
     overflow: hidden;
     background-color: #1e1e1e;
     padding: 0 5px;
@@ -118,7 +119,11 @@ input {
 .right-header {
     float: right;
 }
-
+@media only screen and (max-width: 366px) {
+    .header span, .pfp {
+        font-size: 30px;
+    }
+}
 @keyframes spin {
     100% {
         transform: rotate(360deg);

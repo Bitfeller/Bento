@@ -38,8 +38,8 @@
                 <!-- <div class="deck-box">
                     <p>Deck 1</p>
                     <input type="checkbox" id="deck1Check">
-                </div>
-                -->
+                </div> -->
+               
             </div>
         </div>
         <div>
@@ -52,11 +52,11 @@
                     </div>
                     <div class="setting-box">
                         <input type="checkbox" id="setting2Check">
-                        <p>| Setting 2</p>
+                        <p>| </p>
                     </div>
                     <div class="setting-box">
                         <input type="checkbox" id="setting3Check">
-                        <p>| Setting 3</p>
+                        <p>| </p>
                     </div>
                     <!--  -->
                 </div>
