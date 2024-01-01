@@ -11,11 +11,13 @@
     //      Success and fail return functions
     function fail($reason) {
         http_response_code(200);
+        header("Content-Type: application/json");
         echo json_encode(["status" => "error", "reason" => $reason]);
         exit();
     }
     function success($data = null) {
         http_response_code(200);
+        header("Content-Type: application/json");
         echo json_encode(["status" => "success", "data" => $data]);
         exit();
     }
