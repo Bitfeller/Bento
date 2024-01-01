@@ -1,7 +1,7 @@
 class UserGateway {
     static async getuser() {
         var data;
-        await fetch("./main/user/user_get.php", {
+        await fetch("../main/user/user_get.php", {
             method: "get"
         }).then(function(res) {
             if(!res.ok) {
@@ -27,7 +27,7 @@ class UserGateway {
             return [false, "invalid params"];
         }
         var success, reason;
-        await fetch("./main/user/user_login.php", {
+        await fetch("../main/user/user_login.php", {
             method: "post",
             headers: {
                 'Content-Type': 'application/json'
@@ -61,7 +61,7 @@ class UserGateway {
             return [false, "bad pwd"];
         }
         var success, reason;
-        await fetch("./main/user/user_new.php", {
+        await fetch("../main/user/user_new.php", {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
@@ -90,7 +90,7 @@ class UserGateway {
     }
     static async editUser(setting, val, pwd) {
         var success, reason;
-        await fetch("./main/user/user_edit.php", {
+        await fetch("../main/user/user_edit.php", {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
@@ -118,7 +118,7 @@ class UserGateway {
         return [success, reason];
     }
     static async signout() {
-        await fetch("./main/user/user_logout.php", {
+        await fetch("../main/user/user_logout.php", {
             method: 'post'
         });
         return true;
