@@ -5,14 +5,24 @@ import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 let user;
 let loaded = -1, loadedReviews = false;
 let decks = [];
+let saveDecks = [];
 
 const sidebar = document.getElementsByClassName("sidebar")[0];
 
-const deckContainer = document.getElementById("decks-container");
+const searchBar = document.getElementById('searchBar');
+const regex = document.getElementsByName('regex')[0];
+const caseSensitive = document.getElementsByName('case-sensitive')[0];
+const sortOptions = document.getElementById('sortOptions');
+
+const hasMc = document.getElementById('mcCheckbox');
+const hasTxt = document.getElementById('textCheckbox');
+const hasRank = document.getElementById('rankCheckbox');
+const hasMtch = document.getElementById('matchingCheckbox');
+
 const ownedDecks = document.getElementsByClassName("owned-decks")[0];
 const pubDTitle = document.getElementById("pub-d-title");
 const pubDecks = document.getElementsByClassName("popular-decks")[0];
-const previewDialog = document.getElementById("preview-dialog"); 
+const previewDialog = document.getElementById("preview-dialog");
 
 // ----------------- Image Query -----------------
 let queries = [];
@@ -179,7 +189,7 @@ async function preview(_this) {
                 </div>
             </div>
         `;
-        document.getElementById('preview-dialog-leave').addEventListener('click', previewDialog.close);
+        document.getElementById('preview-dialog-leave').addEventListener('click', () => previewDialog.close());
         return;
     }
     deck = deck[1];
@@ -187,9 +197,9 @@ async function preview(_this) {
     await UserGateway.editUser("view", String(id));
     
     let answer_list = "";
-    if(!deck.contnt) answer_list = `<p class='info-blank'>This deck appears to be corrupt.</p>`;
+    if(!deck.data.contnt) answer_list = `<p class='info-blank'>This deck appears to be corrupt.</p>`;
     else {
-        let contnt = deck.contnt;
+        let contnt = deck.data.contnt;
         for(let q in contnt) {
             answer_list += `
                 <div class='question-box'>
@@ -243,9 +253,9 @@ async function preview(_this) {
                     : ""
                 }
             </div>
-            ${data.desc
+            ${deck.data.desc
                 ?  `<div class='preview-container-part' id='description'
-                        <p>${data.desc}</p>
+                        <p>${deck.data.desc}</p>
                     </div>`
                 : ""
             }
@@ -255,14 +265,14 @@ async function preview(_this) {
         </div>
     `;
     Array(previewDialog.getElementsByClassName('mathJax')).map(x => typeset(x));
-    document.getElementById('preview-dialog-leave').addEventListener('click', previewDialog.close);
+    document.getElementById('preview-dialog-leave').addEventListener('click', () => previewDialog.close());
     if(user.username == deck.owner) {
         let warned = false;
         document.getElementById('preview-export-btn').addEventListener('click', () => {
             const deckExport = {
                 name: window.lib.decode(deck.name),
-                desc: window.lib.decode(data.desc),
-                contnt: window.lib.recur_decode(data.contnt)
+                desc: window.lib.decode(deck.data.desc),
+                contnt: window.lib.recur_decode(deck.data.contnt)
             };
             const json = JSON.stringify(deckExport);
             const file = new File([json], d.name+'.json', { type: 'text/plain' });
@@ -320,7 +330,7 @@ async function updateReviews(_this) {
                     </div>
                 </div>
             `;
-            document.getElementById('preview-dialog-leave').addEventListener('click', previewDialog.close)
+            document.getElementById('preview-dialog-leave').addEventListener('click', () => previewDialog.close());
             removeBox(id);
             return;
         }
@@ -331,6 +341,14 @@ async function updateReviews(_this) {
     }
     let json = JSON.stringify(window.lib.recur_decode(user.userdata.reviews));
     await UserGateway.editUser('reviews', json);
+}
+function getSortFilter() {
+    switch(sortOptions.value) {
+        case "alphabet": return 1;
+        case "reverse-alphabet": return 2;
+        case "time": return 3;
+        case "reverse-time": return 4;
+    }
 }
 
 (async () => {
@@ -345,6 +363,30 @@ async function updateReviews(_this) {
     await update();
     window.LOADED();
 })();
+
+searchBar.addEventListener('keyup', async e => {
+    if(e.key != 'Enter') return;
+    let query = searchBar.value;
+    if(query.length == 0 && saveDecks.length != 0) {
+        // Reset to default
+        pubDTitle.innerHTML = "Public Decks:";
+        loaded = -1;
+        decks = saveDecks;
+        saveDecks = [];
+        pubDecks.innerHTML = "";
+        update();
+        return;
+    }
+    if(query.length == 0) return;
+    saveDecks = decks;
+    pubDTitle.innerHTML = "Search Results:";
+    let [success, data] = await DeckGateway.getall(0, query.split(" "), regex.checked, caseSensitive.checked, [], getSortFilter(), false, hasMc.checked, hasTxt.checked, hasRank.checked, hasMtch.checked);
+    if(!success) return;
+    decks = data;
+    loaded = -1;
+    pubDecks.innerHTML = "";
+    await update();
+});
 
 window.addEventListener('mousedown', e => {
     if(e.target == previewDialog)
