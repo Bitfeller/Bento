@@ -1,117 +1,183 @@
-#profile-container {
-	display: flex;
-	justify-content: space-between;
-	flex-direction: row;
-	width: 100vw;
-  height: calc(100vh - 63px);
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 15px;
+    width: calc(100% - 20px);
+    max-height: calc(100vh - 63px);
+    margin: 20px auto;
 }
-#profile-container > div {
-  height: 100%;
-	display: flex;
-  flex-direction: column;
+.grid-box {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    border: var(--gray) 3px solid; 
+    border-radius: 5px;
+    background-color: var(--dark-gray); 
+    padding: 10px;
+    z-index: 2;
 }
-#left-div {
-  width: 35%;
+.pfp-box {
+    align-items: center;
 }
-#right-div {
-  width: 65%;
-  flex-direction: row;
+#pfp {
+    width: 30vh;
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
 }
-#left-div > * {
-	margin: 30px auto;
-}
-.profile-picture {
-	border-radius: 50%;
-	height: 50vh;
-	width: 50vh;
-}
-#profile-picture-container {
-  position: relative;
+.pfp-container {
+    position: relative;
 }
 .file-selector {
-  background: transparent;
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  top: 0;
-  left: 0;
-  opacity: 0;
+    background: transparent;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: 0;
+    left: 0;
+    opacity: 0;
 }
-.setting-box {
-  height: min-content;
+#pfpAddBtn, #pfpResetBtn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+    color: #5992e8;
+    height: 50px;
 }
-#pfpAddBtn, #pfpReset {
-  cursor: pointer;
-  color: #5992e8;
-  height: 50px;
+#pfpResetBtn {
+    right: 55px;
 }
-#pfpAddBtn, #pfpReset {
-  position: absolute;
-  top: 5px;
-  right: 10px;
-}
-#pfpReset {
-  right: 55px;
-}
-dialog {
-  margin: auto;
-  padding: 15px;
-  border: none;
-  border-radius: 10px;
-  min-width: 450px;
-  h2 {
-      display: inline;
-  }
-  button {
-      font-size: 12pt;
-      height: 30px;
-      width: auto;
-      padding: 0px 5px;
-      margin: 0px 5px;
-  }
-}
-.title-bar {
-  display: flex;
-  justify-content: space-between;
-}
-#leave, .go_back, .confirm {
-  padding: 0px 5px;
-}
-.confirm {
-  background-color: var(--danger-red);
-  color: var(--light-text);
-}
-#left-div > .setting-box {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  padding: 10px;
-}
-@media screen and (max-width: 1250px) {
-  #profile-container {
+.theme-radio-container {
+    display: flex;
     flex-direction: column;
-  }
-  #left-div {
-    width: 100%;
-  }
-  #left-div > .setting-box {
+}
+.theme-radio-box {
+    display: flex;
+    padding: 5px 5px;
+    margin: 10px 0px;
+    border-radius: 5px;
+    gap: 5px;
+}
+.nord {
+    background: linear-gradient(to right, #cadda0, #2a72dc, #070a0e);
+    label {
+        color: #0c0e0f;
+    }
+}
+.coffee-midnight {
+    background: linear-gradient(to right, oklch(77.06% 0.031 293.99), oklch(40.33% 0.039 356.43), oklch(16.79% 0.013 292.64));
+    label {
+        color: #0c0e0f;
+    }
+}
+.catppuccin-mocha-ish {
+    background: linear-gradient(to right, #74c7ec, #89b4fa, #11111b);
+    label {
+        color: #0c0e0f;
+    }
+}
+.change-box {
+    div {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5px;
+    }
+    input, button, code {
+        font-size: 12pt;
+        padding: 5px;
+    }
+    code {
+        margin-top: 10px;
+    }
+}
+.danger-box {
+    button {
+        background-color: #E01F15;
+        color: var(--light-text);
+    }
+    div {
+        background-color: var(--gray);
+        padding: 5px;
+        border-radius: 5px;
+    }
+}
+#warning-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--dark-gray);
+    border: none;
+    border-radius: 5px;
+    padding: 30px 15px;
+    min-width: 460px;
+    input, button {
+        font-size: 12pt;
+    }
+    & button, input {
+        padding: 0px 5px
+    }
+    & input {
+        width: calc(100% - 10px);
+        margin-top: 5px;
+        margin-bottom: 15px;
+    }
+}
+.dialog-button-container {
     display: flex;
     flex-direction: row;
-    justify-content: left;
-    padding: 10px;
-    * {
-      margin-left: 15px;
+    gap: 3px;
+    & button {
+        width: 50%;
     }
-  }
-  #right-div {
-    width: 100%;
-    flex-direction: column;
-  }
-  .profile-picture {
-    height: 40vh;
-    width: 40vh;
-  }
-  .setting-box > input, .setting-box > button {
-    width: 95%;
-  }
+    :first-child {
+        border-radius: 5px 0px 0px 5px;
+    }
+    :last-child {
+        border-radius: 0px 5px 5px 0px;
+    }
+}
+#delete-account-confirm, #reset-account-confirm {
+    background-color: var(--danger-red);
+    color: var(--light-text);
+}
+#settings-icon-nondescructive {
+    position: absolute;
+    pointer-events: none;
+    height: 500px;
+    bottom: 0px;
+    right: 0px;
+    content: url("https://static.miraheze.org/hololivewiki/e/e6/Gawr_Gura_-_Portrait_VR_01.png");
+    animation: ability-to-use 600s;
+}
+@keyframes ability-to-use {
+    0% {opacity: 0;}
+    10% {opacity: 0;}
+    100% {opacity: 1;}
+}
+@media screen and (max-width: 1200px) {
+    .profile-grid {
+        grid-template-columns: 1fr 1fr;
+        max-height: initial;
+    }
+    .danger-box {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+@media screen and (max-width: 700px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+    .change-box {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    #warning-dialog {
+        min-width: initial;
+        width: calc(100vw - 20px);
+    }
 }

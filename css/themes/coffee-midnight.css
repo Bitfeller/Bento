@@ -1,7 +1,7 @@
 :root {
     --light-text: oklch(95.43% 0.007 295.45);
     --dark-text: #0c0e0f;
-
+    
     --select-blue: oklch(40.33% 0.039 356.43);
     --danger-red: oklch(61.77% 0.039 39.91);
     --background: oklch(16.79% 0.013 292.64);

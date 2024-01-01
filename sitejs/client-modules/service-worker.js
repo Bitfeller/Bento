@@ -6,7 +6,7 @@ let rand_identifier;
 
 async function init() {
     const regis = self.registration;
-    let [success, _user] = await UserGateway.getuser();
+    let [success, _user] = await UserGateway.getuser(false, false, false, false);
     if(!success && _user == "no session") {
         await regis.unregister();
         return;
@@ -31,8 +31,8 @@ async function init() {
                 subscription: sub,
                 rand_identifier
             })
-        }).catch(async err => {
-            console.error("failed to subscribe to push notifs; reason:", err);
+        }).catch(async e => {
+            console.error("failed to subscribe to push notifs; reason:", e);
             await regis.unregister();
         });
     })
@@ -55,8 +55,8 @@ self.addEventListener("push", async e => {
                     auth: sub.keys.auth,
                     rand_identifier
                 })
-            }).catch(async err => {
-                console.error("failed to unsubscribe to push notifs; reason:", err);
+            }).catch(async e => {
+                console.error("failed to unsubscribe to push notifs; reason:", e);
             });
             await regis.unregister();
             return;
@@ -65,9 +65,7 @@ self.addEventListener("push", async e => {
             body: `You currently have ${data.deckcount} deck${data.deckcount == 1 ? "" : "s"} to review.`,
             tag: 'reviewnotif-' + Date.now()
         });
-        notif.onclick = () => {
-            open("https://bento.valleynas.uk/home");
-        };
+        notif.onclick = () => open("https://bento.valleynas.uk/home");
     } else if(data.type == "unsubscribe") {
         sub.unsubscribe();
         await regis.unregister();

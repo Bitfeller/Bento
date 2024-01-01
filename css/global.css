@@ -13,6 +13,30 @@
 
     --accent-1: #cadda0;
 }
+@font-face {
+    font-family: "Kadwa";
+    src: url(/css/fonts/Kadwa/Kadwa-Regular.ttf);
+}
+@font-face {
+    font-family: "Karla";
+    src: url(/css/fonts/Karla/Karla-VariableFont_wght.ttf);
+}
+/* @font-face {
+    font-family: 'Material Symbols Outlined';
+    src: url(/css/fonts/MaterialSymbolsOutlined.woff2);
+}
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-size: 24px;
+    display: block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+} */
 * {
     color: var(--light-text);
     font-family: "Kadwa", "Karla", sans-serif;
@@ -58,6 +82,19 @@ body,
     overflow-x: hidden;
     overflow-y: visible;
     scrollbar-width: thin;
+}
+.quick-container {
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 30px);
+    top: 60px;
+    background: rgb(17,26,35);
+}
+.status {
+    margin: 10px;
+    padding: 10px;
+    width: calc(100% - 40px);
+    background-color: rgb(50, 50, 50);
 }
 button {
     border-radius: 5px;
@@ -115,6 +152,12 @@ select {
     background-color: var(--lighter-gray);
     color: var(--light-text);
     width: 200px;
+}
+code {
+    background-color: var(--gray);
+    color: var(--accent-1);
+    padding: 5px;
+    border-radius: 5px;
 }
 .loader {
     margin: 0;
@@ -205,6 +248,9 @@ select {
         "wght" 400,
         "GRAD" 200,
         "opsz" 48;
+}
+.small-ico {
+    font-size: 11px;
 }
 .header > span.info {
     position: absolute;

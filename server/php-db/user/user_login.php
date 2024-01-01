@@ -7,25 +7,25 @@
     $username = $data['username'];
     $pwd = $data['pwd'];
     try {
+        $conf = get_server_config();
         $conn = connect_to_db();
         // Get user
-        $sql = "SELECT * FROM users WHERE username = ? OR email = ?;";
+        $sql = "SELECT * FROM users WHERE username = ? OR email = ? LIMIT 1;";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ss", $username, $username);
         $stmt->execute();
-        $result = mysqli_fetch_assoc($stmt->get_result());
-        if(!$result) {
-            fail("bad u/p");
-        }
+        $result = $stmt->get_result()->fetch_assoc();
+        if(!$result) fail("bad u/p");
         $userPwd = $result['password'];
         $valid = password_verify($pwd, $userPwd);
-        if(!$valid) {
-            fail("bad u/p");
-        }
+        if(!$valid) fail("bad u/p");
+        // @ = no warnings
+        $pfp = @file_get_contents($conf['file_db'] . 'pfps/' . $result['id'] . '.pfp');
+        if($pfp !== "" && $pfp === false) fail("broken user");
         session_start();
         $_SESSION['uid'] = $result['id'];
         $_SESSION['username'] = $result['username'];
-        $_SESSION['pfp'] = $result['pfp'];
+        $_SESSION['pfp'] = $pfp;
         $_SESSION['email'] = $result['email'];
         $_SESSION['userdata'] = $result['userdata'];
         $_SESSION['verified'] = $result['verified'] === 0 ? false : true;
