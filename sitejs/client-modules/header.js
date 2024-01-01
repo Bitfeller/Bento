@@ -19,7 +19,6 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     const resend_success = document.getElementById('header:resend_success');
 
     // Page data
-    const uo = document.body.dataset.uo;
     const current_page = window.location.pathname;
     
     // Load previous pages
@@ -166,8 +165,6 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     // If user is not logged in:
     if (!success && data == "no session") {
         remove_uo_elements();
-        // If webpage requires login, kick user to login screen
-        if(uo == "true") return void (window.location.href = "/login?s=" + window.location.pathname.slice(1));
     } else { // user is logged in
         // Update user's pfp
         if(data.pfp && data.pfp.length > 0) pfp.src = data.pfp;
