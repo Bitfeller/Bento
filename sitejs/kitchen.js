@@ -102,7 +102,7 @@ async function update() {
         let inReviews = user.userdata.reviews[decks[i].id] ? true : false;
         // Load deckpic
         (async () => {
-            let newBox = box(decks[i].id, inReviews, decks[i].name, "../../img/loading.png", decks[i].owner, false);
+            let newBox = box(decks[i].id, inReviews, decks[i].name, "../../img/loading.gif", decks[i].owner, false);
             // Create new container item and display deck
             marketplace.appendChild(newBox);
             let [success, img] = await DeckGateway.get(decks[i].id, false, true, false);
