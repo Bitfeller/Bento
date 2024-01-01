@@ -3,6 +3,7 @@
 # Some processes, like starting server-notif-main.js, are done by the server handler.
 # 
 
+
 # Remove unwanted files
 rm ./server/conf/local-config.json
 rm -rf ./dev
@@ -30,6 +31,7 @@ node ./static/genregex.js
 rm config-filter.list
 rm ./static -R
 cd ../../..
+
 
 # Install Node.js dependencies and remove other files
 cd ./server/notif-service
