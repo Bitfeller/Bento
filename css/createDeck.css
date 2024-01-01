@@ -1,12 +1,28 @@
 input, div[contenteditable="true"] {
     background-color: var(--light-gray);
 }
+/* .mc-option {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+} */
+.card-mc {
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.card-question-container, .mc-option {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
 .mc-option-del, .mc-option-input, .mc-option-nosel, .mc-option-sel, .ranking-item-del {
     height: 27px;
     width: 27px;
     padding: 0px;
 }
-
 .mc-option-sel, .selbtn-select {    
     background-color: var(--select-blue);
 }
@@ -69,7 +85,6 @@ button {
 }
 .create-container input, .question, .mc-option-input {
     border: none;
-    margin-bottom: 10px;
     color: var(--light-text);
 }
 .question, .mc-option-input {
@@ -279,6 +294,8 @@ button {
 .del {
     background-color: var(--danger-red);
     border-radius: 0px 5px 5px 0px;
+}
+.card-main {
 }
 @media only screen and (max-width: 1025px) {
     .options-container {

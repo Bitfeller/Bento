@@ -48,7 +48,7 @@
 }
 * {
     color: var(--light-text);
-    font-family: kadwa, karla, sans-serif;
+    font-family: "Kadwa", "Karla", sans-serif;
     padding: 0;
     margin: 0;
 }
@@ -115,6 +115,9 @@ input:hover, div[contenteditable="true"]:hover {
 ::placeholder {
     opacity: 0.4;
     color: var(--accent-1);
+}
+div[contenteditable="true"] {
+    padding: 5px;
 }
 textarea {
     border: none;
