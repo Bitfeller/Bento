@@ -43,7 +43,7 @@
                         <button id='show'><span class="material-symbols-outlined">save</span></button>
                         <button id='del'><span class="material-symbols-outlined">delete</span></button>
                     </div> -->
-                <p>None</p>
+                <p class='info-blank'>-- You don't have any draft decks. You'll see one if you start making a deck but don't finish. --</p>
             </div>
         </div>
     </div>
