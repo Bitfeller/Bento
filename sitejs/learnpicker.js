@@ -14,6 +14,7 @@ const infinite_mode_text = document.getElementsByClassName("infinite_mode_text")
 const o_require_correct = document.getElementsByClassName('require_correct')[0];
 
 const deckSelect = document.getElementById("deckSelectAll");
+const settingsBoxs = document.getElementsByClassName("setting-box");
 
 let user;
 
@@ -47,7 +48,22 @@ let user;
             </div>
         `;
     }
-    for (let i = 0; i < deckContainer.children.length; i++) {
+    // Settings box input box click event
+    for(let i = 0; i < settingsBoxs.length; i++) {
+        let box = settingsBoxs[i];
+        if (box.querySelectorAll('input[type="radio"]')[0]) {
+            let radioButton = box.querySelectorAll('input[type="radio"]')[0];
+            box.addEventListener("mousedown", () => {
+                radioButton.checked = !radioButton.checked;
+            });
+        } else if (box.querySelectorAll('input[type="checkbox"]').length > 0) {
+            let checkbox = box.querySelectorAll('input[type="checkbox"]')[0];
+            box.addEventListener("mousedown", () => {
+                checkbox.checked = !checkbox.checked;
+            });
+        }
+    };
+    for(let i = 0; i < deckContainer.children.length; i++) {
         let deckBox = deckContainer.children[i];
         let checkbox = deckBox.getElementsByClassName("deckCheck")[0];
         deckBox.addEventListener("mousedown", (e) => {

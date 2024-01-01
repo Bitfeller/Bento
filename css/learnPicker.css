@@ -48,6 +48,18 @@ h2 {
     padding: 8px 10px;
     border-radius: 5px;
 }
+.setting-box {
+    cursor: pointer;
+    transition: 0.3s;
+    justify-content: left;
+    display: flex;
+}
+.setting-box > p {
+    margin-left: 5px;
+}
+.setting-box:hover {
+    background-color: var(--gray);
+}
 .deck-box {
     cursor: pointer;
     display: flex;
@@ -61,13 +73,6 @@ h2 {
 .deck-box > p {
     max-width: calc(100% - 50px);
     overflow: hidden;
-}
-.setting-box {
-    justify-content: left;
-    display: flex;
-}
-.setting-box > p {
-    margin-left: 5px;
 }
 #deckSelectAll {
     font-size: 22px;

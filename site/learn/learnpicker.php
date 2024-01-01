@@ -16,12 +16,12 @@
                 <h2>Learn Mode</h2>
                 <div class="settings-container">
                     <div class="setting-box">
-                        <input type="radio" name="mode" class="sb-radio mode" id="1" checked="true">
-                        <p> Review select decks </p>
-                    </div>
-                    <div class="setting-box">
                         <input type="radio" name="mode" class="sb-radio mode" id="2">
                         <p> Review terms that need to be reviewed </p>
+                    </div>
+                    <div class="setting-box">
+                        <input type="radio" name="mode" class="sb-radio mode" id="1" checked="true">
+                        <p> Review select decks </p>
                     </div>
                 </div>
             </div>
@@ -38,7 +38,7 @@
                 <div class="settings-container">
                     <div class="setting-box">
                         <input type="radio" name="repeat" class="sb-radio repeat" id="1">
-                        <p>| Show a new term twice for repetition. <i>[IF NEEDED]</i> </p>
+                        <p>| Show a new term twice for repetition.</p>
                     </div>
                     <div class="setting-box">
                         <input type="radio" name="repeat" class="sb-radio repeat" id="2" checked="true">
@@ -60,7 +60,7 @@
                 </div>
             </div>
             <div class="big-box" id="settings-big-box">
-                <h2>Infinite Mode <i style='color: rgb(200, 0, 0); font-size: 25px;'>NEW</i></h2>
+                <h2>Infinite Mode</h2>
                 <div class="settings-container">
                     <div class="setting-box">
                         <input type="checkbox" name="infinite_mode" class="sb-radio infinite-mode">
