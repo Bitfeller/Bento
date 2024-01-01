@@ -22,7 +22,7 @@ const sizeLimit = 2 * 1000 * 1000; // NOTE: must be same as max_image_size in se
 let allowedTags = [];
 
 const dragline = document.createElement('div');
-dragline.style = 'display: flex; background-color: var(--drag-color); width: 100%; height: 5px;';
+dragline.style = 'display: flex; background-color: var(--drag-bar); width: 100%; height: 5px;';
 
 // Load DOMPurify for imports
 const dpscript = document.createElement('script');
@@ -88,7 +88,7 @@ function init_card(card, n) {
     dragHandle.addEventListener('dragstart', () => {
         drag = card;
         dragParent = cardContain;
-        card.style.backgroundColor = 'var(--drag-color)';
+        card.style.backgroundColor = 'var(--drag-background)';
         cardContain.append(dragline);
     });
     dragHandle.addEventListener('dragend', e => endDrag(e, card, cardContain));
@@ -288,7 +288,7 @@ function generator_mc(cardmc, card, allcorr, t, txt) {
     newop.addEventListener('dragstart', () => {
         drag = newop;
         dragParent = cardmc;
-        newop.style.backgroundColor = 'var(--drag-color)';
+        newop.style.backgroundColor = 'var(--drag-background)';
         cardmc.append(dragline);
     });
     newop.addEventListener('dragend', e => endDrag(e, newop, cardmc));
@@ -340,7 +340,7 @@ function generator_txt(card, i_anslist, r, p, txt) {
     newans.addEventListener('dragstart', () => {
         drag = newans;
         dragParent = p;
-        newans.style.backgroundColor = 'var(--drag-color)';
+        newans.style.backgroundColor = 'var(--drag-background)';
         p.append(dragline);
     });
     newans.addEventListener('dragend', e => endDrag(e, newans, p));
@@ -373,7 +373,7 @@ function generator_rank(card, ranklist, txt) {
     item.addEventListener('dragstart', () => {
         drag = item;
         dragParent = ranklist;
-        item.style.backgroundColor = 'var(--drag-color)';
+        item.style.backgroundColor = 'var(--drag-background)';
         ranklist.append(dragline);
     });
     item.addEventListener('dragend', e => endDrag(e, item, ranklist));
