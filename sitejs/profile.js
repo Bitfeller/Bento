@@ -67,7 +67,6 @@ const themeSelect = document.getElementById("theme-select");
     });
     emailbtn.addEventListener("mousedown", async () => {
         if(emailfield.value == "" || e_currpwd.value == "") return;
-        console.log(emailfield.value);
         await UserGateway.editUser("email", emailfield.value, e_currpwd.value);
         window.location.reload();
     });
@@ -123,14 +122,14 @@ const themeSelect = document.getElementById("theme-select");
     leaveBtn.addEventListener("mousedown", () => {
         warningDialog.close();
     })
-    themeSelect.addEventListener("change", () => {
-        // Do fancy code here
+    themeSelect.selectedIndex = data.userdata.theme;
+    themeSelect.addEventListener("change", async () => {
+        data.userdata.theme = themeSelect.selectedIndex ?? 0;
+        await UserGateway.editUser('userdata', JSON.stringify(data.userdata));
         window.location.reload();
     });
 })();
 
-window.onclick = function(e) {
-    if(e.target == warningDialog) {
-        warningDialog.close();
-    }
+window.onclick = (e) => {
+    if(e.target == warningDialog) warningDialog.close();
 }

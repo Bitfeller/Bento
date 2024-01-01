@@ -34,7 +34,7 @@
                 <h2>Change Email</h2>
                 <input type="password" id="e_currpwd" class="change-input" placeholder="Current Password">
                 <input type="email" id='emailfield' class="change-input" placeholder="New Email">
-                <button disabled id="emailbtn">Submit</button>
+                <button id="emailbtn">Submit</button>
                 <pre>
                 </pre>
                 <h2>Change Password</h2>
