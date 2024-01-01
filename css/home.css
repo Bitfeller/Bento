@@ -19,11 +19,11 @@
 }
 .svg-button {
     filter: drop-shadow(0 0 1rem black);
-    cursor: pointer; 
+    cursor: pointer;
     animation-name: sushi-shine;
     animation-duration: 4s;
-    animation-iteration-count: infinite;  
-    animation-fill-mode: forwards; 
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
     transition: scale 1s;
 }
 .inactive-svg-button {
@@ -142,7 +142,7 @@ dialog::backdrop {
     width: 100%;
     height: 100%;
     z-index: 100;
-    background: rgba(0, 0, 0, .7);
+    background: rgba(0, 0, 0, 0.7);
 }
 #tutorial-box-holder {
     display: none;
@@ -169,12 +169,15 @@ dialog::backdrop {
     transform: translate(-50%, -50%);
     z-index: 102;
 }
-.continuebtn, .skipbtn {
+.continuebtn,
+.skipbtn {
     padding: 0px 5px;
     margin: 5px;
 }
 @keyframes sushi-shine {
-    50% {filter: drop-shadow(0 0 2rem gold);}
+    50% {
+        filter: drop-shadow(0 0 2rem gold);
+    }
 }
 @keyframes move-tutorial-box-up {
     0% {
@@ -212,12 +215,5 @@ dialog::backdrop {
     }
     .main-bento {
         flex-direction: column;
-    }
-    .home-side-div-holder {
-        margin: 0 auto;
-        width: calc(100% - 20px);
-    }
-    .home-side-div {
-        width: initial;
     }
 }
