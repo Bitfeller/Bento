@@ -13,19 +13,19 @@
     <script defer src="/js/mainPageLogic.js"></script>
 </head>
 <body>
-    <div>
-        <div class="top-bar">
-            <div class="top-bar-side">
-            
-                <div class="logo" onclick="location.href='/html/'">
-                    <img src="/img/bento logo white.svg" height="100%" alt="bento-logo" class="bento-logo">
-                </div>
-            </div>
-            <div class="top-bar-side">
-                <button id="signInBtn">Login</button>
-                <button id="signUpBtn">Sign Up</button>
+    <div class="top-bar">
+        <div class="top-bar-side">
+        
+            <div class="logo" onclick="location.href='/html/'">
+                <img src="/img/bento logo white.svg" height="100%" alt="bento-logo" class="bento-logo">
             </div>
         </div>
+        <div class="top-bar-side">
+            <button id="signInBtn">Login</button>
+            <button id="signUpBtn">Sign Up</button>
+        </div>
+    </div>
+    <div>
 
         <div id="description">
             <div id="sales-pitch">
@@ -61,12 +61,16 @@
         <br>
         <hr>
         <br>
-        <p id="call-to-action">sign. up. now.</p>
-        <br>
-        <div id="big-button-container">
-            <button id="bigBtn">Sign Up...</button>
+        <div id="call-to-action-container">
+            <div>
+                <p id="call-to-action">sign. up. now.</p>
+                <br>
+                <div id="big-button-container">
+                    <button id="bigBtn">Sign Up...</button>
+                </div>
+            </div>
+            <p id="bottom-text">「　┳━┳ ノ( ゜-゜ノ)　」</p>
         </div>
-        <p id="bottom-text">「　┳━┳ ノ( ゜-゜ノ)　」</p>
         <br>
         <div id="bottom-bar">
             <div id="bottom-bar-text">
