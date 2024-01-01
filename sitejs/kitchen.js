@@ -3,6 +3,7 @@ import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 // User + decks
 let user;
 let decks = [];
+let cache_decks = {};
 let reviewDecks = [];
 let loaded = -1;
 // Containers
@@ -57,13 +58,20 @@ async function update() {
         loaded = decks.length - 1;
         return;
     }
+
     // Update decks in the user's review list
     if(reviewDecks.length == 0) {
         let keys = Object.keys(user.userdata.reviews);
         if(keys.length > 0) addedDecksContainer.innerHTML = "";
         for(let i = 0; i < keys.length; i++) {
             let deckid = parseInt(keys[i]);
-            let [success, deck] = await DeckGateway.get(deckid);
+            let success = true, deck;
+            for(let i = 0; i < decks.length; i++) {
+                if(decks[i].id == deckid) {
+                    deck = decks[i];
+                }
+            }
+            if(!deck) [success, deck] = await DeckGateway.get(deckid);
             if(!success) continue;
             reviewDecks.push(deck);
             let newBox = box(deck.id, true, deck.name, deck.deckpic, deck.owner, true);
@@ -91,11 +99,9 @@ async function update() {
     // For deck fetching, the system lazy loads primary deck info and actually fetches the deck when accessed/viewed
     [success, data] = await DeckGateway.getall(0);
     if(!success) return;
-    if(data.length == 0) {
-        // no decks...?
-        // do something here ig
-        return;
-    }
+    // no decks...?
+    // do something here ig
+    if(data.length == 0) return;
     decks.push(...data);
     await update();
     window.LOADED();
@@ -157,19 +163,41 @@ async function update() {
 })();
 async function preview(_this, isAdded) {
     previewDialog.showModal();
+    let id = parseInt(_this.dataset.idx);
+    let data = cache_decks[id];
+    if(!data) {
+        let [success, deck] = await DeckGateway.get(id, true, false);
+        if(!success) {
+            previewDialog.showModal();
+            previewDialog.innerHTML = `
+                <div class='title-bar'>
+                    <h2>Hmm.</h2>
+                    <button class="closeBtns" id="previewDialog_leave"><span class="material-symbols-outlined">close</span></button>
+                </div>
+                <div class='preview-container'>
+                    <div class='preview-container-part' id='overview'>
+                        <h2>no info</h2>
+                        <p>We couldn't load this deck.</p>
+                    </div>
+                </div>
+            `;
+            previewDialog.getElementsByClassName("closeBtns")[0].addEventListener("mousedown", () => previewDialog.close());
+            return;
+        }
+        data = deck;
+        cache_decks[id] = deck;
+    }
     let deck;
     let target = isAdded ? reviewDecks : decks;
     for(let i = 0; i < target.length; i++) {
-        if(target[i].id == _this.dataset.idx) {
-            deck = target[i];
-        }
+        if(target[i].id == _this.dataset.idx) deck = target[i];
     }
     await UserGateway.editUser("view", String(deck.id));
     let answer_list = "";
-    if(!deck.data.contnt) {
-        answer_list = "[CORRUPT DECK]";
+    if(!data.contnt) {
+        answer_list = "[This deck appears to be corrupt...]";
     } else {
-        let contnt = deck.data.contnt;
+        let contnt = data.contnt;
         let keys = Object.keys(contnt);
         for(let i = 0; i < keys.length; i++) {
             answer_list += `<p><b>Q |  ${keys[i]}</b></p>${contnt[keys[i]].type == "mc" ? "<p>" + contnt[keys[i]].op.join(", ") + "</p>" : ""}<p>A |  ${contnt[keys[i]].ans.join(", ")}</p><div class='deck-divider' style='margin: 7px 3px; background-color: rgb(230, 230, 230); height: 2px;'></div>`;
@@ -187,8 +215,8 @@ async function preview(_this, isAdded) {
                 <div class="line-up-icons view-container"><span class='views'>${deck.viewdata.length ?? 0}</span> <span class="material-symbols-outlined views-icon">visibility</span></div>
                 ${user.username == deck.owner ? "<div class='deck-buttons'><button class='export-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>download</span> Export</div></button> <button class='edit-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>edit</span> Edit</div></button> <button class='delete-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>delete</span> Delete</div></button></div>" : ""}
             </div>
-            ${deck.data.desc ? `<div class='preview-container-part' id='description'>
-                <p>${deck.data.desc}</p>
+            ${data.desc ? `<div class='preview-container-part' id='description'>
+                <p>${data.desc}</p>
             </div>` : ""}
             <div class='preview-container-part' id='cards'>
                 ${answer_list}
@@ -202,8 +230,8 @@ async function preview(_this, isAdded) {
         previewDialog.getElementsByClassName("export-btn")[0].addEventListener("mousedown", () => {
             const data = {
                 name: deck.name,
-                desc: deck.data.desc,
-                contnt: decodeHTMLEncVal(deck.data.contnt)
+                desc: data.desc,
+                contnt: decodeHTMLEncVal(data.contnt)
             };
             const json = JSON.stringify(data);
             const file = new File([json], deck.name+'.txt', {type: "text/plain"});
@@ -277,7 +305,7 @@ async function reviews_update(_this, isAdded) {
     } else {
         user.userdata.reviews[deck.id] = {};
         // Make sure deck still exists
-        let [success, data] = await DeckGateway.get(deck.id);
+        let [success, data] = await DeckGateway.get(deck.id, false, false);
         if(!success) {
             previewDialog.showModal();
             previewDialog.innerHTML = `
@@ -288,7 +316,7 @@ async function reviews_update(_this, isAdded) {
                 <div class='preview-container'>
                     <div class='preview-container-part' id='overview'>
                         <h2>no info</h2>
-                        <p>We weren't able to add this deck, since it was deleted by its owner.<br>You can close this prompt once you're done.</p>
+                        <p>We weren't able to add this deck, or it was deleted by its owner.<br>You can close this prompt once you're done.</p>
                     </div>
                 </div>
             `;
@@ -324,7 +352,5 @@ async function reviews_update(_this, isAdded) {
 
 // Close dialogs when user presses outside dialog
 window.addEventListener("mousedown", (e) => {
-    if(e.target === previewDialog) {
-        previewDialog.close();
-    }
+    if(e.target === previewDialog) previewDialog.close();
 });

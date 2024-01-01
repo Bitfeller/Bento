@@ -24,7 +24,7 @@ const feedback_dialog = document.getElementById("header:feedback_dialog");
     let reviews = data.userdata.reviews;
     let r_keys = Object.keys(reviews);
     for(let i = 0; i < r_keys.length; i++) {
-        let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]));
+        let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), false, false);
         if(!success) continue;
         let count = 0;
         let c_keys = Object.keys(reviews[r_keys[i]]);
@@ -45,9 +45,7 @@ const feedback_dialog = document.getElementById("header:feedback_dialog");
     let curr = parseInt(data.notifsub);
     if(Notification.permission == "denied") {
         curr = 0;
-        if(data.notifsub != "0") {
-            await UserGateway.editUser("notifsub", "0");
-        }
+        if(data.notifsub != "0") await UserGateway.editUser("notifsub", "0");
         notifText.innerHTML = `<span class='material-symbols-outlined'>notifications_off</span>You've turned off notifications. Bento can't show you notifications unless you agree to them.</span>`;
         return;
     }
