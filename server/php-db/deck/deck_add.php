@@ -74,7 +74,7 @@
         // Add deck to database
         $sql = "INSERT INTO decks (name, deckpic, owner, data, viewdata, public) VALUES (?, ?, ?, ?, ?, ?);";
         $stmt = $conn->prepare($sql);
-        $viewdata = '{}';
+        $viewdata = '[]';
         $stmt->bind_param("sssssi", $name, $deckpic, $owner, $deckData, $viewdata, $public);
         $stmt->execute();
         $stmt->close();
