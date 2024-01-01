@@ -39,22 +39,22 @@ function initMc(newDiv, n) {
             <div class='card-mc'>
                 <div class='mc-option'>
                     <input type='input' class='mc-option-input' placeholder='...'>
-                    <button class='mc-option-del'>X</button>
+                    <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
                     <button class='mc-option-correct mc-option-sel'><span class='material-symbols-outlined'>check</span></button>
                 </div>
                 <div class='mc-option'>
                     <input type='input' class='mc-option-input' placeholder='...'>
-                    <button class='mc-option-del'>X</button>
+                    <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
                     <button class='mc-option-correct mc-option-nosel'>&nbsp;&nbsp;&nbsp;</button>
                 </div>
                 <div class='mc-option'>
                     <input type='input' class='mc-option-input' placeholder='...'>
-                    <button class='mc-option-del'>X</button>
+                    <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
                     <button class='mc-option-correct mc-option-nosel'>&nbsp;&nbsp;&nbsp;</button>
                 </div>
                 <div class='mc-option'>
                     <input type='input' class='mc-option-input' placeholder='...'>
-                    <button class='mc-option-del'>X</button>
+                    <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
                     <button class='mc-option-correct mc-option-nosel'>&nbsp;&nbsp;&nbsp;</button>
                 </div>
             </div>
@@ -85,7 +85,7 @@ function initMc(newDiv, n) {
         newOp.className = "mc-option";
         newOp.innerHTML = `
             <input type='input' class='mc-option-input' placeholder='...'>
-            <button class='mc-option-del'>X</button>
+            <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
             <button class='mc-option-correct mc-option-nosel'>&nbsp;&nbsp;&nbsp;</button>
         `;
         cardmc.appendChild(newOp);
@@ -176,11 +176,11 @@ function initRanking(newDiv, n) {
             <div class='card-rank ranking-list'>
                 <div draggable='true' class='ranking-item'>
                     <input type='text' class='ranking-item-txt' placeholder='...'>
-                    <button class='ranking-item-del'>X</button>
+                    <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
                 </div>
                 <div draggable='true' class='ranking-item'>
                     <input type='text' class='ranking-item-txt' placeholder='...'>
-                    <button class='ranking-item-del'>X</button>
+                    <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
                 </div>
             </div>
             <button class='rank-add'>+</button>
@@ -211,7 +211,7 @@ function initRanking(newDiv, n) {
         item.setAttribute("draggable", true);
         item.innerHTML = `
             <input type='text' class='ranking-item-txt' placeholder='...'>
-            <button class='ranking-item-del'>X</button>
+            <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
         `;
         rankingList.appendChild(item);
         item.addEventListener("dragstart", function() {
@@ -533,7 +533,7 @@ addCard.addEventListener("mousedown", newCard);
                     newOp.className = "mc-option";
                     newOp.innerHTML = `
                         <input type='input' class='mc-option-input' placeholder='...' value='${card.op[i]}'>
-                        <button class='mc-option-del'>X</button>
+                        <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
                         <button class='mc-option-correct ${card.ans == card.op[i] ? 'mc-option-sel' : 'mc-option-nosel'}'>C</button>
                     `;
                     cardmc.appendChild(newOp);
@@ -573,7 +573,7 @@ addCard.addEventListener("mousedown", newCard);
                     item.setAttribute("draggable", true);
                     item.innerHTML = `
                         <input type='text' class='ranking-item-txt' placeholder='...' value='${card.ans[i]}'>
-                        <button class='ranking-item-del'>X</button>
+                        <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
                     `;
                     rankingList.appendChild(item);
                     item.addEventListener("dragstart", function() {
