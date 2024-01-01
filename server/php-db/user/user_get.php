@@ -44,7 +44,7 @@
         }
         $data = ["uid"=>$_SESSION['uid'], "username"=>$_SESSION['username'], "email"=>$_SESSION['email'], "verified"=>$_SESSION['verified'], "creation_date"=>$_SESSION['creation_date'], "notifsub"=>$_SESSION['notifsub']];
         if($getudata == 1) {
-            $userdata = json_decode($_SESSION['userdata'], false);
+            $userdata = json_decode($_SESSION['userdata'], false, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags']);
             if($getreviews == 0) unset($userdata->reviews);
             if($getdrafts == 0) unset($userdata->draftdecks);
             $data['userdata'] = json_encode($userdata);

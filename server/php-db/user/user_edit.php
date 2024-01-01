@@ -143,7 +143,7 @@
                 );
             break;
             case 'userdata':
-                $val = json_decode($val, false);
+                $val = json_decode($val, false, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags']);
                 $safeVal = sanitize($val);
                 check_drafts($conf, $result, $safeVal->drafts);
                 $safeVal = json_encode($safeVal);
@@ -156,13 +156,13 @@
             break;
             // Individual userdata actions
             case 'draftdecks':
-                $val = json_decode($val, false);
+                $val = json_decode($val, false, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags']);
                 $safeVal = sanitize($val);
                 check_drafts($conf, $result, $safeVal);
                 $safeVal = json_encode($safeVal);
                 $curr = $_SESSION['userdata'];
-                $curr = json_decode($curr, false);
-                $curr->draftdecks = json_decode($safeVal, false);
+                $curr = json_decode($curr, false, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags']);
+                $curr->draftdecks = json_decode($safeVal, false, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags']);
                 $curr = json_encode($curr);
                 $sql = "UPDATE users SET userdata = ? WHERE id = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
@@ -172,12 +172,12 @@
                 $_SESSION['userdata'] = $curr;
             break;
             case 'reviews':
-                $val = json_decode($val, false);
+                $val = json_decode($val, false, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags']);
                 $safeVal = sanitize($val);
                 $safeVal = json_encode($safeVal);
                 $curr = $_SESSION['userdata'];
-                $curr = json_decode($curr, false);
-                $curr->reviews = json_decode($safeVal, false);
+                $curr = json_decode($curr, false, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags']);
+                $curr->reviews = json_decode($safeVal, false, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags']);
                 $curr = json_encode($curr);
                 $sql = "UPDATE users SET userdata = ? WHERE id = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
@@ -188,7 +188,7 @@
             break;
             case 'theme':
                 $curr = $_SESSION['userdata'];
-                $curr = json_decode($curr, false);
+                $curr = json_decode($curr, false, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags']);
                 $curr->theme = (int)$val;
                 $curr = json_encode($curr);
                 $sql = "UPDATE users SET userdata = ? WHERE id = ? LIMIT 1;";
@@ -209,7 +209,7 @@
                     $stmt->close();
                     fail("no deck");
                 }
-                $viewdata = json_decode($result['viewdata']);
+                $viewdata = json_decode($result['viewdata'], false, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags']);
                 $exists = false;
                 foreach($viewdata as $idx => $res) {
                     if ($res == $_SESSION['uid']) {
