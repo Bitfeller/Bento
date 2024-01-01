@@ -20,8 +20,7 @@ const totalWrong = {};
 const cardsSeen = {};
 let updateFn;
 
-let lastCorrect = false;
-let reshow_correct = undefined; // Explicitly defined for readability
+let lastCorrect = false, reshow_correct = undefined;
 
 // -------------------------------------------------------- \\
 
@@ -233,7 +232,7 @@ function check(answer) {
     }
 }
 function isCorrect(answer) {
-    if(!active) return {dead: true};
+    if(!active) return { dead: true };
     let problem = gameData[currSet[card]];
     switch(problem.type) {
         case "mc":
