@@ -5,18 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento!</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="css/home.css" />
+    <link rel="stylesheet" href="/css/home.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <script defer src="/js/mainPageLogic.js"></script>
 </head>
 <body>
     <div>
         <div class="top-bar">
             <div class="top-bar-side">
             
-                <div class="logo" onclick="location.href='/'">
-                    <img src="bento logo.svg" height="100%" alt="bento-logo" class="bento-logo">
+                <div class="logo" onclick="location.href='/html/'">
+                    <img src="/img/bento logo white.svg" height="100%" alt="bento-logo" class="bento-logo">
                 </div>
             </div>
             <div class="top-bar-side">
@@ -28,33 +30,49 @@
         <div id="description">
             <div id="sales-pitch">
                 <p class="learning">Learn:</p>
-                <div id="faster-text" class="learning" id="faster"> Faster.
-                    <div id="better-text" class="learning" id="faster">Better.</div>                    
+                <div id="faster-text" class="learning"> Faster.
+                    <div id="better-text" class="learning">Better.</div>                    
                 </div>
-
             </div>
             <hr>
-        </div>
-        <div class="bento-pitch">
-            <div id="bento-description">
-                <p><i>Bento!</i> uses the power of SRS and specialty algorithms to <i><b>accelerate</b></i> your learning to the extreme.</p>
+            <div class="bento-pitch">
+                <div class="bento-description">
+                    <p><i>Bento!</i> uses the power of <b>SRS</b> and specialty algorithms to <i><b>accelerate</b></i> your learning to the extreme.</p>
+                </div>
+                <br>
+                <!-- <p>If you:</p>
+                <p> • Struggle to remember things</p> -->
             </div>
-            <br>
-            <!-- <p>If you:</p>
-            <p> • Struggle to remember things</p> -->
-            <p id="call-to-action"><b id="call-to-action">sign. up. now.</b></p>
         </div>
+        <div id="bento-explainer">
+            <div class="explainer-box hidden" id="top-explainer-box">
+                <p>Use Bento! to learn difficult concepts so you really <b>remember</b></p>
+                <img src="/img/difficult-concepts.gif">
+            </div>
+            <div class="explainer-box hidden" id="mid-explainer-box">
+                <img src="https://i.gifer.com/origin/a2/a2e6cc5639345b77380f46248c0d95c8.gif">
+                <p><b>Continuous</b> learning for <i>continually</i> better recall</p>
+            </div>
+            <div class="explainer-box hidden" id="bot-explainer-box">
+                <p>Win all the in-class games like you always wanted</p>
+                <img src="/img/winner.png">
+            </div>
+        </div>
+        <br>
+        <hr>
+        <br>
+        <p id="call-to-action">sign. up. now.</p>
         <br>
         <div id="big-button-container">
             <button id="bigBtn">Sign Up...</button>
         </div>
         <p id="bottom-text">「　┳━┳ ノ( ゜-゜ノ)　」</p>
         <br>
-        <section id="bottom-bar">
+        <div id="bottom-bar">
             <div id="bottom-bar-text">
-                Made by Valley & S
+                Made by Valley & Bitfeller
             </div>
-        </section>
+        </div>
     </div>
 
     <section id="modals">
@@ -80,5 +98,4 @@
         </div>
     </section>
 </body>
-<script type="module" src="js/sign-up-in-modal.js"></script>
 </html>
