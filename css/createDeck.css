@@ -101,7 +101,7 @@ button {
 .create-container > .mcbtn {
     margin-left: 0px;
 }
-.mc-add, .rank-add, .txt-add {
+.mc-add, .rank-add, .txt-add, .mtch-add {
     border: none;
     color: var(--light-text);
     background-color: var(--select-blue);
@@ -357,6 +357,11 @@ button {
 }
 #picAddBtn, #fileselecttrigger {
     cursor: pointer;
+}
+.rank-clone, .mtch-clone, .txt-clone, .mc-clone {
+    .small-ico {
+        color: var(--dark-text);
+    }
 }
 .import-card {
     position: relative;
