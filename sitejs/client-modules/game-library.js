@@ -383,7 +383,7 @@ function get_pwsets() {
     }
 
     let len = gameData.length - deckSize;
-    let real_deckSize = (currentSet == 0 && len < deckSize) ? len : deckSize;
+    let real_deckSize = len < deckSize ? len : deckSize;
     let s_curr = curr;
 
     if(currentSet < 1) s_curr = real_deckSize;
@@ -409,7 +409,7 @@ function getProgress() {
     // Calculate new global/local caches for C_w
     let prev = ls + lls;
     let len = gameData.length - currentSet * deckSize;
-    let real_deckSize = (currentSet == 0 && len < deckSize) ? len : deckSize;
+    let real_deckSize = len < deckSize ? len : deckSize;
     // Due to cardRepeat, questions from currWrong may also count as normal questions which will be counted as normally seen; therefore, actual extra questions will differ.
     // We will have to use rndSetData and currWrong to see which ones have been fully marked by rndSetData and aren't eligible to be seen normally, and then mark those as
     // ACTUAL wrong questions.
@@ -436,8 +436,8 @@ function getProgress() {
 
     // Globally
     // 5 / 8?
-    let S_l = Math.ceil(real_deckSize / curr) * (gameData.length / real_deckSize - 2) + Math.ceil((real_deckSize + realWrong) / curr) + C_gw;
-    let S_l_std = Math.ceil(real_deckSize / curr) * (gameData.length / real_deckSize - 1) + C_gw + C_lw;
+    let S_l = Math.ceil(real_deckSize / curr) * (gameData.length / curr - 2) + Math.ceil((real_deckSize + realWrong) / curr) + C_gw;
+    let S_l_std = Math.ceil(real_deckSize / curr) * (gameData.length / curr - 1) + C_gw + C_lw;
     if(S_l < 0) S_l = 0;
     if(S_l_std < 0) S_l_std = 0;
     if(S_l - S_l_std > 0) {
