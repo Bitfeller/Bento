@@ -1,3 +1,4 @@
+![Bento Logo](https://github.com/Bitfeller/Bento/blob/main/img/bento%20logo.svg?raw=true)
 # Bento!
 ### *"learning accelerated"*
 A learning webapp using the magical powers of **SRS** along with special magic to make it feel just like an everyday meal
