@@ -4,11 +4,12 @@
 }
 body {
     overflow-x: hidden;
-    background: rgb(0, 0, 0, 0.4);
+    color: rgb(220, 220, 220);
 }
 body > div {
-    background: rgb(221,229,182);
-    background: linear-gradient(145deg, rgba(221,229,182,1) 0%, rgba(173,193,120,1) 50%, rgba(64,125,176,1) 100%); 
+    /* background: rgb(221,229,182);
+    background: linear-gradient(145deg, rgba(221,229,182,1) 0%, rgba(173,193,120,1) 50%, rgba(64,125,176,1) 100%);  */
+    background-color: rgb(33, 33, 33);
 }
 .logo {
     font-size: 30pt;
@@ -16,22 +17,25 @@ body > div {
     cursor: pointer;
 }
 .bento-logo {
-    background-color: #E9E9ED;
     font-size: 30pt;
     border-radius: 10px;
+    transition: background-color 0.25s, box-shadow 0.25s;
+    padding: 5px;
 }
 body {
     font-family: "Noto Sans", sans-serif;
 }
 .top-bar {
-    background: rgb(240,234,210);
-    background: linear-gradient(180deg, rgba(240,234,210,1) 0%, rgba(221,229,182,0) 100%); 
+    background-color: rgb(23, 23, 23);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding: 1%;
+    border-style: solid;
+    border-width: 0px;
 }
 .top-bar-side > button {
+    background-color: rgb(200, 200, 200);
     width: 125px;
     font-size: 16pt;
 }
@@ -44,6 +48,7 @@ button {
     cursor: pointer;
     border-radius: 10px;
     border-width: 0px;
+    transition: background-color 0.25s, box-shadow 0.25s;
 }
 input {
     border-radius: 10px;
@@ -51,25 +56,24 @@ input {
     border-color: black;
     border-style: solid;
     text-align: center;
-    height: 5vh;
+    height: 5dvh;
 }
-.bento-logo:hover, button:hover {
+.bento-logo:hover, button:hover, #bigBtn:hover {
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+}
+.top-bar-side > button:hover {
     background-color: #E9E9ED;
-    animation-name: button-box-shadow;
-    animation-duration: 0.25s;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards; 
 }
 .modal-content {
     font-size: 20pt;
 }
 .modal-content > button {
-    height: 5vh;
+    height: 5dvh;
     border-width: 2px;
     border-style: solid;
 }
 .learning {
-    font-size: 96pt;
+    font-size: 115pt;
     font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
 }
 #faster-text {
@@ -82,7 +86,7 @@ input {
     position: relative;
 }
 #better-text {
-    transform: translate(200vh);
+    transform: translate(200dvh);
     animation-name: better-vroom;
     animation-duration: 5.5s;
     animation-iteration-count: infinite;
@@ -98,27 +102,25 @@ input {
     font-size: 24pt;
     margin-bottom: 2.5%;
 }
-#bento-pitch > p {
+#bento-pitch {
     font-size: 24pt;
-    margin-top: 1%;
+    padding: 50px;
     font-family: "Noto Sans", sans-serif;
 }
 .bento-description {
     font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
     text-align: center;
     font-size: 30pt; 
+    padding: 5% 10%;
 }
-.bento-pitch {
-    margin-left: 15%;
-    margin-top: 3%;
-}
-.bento-pitch {
-    font-size: 30pt;
+#description {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
 }
 #call-to-action {
     font-weight: bold;
     text-align: center;
-    padding-right: 5%;
     padding-top: 2%;
     font-size: 48pt;
 }
@@ -126,7 +128,8 @@ hr {
     margin-left: 2%;
     margin-right: 2%;
     height: 5px;
-    background-color: black;
+    border: none;
+    background-color: rgb(56, 56, 56);
 }
 #big-button-container {
     margin-top: 4%;
@@ -136,17 +139,19 @@ hr {
 }
 #bigBtn {
     width: 40%;
-    background: rgb(240,234,210);
+    background-color: rgb(200, 200, 200);
     font-size: 24pt;
     padding: 1%;
+    box-shadow: 0px 15px 10px -10px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.25s, box-shadow 0.25s;
 }
 #bottom-text {
     text-align: center;
     font-size: 18pt;
 }
 #bottom-bar {
-    background: rgb(10,57,57);
-    background: linear-gradient(0deg, rgba(10,57,57,0.8) 0%, rgba(10,57,57,0) 100%); 
+    background: rgb(24,24,24);
+    background: linear-gradient(180deg, rgba(24,24,24,0) 0%, rgba(50,27,65,1) 100%); 
     height: 300px;
     display: flex;
     position: relative;
@@ -163,28 +168,56 @@ hr {
     margin-left: 10%;
     display: flex;
     flex-direction: column;
-    gap: 4vh;
+    gap: 4dvh;
+    min-height: 100vh;
 }
 .explainer-box {
     display: flex;
     flex-direction: row;
     text-align: center;
-    background-color: white;
+    background: rgb(99,89,148,0.8);
+    background: linear-gradient(140deg, rgba(99,89,148,0.8) 0%, rgba(50,27,65,0.8) 100%); 
     margin: 0.25%;
     padding: 2%;
     font-size: 22pt;
     border-radius: 10px;
-    width: 50%;
+    border-color: rgb(50, 27, 65);
+    border-width: 5px;
+    border-style: solid;
+    max-width: 50%;
+    height: 25dvh;
+    margin-bottom: 2%;
+    box-shadow: 15px 20px 15px rgba(0, 0, 0, 0.3);
 }
-#top-explainer-box {
-    margin-left: 20%;
+.explainer-box > img {
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 2px;
+}
+.hidden {
+    opacity: 0;
+    fill: blur(5px);
+    transform: translateX(-100%);
+    transition: all 1s;
+  }
+.show {
+    opacity: 1;
+    fill: blur(0);
+    transform: translateX(0);
+}
+#top-explainer-box > img {
+    height: 25dvh;
+    border-color: rgb(255, 103, 35);
 }
 #mid-explainer-box {
-    margin-left: 40%;
-    flex-direction: column;
+    margin-left: 35%;
 }
-#bot-explainer-box {
-    margin-left: 5%;
+#mid-explainer-box > img {
+    width: 40%;
+    border-style: none;
+}
+#bot-explainer-box > img {
+    border-color: rgb(134, 215, 47);
 }
 .explainer-box > p {
     margin-top: 7%;
@@ -219,7 +252,7 @@ hr {
 @keyframes animatetop {
     from {transform: translate(0, -15vh); opacity: 0}
     to {transform: translate(0, 0vh); opacity: 1}
-  }
+}
 .modal {
     display: none; 
     position: fixed; 
@@ -235,7 +268,7 @@ hr {
 .modal-content {
     display: flex;
     flex-direction: column;
-    gap: 1vh;   
+    gap: 1dvh;   
     background-color: white;
     border-style: none;
     margin: 15% auto; 
