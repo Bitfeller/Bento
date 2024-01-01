@@ -19,10 +19,7 @@
 
 - Scientific/math format for questions/answers
 - Allow cards to be shown both ways
-- Option so that input can be disabled
 - Create feedback feature
-- Error management for importing
-- Allow option to require correct answers before continuing
 - Verification + password reset system via email
 
 - Fix hidden sign up button on main page

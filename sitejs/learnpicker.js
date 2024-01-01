@@ -10,9 +10,8 @@ const o_mode = document.getElementsByClassName("mode");
 const o_repeat = document.getElementsByClassName("repeat");
 const o_shuffle = document.getElementsByClassName("shuffle");
 const o_infinite_mode = document.getElementsByClassName("infinite-mode")[0];
-const infinite_mode_text =
-    document.getElementsByClassName("infinite_mode_text")[0];\
-const o_require_correct = document.getElementsByClaassName('require_correct');
+const infinite_mode_text = document.getElementsByClassName("infinite_mode_text")[0];
+const o_require_correct = document.getElementsByClassName('require_correct');
 
 const deckSelect = document.getElementById("deckSelectAll");
 
@@ -80,10 +79,7 @@ let user;
     o_mode[0].addEventListener("change", () => {
         if (o_mode[0].checked == true) {
             o_infinite_mode.disabled = false;
-            o_infinite_mode.checked =
-                o_infinite_mode.getAttribute("data-enabled") == "true"
-                    ? true
-                    : false;
+            o_infinite_mode.checked = o_infinite_mode.getAttribute("data-enabled") == "true" ? true : false;
             infinite_mode_text.innerHTML = "| Infinite Mode";
             deckContainer.innerHTML = "";
             let r_keys = Object.keys(reviews);
@@ -164,8 +160,7 @@ let user;
                 let item = deckContainer.children[i];
                 let checkbox = item.getElementsByClassName("deckCheck")[0];
                 item.addEventListener("change", () => {
-                    if (e.target != checkbox)
-                        checkbox.checked = !checkbox.checked;
+                    if (e.target != checkbox) checkbox.checked = !checkbox.checked;
                     let allSelected = true;
                     let isSelected = false;
                     for (let j = 0; j < deckContainer.children.length; j++) {
