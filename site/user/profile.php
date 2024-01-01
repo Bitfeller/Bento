@@ -54,7 +54,6 @@
                 <code>[a-zA-Z0-9\- !@#$%^&*\(\)\[\]\{\}\.]*</code>
             </div>
             <button id="submit-username">Change</button>
-            <p class="info-error" id="username-error"></p>
         </div>
         <div class="grid-box change-box">
             <h2>Change Email/Password</h2>
@@ -67,14 +66,12 @@
                 <input type="text" id="email" placeholder="Email">
                 <p>Changing your email will require you to verify the new email address so make sure you can access it.</p>
                 <button id="change-email">Change</button>
-                <p class="info-error" id="email-error"></p>
             </div>
             <div id="change-password-box" style="display: none;">
                 <input type="password" id="password-curr-password" placeholder="Current Password">
                 <input type="password" id="password" placeholder="New Password">
                 <p>Passwords must be at least 8 characters long <p><i>for now...</i></p></p>
                 <button id="change-password">Change</button>
-                <p class="info-error" id="password-error"></p>
             </div>
         </div>
         <div class="grid-box change-box">
