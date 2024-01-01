@@ -1,8 +1,8 @@
 <?php
     require_once '../funcs.php';
     validate_request();
-    $data = get_data('name', 'data', 'public');
-    require_types('ssn', 'name', 'data', 'public');
+    $data = get_data('name', 'deckpic', 'data', 'public');
+    require_types('sssn', 'name', 'deckpic', 'data', 'public');
     // Make sure session exists
     session_start();
     if(!isset($_SESSION['uid'])) {
@@ -10,6 +10,7 @@
     }
     // Get body values
     $name = $data['name'];
+    $deckpic = $data['deckpic'];
     $owner = $_SESSION['username'];
     $deckData = $data['data'];
     $public = $data['public'];
@@ -28,11 +29,35 @@
             fail("name exists");
         }
         $stmt->close();
+        // Sanitize values
+        $deckpic = htmlspecialchars(strip_tags($deckpic));
+        $deckData = json_decode($deckData, true);
+        if($deckData == null) {
+            fail("exception: data isn't valid JSON.");
+        }
+        $newVal = [];
+        $newVal['desc'] = htmlspecialchars(strip_tags($deckData['desc']));
+        $newVal['contnt'] = [];
+        foreach($deckData['contnt'] as $prob => $data) {
+            $newProb = htmlspecialchars(strip_tags($prob));
+            $newItem = [];
+            $newItem['type'] = htmlspecialchars(strip_tags($data['type']));
+            if($data['op']) {
+                $newItem['op'] = htmlspecialchars(strip_tags(json_encode($data['op'])));
+            }
+            $newItem['ans'] = htmlspecialchars(strip_tags($data['ans']));
+            $newVal['contnt'][$newProb] = $newItem;
+        }
+        $deckData = json_encode($newVal);
+        // Check image limit
+        if(strlen($deckpic) > 2 * 1000 * 1000) {
+            fail('size limit');
+        }
         // Add deck to database
-        $sql = "INSERT INTO decks (name, owner, data, viewdata, public) VALUES (?, ?, ?, ?, ?);";
+        $sql = "INSERT INTO decks (name, deckpic, owner, data, viewdata, public) VALUES (?, ?, ?, ?, ?);";
         $stmt = $conn->prepare($sql);
         $viewdata = '[]';
-        $stmt->bind_param("ssssi", $name, $owner, $deckData, $viewdata, $public);
+        $stmt->bind_param("sssssi", $name, $deckpic, $owner, $deckData, $viewdata, $public);
         $stmt->execute();
         $stmt->close();
         success();

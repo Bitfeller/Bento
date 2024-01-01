@@ -88,7 +88,37 @@
     white-space: nowrap;
     color: rgb(150, 150, 50);
 }
-
+dialog {
+    position: fixed;
+    top: calc(-100% + 50px);
+    left: 50%;
+    transform: translate(-50%, 50%);
+    max-height: 85%;
+    width: 30%;
+    margin: auto;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--dark-gray);
+    width: 50%;
+    /* h2 {
+        display: inline;
+    }
+    button {
+        font-size: 12pt;
+        height: 30px;
+        width: 30px;
+    } */
+}
+dialog p {
+    line-height: 300%;
+}
+dialog button {
+    padding: 5px;
+}
+dialog::backdrop {
+    background: rgba(0, 0, 0, .5);
+}
 @keyframes sushi-shine {
     50% {filter: drop-shadow(0 0 2rem gold);}
 }

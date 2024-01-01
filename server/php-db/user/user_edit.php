@@ -102,12 +102,29 @@
                 $stmt->close();
             break;
             case 'reviews':
+                $val = json_decode($val, true);
+                if($val == null) {    
+                    fail("exception: data isn't valid JSON.");
+                }
+                $safeVal = [];
+                foreach($val as $dkey => $deck) {
+                    $safeVal[$dkey] = [];
+                    foreach($deck as $prob => $data) {
+                        $newProb = htmlspecialchars(strip_tags($prob));
+                        $newItem = [];
+                        $newItem['last'] = (int)$data['last'];
+                        $newItem['box'] = (int)$data['box'];
+                        $newItem['score'] = (int)$data['score'];
+                        $safeVal[$dkey][$newProb] = $newItem;
+                    }
+                }
+                $safeVal = json_encode($safeVal);
                 $sql = "UPDATE users SET reviews = ? WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("si", $val, $_SESSION['uid']);
+                $stmt->bind_param("si", $safeVal, $_SESSION['uid']);
                 $stmt->execute();
                 $stmt->close();
-                $_SESSION['reviews'] = $val;
+                $_SESSION['reviews'] = $safeVal;
             break;
             case 'view':
                 $sql = "SELECT * FROM decks WHERE id = ?;";
@@ -139,20 +156,22 @@
                 }
             break;
             case 'pfp':
-                if(strlen($val) > 2 * 1000 * 1000) {
+                $safeVal = htmlspecialchars(strip_tags($val));
+                if(strlen($safeVal) > 2 * 1000 * 1000) {
                     fail('size limit');
                 }
                 $sql = "UPDATE users SET pfp = ? WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("si", $val, $_SESSION['uid']);
+                $stmt->bind_param("si", $safeVal, $_SESSION['uid']);
                 $stmt->execute();
                 $stmt->close();
-                $_SESSION['pfp'] = $val;
+                $_SESSION['pfp'] = $safeVal;
             break;
             case 'notifsub':
                 $sql = "UPDATE users SET notifsub = ? WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("si", $val, $_SESSION['uid']);
+                $val = (int)$val;
+                $stmt->bind_param("ii", $val, $_SESSION['uid']);
                 $stmt->execute();
                 $stmt->close();
                 $_SESSION['notifsub'] = $val;

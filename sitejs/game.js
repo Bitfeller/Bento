@@ -26,7 +26,7 @@ function noAnswer() {
 function contlabel() {
     info.style['background-color'] = "rgba(0, 255, 0, 0.4)";
     info.style.display = "block";
-    info.innerHTML = "correct...";
+    info.innerHTML = "correct.";
     window.setTimeout(() => info.style.display = "none", 1000);
 }
 function computeCenter(el) {
@@ -47,7 +47,7 @@ function refresh() {
         return;
     }
     var data = Game.fetchProblem();
-    problem.innerHTML = data.question;
+    problem.innerHTML = data.q;
     for(var i = 0; i < objs.length; i++) {
         objs[i].remove();
     }
@@ -57,11 +57,11 @@ function refresh() {
     centroids = [];
     dragging = undefined;
     switch(data.type) {
-        case "selection":
-            for(var i = 0; i < data.answers.length; i++) {
+        case "mc":
+            for(var i = 0; i < data.op.length; i++) {
                 var op_i = document.createElement("button");
                 op_i.className = "option";
-                op_i.innerHTML = data.answers[i];
+                op_i.innerHTML = data.op[i];
                 op_i.id = "not-select";
                 op_i.setAttribute("i", i);
                 op_i.addEventListener("mousedown", function() {
@@ -75,7 +75,7 @@ function refresh() {
                 cont_a.appendChild(op_i);
             }
         break;
-        case "input":
+        case "txt":
             var input = document.createElement("input");
             input.type = "text";
             input.className = "op-input";
@@ -92,8 +92,8 @@ function refresh() {
             list.className = "ranking-list";
             cont_a.appendChild(list);
             objs.push(list);
-            var answerList = data.answer.slice();
-            for(var i = 0; i < data.answer.length; i++) {
+            var answerList = data.ans.slice();
+            for(var i = 0; i < data.ans.length; i++) {
                 var idx = Math.floor(Math.random() * (answerList.length - 1) + 0.5);
                 var item = answerList[idx];
                 var el = document.createElement("div");
@@ -157,7 +157,7 @@ function refresh() {
     left.innerHTML = "New terms left to review: <b>" + progress.remaining + "</b>";
 }
 function answerHandler() {
-    if(Game.isDead()) window.location.href = "/home";
+    if(Game.isDead()) window.location.href = "/home?l=lm&s=1";
     if(toProceed) {
         answerbtn.innerHTML = "Answer";
         ans_a.innerHTML = "";
@@ -170,7 +170,7 @@ function answerHandler() {
         var data = Game.fetchProblem();
         var correct = false;
         switch(data.type) {
-            case "selection":
+            case "mc":
                 if(!selected) {
                     noAnswer();
                     return;
@@ -185,7 +185,7 @@ function answerHandler() {
                     for(let i = 0; i < ans_a.children.length; i++) {
                         ans_a.children[i].disabled = true;
                         ans_a.children[i].id = "not-select";
-                        if(data.answers[i] == data.correctAnswer) {
+                        if(data.op[i] == data.ans) {
                             ans_a.children[i].id = "select";
                         }
                     }
@@ -193,7 +193,7 @@ function answerHandler() {
                     toProceed = true;
                 }
             break;
-            case "input":
+            case "txt":
                 if(objs[0].value === "") {
                     noAnswer();
                     return;
@@ -205,7 +205,7 @@ function answerHandler() {
                 } else {
                     ans_a.style.display = "flex";
                     ans_a.innerHTML = cont_a.innerHTML;
-                    ans_a.children[0].value = data.correctAnswer;
+                    ans_a.children[0].value = data.ans;
                     ans_a.children[0].disabled = true;
                     answerbtn.innerHTML = "Continue >>>";
                     toProceed = true;
@@ -226,8 +226,8 @@ function answerHandler() {
                     list.id = "ans-ranking-list";
                     list.className = "ranking-list";
                     ans_a.appendChild(list);
-                    for(let i = 0; i < data.answer.length; i++) {
-                        let item = data.answer[i];
+                    for(let i = 0; i < data.ans.length; i++) {
+                        let item = data.ans[i];
                         let el = document.createElement("div");
                         el.className = "ranking-item";
                         el.id = "item"+i;
@@ -278,19 +278,21 @@ window.addEventListener("dragover", function(e) {
 });
 // Main
 async function main() {
-    var [success, data] = await UserGateway.getuser();
-    if(!success && data == "no session") {
-        problem.innerHTML = "You must be logged in to use Bento Learn!<br>This is a TEST version. To log in, visit this link:<br>localhost/html/test_user.html<br>login problems? contact me (you know who i am)";
-        return;
-    }
+    let [success, data] = await UserGateway.getuser();
+    if(!success) return;
     const paramList = new URLSearchParams(window.location.search);
     if(!paramList.get("ds")) {
         problem.innerHTML = "Looks like there's something wrong. Go back to Learn Picker and go from there.";
+        left.remove();
+        cont_a.remove();
+        ans_a.remove();
+        answerbtn.remove();
+        info.remove();
         return;
     }
     let dsVal = paramList.get("ds").split(",");
     dsVal.forEach((val, idx) => {dsVal[idx] = parseInt(val);});
-    let m = parseFloat(paramList["m"]);
+    let m = parseFloat(paramList["m"] || 1);
     let s = parseFloat(paramList["s"]);
     let r = parseFloat(paramList["r"]);
     let sh = parseFloat(paramList["sh"]);

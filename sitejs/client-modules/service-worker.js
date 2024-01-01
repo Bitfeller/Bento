@@ -38,7 +38,7 @@ async function init() {
     })
 }
 self.addEventListener("activate", init);
-self.addEventListener("push", async (e) => {
+self.addEventListener("push", async e => {
     const data = await e.data.json();
     const regis = self.registration;
     if(data.type == "reviewnotifcheck" && user) {

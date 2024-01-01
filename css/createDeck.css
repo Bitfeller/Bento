@@ -6,14 +6,20 @@ button:hover {
     transition-duration: 0.2s;
     box-shadow: 0px 1px 4px rgba(255, 255, 255, 0.3);
 }
-.create-container {
+.container {
     display: flex;
-    flex-direction: column;
-    padding: 20px;
-    border-radius: 10px;
+    flex-direction: row;
     width: 85%;
     margin: auto;
     margin-top: 20px;
+    background-color: transparent;
+}
+.create-container {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
     background-color: var(--dark-gray);
 }
 #name {
@@ -72,7 +78,7 @@ button {
     background-color: var(--light-gray);
     color: var(--light-text);
 }
-#importModal {
+.importModal {
     display: none;
     border: none;
     position: fixed;
@@ -84,14 +90,38 @@ button {
     overflow: auto;
     background-color: rgba(0,0,0,0.6);
 }
-#modal-content {
+.modal-content {
     background-color: var(--light-gray);
     border-style: none;
-    margin: 50px auto; 
+    margin: 50px auto;
     padding: 30px;
     width: 50%;
     height: 70%;
     border-radius: 10px;
+}
+.options-container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;;
+    width: 200px;
+    height: 300px;
+    margin: 0px 15px;
+    border-radius: 10px;
+    align-items: flex-end;
+}
+.options-container button {
+    margin: 5px 0px;
+}
+.options-container p {
+    font-size: 13px;
+    text-align: right;
+}
+.options-container button#quizlet-import {
+    background-color: rgb(100, 150, 255);
+    
+}
+.options-container button#bento-import {
+    background-color: rgb(255, 100, 100);
 }
 #importText {
     border: none;
@@ -117,6 +147,29 @@ button {
     border-radius: 5px;
     margin-top: 10px;
     padding: 5px;
+}
+.deck-pic {
+	height: 20vh;
+	width: 40vh;
+    display: inline-block;
+}
+.file-selector {
+    display: inline-block;
+    background: transparent;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+#picAddBtn, #picReset {
+    display: inline-block;
+    cursor: pointer;
+    color: #5992e8;
+    height: 35px;
+    width: 35px;
+    vertical-align: top;
 }
 @media only screen and (max-width: 700px) {
     #addcard, #create {

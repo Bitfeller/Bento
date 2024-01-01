@@ -6,7 +6,7 @@
     <title>Bento!</title>
     <?php require_once "globalreqs.php"?>
     <link rel="stylesheet" href="/css/index.css"/>
-    <script type='module' src="/sitejs/mainPageLogic.js"></script>
+    <script type='module' src="/sitejs/index.js"></script>
 </head>
 <body>
     <header>
@@ -136,6 +136,7 @@
                 <p>Email:</p>
                 <input type="email" id="signUpEmail">
                 <button class="submitBtn" id="signUpBtnM">Sign Up</button>
+                <p class="info-error" id="signup-err"></p>
             </div>
         </dialog>
         <dialog class="modal" id="signInModal">
@@ -146,6 +147,7 @@
                 <p>Password:</p>
                 <input type="password" id="signInPassword">
                 <button class="submitBtn" id="signInBtnM">Login</button>
+                <p class="info-error" id="login-err"></p>
             </div>
         </dialog>
     </section>

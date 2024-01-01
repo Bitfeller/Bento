@@ -81,6 +81,7 @@
                 </div>
             </div>
             <button id="reviewBtn"><h1>Review! →</h1></button>
+            <p class="info-error" id="errmsg"></p>
         </div>
     </div>
 </body>

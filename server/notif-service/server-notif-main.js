@@ -63,7 +63,7 @@ app.post('/notify', async (req, res) => {
     }
     // Add subscription to list
     subList[ip] = sub;
-    fs.writeFileSync('./sub-save.json', JSON.stringify(subList));
+    fs.writeFileSync('./server/notif-service/sub-save.json', JSON.stringify(subList));
     res.status(201).json({status: "success"});
 });
 app.listen(port, () => {

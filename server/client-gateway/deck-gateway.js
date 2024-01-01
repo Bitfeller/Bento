@@ -91,8 +91,8 @@ class DeckGateway {
         });
         return [success, data];
     }
-    static async add(name, data, isPublic) {
-        if(!name || !data || isPublic === undefined || isPublic === null || name.length === 0) {
+    static async add(name, deckpic, data, isPublic) {
+        if(!name || !data || typeof(deckpic) !== "string" || isPublic === undefined || isPublic === null || name.length === 0) {
             return [false, "invalid params"];
         }
         var success, reason;
@@ -103,6 +103,7 @@ class DeckGateway {
             },
             body: JSON.stringify({
                 name: name,
+                deckpic: deckpic,
                 data: data,
                 public: (false ? 0 : 1)
             })
@@ -160,7 +161,7 @@ class DeckGateway {
         return [success, data];
     }
     static async modify(id, setting, val) {
-        if(!id || !setting || !val || setting.length === 0) {
+        if(!id || !setting || !val || typeof(val) !== "string" || setting.length === 0) {
             return [false, "invalid params"];
         }
         var success, reason;

@@ -11,9 +11,16 @@
 <body data-uo="true">
     <?php require_once "../header.php"?>
     <div class="create-container">
-        <h1>Create a Deck</h1>
+        <h1>Edit deck</h1>
         <input type="text" placeholder="Name" id="name">
         <input type="text" placeholder="Description" id="description">
+        <p>Deck picture:</p>
+        <div>
+            <img src="../../img/defaultdeckpic.png" class="deck-pic" id="deckpic">
+            <input class='file-selector' accept="image/png,image/jpeg" id="fileselecttrigger" type="file">
+            <span class="material-symbols-outlined" id="picAddBtn">add_a_photo</span>
+            <span class="material-symbols-outlined" id="picReset">refresh</span>    
+        </div>
         <div>
             <input type="checkbox" id="isPublic">
             <span>| Make public</span>
@@ -23,6 +30,7 @@
         </div>
         <button id="addcard">Add New Card</button>
         <button id="create">Update Deck!</button>
+        <p class="info-error" id="edit-err"></p>
     </div>
 </body>
 </html>

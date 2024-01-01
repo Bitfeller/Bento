@@ -1,18 +1,24 @@
 # TODO: 
 ### Feature Tasks:
-- Reminder for reviewing decks
-
 - Verification system for emails
 - Password reset system
 
+- Add more interactive games?
+- TEST EVERYTHING
+
+- Allow cards to be shown both ways
+- Allow grouping; random selection for incorrect options
+- Allow more types of questions; matching? images?
+
+- Google account integration?
+
+- Fix UI
+
 ### Feature Improvement Tasks:
-- Show text when hovering over buttons on navbar
 
 ### Bugs:
 - Create proper error handling(?)
 - prevent XSS?
-- Fix selecting for ONLY doing decks for review (currently shows all)
-
 ### Extra:
 - likes on decks?
 - kitchen searching algorithm - adjust for min score comparison per name term to search term; compare and give result?
