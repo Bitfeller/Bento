@@ -6,9 +6,7 @@ input {
     width: 27px;
     padding: 0px;
 }
-.mc-option-del:hover, .mc-option-input:hover, .mc-option-nosel:hover, .mc-option-sel:hover, .ranking-item-del {
-    filter: brightness(115%);
-}
+
 .mc-option-sel, .selbtn-select {    
     background-color: var(--select-blue);
 }

@@ -102,6 +102,10 @@ input {
     border-radius: 5px;
     color: #EEEEEE;
     background-color: var(--lighter-gray);
+    transition: 0.3s;
+}
+input:hover {
+    filter: brightness(115%);
 }
 ::placeholder {
     opacity: 0.4;

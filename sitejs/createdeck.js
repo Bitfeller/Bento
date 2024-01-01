@@ -552,7 +552,7 @@ addCard.addEventListener("mousedown", newCard);
         div.className = "draftdeck";
         div.innerHTML = `
             <p>${diff > 2 * 24 * 60 * 60 * 1000 ? "Older Than Yesterday" : (diff > 24 * 60 * 60 * 1000 ? "Yesterday" : (diff > 12 * 60 * 60 * 1000 ? "Within 24 Hours" : (diff > 60 * 60 * 1000 ? "Within 12 Hours" : "This Hour")))}</p>
-            <button class='show'><span class="material-symbols-outlined">save</span></button>
+            <button class='show'><span class="material-symbols-outlined">resume</span></button>
             <button class='del'><span class="material-symbols-outlined">delete</span></button>`;
         draftdecks_history.appendChild(div);
         div.getElementsByClassName("show")[0].addEventListener("mousedown", () => {

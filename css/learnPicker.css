@@ -49,9 +49,14 @@ h2 {
     border-radius: 5px;
 }
 .deck-box {
+    cursor: pointer;
     display: flex;
     margin-top: 12px;
     background-color: var(--gray);
+    transition: 0.3s;
+}
+.deck-box:hover {
+    background-color: var(--light-gray);
 }
 .deck-box > p {
     max-width: calc(100% - 50px);

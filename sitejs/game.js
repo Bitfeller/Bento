@@ -252,6 +252,7 @@ function answerHandler() {
                         list.appendChild(el);
                     }
                     answerbtn.innerHTML = "Continue >>> (Enter)";
+                    answerbtn.focus();
                     answerMarker.style.display = "block";
                     toProceed = true;
                 }
