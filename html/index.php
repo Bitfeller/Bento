@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento!</title>
     <?php require_once "globalReqs.php"?>
-    <link rel="stylesheet" href="/css/home.css"/>
+    <link rel="stylesheet" href="/css/index.css"/>
     <script defer type='module' src="/js/mainPageLogic.js"></script>
 </head>
 <body>
@@ -16,22 +16,17 @@
         <div class="right-header">
             <button class="header-button" id="signInBtn">Login</button>
             <nav>
-                <a class="header-nav">About Us</a>
-                <a class="header-nav">Science</a>
+                <!-- <a class="header-nav">About Us</a>
+                <a class="header-nav">Science</a> -->
             </nav>
         </div>
     </header>
     <section id="hero">
-        <div id="hero-elements">
-            <h1>
-                Accelerate <u>your</u> learning
-            </h1>
-            <h2>
-                Learn in <mark>simple, bite sized <p></p></mark>pieces so you really <mark>remember<p></p> </mark>what you study
-
-            </h2>
+        <pre id="hero-elements">
+            <h1>Accelerate <u>your</u> 
+learning</h1><h2>Learn in <mark>simple, bite sized <p></p></mark>pieces so you really <mark>remember<p></p></mark>what you study</h2>
             <button id="signUpBtn"><p>Sign Up</p></button>
-        </div>
+        </pre>
     </section>
     
     <section class="pitch">
@@ -102,7 +97,7 @@
                 <span class="material-symbols-outlined">lan</span>
                 <div>
                     <h2>Play To Learn</h2>
-                    <p>A variety of different learning gamemodes like matching, input, selection, and ranking that help you continue to be motivated to learn even when you are running on 4 coffees and 3 hours of sleep.</p>
+                    <p>A variety of different learning gamemodes like matching, input, selection, and ranking so you are motivated to learn even on 4 coffees and 3 hours of sleep.</p>
                 </div>
             </div>
         </div>
