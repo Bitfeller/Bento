@@ -754,7 +754,7 @@ addCard.addEventListener("mousedown", newCard);
                 typeset(newDiv.getElementsByClassName('question')[0]);
                 let ansList = newDiv.getElementsByClassName('card-txt')[0];
                 if(card.ans.length == 0) continue;
-                let firstAns = ansList.getElementsByClassName('txt-answer')[0];
+                let firstAns = ansList.getElementsByClassName('txt-ans-cont')[0].children[0];
                 firstAns.innerHTML = card.ans[0];
                 firstAns.setAttribute('data-cnt', firstAns.textContent);
                 typeset(firstAns);
