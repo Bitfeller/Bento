@@ -138,7 +138,7 @@ function refresh() {
                 let i = data.op.indexOf(op);
                 let op_i = document.createElement("button");
                 op_i.className = "option";
-                op_i.innerHTML = `<p class="answer-symbol">&#${9312 + i}</p> <p>${op}</p>`;
+                op_i.innerHTML = `<p class="answer-symbol">&#${9312 + _i}</p> <p>${op}</p>`;
                 typeset(op_i);
                 op_i.id = "not-select";
                 op_i.setAttribute("i", i);
@@ -520,29 +520,21 @@ window.addEventListener("dragover", e => {
     let [success, _] = await UserGateway.getuser(false, false, false, false);
     if (!success) return;
     const paramList = new URLSearchParams(window.location.search);
-    if (!paramList.get("ds")) {
-        problem.innerHTML = "Looks like there's something wrong. Go back to Learn Picker and go from there.";
-        progressNumbers.remove();
-        cont_a.remove();
-        ans_a.remove();
-        answerbtn.remove();
-        info.remove();
-        return;
-    }
+    if (!paramList.get("ds")) return window.location.href = "/home";
     let dsVal = paramList.get("ds").split(",");
     dsVal.forEach((val, idx) => dsVal[idx] = parseInt(val));
-    let m = parseFloat(paramList.get("m"));
-    let r = parseFloat(paramList.get("r"));
-    let sh = parseFloat(paramList.get("sh"));
-    let i = parseFloat(paramList.get("i"));
-    let rc = parseFloat(paramList.get("rc"));
-    let lc = parseFloat(paramList.get("lc"));
+    let m = parseFloat(paramList.get("m")) ?? 0;
+    let r = parseFloat(paramList.get("r")) ?? 0;
+    let sh = parseFloat(paramList.get("sh")) ?? 1;
+    let i = parseFloat(paramList.get("i")) ?? 0;
+    let rc = parseFloat(paramList.get("rc")) ?? 0;
+    let lc = parseFloat(paramList.get("lc")) ?? 0;
     await Game.init(dsVal, {
         NTRonly: m == 1 ? true : false,
         randomTerms: sh == 1 ? true : false,
         deckSize: 8,
         cardRepeat: r == 1 ? 2 : 1,
-        infinite_mode: i == 1 ? true : false,
+        infinite_mode: i == 1 && m != 1 ? true : false,
         deckdistr: [6, 1, 1]
     });
     if (rc == 1) requireCorrect = true;
