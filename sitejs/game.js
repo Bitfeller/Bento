@@ -102,7 +102,6 @@ function refresh() {
             }
         break;
         case "txt":
-            selected = true
             var input = document.createElement("input");
             input.type = "text";
             input.className = "op-input";
@@ -259,7 +258,7 @@ function answerHandler() {
                 }
             break;
             case "matching":
-
+                console.error("matching doesn't exist :/");
             break;
         }
     }
@@ -268,7 +267,7 @@ answerbtn.addEventListener("mousedown", answerHandler);
 
 // Dragging event
 window.addEventListener("dragover", function(e) {
-    if(!dragging) {return;}
+    if(!dragging) return;
     var list = document.getElementById("ranking-list");
     if(dragLine.parentNode !== list) {
         list.prepend(dragLine);

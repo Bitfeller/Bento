@@ -195,12 +195,12 @@
                 if(!isset($val)) {
                     fail("exception: data isn't valid JSON.");
                 }
-                $newVal = [];
+                $newVal = (object) [];
                 foreach($val as $time => $content) {
                     $key = htmlspecialchars(strip_tags($time));
-                    $newVal[$key] = (object) [];
-                    $newVal[$key]->desc = htmlspecialchars(strip_tags($val[$time]['desc']));
-                    $newVal[$key]->contnt = (object) [];
+                    $newVal->$key = (object) [];
+                    $newVal->$key->desc = htmlspecialchars(strip_tags($val[$time]['desc']));
+                    $newVal->$key->contnt = (object) [];
                     // Check for duplicate questions
                     $problems = [];
                     foreach($val[$time]['contnt'] as $prob => $data) {
@@ -225,7 +225,7 @@
                         } else {
                             $newItem['ans'] = htmlspecialchars(strip_tags($data['ans']));
                         }
-                        $newVal[$key]->contnt->$newProb = $newItem;
+                        $newVal->$key->contnt->$newProb = $newItem;
                     }
                 }
                 $safeVal = json_encode($newVal);
