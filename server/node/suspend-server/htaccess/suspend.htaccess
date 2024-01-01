@@ -16,7 +16,8 @@ RewriteCond %{ENV:NEWURI} !^(.*)css\/(.*)$
 RewriteCond %{ENV:NEWURI} !^(.*)img\/(.*)$
 RewriteCond %{ENV:NEWURI} !^(.*)globalreqs.php(.*)$
 # exception to VPN'd users and server containers
-# RewriteCond %{REMOTE_ADDR} !^10\.
+RewriteCond %{REMOTE_ADDR} ^10\.10\.10\.20 [OR]
+RewriteCond %{REMOTE_ADDR} !^10\.
 RewriteRule ^(.*)$ /site/maintenance.php [END]
 
 # Block all test folders
