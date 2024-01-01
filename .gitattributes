@@ -1,5 +1,5 @@
-* linguist-vendored = false
-*.js linguist-vendored = false
+* linguist-vendored=false
+*.js linguist-vendored=false
 
 # linguist-language=Other
 
