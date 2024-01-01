@@ -6,6 +6,9 @@
 - Verification system for emails
 - Password reset system
 
+- Need to test inertia.php, kitchen.php (several users w/ views), maintenance.php (activation + src + view)
+- Delete settings.php, remove link
+
 ### Feature Improvement Tasks:
 - Show text when hovering over buttons on navbar
 

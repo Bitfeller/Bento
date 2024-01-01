@@ -406,14 +406,16 @@ createBtn.addEventListener("mousedown", async function() {
     };
     // console.log(name.value, JSON.stringify(data), isPublic.checked);
     let res1 = await DeckGateway.modify(deck, "name", name.value);
-    let res2 = await DeckGateway.modify(deck, "public", isPublic.checked);
-    let res3 = await DeckGateway.modify(deck, "data", data);
-    console.log(res1, res2, res3);
+    let res2 = await DeckGateway.modify(deck, "public", isPublic.checked ? "1" : "0");
+    let res3 = await DeckGateway.modify(deck, "data", JSON.stringify(data));
+    if(res1[0] && res2[0] && res3[0]) {
+        window.location.href = "/home";
+    }
 });
 
 addCard.addEventListener("mousedown", newCard);
 
-async function init() {
+(async () => {
     let [success, data] = await UserGateway.getuser();
     if(!success && data == 'no session') {
         console.log("You're not logged in.");
@@ -437,7 +439,8 @@ async function init() {
     }
     let dVal = parseInt(params['d']);
     deck = dVal;
-    deckData = await DeckGateway.get(deck);
+    [success, deckData] = await DeckGateway.get(deck);
+    if(!success) return;
     name.value = deckData.name;
     isPublic.checked = deckData.public;
     description.value = deckData.data.description;
@@ -550,8 +553,7 @@ async function init() {
         }
     }
     newCard();
-}
-init();
+})();
 
 // Dragging event
 window.addEventListener("dragover", function(e) {

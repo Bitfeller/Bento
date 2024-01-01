@@ -49,6 +49,7 @@ let user;
                 mode = 1;
             }
         }
+        if(!mode) mode = 0;
         for(let i = 0; i < o_speed.length; i++) {
             if(o_speed[i].checked == true) {
                 speed = i + 1;

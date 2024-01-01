@@ -22,7 +22,7 @@
             
         </div>
         <button id="addcard">Add New Card</button>
-        <button id="create">Create Deck!</button>
+        <button id="create">Update Deck!</button>
     </div>
 </body>
 </html>
