@@ -3,7 +3,7 @@ import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 
 const deckReminders = document.getElementById("deck-reminders");
 const notifText = document.getElementById("text");
-const tutorialDialog = document.getElementById("tutorial");
+const tutorialDialog = document.getElementById("tutorial-background");
 const t_dialogmain = tutorialDialog.getElementsByClassName("dialog-main")[0];
 
 
@@ -59,7 +59,7 @@ const t_dialogmain = tutorialDialog.getElementsByClassName("dialog-main")[0];
     const paramList = new URLSearchParams(window.location.search);
     if(paramList.get("new") == "1") {
         // tutorial feature
-        tutorialDialog.showModal();
+        tutorialDialog.style.display = "block";
         // function to make things easier
         function next(text, btns) {
             t_dialogmain.innerHTML = text;
@@ -124,7 +124,7 @@ const t_dialogmain = tutorialDialog.getElementsByClassName("dialog-main")[0];
                                                                                                             <button class='continuebtn'>Close</button>
                                                                                                         `, {
                                                                                                             continuebtn: () => {
-                                                                                                                tutorialDialog.close();
+                                                                                                                tutorialDialog.style.display = "none";
                                                                                                             }
                                                                                                         })
                                                                                                 }
