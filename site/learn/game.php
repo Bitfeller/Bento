@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="../../css/game.css"/>
-    <?php require_once "../globalReqs.php"?>
+    <?php require_once "../globalreqs.php"?>
     <script type="module" src="../../js/game.js"></script>
 </head>
 <body data-uo="true">
