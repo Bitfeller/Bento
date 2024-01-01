@@ -1,8 +1,7 @@
 :root {
     --default-width: calc(100vw / 1.3);
-}
-.progress-display {
-    
+    --correct-green: #4CAF50;
+    --incorrect-red: #F44336;
 }
 #progressBar {
     height: 3px;
@@ -130,13 +129,35 @@
     display: flex;
     gap: 5px;
 }
-#answerInfo {
+.incorrect {
+    background-color: var(--incorrect-red) !important;
+}
+.correct {
+    background-color: var(--correct-green) !important;
+}
+#continueButton {
     width: var(--default-width);
-    background-color: var(--danger-red);
+    margin: 0 auto;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: var(--light-gray);
+    color: white;
+    font-size: 16pt;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+#answerInfo {
+    display: none;
+
+    width: var(--default-width);
+    background-color: var(--gray);
     margin: -3px auto;
     padding: 5px 20px;
     border-radius: 0 0 10px 10px;
     border: var(--gray) 3px solid;
+    transition: all 2s;
+    transition: background-color 0s;
     overflow: hidden;
 }
 .answer-options {
@@ -145,6 +166,5 @@
     margin-top: 5px;
     display: flex;
     justify-content: space-between;
-
     display: none;
 }
