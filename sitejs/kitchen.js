@@ -172,7 +172,7 @@ async function preview(_this, isAdded) {
                 <h2>${deck.name}</h2>
                 <p>by <span class='username'>${deck.owner}</span></p>
                 <p><span class='views'>${deck.viewdata.length}</span> view${deck.viewdata.length != 1 ? "s" : ""}</p>
-                ${user.username == deck.owner ? "<button class='export-btn' style='padding: 3px;'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>download</span> Export</button>" : ""}
+                ${user.username == deck.owner ? "<button class='export-btn' style='padding: 3px;'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>download</span> Export</button> <button class='edit-btn' style='padding: 3px;'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>edit</span> Edit</button>" : ""}
             </div>
             <div class='preview-container-part' id='description'>
                 <h3>Description:</h3>
@@ -204,6 +204,9 @@ async function preview(_this, isAdded) {
             link.click();
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url); 
+        });
+        previewDialog.getElementsByClassName("edit-btn")[0].addEventListener("mousedown", () => {
+            window.location.href = "/learn/editdeck?d=" + deck.id; 
         });
     }
 }
