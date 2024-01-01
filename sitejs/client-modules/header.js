@@ -4,6 +4,10 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
 const icons = document.getElementsByClassName("right-header-ico");
 const logout = document.getElementById("header:logout");
 const pfp = document.getElementById("header:pfp");
+const feedback = document.getElementById("header:feedback");
+const feedback_dialog = document.getElementById("header:feedback_dialog");
+const feedback_content = document.getElementById("header:feedback_content");
+const feedback_submit = document.getElementById("header:feedback_submit");
 const uo = document.body.dataset.uo;
 /*const hover = document.createElement("div");
 hover.style = "background-color: rgb(150, 150, 150); position: absolute; width: auto; padding: 7px; height: auto;";*/
@@ -94,4 +98,8 @@ logout.addEventListener("mousedown", async () => {
 });
 pfp.addEventListener("mousedown", () => {
     window.location.href = "/user/profile";
+});
+feedback.addEventListener("mousedown", () => {
+    // TO BE IMPLEMENTED
+    
 });
