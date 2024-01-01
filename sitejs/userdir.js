@@ -4,6 +4,7 @@ const section = document.getElementsByClassName('holder')[0];
 const newPassword = document.getElementById('new-password');
 const resetPwdBtn = document.getElementById('changepwd');
 const error = document.getElementsByClassName('info-error')[0];
+const passwordInputs = document.getElementsByClassName('password-inputs')[0];
 
 (async () => {
     const params = new URLSearchParams(window.location.search);
@@ -21,8 +22,11 @@ const error = document.getElementsByClassName('info-error')[0];
     }
     if(mode == 'emailverif') {
         section.innerHTML = "<h1>You're all set!</h1><p>Your email's been verified. Thanks!</p><p>You can close this window when you're done.</p>";
+        passwordInputs.style.display = 'none';
         window.LOADED();
         return;
+    } else if (mode == 'pwdrecover') {
+        section.innerHTML = "<h1>Reset your password</h1>";
     }
     let handled = false;
     resetPwdBtn.addEventListener('mousedown', async () => {

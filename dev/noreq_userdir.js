@@ -1,7 +1,7 @@
 // Mode - defines the mode you want to see.
 // 0 - EMAIL VERIFICATION - shows you the default screen for verifying your email.
 // 1 - PASSWORD RESET - shows you the default screen for resetting your password.
-const MODE = 0;
+const MODE = 1;
 // No requests are made to the main server; all generated responses and messages are programmatically controlled.
 
 
@@ -13,6 +13,7 @@ const section = document.getElementsByClassName('holder')[0];
 const newPassword = document.getElementById('new-password');
 const resetPwdBtn = document.getElementById('changepwd');
 const error = document.getElementsByClassName('info-error')[0];
+const passwordInputs = document.getElementsByClassName('password-inputs')[0];
 
 (async () => {
     const params = new URLSearchParams("?hash=abc123&v=" + MODE + "&user=TEST_USER");
@@ -30,8 +31,11 @@ const error = document.getElementsByClassName('info-error')[0];
     // }
     if(mode == 'emailverif') {
         section.innerHTML = "<h1>You're all set!</h1><p>Your email's been verified. Thanks!</p><p>You can close this window when you're done.</p>";
+        passwordInputs.style.display = 'none';
         window.LOADED();
         return;
+    } else if (mode == 'pwdrecover') {
+        section.innerHTML = "<h1>Reset your password</h1>";
     }
     let handled = false;
     let tick = Date.now();
