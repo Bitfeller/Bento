@@ -112,6 +112,11 @@ input, div[contenteditable="true"] {
 input:hover, div[contenteditable="true"]:hover {
     filter: brightness(115%);
 }
+div[contenteditable="true"][placeholder]:empty:before {
+    content: attr(placeholder);
+    opacity: 0.4;
+    color: var(--accent-1);
+}
 ::placeholder {
     opacity: 0.4;
     color: var(--accent-1);
