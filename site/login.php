@@ -89,6 +89,14 @@
                 window.location.href = "/home";
             }
         });
+        console.log(l_btn);
+        window.onkeydown = async (e) => {
+            if (e.key === "Enter") {
+                let [success, reason] = await UserGateway.login(l_user.value, l_pass.value);
+                if(!success) return;
+                window.location.href = "/home";
+            }
+        }
     </script>
 </body>
 </html>

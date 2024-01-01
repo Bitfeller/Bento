@@ -11,15 +11,12 @@ check();
 
 // Modal code
 
-var signInModal = document.getElementById('signInModal');
-var signUpModal = document.getElementById('signUpModal');
+const signInModal = document.getElementById('signInModal');
+const signUpModal = document.getElementById('signUpModal');
 
-var signUpBtn = document.getElementById('signUpBtn') 
-var ctaButton = document.getElementById('cta-button') 
-var bigBtn = document.getElementById('bigBtn');
-var signInBtn = document.getElementById('signInBtn');
-
-var closeBtn = document.getElementsByClassName('closeBtn');
+const signUpBtn = document.getElementById('signUpBtn');
+const ctaButton = document.getElementById('cta-button');
+const signInBtn = document.getElementById('signInBtn');
 
 signInBtn.onclick = function() {
     signInModal.style.display = "block";
@@ -29,10 +26,6 @@ signUpBtn.onclick = function() {
 }
 ctaButton.onclick = function() {
     signUpModal.style.display = "block";
-}
-closeBtn.onclick = function() {
-    signInModal.style.display = "none";
-    signUpModal.style.display = "none";
 }
 
 window.onclick = function(event) {
@@ -76,3 +69,12 @@ s_btn.addEventListener("mousedown", async () => {
     if(!success) return;
     window.location.href = "/home";
 });
+
+window.addEventListener("keydown", async (e) => {
+    if(e.key === "Enter") {
+        let [success, reason] = await UserGateway.login(l_user.value, l_pass.value);
+        if(!success) return;
+        window.location.href = "/home";
+    }
+});
+

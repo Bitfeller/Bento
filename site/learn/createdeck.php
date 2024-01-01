@@ -16,13 +16,27 @@
         <input type="text" placeholder="Description" id="description">
         <div>
             <input type="checkbox" id="isPublic">
-            <span>| Public Deck</span>
+            <span>| Public Deck</span> <button id="importBtn">Import from Quizlet</button>
         </div>
         <div id="cardcontain">
             
         </div>
         <button id="addcard">Add New Card</button>
         <button id="create">Create Deck!</button>
+    </div>
+    <div id="importModal">
+            <div id="modal-content">
+                <h1>Import from Quizlet</h1>
+                <div id="import-checkbox-container">
+                    <input type="checkbox" id="importPublicCheckbox">
+                    <span>| Public Deck</span>
+                </div>
+                <input type="text" placeholder="Name" id="importName">
+                <input type="text" placeholder="Description" id="importDescription">
+                <p>To Export from Quizlet for between term and definition use the custom character > and for between rows use the custom character ^</p>
+                <textarea type="text" placeholder="Paste Quizlet Export Here" id="importText"></textarea>
+                <button id="importCreateBtn">Import</button> 
+            </div>
     </div>
 </body>
 </html>
