@@ -2,10 +2,10 @@
 import { UserGateway } from "../../server/client-gateway/user-gateway.js";
 
 (async () => {
-    // return if no header
+    // Exit if header doesn't exist
     if (document.getElementById('header') == null) return;
 
-    // get all the elements
+    // Elements
     const back = document.getElementById("header:back");
     const logout = document.getElementById("header:logout");
     const pfp = document.getElementById("header:pfp");
@@ -18,22 +18,25 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     const resend_email = document.getElementById('header:resend_verif_email');
     const resend_success = document.getElementById('header:resend_success');
 
-    // page data
+    // Page data
     const uo = document.body.dataset.uo;
     const current_page = window.location.pathname;
-
+    
+    // Load previous pages
+    const previous_pages = JSON.parse(localStorage.getItem("previous_pages")) || [];
+    
+    // Decode parser
     const parser = document.createElement('span');
 
-    // ui elements for loading state 
+    // Loader UI elements 
     const loader = document.getElementsByClassName("loader")[0];
     const tips = document.getElementsByClassName("tips")[0];
     
-    const previous_pages = JSON.parse(localStorage.getItem("previous_pages")) || [];
 
-    // loading variables
+    // Load state vars
     let load_failed = false;
-
     let loadingScripts = false;
+
     // Search for loading scripts
     const scripts = document.getElementsByTagName('script');
     for (let i = 0; i < scripts.length; i++) {
@@ -43,7 +46,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         }
     }
 
-    // array of tip texts
+    // Tip text array
     const tipslist = [
         "When making ranking questions, you can drag answers...",
         "If you own a Bento deck, you can export it when viewing it in the Kitchen...",
@@ -60,30 +63,33 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         "Started making a deck but didn't finish? Bento auto-saves your drafts, and you can find them on the right when cooking."
     ];
 
-    // transition between tips
-    function tip_changer(newtext, color, transition_time = 500) {
+    // Transitions between current tip and the next tip
+    // Supports changes in color.
+    function tip_changer(newtext, color) {
         return new Promise((res, _) => {
-            // sets current text to prev text
+            // Wrap current tip into prev-tip
             tips.innerHTML = `<p class='prev-tip'>${tips.innerHTML}</p>`;
+            // Wait for prev-tip to transition out
             window.setTimeout(() => {
-                // set old tip colour
+                // Set new color
                 if (color) tips.style.color = color;
-                // start transition
+                
+                // Add new-tip and transition in
                 tips.innerHTML = `<p class='new-tip'>${newtext}</p>`;
-                // set new tip colour 
                 if (color) tips.getElementsByClassName('new-tip')[0].style.color = color;
-                // overwrite residue
+
+                // Finished transition; remove residue and set to new current tip
                 window.setTimeout(() => {
                     tips.innerHTML = newtext;
-                    res();
-                }, transition_time);
-            }, transition_time);
+                    res(); // Resolve
+                }, 500);
+            }, 500);
         });
     }
 
 
-    // remove all elements from header
-    function remove_header() {
+    // Removes header elements only for logged-in users only
+    function remove_uo_elements() {
         back.remove();
         logout.remove();
         pfp.remove();
@@ -91,30 +97,31 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         feedback_dialog.remove();
     }
 
-    // no back button if empty array
-    if (previous_pages.length === 0) {
-        back.remove();
-    }
+    // Remove back button if no previous_pages exist
+    if (previous_pages.length === 0) back.remove();
 
-    // update window when loaded
+    // LOADED: ran by a loading script when the script has finished loading
     window.LOADED = () => {
         if(load_failed) return;
         clearInterval(tipper);
         loader.remove();
     };
-
-    // handle loading error
-    window.LOAD_ERROR = (err) => {
+    // LOAD_ERROR: ran by a loading script when the script failed to load, due to some error or timeout
+    window.LOAD_ERROR = err => {
         load_failed = true;
         clearInterval(tipper);
         tip_changer(err, "rgb(175, 100, 100)");
     };
+    
+    // Library for XSS encode/decode and other functionality
     window.lib = {};
-    window.lib.decode = (str) => {
+    // Decode plain string
+    window.lib.decode = str => {
         parser.innerHTML = str;
         return parser.textContent;
     };
-    window.lib.recur_decode = (obj) => {
+    // Supports decoding various types
+    window.lib.recur_decode = obj => {
         if(typeof obj == "string")
             return window.lib.decode(obj);
         else if(Array.isArray(obj))
@@ -125,6 +132,8 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
             return obj;
         else console.error('header.js: could not decode obj of following:', typeof obj);
     };
+    // Supports encoding various types
+    // Accepts a loaded DOMParser and sanitizes the obj.
     window.lib.dpwrapper = (dp, obj) => {
         if(typeof obj == "string")
             return dp.sanitize(obj);
@@ -137,32 +146,33 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         else console.error('header.js: could not sanitize obj of following:', typeof obj);
     }
 
-    // displays random tip under the throbber
+    // Set current tips element to a random tip and transition in. 
     tips.innerHTML = tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)];
     let tip_fn = async () => await tip_changer(tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)]);
-    // new tip every 3 seconds
+    // Generate a new tip every 3 seconds
     let tipper = setInterval(tip_fn, 3000);
 
-    // get pfp and user data
+    // Fetch user data
     let [success, data] = await UserGateway.getuser(true, false, false, false);
-    // if user is not logged in:
+    // If user is not logged in:
     if (!success && data == "no session") {
-        remove_header();
-        // if webpage requires login, kick user to login screen
+        remove_uo_elements();
+        // If webpage requires login, kick user to login screen
         if (uo == "true") return void (window.location.href = "/login?s=" + window.location.pathname.slice(1));
     } else { // user is logged in
-        // update pfp
+        // Update user's pfp
         if(data.pfp && data.pfp.length > 0) pfp.src = data.pfp;
-        // update verify_email_alert
+        // Update verify_email alert
         if(data.verified == 0) {
             verify_email.style.display = "inline-block";
             verify_email.addEventListener('mousedown', () => verify_dialog.showModal());
         }
     }
+    
     // Initialize service-worker for notifications if allowed
     if (Notification.permission == "granted" && data.notifsub != "0") {
         try {
-            // half broken notification thing (basically deprecated)
+            // Deprecated
             navigator.serviceWorker.register(location.origin + "/sitejs/client-modules/service-worker.js", {
                 type: "module"
             });
@@ -171,14 +181,14 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         }
     }
     
-    // page load handler when scripts finish loading
+    // If loading normally and header.js does not have to wait for any loading scripts:
     if (!loadingScripts) {
         if (document.readyState == "complete" && !load_failed) {
-            // load successful, remove tips and throbber
+            // Load successful, remove tips and throbber
             clearInterval(tipper);
             loader.remove();
         } else {
-            // load failed, website kills itself
+            // Load failed, website kills itself
             window.addEventListener("load", () => {
                 if(load_failed) return;
                 clearInterval(tipper);
@@ -187,49 +197,52 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         }
     }
 
-    // listeners for events on pages
+    // Listeners for back button/previous_pages functionality
     window.addEventListener("beforeunload", async () => {
         // Add to array of visited pages before leaving current page and save
-        previous_pages.push(current_page);  // add current page to array
+        previous_pages.push(current_page); // Add current page to array
         localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
     });
     back.addEventListener("mousedown", async () => {
-        // set this to the most recently visited page 
+        // Set this to the most recently visited page 
         window.location.href = previous_pages[previous_pages.length - 1];
-        // remove current page from array and save it
+        // Remove current page from array and save it
         previous_pages.pop();
         previous_pages.pop();
         localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
     });
+
+    // Logout functionality
     logout.addEventListener("mousedown", async () => {
-        // listen to logout event
+        // Signout user and send to login page
         await UserGateway.signout();
         window.location.href = "";
     });
     pfp.addEventListener("mousedown", () => {
-        // go to user profile
+        // Go to user profile
         window.location.href = "/user/profile";
     });
     feedback.addEventListener("mousedown", () => {
-        // display feedback dialog
+        // Display feedback dialog
         feedback_dialog.showModal();
     });
     feedback_submit.addEventListener("mousedown", async () => {
-        // submit feedback 
+        // Submit feedback 
         let content = feedback_content.value;
         await UserGateway.giveFeedback(content);
-        // remove feedback dialog
+        // Close feedback dialog
         feedback_dialog.close();
     });
     resend_email.addEventListener('mousedown', async () => {
         resend_success.innerHTML = "";
-        // attempt sending another verification email
+        // Attempt sending another verification email
         let [success, data] = await UserGateway.editUser('resend-verif-email', '');
         if (success) resend_success.innerHTML = "We sent you another verification email.";
+        // If the user happens to be already verified, reload the page
         if (data == 'verified') location.reload();
     });
-    window.addEventListener('mousedown', (e) => {
-        // click outside of popup: close the popup
+    window.addEventListener('mousedown', () => {
+        // Closes popups when user presses outside of them
         if (e.target == verify_dialog) verify_dialog.close();
         if (e.target == feedback_dialog) feedback_dialog.close();
     });
