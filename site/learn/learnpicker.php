@@ -27,14 +27,8 @@
             </div>
             <div class="big-box" id="deck-big-box">
                 <h2>Deck Picker</h2>
-                <span class="material-symbols-outlined" id="deckSelectAll">select_all</span>
-                <!-- select_all (on click) -> check_box (on uncertain) -> indeterminate_check_box -->
-                <div class="deck-container">
-                    <!-- <div class="deck-box">
-                        <p>Deck 1</p>
-                        <input type="checkbox" id="deck1Check">
-                    </div> -->
-                
+                <span class="material-symbols-outlined" id="deckSelectAll">indeterminate_check_box</span>
+                <div class="deck-container">   
                 </div>
             </div>
         </div>
@@ -44,13 +38,12 @@
                 <div class="settings-container">
                     <div class="setting-box">
                         <input type="radio" name="repeat" class="sb-radio repeat" id="1">
-                        <p>| Show a new term twice for repetition. <i>[IF NEEDED]</i> </p> <!-- (Skip to the next term immediately) -->
+                        <p>| Show a new term twice for repetition. <i>[IF NEEDED]</i> </p>
                     </div>
                     <div class="setting-box">
                         <input type="radio" name="repeat" class="sb-radio repeat" id="2" checked="true">
                         <p>| Show a term only once for repetition.</p>
                     </div>
-                    <!--  -->
                 </div>
             </div>
             <div class="big-box" id="settings-big-box">
@@ -58,7 +51,7 @@
                 <div class="settings-container">
                     <div class="setting-box">
                         <input type="radio" name="shuffle" class="sb-radio shuffle" id="1" checked="true">
-                        <p>| Shuffle terms <i>(recommended)</i> </p> <!-- (Skip to the next term immediately) -->
+                        <p>| Shuffle terms</p>
                     </div>
                     <div class="setting-box">
                         <input type="radio" name="shuffle" class="sb-radio shuffle" id="2">

@@ -3,7 +3,7 @@ body > h2 {
     margin-left: 15px;
 }
 .deck-divider {
-    background-color: var(--dark-text);
+    background-color: var(--light-gray);
     height: 5px; 
     margin: 40px 15px; 
     border-radius: 5px;
@@ -38,9 +38,9 @@ body > h2 {
     margin-top: 10px;
 }
 .previewBtns, .userReviewsUpdateBtns {
-    border: solid;
+    /* border: solid;
     border-width: 0.75px;
-    border-color: var(--light-text);
+    border-color: var(--light-text); */
     background-color: var(--light-gray);
     color: var(--light-text);
     padding: 2.5px;
@@ -50,7 +50,7 @@ body > h2 {
     height: 235px;
     width: 235px;
     border-radius: 10px;
-    background-color: var(--light-green);
+    background-color: var(--accent-1);
 }
 .ingredient-box {
     display: flex;

@@ -22,7 +22,7 @@ h2 {
     border-radius: 10px;
 }
 .big-box {
-    background-color: var(--gray);
+    background-color: var(--dark-gray);
 }
 #left-div {
     display: flex;
@@ -33,7 +33,7 @@ h2 {
 .deck-container, .settings-container {
     display: flex;
     flex-direction: column;
-    background-color: var(--gray);
+    background-color: var(--dark-gray);
     overflow: auto;
 }
 .deck-container {
@@ -49,10 +49,8 @@ h2 {
     border-radius: 5px;
 }
 .deck-box {
-    margin-left: 10%;
-    width: 80%;
     margin-top: 12px;
-    background-color: var(--light-gray);
+    background-color: var(--gray);
 }
 .setting-box {
     justify-content: left;
@@ -84,7 +82,7 @@ h2 {
     transition: 0.3s;
 }
 #reviewBtn:hover {
-    background-color: var(--light-green);
+    background-color: var(--accent-1);
 }
 #reviewBtn:hover > h1 {
     color: var(--dark-text);
@@ -111,7 +109,14 @@ h2 {
         max-width: 88.5%;
     }
     #reviewBtn {
-        margin-top: 3%;
-        margin-right: 4.4%;
+        margin: 10px;
+        padding: 15px;
+        max-width: 88.5%;
+        float: none;
+        /* margin-top: 3%;
+        margin-right: 4.4%; */
+    }
+    .deck-box > p {
+        overflow: hidden;
     }
 }

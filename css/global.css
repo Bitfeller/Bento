@@ -1,14 +1,52 @@
-:root {
+/* Classic */
+/* :root {
     --light-text: #EEEEEE;
     --dark-text: #292E32;
+
     --select-blue: #236BD6;
     --danger-red: #E01F15;
-    --navy-blue: #111A23;
+
+    --background: #111A23;
+
     --dark-gray: #1E1E1E;
     --gray: #212121;
     --light-gray: #292E32;
     --lighter-gray: #383838;
-    --light-green: #CADDA0;
+    --accent-1: #CADDA0;
+} */
+/* Catppuccin Mocha */
+/* :root {
+    --light-text: #cdd6f4;
+    --dark-text: #292E32;
+
+    --select-blue: #1e66f5;
+    --danger-red: #d20f39;
+    --background: #11111b;
+
+    --dark-gray: #181825;
+    --gray: #1e1e2e;
+    --light-gray: #313244;
+    --lighter-gray: #45475a;
+    --accent-1: #a6e3a1;
+} */
+/* Nord */
+:root { 
+    --light-text: #EEEEEE;
+    --dark-text: #292E32;
+
+    --select-blue: #236BD6;
+    --select-green: #198819;
+    --danger-red: #E01F15;
+    --background: #070a0e;
+
+    --dark-gray: #0a1015;
+    --gray: #10151a;
+    --light-gray: #1e2831;
+    --lighter-gray: #222c37;
+
+    --accent-1: #CADDA0;
+    /* #CADDA0 */
+    --accent-2: rgb(80, 80, 240);
 }
 * {
     color: var(--light-text);
@@ -43,7 +81,7 @@ p > * {
     font-family: kadwa;
 }
 body {
-    background: var(--navy-blue);
+    background: var(--background);
 }
 body, .container {
     overflow-x: hidden;
@@ -54,7 +92,7 @@ body, .container {
 button {
     border-radius: 5px;
     border: none;
-    background-color: var(--light-green);
+    background-color: var(--accent-1);
     color: var(--dark-text);
     cursor: pointer;
     transition: 0.3s;
@@ -125,7 +163,7 @@ input {
 .header {
     height: 63px;
     overflow: hidden;
-    background-color: #1e1e1e;
+    background-color: var(--gray);
     padding: 0 5px;
     border-radius: 0 0 10px 10px;
     position: relative;
@@ -156,7 +194,7 @@ input {
     font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 200, "opsz" 48;
 }
 .header span:hover {
-    color: var(--light-green);
+    color: var(--accent-1);
 }
 .logo {
     cursor: pointer;
@@ -233,7 +271,7 @@ input:checked + .slider:before {
     transform: translateX(24px);
 }
 dialog::backdrop{
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.9);
 }
 
 @keyframes t_fadeout {

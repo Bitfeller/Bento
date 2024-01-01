@@ -27,7 +27,7 @@
 }
 .op-input {
     width: 100%;
-    height: 5vh;
+    height: 45px;
     font-size: 18pt;
     text-align: center;
     margin-top: 5px;
@@ -35,7 +35,7 @@
 #answerbtn {
     margin-top: 2%;
     width: 100%;
-    height: 5vh;
+    height: 45px;
     font-size: 18pt;
 }
 .option {
@@ -66,7 +66,7 @@
     border-color: var(--light-text);
 }
 #correct {
-    border-color: var(--light-green);
+    border-color: var(--accent-1);
 }
 #ranking-list {
     width: 100%;
@@ -100,4 +100,17 @@
     margin-top: 10px;
     padding: 5px;
     border-radius: 10px;
+}
+@media screen and (max-width: 1300px) {
+    #main {
+        width: 87.5%;
+        left: 2.5%;
+    }
+    #cont_a {
+        flex-direction: column;
+    }
+    .option {
+        width: 100%;
+    }
+    
 }

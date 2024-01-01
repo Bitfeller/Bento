@@ -1,6 +1,32 @@
-.mc-option-sel, .selbtn-select {
+input {
+    background-color: var(--light-gray);
+}
+.mc-option-del, .mc-option-input, .mc-option-nosel, .mc-option-sel, .ranking-item-del {
+    height: 27px;
+    width: 27px;
+    padding: 0px;
+}
+.mc-option-del:hover, .mc-option-input:hover, .mc-option-nosel:hover, .mc-option-sel:hover, .ranking-item-del {
+    filter: brightness(115%);
+}
+.mc-option-sel, .selbtn-select {    
     color: var(--light-text);
     background-color: var(--select-blue);
+}
+.mc-option-del, .ranking-item-del {
+    color: var(--light-text);
+    background-color: var(--danger-red);
+}
+.mc-option-sel{
+    background-color: var(--select-green);
+}
+.mc-option-nosel {
+    background-color: var(--light-gray);
+}
+.mc-option-sel > span, .mc-option-del > span, .mc-option-nosel > span, .ranking-item-del > span {
+    font-size: 15px;
+    margin: 7px 0;
+    padding: 0;
 }
 button:hover {
     transition-duration: 0.2s;
@@ -46,23 +72,20 @@ button {
 .question, .mc-option-input {
     width: 70%;
 }
-.mc-option-del {
-    color: var(--light-text);
-    background-color: var(--danger-red);
-
-}
 .create-container > ::placeholder {
     opacity: 0.4;
-    color: var(--light-green)
+    color: var(--accent-1)
 } 
 .create-container > .mcbtn {
     margin-left: 0px;
 }
 .mc-add, .rank-add {
+    border: none;
     color: var(--light-text);
     background-color: var(--select-blue);
 }
 .card-del {
+    border: none;
     color: var(--light-text);
     background-color: var(--danger-red);
 }
@@ -70,6 +93,9 @@ button {
     background-color: var(--light-text);
     width: 76%;
     max-width: 700px;
+}
+#create {
+    background-color: var(--accent-1);
 }
 .card {
     margin-top: 10px;
@@ -102,7 +128,7 @@ button {
 .options-container {
     display: flex;
     flex-direction: column;
-    background-color: var(--light-gray);
+    background-color: var(--gray);
     padding: 10px;
     width: 200px;
     height: min-content;
@@ -188,6 +214,9 @@ button {
 }
 #picAddBtn:hover, #picReset:hover {
     filter: brightness(85%);
+}
+#cardcontain {
+    transition: 0.3s;
 }
 @media only screen and (max-width: 1025px) {
     .deck-pick-container, .deck-pic {
