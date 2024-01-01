@@ -124,7 +124,7 @@ function box(id, killfn = (box) => box.remove()) {
         b.style.backgroundImage = `url(${data.deckpic && data.deckpic.length > 0 ? data.deckpic : "../../img/defaultdeckpic.png"})`;
         if(data.data.tags) {
             for(let tag of data.data.tags)
-                tags.innerHTML += `<div class='tag'><p>${tag}</p></div>`;
+                tags.innerHTML += `<div class='tag' style='background-color: ${generateTagColor(tag)}'><p>${tag}</p></div>`;
         }
 
         b.getElementsByClassName('preview-button')[0].addEventListener('click', e => preview(e.currentTarget));
