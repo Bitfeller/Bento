@@ -8,28 +8,28 @@ const { unserialize } = require('php-unserialize');
 const cookieParser = require("cookie-parser");
 const mysql = require('mysql');
 
-// Subsave file
+// Subsave + conf file
 const subsave = require('./sub-save.json');
+const conf = fs.existsSync("../conf/local-config.jsonc") ? require('../conf/local-config.jsonc') : require('../conf/config.jsonc');
 
 // Init app + port conf + sess path
 const app = express();
 const port = 3000;
-const sess_path = "/var/lib/php/sessions"
 
 // Init subList
 const subList = subsave || {};
 
 // Set vapid details + init MySQL server
 webpush.setVapidDetails(
-    'https://bento.valleynas.uk/report',
-    'BK2goia_RGT26Nq5Blmc9yrejx_Cq4GpuWUcwZ9sn5DsaT8HfFqyql6Ss1D5K3T1W9Tow2JIVzigsVI4g-UyQBE', // public key
-    'rGqFP5802HeRpJDa2KrCrEqBBVHPPbWZRk9rYAouVJQ' // private key
+    conf.bento_notif_url,
+    conf.vapid_details.public_key, // public key
+    conf.vapid_details.private_key // private key
 );
 const conn = mysql.createConnection({
-    host: "10.10.10.210",
-    user: "remote",
-    password: "*7ED54C88139248C900757D5540148B5AA2DBF4F2",
-    database: "bento"
+    host: conf.mysql.host,
+    user: conf.mysql.user,
+    password: conf.mysql.password,
+    database: conf.mysql.db
 })
 conn.connect((err) => {
     if(err) throw err;
@@ -40,7 +40,7 @@ conn.connect((err) => {
 app.use(express.json());
 app.use(cookieParser());
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Origin', conf.allowed_hosts);
     res.header('Access-Control-Allow-Methods', 'POST');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.header('Access-Control-Allow-Credentials', true);
@@ -73,7 +73,7 @@ app.post('/notify', async (req, res) => {
     let sessionId = cookies.PHPSESSID;
     let session;
     try {
-        session = fs.readFileSync(sess_path + "sess_" + sessionId, {encoding: 'utf-8'});
+        session = fs.readFileSync(conf.session_path + "sess_" + sessionId, {encoding: 'utf-8'});
         session = unserialize(session);
     } catch(e) {
         return refuse(503, "failed to get session.");
@@ -96,12 +96,12 @@ app.listen(port, () => {
 });
 
 const getDeck = (d_id) => {
-    return new Promise((res, rej) => {
+    return new Promise((resolve, rej) => {
         conn.query("SELECT * FROM decks WHERE id = " + d_id, (err, res, fields) => {
             if(err) throw err;
             if(res.length > 1) console.warn("Found more than one deck for a specific deck id; dump:\n\n" + res);
             let deck = res[0];
-            res(deck);
+            resolve(deck);
         })
     })
 }
@@ -126,6 +126,7 @@ const calculateNTR = (box, lastSeen) => {
             return true;
     }
 }
+
 const elapsedDays = {};
 const job = schedule.scheduleJob("0 0 12 * * *", () => {
     const keys = Object.keys(subList);

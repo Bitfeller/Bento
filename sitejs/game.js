@@ -1,13 +1,13 @@
 import { Game } from "./client-modules/game-library.js";
 import { UserGateway } from "../server/client-gateway/user-gateway.js";
-var problem = document.getElementById("problem");
-var cont_a = document.getElementById("cont_a");
-var answerbtn = document.getElementById("answerbtn");
-var progressNumbers = document.getElementById("progressNumbers");
-let progressBar = document.getElementById("progressBar");
+const problem = document.getElementById("problem");
+const cont_a = document.getElementById("cont_a");
+const answerbtn = document.getElementById("answerbtn");
+const progressNumbers = document.getElementById("progressNumbers");
+const progressBar = document.getElementById("progressBar");
 const answerMarker = document.getElementById("answer_marker");
-var info = document.getElementById("answer_info");
-var ans_a = document.getElementById("ans_a");
+const info = document.getElementById("answer_info");
+const ans_a = document.getElementById("ans_a");
 
 var objs = [];
 let selected = true;
@@ -213,6 +213,7 @@ function answerHandler() {
                 }
                 correct = Game.isCorrect(objs[0].value.toLowerCase());
                 if(correct) {
+                    Game.continue();
                     contlabel();
                     refresh();
                 } else {
@@ -235,6 +236,7 @@ function answerHandler() {
                 }
                 correct = Game.isCorrect(answerList);
                 if(correct) {
+                    Game.continue();
                     contlabel();
                     refresh();
                 } else {
@@ -383,6 +385,7 @@ window.addEventListener("keydown", (e) => {
             toProceed = true;
         }
     }
+    if(!toProceed) return;
     if(e.key == "Enter" && e.target != objs[0]) {
         Game.continue();
         answerMarker.style.display = "none";
