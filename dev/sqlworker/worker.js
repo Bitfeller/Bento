@@ -1,6 +1,6 @@
 // SQLWorker utilized for updating db for v0.4.0
 
-const { connect, query } = require('./sql.js');
+const { connect, query } = require('../../server/node/utils/sql.js');
 
 (async () => {
     const conn = await connect();
