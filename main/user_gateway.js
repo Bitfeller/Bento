@@ -110,7 +110,7 @@ class UserGateway {
             body: JSON.stringify({
                 setting: setting,
                 val: val,
-                verifpwd: pwd || true
+                verifpwd: pwd || ""
             })
         }).then(function(res) {
             if(!res.ok) {

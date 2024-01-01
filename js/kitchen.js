@@ -142,7 +142,6 @@ function preview(_this, isAdded) {
         }
     }
     let list = "";
-    console.log(deck);
     if(!deck.data.deckData) {
         list = "Interesting... this deck seems to be corrupt. If you could, please contact a developer of Bento about this. (include the name of the deck, please!)";
     } else {
@@ -159,9 +158,11 @@ function preview(_this, isAdded) {
             ${list}
         </div>
     `;
+    previewDialog.getElementsByClassName("closeBtns")[0].addEventListener("mousedown", () => {
+        previewDialog.close();
+    });
 }
 async function reviews_update(_this, isAdded) {
-    console.log(_this);
     reviews_updateDialog.showModal();
     let deck;
     let target = isAdded ? reviewDecks : decks;
@@ -221,14 +222,10 @@ async function reviews_update(_this, isAdded) {
         <br>
         <h2>${info}</h2>
     `;
+    reviews_updateDialog.getElementsByClassName("closeBtns")[0].addEventListener("mousedown", () => {
+        reviews_updateDialog.close();
+    });
 }
-
-/*  DEPRECATED CODE:
-// Buttons
-const previewBtns = document.getElementsByClassName("previewBtns");
-const addBtns = document.getElementsByClassName("addBtns");
-const closeBtns = document.getElementsByClassName("closeBtns");
-*/
 
 // Close dialogs when user presses outside dialog
 window.onclick = function(event) {

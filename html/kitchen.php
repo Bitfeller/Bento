@@ -73,7 +73,7 @@
 
             </dialog>
             <dialog id="reviews_updateDialog">
-                <button class="closeBtns" id="previewDialog_leave">x</button>
+                <button class="closeBtns" id="ruDialog_leave">x</button>
                 <br>
                 <h2>This set will now appear in your reviews</h2>
                 <br>
