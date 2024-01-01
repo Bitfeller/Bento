@@ -39,6 +39,10 @@
                     <input type="radio" name="repeat" id="catppuccin-radio" name="theme-select">
                     <label for="catppuccin-radio">Catppuccin Mocha-ish</label>
                 </div>
+                <!-- <div class="theme-radio-box grayscale">
+                    <input type="radio" name="repeat" id="grayscale-radio" name="theme-select">
+                    <label for="grayscale-radio">Grayscale</label>
+                </div> -->
             </div>
         </div>
         <div class="grid-box change-box">
