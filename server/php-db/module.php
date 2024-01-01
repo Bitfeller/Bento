@@ -113,8 +113,8 @@
         $cfg = json_decode(file_get_contents('../../conf/config.json'), true);
         if(is_local_config()) 
             $cfg = json_decode(file_get_contents("../../conf/local-config.json"), true);
-        require_once '../../conf/php-config.php';
-        $cfg['php_cfg'] = $PHP_CONFIG;
+        require_once '../php-cfg.php';
+        $cfg['php_cfg'] = GET_PHP_CONFIG();
         return $cfg;
     }
     function get_allowed_tags() {

@@ -10,6 +10,7 @@
     $getreviews = $data['getreviews'] ? 1 : 0;
     $getdrafts = $data['getdrafts'] ? 1 : 0;
     try {
+        $conf = get_server_config();
         if(redis_get('update-'.$_SESSION['uid']) == 1) {
             $sql = "SELECT * FROM users WHERE id = ? LIMIT 1;";
             $stmt = $conn->prepare($sql);
