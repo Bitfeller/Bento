@@ -82,12 +82,27 @@ dialog {
   background-color: var(--danger-red);
   color: var(--light-text);
 }
+#left-div > .setting-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 10px;
+}
 @media screen and (max-width: 1250px) {
   #profile-container {
     flex-direction: column;
   }
   #left-div {
     width: 100%;
+  }
+  #left-div > .setting-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    padding: 10px;
+    * {
+      margin-left: 15px;
+    }
   }
   #right-div {
     width: 100%;

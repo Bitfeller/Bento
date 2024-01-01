@@ -25,6 +25,8 @@ const wd_main = document.getElementsByClassName("main")[0];
 
 const usernameEl = document.getElementById("username");
 
+const themeSelect = document.getElementById("theme-select");
+
 // main
 (async () => {
     let [success, data] = await UserGateway.getuser();
@@ -121,6 +123,10 @@ const usernameEl = document.getElementById("username");
     leaveBtn.addEventListener("mousedown", () => {
         warningDialog.close();
     })
+    themeSelect.addEventListener("change", () => {
+        // Do fancy code here
+        window.location.reload();
+    });
 })();
 
 window.onclick = function(e) {
