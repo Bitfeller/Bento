@@ -2,12 +2,7 @@ body > h2 {
     margin-top: 10px;
     margin-left: 15px;
 }
-.deck-divider {
-    background-color: var(--light-gray);
-    height: 5px; 
-    margin: 40px 15px; 
-    border-radius: 5px;
-}
+
 .search-container {
     display: flex;
     justify-content: center;
@@ -87,15 +82,9 @@ body > h2 {
     background-image: radial-gradient(45deg, black);
     opacity: 0.75;    
 }
-.preview-container {
-    margin-top: 5px;
-    border-radius: 5px;
-    padding: 10px;
-    background-color: var(--gray);
-}
 #overview {
+    position: relative;
     background-color: var(--light-gray);
-    padding: 1%;
 }
 .title-bar {
     display: flex;
@@ -131,13 +120,21 @@ dialog {
 div.preview-container-part {
     background-color: rgba(50, 50, 50, 0.6);
     margin: 5px 5px 10px 5px;
-    padding: 5px;
+    padding: 10px;
     border-radius: 3px;    
 }
 span.views {
-    font-weight: bold;
     font-size: 25px;
-    padding: 0px 5px 0px 0px;
+    margin-left: 0px;
+}
+.view-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.views-icon {
+    margin-right: 15px;
+    font-size: 21px;
 }
 .closeBtns {
     padding: 0 1%;
@@ -168,8 +165,15 @@ img {
     display: flex;
     gap: 6px;
 }
-.deck-buttons > button {
-    text-align: center;
+.deck-buttons div {
+    color: var(--dark-text);
+    gap: 5px;
+}
+#overview > h2, #description > p, .ingredient-box h2{
+    overflow: scroll;
+}
+#cards p {
+    overflow: hidden;
 }
 @media screen and (max-width: 768px) {
     .ingredient-box {

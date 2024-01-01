@@ -16,44 +16,15 @@
         </div>
         <h2 style="display: none;" id="searchText" class="left-text">Search Results</h2>
         <div style="display: none;" class="ingredients-container" id="searched_decks">
-            <!-- searched terms here -->
         </div>
         <div class="deck-divider"></div>
         <h2 style="display: inline;" class="left-text">Added Decks</h2>
         <div class="ingredients-container" id="added_decks">
             <p class="info-blank">You haven't added any decks to your reviews yet.</p>
-            <!--<div class="ingredient-box">
-                <div>
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png" alt="Russian Flag">
-                    <div>
-                        <h2>
-                            Eastern Civilizations - Russia
-                        </h2>
-                    </div>
-                </div>
-                <div>
-                    <button class="previewBtns" onclick="previewDialog.showModal()">View</button>
-                    <button class="addBtns" onclick="addDialog.showModal()">Remove</button>
-                </div>
-            </div>-->
         </div>
         <div class="deck-divider"></div>
         <h2 class="left-text">Marketplace</h2>
         <div class="ingredients-container" id="marketplace">
-            <!--<div class="ingredient-box">
-                <div>
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png" alt="Russian Flag">
-                    <div>
-                        <h2>
-                            Eastern Civilizations - Russia
-                        </h2>
-                    </div>
-                </div>
-                <div>
-                    <button class="previewBtns" onclick="previewDialog.showModal()">View</button>
-                    <button class="addBtns" onclick="addDialog.showModal()">Add</button>
-                </div>
-            </div>-->
         </div>
         <section>
             <dialog id="previewDialog">

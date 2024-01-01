@@ -45,21 +45,22 @@ function initMc(newDiv, n) {
                 <div class='mc-option'>
                     <input type='input' class='mc-option-input' placeholder='...'>
                     <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                    <button class='mc-option-correct mc-option-nosel'>&nbsp;&nbsp;&nbsp;</button>
+                    <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
                 </div>
                 <div class='mc-option'>
                     <input type='input' class='mc-option-input' placeholder='...'>
                     <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                    <button class='mc-option-correct mc-option-nosel'>&nbsp;&nbsp;&nbsp;</button>
+                    <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
                 </div>
                 <div class='mc-option'>
                     <input type='input' class='mc-option-input' placeholder='...'>
                     <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                    <button class='mc-option-correct mc-option-nosel'>&nbsp;&nbsp;&nbsp;</button>
+                    <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
                 </div>
             </div>
             <button class='mc-add'>+</button>
             <button class='card-del'>Delete Card</button>
+            <div class='deck-divider'></div>
         </div>
     `;
     // Set up selector
@@ -86,7 +87,7 @@ function initMc(newDiv, n) {
         newOp.innerHTML = `
             <input type='input' class='mc-option-input' placeholder='...'>
             <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-            <button class='mc-option-correct mc-option-nosel'>&nbsp;&nbsp;&nbsp;</button>
+            <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
         `;
         cardmc.appendChild(newOp);
         let delBtn = newOp.getElementsByClassName("mc-option-del")[0];
@@ -105,7 +106,7 @@ function initMc(newDiv, n) {
         correctBtn.addEventListener("mousedown", function() {
             let current = cardmc.getElementsByClassName("mc-option-sel")[0];
             current.className = "mc-option-correct mc-option-nosel";
-            current.innerHTML = "&nbsp;&nbsp;&nbsp;";
+            current.innerHTML = `<span class="material-symbols-outlined">check_indeterminate_small</span>`;
             correctBtn.className = "mc-option-correct mc-option-sel";
             correctBtn.innerHTML = "<span class='material-symbols-outlined'>check</span>";
         });
@@ -129,7 +130,7 @@ function initMc(newDiv, n) {
         correctBtn.addEventListener("mousedown", function() {
             let current = cardmc.getElementsByClassName("mc-option-sel")[0];
             current.className = "mc-option-correct mc-option-nosel";
-            current.innerHTML = "&nbsp;&nbsp;&nbsp;";
+            current.innerHTML = `<span class="material-symbols-outlined">check_indeterminate_small</span>`;
             correctBtn.className = "mc-option-correct mc-option-sel";
             correctBtn.innerHTML = "<span class='material-symbols-outlined'>check</span>";
         });
@@ -147,6 +148,7 @@ function initTxt(newDiv, n) {
             Answer: <input type='input' class='txt-answer' placeholder='...'>
         </div>
         <button class='card-del'>Delete Card</button>
+        <div class='deck-divider'></div>
     `;
     // Set up selector
     newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
@@ -186,6 +188,7 @@ function initRanking(newDiv, n) {
             <button class='rank-add'>+</button>
             <button class='card-del'>Delete Card</button>
         </div>
+        <div class='deck-divider'></div>
     `;
     // Set up selector
     newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
@@ -534,7 +537,7 @@ addCard.addEventListener("mousedown", newCard);
                     newOp.innerHTML = `
                         <input type='input' class='mc-option-input' placeholder='...' value='${card.op[i]}'>
                         <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                        <button class='mc-option-correct ${card.ans == card.op[i] ? 'mc-option-sel' : 'mc-option-nosel'}'>C</button>
+                        <button class='mc-option-correct ${card.ans == card.op[i] ? 'mc-option-sel' : 'mc-option-nosel'}'>${card.ans == card.op[i] ? '<span class="material-symbols-outlined">check</span>' : '<span class="material-symbols-outlined">check_indeterminate_small</span>'}</button>
                     `;
                     cardmc.appendChild(newOp);
                     let delBtn = newOp.getElementsByClassName("mc-option-del")[0];
