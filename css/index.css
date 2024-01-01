@@ -249,7 +249,7 @@ footer > hr {
     border: none;
     display: none; 
     position: fixed; 
-    z-index: 1; 
+    z-index: 2; 
     left: 0;
     top: 0;
     width: 100%; 
@@ -271,10 +271,6 @@ footer > hr {
     border-radius: 10px;
     animation-name: animatetop;
     animation-duration: 0.4s;
-    height: 35dvh;
-}
-#signUpModal > div {
-    height: 45dvh;
 }
 .modal-content > p {
     font-size: 18pt;
@@ -373,11 +369,8 @@ footer > hr {
         margin-bottom: 200px;
     }
     .modal-content {
+        margin: auto;
         width: 70%;
         margin-top: 20%;
-        height: 50dvh;
-    }
-    #signUpModal > div {
-        height: 60dvh;
     }
 }

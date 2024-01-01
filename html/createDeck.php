@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/css/createDeck.css"/>
     <script type="module" src="../js/createdeck.js"></script>
 </head>
-<body>
+<body data-uo="true">
     <?php require_once "header.php"?>
     <div class="create-container">
         <h1>Create a Deck</h1>

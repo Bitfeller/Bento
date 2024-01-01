@@ -1,3 +1,7 @@
+br {
+  height: 20px;
+
+}
 #settings-container {
   margin-left: 35%;
   max-height: calc(100vh - 95px);
@@ -17,7 +21,7 @@ button:hover {
     background-color: rgb(33, 33, 33);
 }
 .setting-box > button, .setting-box > input {
-  max-width: 30%;
+  max-width: 45%;
 }
 #vocab-repetition-setting {
   flex-direction: column;
@@ -56,4 +60,36 @@ input[type="checkbox"] {
 ::placeholder {
   opacity: 0.4;
   color: #CADDA0;
+}
+#settings-icon-nondescructive {
+  position: absolute;
+  height: 540px;
+  bottom: 0px;
+  content:url("https://static.miraheze.org/hololivewiki/e/e6/Gawr_Gura_-_Portrait_VR_01.png");
+  animation: ability-to-use 600s;
+}
+@keyframes ability-to-use {
+  0% {opacity: 0;}
+  10% {opacity: 0;}
+  100% {opacity: 1;}
+}
+@media only screen and (max-width: 1000px) {
+  #settings-container {
+    max-height: initial;
+    margin-left: 0;
+    z-index: 1;
+  }
+  .setting-box {
+    margin: auto;
+    margin-top: 15px;
+    width: 87%;
+    padding: 2%;
+  }
+  .setting-box > button, .setting-box > input, #set-size-slider-stuff, .radio-container, .checkbox-container {
+    max-width: 95%;
+    margin-left: 2.5%;
+  }
+  .setting-box > button, .setting-box > input, #set-size-slider-stuff, .radio-container, .checkbox-container, .setting-box > p, .setting-box > h2, .setting-box {
+    z-index: 2;
+  }
 }
