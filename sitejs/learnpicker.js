@@ -51,7 +51,8 @@ function updateDecks(decks, counts) {
         }
         if (deckContainer.innerHTML == "") deckContainer.innerHTML = "<p class='info-blank'>You don't have any decks to review.<br>If you're trying to find all the decks in your reviews, click on \"Review select decks\" above.</p>";
     }
-    for(let deckBox in deckContainer.children) {
+    for(let i = 0; i < deckContainer.children.length; i++) {
+        let deckBox = deckContainer.children[i];
         let checkbox = deckBox.getElementsByClassName("deckCheck")[0];
         deckBox.addEventListener("mousedown", (e) => {
             if (e.target != checkbox) checkbox.checked = !checkbox.checked;
@@ -98,7 +99,8 @@ function updateDecks(decks, counts) {
     }
     updateDecks(decks, counts);
     // Settings box input box click event
-    for(let box in settingsBoxes) {
+    for(let i = 0; i < settingsBoxes.length; i++) {
+        let box = settingsBoxes[i];
         if(box.querySelectorAll('input[type="radio"]')[0]) {
             let radioButton = box.querySelectorAll('input[type="radio"]')[0];
             box.addEventListener("mousedown", () => {
