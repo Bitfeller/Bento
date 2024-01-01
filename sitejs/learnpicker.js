@@ -11,6 +11,8 @@ const o_speed = document.getElementsByClassName("speed");
 const o_repeat = document.getElementsByClassName("repeat");
 const o_shuffle = document.getElementsByClassName("shuffle");
 
+const deckSelect = document.getElementById("deckSelectAll");
+
 let user;
 
 (async() => {
@@ -119,4 +121,28 @@ let user;
         }
         window.location.href = "/learn/game?ds=" + selectedDecks.join(",") + "&m=" + mode + "&s=" + speed + "&r=" + repeat + "&sh=" + shuffle;
     })
+    deckSelect.addEventListener("mousedown", () => {
+        let allChecked = false;
+        for(let i = 0; i < deckContainer.children.length; i++) {
+            let item = deckContainer.children[i];
+            let checkbox = item.getElementsByClassName('deckCheck')[0];
+            if(!checkbox.checked) {
+                allChecked = true;
+            }
+        }
+        if (allChecked) {
+            for(let i = 0; i < deckContainer.children.length; i++) {
+                let item = deckContainer.children[i];
+                let checkbox = item.getElementsByClassName('deckCheck')[0];
+                checkbox.checked = true;
+            }
+        } else {
+            for(let i = 0; i < deckContainer.children.length; i++) {
+                let item = deckContainer.children[i];
+                let checkbox = item.getElementsByClassName('deckCheck')[0];
+                checkbox.checked = false;
+            }
+        
+        }
+    });
 })();

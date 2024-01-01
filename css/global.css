@@ -57,6 +57,10 @@ button {
     background-color: var(--light-green);
     color: var(--dark-text);
     cursor: pointer;
+    transition: 0.3s;
+}
+button:hover {
+    filter: brightness(85%);
 }
 input {
     border: none;
@@ -119,6 +123,8 @@ input {
     padding-bottom: 0px;
 }
 .material-symbols-outlined {
+    user-select: none;
+    -webkit-user-select: none;
     font-size: 38px;
     font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 200, "opsz" 48;
 }

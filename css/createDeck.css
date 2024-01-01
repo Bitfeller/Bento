@@ -4,7 +4,7 @@
 }
 button:hover {
     transition-duration: 0.2s;
-    box-shadow: 0px 1px 4px rgba(255, 255, 255, 0.3);
+    /* box-shadow: 0px 1px 4px rgba(255, 255, 255, 0.3); */
 }
 .container {
     display: flex;
@@ -184,6 +184,10 @@ button {
     color: #5992e8;
     height: 35px;
     width: 35px;
+    transition: 0.3s;
+}
+#picAddBtn:hover, #picReset:hover {
+    filter: brightness(85%);
 }
 @media only screen and (max-width: 1025px) {
     .deck-pick-container, .deck-pic {
