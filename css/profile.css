@@ -47,7 +47,7 @@
 #pfpReset {
   margin: 30px 50px 0px 0px;
 }
-@media screen and (max-width: 1300px) {
+@media screen and (max-width: 1400px) {
   #profile-container {
     flex-direction: column;
   }

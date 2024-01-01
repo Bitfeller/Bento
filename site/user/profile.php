@@ -52,5 +52,6 @@
             <div class="main"></div>
         </dialog>
     </section>
+    <img id="settings-icon-nondescructive">
 </body>
 </html>

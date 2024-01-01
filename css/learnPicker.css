@@ -77,11 +77,16 @@ h2 {
     color: #292E32;
 }
 @media only screen and (max-width: 1300px) {
+    /* #settings-big-box {
+        max-height: 100vh;
+        height: 75vh;
+    } */
     #overall-container {
         flex-direction: column;
     }
     #overall-container > div {
         width: 100%;
+        height: auto;
     }
     .big-box {
         margin: 10px;
