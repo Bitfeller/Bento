@@ -1,5 +1,4 @@
 import {Game} from "../main/library.js";
-
 var problem = document.getElementById("problem");
 var cont_a = document.getElementById("cont_a");
 var answerbtn = document.getElementById("answerbtn");
@@ -21,7 +20,6 @@ function computeCenter(el) {
         y: (rect.top + rect.bottom) / 2 + scrollY
     }
 }
-
 function refresh() {
     if(Game.isActive() === false) {
         problem.innerHTML = "You completed Bento's Learn!";
@@ -138,8 +136,6 @@ function refresh() {
     var progress = Game.getProgress();
     fillBar.style.width = (100 * progress.current / progress.max) + "%";
 }
-
-Game.setDeck("data", refresh);
 answerbtn.addEventListener("mousedown", function() {
     if(Game.isActive() !== false) {
         var data = Game.getProblemData();
@@ -230,6 +226,12 @@ window.addEventListener("dragover", function(e) {
         list.appendChild(dragLine);
     }
 });
+// Main
+async function main() {
+    await Game.setDeck(1);
+    refresh();
+}
+main();
 /*btn.addEventListener("mousedown", function() {
     if(Game.isActive() === false) {
         switch(Game.getMode()) {
