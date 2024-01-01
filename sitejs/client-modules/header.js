@@ -11,7 +11,12 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     const feedback_content = document.getElementById("header:feedback_content");
     const feedback_submit = document.getElementById("header:feedback_submit");
     const version = document.getElementById('header:version');
-    const version_info = document.getElementById('header:version_info')
+    const version_info = document.getElementById('header:version_info');
+    const verify_email = document.getElementById('header:verify-email-alert');
+    const verify_dialog = document.getElementById('header:verify_email');
+    const resend_email = document.getElementById('header:resend_verif_email');
+    const resend_success = document.getElementById('header:resend_success');
+
     const uo = document.body.dataset.uo;
 
     const loader = document.getElementsByClassName("loader")[0];
@@ -106,6 +111,11 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
                 document.head.innerHTML += `<link rel='stylesheet' href='../css/themes/classic.css'>`;
             break;
         }
+        // update verify_email_alert
+        if(data.verified == 0) {
+            verify_email.style.display = "inline-block";
+            verify_email.addEventListener('mousedown', () => verify_dialog.showModal());
+        }
     }
     // Initialize service-worker for notifications if allowed
     if(Notification.permission == "granted" && data.notifsub != "0") {
@@ -149,10 +159,17 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     version.addEventListener('mousedown', () => {
         version_info.showModal();
     });
+    resend_email.addEventListener('mousedown', async () => {
+        resend_success.innerHTML = "";
+        let [success, data] = await UserGateway.editUser('resend-verif-email', '');
+        if(success) resend_success.innerHTML = "We sent you another verification email.";
+        if(data == 'verified') location.reload();
+    });
     window.addEventListener('mousedown', (e) => {
-        if(e.target == feedback_dialog || e.target == version_info) {
+        if(e.target == feedback_dialog || e.target == version_info || e.target == verify_dialog) {
             feedback_dialog.close();
-            version_info.close()
+            version_info.close();
+            verify_dialog.close();
         }
     });
 })();

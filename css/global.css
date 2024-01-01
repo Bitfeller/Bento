@@ -310,7 +310,7 @@ dialog::backdrop{
 .line-up-icons span {
     margin-left: 5px;
 }
-.feedback-dialog, .version_info {
+.header-dialog {
     margin: 45px auto;
     min-width: 50%;
     & textarea {
@@ -364,10 +364,10 @@ div.version:hover {
     position: fixed;
     z-index: 1000;
 }
-#verify-email-alert {
-    color: rgba(255, 0, 0, 0.5);
-    position: absolute;
-    margin-left: 45vw;
+.verify-email-alert {
+    display: none;
+    color: rgba(200, 100, 100);
+    margin: 0px 10px 0px 0px;
 }
 @media only screen and (min-width: 9999px) {
     #too-big-img {

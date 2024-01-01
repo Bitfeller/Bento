@@ -105,7 +105,7 @@ function initMc(newDiv, n, q) {
         </div>
         <div class='card-main'>
             <div class="card-question-container">
-                Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div>
+                Question: <div contenteditable="true" type='input' class='question' placeholder='Question [math formatting happens between two $]'>${q ?? ""}</div>
             </div>
             <div class='card-mc'>
                 <div class='mc-option'>
@@ -237,7 +237,7 @@ function initTxt(newDiv, n, q) {
         </div>
         <div class='card-main'>
             <div class="card-question-container">
-                Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div>
+                Question: <div contenteditable="true" type='input' class='question' placeholder='Question [math formatting happens between two $]'>${q ?? ""}</div>
             </div>
             <div class='card-txt'>
                 <div class='txt-ans-cont'>
@@ -307,7 +307,7 @@ function initRanking(newDiv, n, q) {
         </div>
         <div class='card-main'>
             <div class="card-question-container">
-                Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div>
+                Question: <div contenteditable="true" type='input' class='question' placeholder='Question [math formatting happens between two $]'>${q ?? ""}</div>
             </div>
             <div class='card-rank ranking-list'>
                 <div draggable='true' class='ranking-item'>
