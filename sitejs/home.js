@@ -144,15 +144,51 @@ function show(deck) {
             .filter(k => deck.data.contnt[k] ?? false)
             .sort(sorter)
             .slice(0, INFO_TERM_LIMIT)
-            .map(k => `<li>${k} => ${deck.data.contnt[k].type == 'mc' ? deck.data.contnt[k].ans.map(r => deck.data.contnt[k].op[r]).join(', ') : deck.data.contnt[k].ans} (recall rating: ${review[k].box} (of 6), score: ${review[k].score}, average time spent: ${review[k].time ? review[k].time + 's' : '[not tracked yet]'}, next review: ${UserGateway.calculateNTR(review[k].box, review[k].last) ? "now" : "in " + UserGateway.calculateNextReview(review[k].box, review[k].last) + " day(s)"})</li>`).join('');
+            .map(k => 
+                `<li>${k} <div class="answer-preview"><p>${
+                    deck.data.contnt[k].type == 'mc' 
+                        ? deck.data.contnt[k].ans.map(r => deck.data.contnt[k].op[r]).join(', ') 
+                        : deck.data.contnt[k].ans
+                    }
+                (correct ${review[k].box} times of 6),</p> 
+                <p>average time spent: ${review[k].time ? review[k].time + 's' : '[not tracked yet]'},</p> 
+                <p>next review: ${
+                    UserGateway.calculateNTR(review[k].box, review[k].last) 
+                        ? "now" 
+                        : ("in " 
+                            + UserGateway.calculateNextReview(review[k].box, review[k].last) 
+                            + " day(s)")
+                }</p></div>
+                </li>`).join('');
 
-    let worst = lister(k => review[k].box <= 2, (a, b) => review[a].box + review[a].score / 100 - review[b].box - review[b].score / 100);
-    let learning = lister(k => review[k].box > 2 && review[k].box < 5, (a, b) => review[a].box + review[a].score / 100 - review[b].box - review[b].score / 100);
-    let best = lister(k => review[k].box >= 5, (a, b) => review[b].box + review[b].score / 100 - review[a].box - review[a].score / 100);
+    let worst = lister(
+        k => review[k].box <= 2,
+        (a, b) => review[a].box + review[a].score / 100 - (review[b].box + review[b].score / 100)
+    );
+    let learning = lister(
+        k => review[k].box > 2 && review[k].box < 5,
+        (a, b) => review[a].box + review[a].score / 100 - (review[b].box + review[b].score / 100)
+    );
+    let best = lister(
+        k => review[k].box >= 5,
+        (a, b) => review[b].box + review[b].score / 100 - (review[a].box + review[a].score / 100)
+    );
 
-    if(worst.length == 0) worst = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
-    if(learning.length == 0) learning = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
-    if(best.length == 0) best = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
+    if (worst.length == 0) {
+        worst = `<p class='info-blank'>-- No terms to show${
+            deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''
+        } --</p>`;
+    }
+    if (learning.length == 0) {
+        learning = `<p class='info-blank'>-- No terms to show${
+            deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''
+        } --</p>`;
+    }
+    if (best.length == 0) {
+        best = `<p class='info-blank'>-- No terms to show${
+            deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''
+        } --</p>`;
+    }
     
     deckViewer.innerHTML = `
         <div class='title deck-container-overview' id='deck-container-overview'>
@@ -166,7 +202,7 @@ function show(deck) {
                 <div class='yellow-box'></div><span class='dc-masterbox'>Learning ${keys.length - mastered} terms</span>
                 <div class='red-box'></div><span class='dc-masterbox'>Haven't seen ${deck.contnt_len - keys.length} terms</span>
             </div>
-            <div>
+            <div class="terms-display-container">
                 <div class='deck-container-worst-terms'>
                     <h3 style='color: var(--danger-red)'>Least mastered</h3>
                     <ol class='deck-container-worst-terms-list'>
@@ -219,7 +255,12 @@ function update(search) {
             div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>`;
             deckReminders.appendChild(div);
             div.addEventListener('mouseenter', () => show(decks[i]));
-            div.addEventListener('mouseleave', hide);
+            div.addEventListener('mouseleave', () => {
+                setTimeout(()=> {
+                    if(!deckViewer.matches(":hover")) hide();
+                }, 100);
+            });
+            deckViewer.addEventListener('mouseleave', hide);
         }
     }
     if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks that match." : "You don't have any decks in your reviews."} --</p>`;

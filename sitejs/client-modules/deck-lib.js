@@ -806,12 +806,36 @@ function open_import_modal(contnt) {
             let card = contnt[q];
             let carddiv = document.createElement("div");
             carddiv.className = "import-card";
-            carddiv.innerHTML = `
-                <div class='import-q'>${q}</div>
-                <div class='import-a'>${card.type == "mc" ? card.op.join(", ") : card.ans}</div>
-                ${card.type == "mc" ? "<div class='import-ans'>" + card.ans.map((t) => card.op[t]).join(', ') + "</div>" : ''}
-                <input type='checkbox' class='import-sel' data-q='${q}' checked>
+            // carddiv.innerHTML = `
+            //     <div class='import-q'>${q}</div>
+            //     <div class='import-a'>${card.type == "mc" ? card.op.join(", ") : card.ans}</div>
+            //     ${card.type == "mc" ? "<div class='import-ans'>" + card.ans.map((t) => card.op[t]).join(', ') + "</div>" : ''}
+            //     <input type='checkbox' class='import-sel' data-q='${q}' checked>
+            // `;
+            carddiv.innerHTML = /*html*/`
+                <div class="question-box">
+                    <input type="checkbox" name="infinite_mode" class="import-question-checkbox" checked>
+                    <p><b class="mathJax">Q | ${q}</b></p>
+                        ${
+                            card.type === "mc"
+                                ? /*html*/`<p>O | ${card.op
+                                    .map(x => `<span class="mathJax">${x}</span>`).join(", ")}</p>`
+                                : ""
+                        }
+                    <p class="mathJax">A | 
+                        ${(
+                            card.type === "mc"
+                                ? card.ans.map(x => card.op[x])
+                                : card.ans
+                        ).join(", ")}
+                    </p>
+                </div>
             `;
+            carddiv.addEventListener("mousedown", (e) => {
+                let checkbox = carddiv.getElementsByClassName("import-question-checkbox")[0];
+                if (e.target != checkbox) checkbox.checked = !checkbox.checked;
+            })
+            Array(carddiv.getElementsByClassName("mathJax")).map(e => typeset(e));
             import_q.appendChild(carddiv);
         }
         temp_contnt = contnt;

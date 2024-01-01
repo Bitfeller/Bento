@@ -38,7 +38,7 @@
                 <span class="material-symbols-outlined" id="picReset">refresh</span>
             </div>
             <div>
-                <input type="checkbox" id="isPublic">
+                <input type="checkbox" id="isPublic" checked>
                 <span>| Public Deck</span>
             </div>
             <div id="cardcontain"></div>

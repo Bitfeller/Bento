@@ -8,6 +8,21 @@
     <link rel="stylesheet" href="../../css/kitchen.css"/>
     <script src="../../sitejs/kitchen.js" type="module" data-loading="true"></script>
     <link rel="preload" href="../../img/loading.gif" as="image">
+    <!-- MathJax -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: []
+            },
+            svg: {
+                fontCache: 'global',
+                scale: 1,
+            },
+            startup: {}
+        };
+    </script>
+    <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body data-uo="true">
     <?php require_once "../header.php"?>

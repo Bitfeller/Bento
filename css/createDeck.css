@@ -358,6 +358,9 @@ button {
 #picAddBtn, #fileselecttrigger {
     cursor: pointer;
 }
+input[type="file"] {
+    max-width: 200px;
+}
 .rank-clone, .mtch-clone, .txt-clone, .mc-clone {
     .small-ico {
         color: var(--dark-text);
@@ -365,17 +368,20 @@ button {
 }
 .import-card {
     position: relative;
-    background-color: var(--gray);
-    padding: 5px;
-    padding-top: 35px;
     border-radius: 5px;
-    margin-top: 5px;
+    margin: 0px 5px;
+    padding: 10px;
+    background-color: var(--gray);
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.3s;
 }
-.import-q {
-
+.import-card:hover {
+    filter: brightness(125%);
 }
-.import-a {
-    
+.import-question-checkbox {
+    position: absolute;
+    right: 10px;
 }
 .import-sel {
     position: absolute;
