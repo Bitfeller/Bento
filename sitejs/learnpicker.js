@@ -9,6 +9,8 @@ const errmsg = document.getElementById("errmsg");
 const o_mode = document.getElementsByClassName("mode");
 const o_repeat = document.getElementsByClassName("repeat");
 const o_shuffle = document.getElementsByClassName("shuffle");
+const o_infinite_mode = document.getElementsByClassName("infinite-mode")[0];
+const infinite_mode_text = document.getElementsByClassName("infinite_mode_text")[0];
 
 const deckSelect = document.getElementById("deckSelectAll");
 
@@ -72,6 +74,9 @@ let user;
     }
     o_mode[0].addEventListener("change", () => {
         if(o_mode[0].checked == true) {
+            o_infinite_mode.disabled = false;
+            o_infinite_mode.checked = o_infinite_mode.getAttribute("data-enabled") == "true" ? true : false;
+            infinite_mode_text.innerHTML = "| Infinite Mode";
             deckContainer.innerHTML = "";
             let r_keys = Object.keys(reviews);
             for(let i = 0; i < r_keys.length; i++) {
@@ -114,6 +119,10 @@ let user;
     o_mode[1].addEventListener("change", () => {
         if(o_mode[1].checked == true) {
             deckContainer.innerHTML = "";
+            o_infinite_mode.disabled = true;
+            o_infinite_mode.setAttribute("data-enabled", String(o_infinite_mode.checked));
+            o_infinite_mode.checked = false;
+            infinite_mode_text.innerHTML = "You can't use Infinite Mode when learning decks to review.<br><i>Support for this feature may be added in the future</i>";
             let r_keys = Object.keys(reviews);
             for(let i = 0; i < r_keys.length; i++) {
                 if(decks[i] == 0) continue;
@@ -177,7 +186,7 @@ let user;
             return;
         }
         // Set options
-        let mode = 0, repeat, shuffle;
+        let mode = 0, repeat, shuffle, infinite_mode = o_infinite_mode.checked ? 1 : 0;
         if(o_mode[1].checked == true) mode = 1;
         for(let i = 0; i < o_repeat.length; i++) {
             if(o_repeat[i].checked == true) {
@@ -189,7 +198,7 @@ let user;
                 shuffle = i + 1;
             }
         }
-        window.location.href = "/learn/game?ds=" + selectedDecks.join(",") + "&m=" + mode + "&r=" + repeat + "&sh=" + shuffle;
+        window.location.href = "/learn/game?ds=" + selectedDecks.join(",") + "&m=" + mode + "&r=" + repeat + "&sh=" + shuffle + "&i=" + infinite_mode;
     })
     deckSelect.addEventListener("mousedown", () => {
         let allChecked = false;
