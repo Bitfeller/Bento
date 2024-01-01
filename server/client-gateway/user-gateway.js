@@ -1,23 +1,32 @@
+import { types, sameUser } from './gateway-mod.js';
+
 const moduleurl = new URL(import.meta.url);
 const spath = moduleurl.pathname + "/../..";
 
-function types(t, ...args) {
-    return args.every((c, i) => {
-        if(c === undefined) return false;
-        switch(t[i]) {
-            case "S": return typeof c === "string" && c.length > 0;
-            case "s": return typeof c === "string";
-            case "b": return typeof c === "boolean";
-            case "N": return typeof c === "number" && !isNaN(c) && c >= 0;
-            case "n": return typeof c === "number" && !isNaN(c);
-            case "a": return Array.isArray(c);
-        }
-        return false;
-    });
+let pwdcache;
+
+async function pwdfetch() {
+    if(pwdcache) return pwdcache;
+    try {
+        const resp = await fetch(spath + "/conf/commonpwd.json");
+        if(!resp.ok) throw "couldn't fetch!";
+        const data = await resp.json();
+        return pwdcache = data;
+    } catch(e) {
+        console.error('backend: Failed to fetch common passwords:', e);
+        return [];
+    }
+}
+async function isCommon(pwd) {
+    let list = await pwdfetch();
+    for(let i = 0; i < list.length; i++)
+        if(pwd.includes(list[i])) return true;
+    return false;
 }
 let UserGateway = {
     getuser: async (getpfp = false, getudata = false, getreviews = true, getdrafts = false) => {
         if(!types("bbbb", getpfp, getudata, getreviews, getdrafts)) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "no session"];
         let success = false, data = 'fetch-err';
         await fetch(spath + "/php-db/user/user_get.php", {
             method: "post",
@@ -67,6 +76,7 @@ let UserGateway = {
     signup: async (username, pwd, email) => {
         if(!types("SSS", username, pwd, email)) return [false, "invalid params"];
         if(pwd.length < 8) return [false, "bad pwd"];
+        if(await isCommon(pwd)) return [false, "bad pwd"];
         let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/user/user_new.php", {
             method: 'post',
@@ -89,6 +99,7 @@ let UserGateway = {
     },
     editUser: async (setting, val, pwd = "") => {
         if(!types("Sss", setting, val, pwd)) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "no session"];
         let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/user/user_edit.php", {
             method: 'post',
@@ -120,6 +131,7 @@ let UserGateway = {
     },
     getDraftImage: async time => {
         if(!types("n", time)) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "no session"];
         let success = false, data = 'fetch-err';
         await fetch(spath + "/php-db/user/user_draft_getpic.php", {
             method: 'post',
@@ -141,6 +153,7 @@ let UserGateway = {
     },
     giveFeedback: async feedback => {
         if(!types("S", feedback)) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "no session"];
         let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/feedback/feedback_new.php", {
             method: 'post',
@@ -159,11 +172,20 @@ let UserGateway = {
         }).catch(e => console.log('backend:', e));
         return [success, reason];
     },
+    calculateDays: (box) => {
+        if(!types("nn", box)) return -1;
+        let boxassoc = [1, 3, 5, 7, 10, 14]; // b1 = 1d, b2 = 3d, etc.
+        return boxassoc[box - 1] ?? -1
+    },
+    calculateNextReview: (box, lastSeen) => {
+        if(!types("nn", box, lastSeen)) return -1;
+        let tick = Date.now(), dist = tick - lastSeen, days = (((dist / 1000) / 60) / 60) / 24;
+        return Math.round(UserGateway.calculateDays(box) - days);
+    },
     calculateNTR: (box, lastSeen) => {
         if(!types("nn", box, lastSeen)) return true;
         let tick = Date.now(), dist = tick - lastSeen, days = (((dist / 1000) / 60) / 60) / 24;
-        let boxassoc = [1, 3, 5, 7, 10, 14]; // b1 = 1d, b2=3d, etc.
-        return days >= (boxassoc[box - 1] ?? -1);
+        return days >= UserGateway.calculateDays(box, lastSeen);
     },
     // Recovery and verification methods
     userdir: async (mode, uid, verif, newPwd = "") => {
@@ -208,7 +230,7 @@ let UserGateway = {
             if(!success) reason = res.reason;
         }).catch(e => console.log('backend:', e));
         return [success, reason];
-    },
+    }
 }
 
-export {UserGateway};
+export { UserGateway };
