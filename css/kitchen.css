@@ -3,13 +3,11 @@
     gap: 15px;
     margin: 20px 10px;
 }
-
 .sidebar-container {
     min-width: calc(25vw - 6px);
     position: relative;
     margin-right: 15px;
 }
-
 .sidebar {
     min-width: calc(25vw - 6px);
     height: calc(100vh - 129px);
@@ -52,6 +50,9 @@
 }
 .checkbox-box:hover {
     background-color: var(--light-gray);
+}
+select {
+    width: 230px;
 }
 .tags-box, .filters, .question-type-filters {
     margin-top: 10px;
