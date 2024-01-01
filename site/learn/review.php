@@ -46,18 +46,21 @@
     <div class="review-container">
         <div id="question">
             <!-- Just text -->
-            <span id="questionText">
+            <!-- <span id="questionText">
                 Example question here.
                 This is a matching question which has several fill in the 
-            </span>
+            </span> -->
 
             <!-- Text and picture -->
-            <!-- <span id="questionText"></span>
-            <img id="questionImage" src="" alt="Question Image" style="display: none;"> -->
-            </div>
+            <span id="questionText">
+                Example question here.
+                This is a matching question which has several fill in the   
+            </span>
+            <!-- <img id="questionImage" src="https://cdn.mos.cms.futurecdn.net/42E9as7NaTaAi4A6JcuFwG.jpg" alt="Question Image"> -->
+        </div>
         <div id="answers">
             <!-- Text -->
-            <!-- <input type="text" id="answerText" placeholder="Type your answer here..." autocomplete="off"> -->
+            <input type="text" id="answerText" placeholder="Type your answer here..." autocomplete="off">
 
             <!-- Multiple Choice -->
             <!-- <div class="mc-option">The Correct Answer</div>
@@ -73,9 +76,9 @@
             <div class="ranking-option">Is not the worst or something</div> -->
 
             <!-- Matching -->
-            <div class="matching-option">1. This goes here</div>
+            <!-- <div class="matching-option">1. This goes here</div>
             <div class="matching-option">2. This goes there</div>
-            <div class="matching-option">3. That goes where?</div>
+            <div class="matching-option">3. That goes where?</div> -->
 
             <!-- More?! -->
             <div class="answer-options">
