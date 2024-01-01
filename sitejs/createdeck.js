@@ -169,6 +169,7 @@ function initMc(newDiv, n, q) {
             if(idx < ans.length - 1) return;
             e.preventDefault();
             newCard();
+            document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
             cards[cards.length - 1].getElementsByClassName('question')[0].focus();
         })
         delBtn.addEventListener("mousedown", function() {
@@ -207,6 +208,7 @@ function initMc(newDiv, n, q) {
             if(idx < ans.length - 1) return;
             e.preventDefault();
             newCard();
+            document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
             cards[cards.length - 1].getElementsByClassName('question')[0].focus();
         });
         delBtn.addEventListener("mousedown", function() {
@@ -283,6 +285,7 @@ function initTxt(newDiv, n, q) {
             if(idx < ans.length - 1) return;
             e.preventDefault();
             newCard();
+            document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
             cards[cards.length - 1].getElementsByClassName('question')[0].focus();
         });
         delBtn.addEventListener('mousedown', () => newAns.remove());
@@ -298,6 +301,7 @@ function initTxt(newDiv, n, q) {
         if(idx < ans.length - 1) return;
         e.preventDefault();
         newCard();
+        document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
         cards[cards.length - 1].getElementsByClassName('question')[0].focus();
     });
 }
@@ -393,6 +397,7 @@ function initRanking(newDiv, n, q) {
             if(idx < ans.length - 1) return;
             e.preventDefault();
             newCard();
+            document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
             cards[cards.length - 1].getElementsByClassName('question')[0].focus();
         });
         del.addEventListener("mousedown", function() {
@@ -451,6 +456,7 @@ function initRanking(newDiv, n, q) {
             if(idx < ans.length - 1) return;
             e.preventDefault();
             newCard();
+            document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
             cards[cards.length - 1].getElementsByClassName('question')[0].focus();
         });
         del.addEventListener("mousedown", function() {
@@ -828,6 +834,7 @@ function appendToCards(contnt) {
                         if(idx < ans.length - 1) return;
                         e.preventDefault();
                         newCard();
+                        document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
                         cards[cards.length - 1].getElementsByClassName('question')[0].focus();
                     })
                     delBtn.addEventListener("mousedown", function() {
@@ -885,6 +892,7 @@ function appendToCards(contnt) {
                         if(idx < ans.length - 1) return;
                         e.preventDefault();
                         newCard();
+                        document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
                         cards[cards.length - 1].getElementsByClassName('question')[0].focus();
                     });
                     delBtn.addEventListener('mousedown', () => newAns.remove());
@@ -956,6 +964,7 @@ function appendToCards(contnt) {
                         if(idx < ans.length - 1) return;
                         e.preventDefault();
                         newCard();
+                        document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
                         cards[cards.length - 1].getElementsByClassName('question')[0].focus();
                     });
                     del.addEventListener("mousedown", function() {
@@ -1098,7 +1107,7 @@ window.addEventListener("mousedown", (e) => {
 window.addEventListener("keydown", (e) => {
     if(e.target === addCard && (e.key === "Enter" || e.key === " ")) {
         newCard();
-        document.querySelector(".card:last-child").scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
         const mcbtns = document.querySelectorAll(".mcbtn");
         mcbtns[mcbtns.length - 1].focus();
     }
