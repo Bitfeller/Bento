@@ -1,26 +1,2 @@
-# This file may ONLY include paths referencing user-generated content,
-# compiled executables or builds, or installable libraries/modules/packages.
-
-# Paths referencing source code, dependencies, or other required files
-# must NOT be included in this file unless otherwise generated or for the use of local environments.
-
-# Ignore all pfp images and picture images.
-db/**/*.pfp
-db/**/*.pic
-
-# Ignore Node.js installed packages.
-**/node_modules/*
-
-# Ignore generated regex filter words.
-**/config-filter-regex.list
-
-# Ignore Rust builds/executables.
-**/target
-
-# Ignore automatically generated lock files.
-# This is to prevent cache and compile issues. 
-Cargo.lock
-
-# Do NOT ignore PLACEHOLDER files.
-# These files exist to ensure a directory that must exist, does exist on the repo/Github.
-!**/PLACEHOLDER
+# file_db/**/*.pfp
+# file_db/**/*.pic

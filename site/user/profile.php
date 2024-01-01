@@ -54,7 +54,6 @@
                 <code>[a-zA-Z0-9\- !@#$%^&*\(\)\[\]\{\}\.]*</code>
             </div>
             <button id="submit-username">Change</button>
-            <p class="info-error" id="username-error"></p>
         </div>
         <div class="grid-box change-box">
             <h2>Change Email</h2>
@@ -62,15 +61,13 @@
                 <input type="text" id="email" placeholder="Email">
             <p>Changing your email will require you to verify the new email address so make sure you can access it.</p>
             <button id="change-email">Change</button>
-            <p class="info-error" id="email-error"></p>
         </div>
         <div class="grid-box change-box">
             <h2>Change Password</h2>
-            <input type="password" id="password-curr-password" placeholder="Current Password">
-            <input type="password" id="password" placeholder="New Password">
+            <input type="text" id="password-curr-password" placeholder="Current Password">
+            <input type="text" id="password" placeholder="New Password">
             <p>Passwords must be at least 8 characters long <p><i>for now...</i></p></p>
             <button id="change-password">Change</button>
-            <p class="info-error" id="password-error"></p>
         </div>
         <div class="grid-box change-box danger-box">
             <h2>Danger Zone</h2>
@@ -78,13 +75,11 @@
                 <h3>Account Deletion:</h3>
                 <p>Deleting your account will remove all of your data from our servers. This action is irreversible.</p>
                 <button id="delete-account">Delete Account</button>
-                <p class="info-error" id="delete-account-error"></p>
             </div>
             <div>
                 <h3>Reset Account:</h3>
                 <p>This will reset all of your reviews data and preferences.</p>
                 <button id="reset-account">Reset Account</button>
-                <p class="info-error" id="reset-account-error"></p>
                 <img id="settings-icon-nondescructive">
             </div>
         </div>
@@ -95,7 +90,7 @@
             <p>This action is irreversible and will remove all of your data from our servers.</p>
             <br>
             <p>Enter your current password to continue...</p>
-            <input type="password" id="delete-account-password" placeholder="Current Password">
+            <input type="text" id="delete-account-password" placeholder="Current Password">
             <br>
             <button id="delete-account-confirm">Delete Account</button>
             <button id="delete-account-cancel">Cancel</button>
