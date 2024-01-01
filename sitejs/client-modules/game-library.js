@@ -501,7 +501,7 @@ function isCorrect(answer) {
             // return problem.op[answer] == problem.ans ? updateLastCorrect(true) : updateLastCorrect(false);
         case "txt":
             for(let i = 0; i < problem.ans.length; i++) {
-                if(answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans.toLowerCase().replaceAll(/\s/g, "")) return updateLastCorrect(true);
+                if(answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans[i].toLowerCase().replaceAll(/\s/g, "")) return updateLastCorrect(true);
             }
             return updateLastCorrect(false);
             // return answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans.toLowerCase().replaceAll(/\s/g, "") ? updateLastCorrect(true) : updateLastCorrect(false);

@@ -230,7 +230,7 @@
                 session_destroy();
             break;
             case 'resend-verif-email':
-                if($result['verified'] == 0) {
+                if($result['verified'] == true) {
                     fail('verified');
                 }
                 $uid = $result['id'];

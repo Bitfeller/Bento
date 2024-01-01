@@ -31,6 +31,10 @@
             $stmt->bind_param("isi", $verified, $verif, $uid);
             $stmt->execute();
             $stmt->close();
+            session_start();
+            if(isset($_SESSION['uid'])) {
+                $_SESSION['verified'] = true;
+            }
             success();
         } else if($mode === "pwdrecover") {
             session_start();
