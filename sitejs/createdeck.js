@@ -6,6 +6,8 @@ const title = document.getElementById("name");
 const desc = document.getElementById("description");
 const deckpic = document.getElementById("deckpic");
 const ispub = document.getElementById("isPublic");
+const tags = document.getElementById("tags");
+const tagInput = document.getElementById("tagInput");
 
 const cardContain = document.getElementById("cardcontain");
 const createBtn = document.getElementById("create");
@@ -45,6 +47,20 @@ createBtn.addEventListener('mousedown', async () => {
             break;
         }
     else window.location.href = "/home?l=cd&s=1";
+});
+tagInput.addEventListener('keydown', (e) => {
+    if (e.key == 'Enter') {
+        e.preventDefault(); 
+        console.log(tagInput.value)
+        tags.innerHTML += /*html*/`                
+            <div class="tag remove-tag">
+                <div class="material-symbols-outlined">remove</div>
+                <p>${tagInput.value}</p>
+            </div>
+        `;
+        tagInput.value = '';
+        tagInput.focus();
+    }
 });
 
 (async () => {
