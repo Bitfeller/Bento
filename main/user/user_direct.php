@@ -26,10 +26,11 @@
             if(!$valid) {
                 fail("invalid verif");
             }
-            $sql = "UPDATE users SET verified = ? WHERE id = ?;";
+            $sql = "UPDATE users SET verified = ? AND verif = ? WHERE id = ?;";
             $stmt = $conn->prepare($sql);
             $verified = 1;
-            $stmt->bind_param("ii", $verified, $uid);
+            $verif = "";
+            $stmt->bind_param("isi", $verified, $verif, $uid);
             $stmt->execute();
             success();
         } else if($mode === "pwdrecover") {
@@ -63,10 +64,11 @@
             if(!isset($newPwd)) {
                 fail("no pwd");
             }
-            $sql = "UPDATE users SET password = ? WHERE id = ?;";
+            $sql = "UPDATE users SET password = ? AND verif = ? WHERE id = ?;";
             $stmt = $conn->prepare($sql);
             $hashPwd = password_hash($newPwd, PASSWORD_DEFAULT);
-            $stmt->bind_param("si", $hashPwd, $_SESSION['pwd_uid']);
+            $verif = "";
+            $stmt->bind_param("ssi", $hashPwd, $verif, $_SESSION['pwd_uid']);
             $stmt->execute();
             $stmt->close();
             unset($_SESSION['pwd_change']);
