@@ -248,7 +248,7 @@ function initTxt(newDiv, n, q) {
             </div>
             <button class='txt-add' tabindex='-1'>+</button>
             <button class='card-del' tabindex='-1'>Delete Card</button>
-            <input type='checkbox' class='show-both-ways' tabindex="-1"><span> | Show both ways</span>
+            <input type='checkbox' class='show-both-ways' tabindex="-1"><span> | Show Inverse</span>
         </div>
         <div class='deck-divider'></div>
     `;
