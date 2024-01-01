@@ -461,9 +461,9 @@ function init_mtch(card, n, q) {
     card.innerHTML = `
         <div class='cardsel'>
             <button class='mcbtn selbtn selbtn-nosel'>Multiple Choice</button>
-            <button class='txtbtn selbtn selbtn-sel'>Text</button>
+            <button class='txtbtn selbtn selbtn-nosel'>Text</button>
             <button class='rankbtn selbtn selbtn-nosel'>Ranking</button>
-            <button class='mtchbtn selbtn selbtn-nosel'>Matching</button>
+            <button class='mtchbtn selbtn selbtn-sel'>Matching</button>
         </div>
         <div class='cardmain'>
             <div class='card-q-cont'>
@@ -484,8 +484,8 @@ function init_mtch(card, n, q) {
     let addbtn = card.getElementsByClassName('mtch-add')[0];
     // Local generator
     let generator = (r) => generator_mtch(card, pairlist, r);
-    addbtn.addEventListener('mousedown', () => generator(false));
-    for(let i = 0; i < 2; i++) generator(i == 0);
+    addbtn.addEventListener('mousedown', () => generator(true));
+    for(let i = 0; i < 2; i++) generator(i != 0);
 }
 function newCard() {
     let card = document.createElement('div');
@@ -700,7 +700,7 @@ function appendToCards(contnt) {
                 carddiv.getElementsByClassName('q')[0].setVal(q);
                 let mtchlist = carddiv.getElementsByClassName("card-mtch")[0];
                 mtchlist.innerHTML = '';
-                for(let i = 0; i < card.ans.length; i++) generator_mtch(carddiv, mtchlist, i == 0, card.ans[i]);
+                for(let i = 0; i < card.ans.length; i++) generator_mtch(carddiv, mtchlist, i != 0, card.ans[i]);
             break;
         }
     }
