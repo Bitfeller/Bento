@@ -967,6 +967,8 @@ const b_replacename = document.getElementById("BI-replace-name");
 const b_replacedesc = document.getElementById("BI-replace-desc");
 const b_file = document.getElementById("BI-file");
 const b_createbtn = document.getElementById("BI-createBtn");
+const b_paste = document.getElementById("BI-pasteImportText");
+const b_pastebtn = document.getElementById("BI-pasteCreateBtn");
 
 const q_importbtn = document.getElementById("quizlet-import-btn");
 const q_txt = document.getElementById("QI-importText");
@@ -1135,6 +1137,28 @@ b_createbtn.addEventListener("mousedown", () => {
         }
         reader.readAsText(file);
     }
+});
+b_pastebtn.addEventListener("mousedown", () => {
+    if(!DOMPurify) return window.SHOW_ERROR("The system is loading a module. Please try again later. (code: fetching_dompurify?)");
+    let dp = DOMPurify;
+    let importText = b_paste.value;
+    try {
+        let main = JSON.parse(importText);
+        if(main.name == undefined || main.desc == undefined || main.contnt == undefined) return window.SHOW_ERROR("This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
+        let val_name = window.lib.dpwrapper(dp, main.name);
+        let val_desc = window.lib.dpwrapper(dp, main.desc);
+        let val_contnt = window.lib.dpwrapper(dp, main.contnt);
+        temp_tags = window.lib.dpwrapper(dp, main.tags);
+        if(b_replacename.checked) temp_name = val_name;
+        if(b_replacedesc.checked) temp_desc = val_desc;
+        open_import_modal(val_contnt);
+        b_modal.style.display = "none";
+    } catch(e) {
+        safety_check();
+        console.log("failed; reason:", e);
+        return window.SHOW_ERROR("This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
+    }
+    safety_check();
 });
 q_createbtn.addEventListener("mousedown", () => {
     if(!DOMPurify) return window.SHOW_ERROR("The system is loading a module. Please try again later. (code: fetching_dompurify?)");
