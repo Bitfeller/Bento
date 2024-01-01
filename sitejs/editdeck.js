@@ -28,6 +28,9 @@ createBtn.addEventListener('mousedown', async () => {
             case "invalid name":
                 errmsg.innerHTML = "That name has invalid characters or is empty. (Valid characters include dashes, a-z, A-Z, and 0-9)";
             break;
+            case "flagged":
+                errmsg.innerHTML = "Your deck was flagged for inappropriate content.";
+            break;
             case "name taken":
                 errmsg.innerHTML = "You've already created another deck with that name";
             break;
@@ -60,6 +63,9 @@ createBtn.addEventListener('mousedown', async () => {
             case "same problem":
                 errmsg.innerHTML = "It seems like two or more cards in your deck have the exact same question. (We currently don't support duplicate questions.)";
             break;
+            case "flagged":
+                errmsg.innerHTML = "Your deck was flagged for inappropriate content.";
+            break;
             default:        
                 console.log(res4);
                 errmsg.innerHTML = "Looks like there's an issue on our side. Try again later.";
@@ -79,10 +85,10 @@ createBtn.addEventListener('mousedown', async () => {
     let [success, contnt] = await DeckGateway.get(deck, true, true);
     if(!success) window.location.href = "/home";
     if(contnt.owner != data.username) window.location.href = "/home";
-    name.value = contnt.name;
+    name.value = window.lib.decode(contnt.name);
     if(contnt.deckpic && contnt.deckpic.length > 0) picimg.src = contnt.deckpic;
     isPublic.checked = contnt.public;
-    description.value = contnt.data.desc;
+    description.value = window.lib.decode(contnt.data.desc);
     cardContain.innerHTML = "";
     DeckBind.appendToCards(contnt.data.contnt);
     window.LOADED();

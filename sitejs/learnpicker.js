@@ -118,7 +118,8 @@ function updateDecks(decks, counts) {
     o_mode[0].addEventListener("change", () => updateDecks(decks, counts));
     reviewBtn.addEventListener("mousedown", () => {
         let selectedDecks = [];
-        for (let item in deckContainer.children) {
+        for (let i = 0; i < deckContainer.children.length; i++) {
+            let item = deckContainer.children[i];
             let idx = item.dataset.idx;
             let checkbox = item.getElementsByClassName("deckCheck")[0];
             if (checkbox.checked) selectedDecks.push(parseInt(idx));
