@@ -81,7 +81,7 @@
                 }
                 $stmt->close();
                 // Set email
-                $sql = "UPDATE users SET email = ? AND verified = ? WHERE id = ?;";
+                $sql = "UPDATE users SET email = ?, verified = ? WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
                 $verified = 0;
                 $stmt->bind_param("sii", $val, $verified, $_SESSION['uid']);
@@ -137,6 +137,29 @@
                     $stmt->execute();
                     $stmt->close();
                 }
+            break;
+            case 'pfp':
+                if(strlen($val) > 2 * 1000 * 1000) {
+                    fail('size limit');
+                }
+                $sql = "UPDATE users SET pfp = ? WHERE id = ?;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("si", $val, $_SESSION['uid']);
+                $stmt->execute();
+                $stmt->close();
+                $_SESSION['pfp'] = $val;
+            break;
+            case 'delete':
+                if(!password_verify($verifpwd, $result['password'])) {
+                    fail('invalid pwd');
+                }
+                $sql = "DELETE FROM users WHERE id = ?;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $_SESSION['uid']);
+                $stmt->execute();
+                $stmt->close();
+                session_unset();
+                session_destroy();
             break;
         }
         success();

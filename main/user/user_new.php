@@ -64,6 +64,7 @@
         session_start();
         $_SESSION["uid"] = $result["id"];
         $_SESSION["username"] = $username;
+        $_SESSION["pfp"] = "";
         $_SESSION["email"] = $email;
         $_SESSION["reviews"] = $reviews;
         $_SESSION["verified"] = false;

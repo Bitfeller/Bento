@@ -3,26 +3,38 @@ h2 {
 }
 #overall-container {
     display: flex;
+    height: 90vh;
     justify-content: space-between;
 }
 #overall-container > div {
-    width: 48%;
+    display: flex;
+    width: 50%;
+    height: 100%;
+    flex-direction: column;
 }
 #settings-big-box {
     max-height: 50vh;
-    overflow: scroll;
+    overflow: auto;
 }
-.big-box {
-    margin: 25px;
+.big-box, button {
+    margin: 15px 25px;
     padding: 15px;
     border-radius: 10px;
+}
+.big-box {
     background-color: var(--gray);
+}
+#left-div {
+    display: flex;
+}
+#deck-big-box {
+    flex-grow: 0.9;
 }
 .deck-container, .settings-container {
     display: flex;
     flex-direction: column;
     background-color: var(--gray);
-    overflow: scroll;
+    overflow: auto;
 }
 .deck-container {
     max-height: 73vh;
