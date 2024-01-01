@@ -42,10 +42,8 @@ input[type="checkbox"] {
   margin-top: 2%;
   margin-bottom: 2%;
 }
-#dangerZoneBox {
-  button {
-    margin-top: 2%;
-  }
+#dangerZoneBox > button {
+  margin-top: 2%;
 }
 #set-size-slider {
   cursor: grabbing;
