@@ -11,7 +11,10 @@ var Game = (function() {
     var currWrong = [];
     var lsWrong = [];
     var llsWrong = [];
+    var wasWrong = [];
     var card = 0;
+
+    var totalWrong = {};
 
     var active = true;
 
@@ -105,6 +108,9 @@ var Game = (function() {
                 if(idx > -1) {
                     available.splice(idx, 1);
                 }
+                if(wasWrong.indexOf(currWrong[p]) < 0) {
+                    wasWrong.push(currWrong[p]);
+                }
                 currWrong.splice(p, 1);
             } else if(available.length > 0) {
                 var p = random(0, available.length - 1);
@@ -124,11 +130,21 @@ var Game = (function() {
             while(k < ls) {
                 var p = random((currentSet - 1) * deckSize, (currentSet - 1) * deckSize + Math.min(len, deckSize));
                 var idx;
-                if(lsWrong.length > 0) {idx = random(0, lsWrong.length - 1); p = lsWrong[idx];}
+                if(lsWrong.length > 0) {
+                    idx = random(0, lsWrong.length - 1);
+                    p = lsWrong[idx];
+                } else if(wasWrong.length > 0 && wasWrong[0] < currentSet * deckSize && wasWrong[0] >= (currentSet - 1) * deckSize) {
+                    idx = 0;
+                    p = wasWrong[0];
+                }
                 if(problems.indexOf(p) > -1) {
                     continue;
                 }
-                if(lsWrong.length > 0) {lsWrong.splice(idx, 1);}
+                if(lsWrong.length > 0) {
+                    lsWrong.splice(idx, 1);
+                } else if(wasWrong.length > 0 && idx !== undefined) {
+                    wasWrong.splice(0, 1);
+                }
                 problems.push(p);
                 k++;
             }
@@ -138,16 +154,27 @@ var Game = (function() {
             while(k < lls) {
                 var p = random(0, (currentSet - 2) * deckSize + Math.min(len, deckSize));
                 var idx;
-                if(llsWrong.length > 0) {idx = random(0, llsWrong.length - 1); p = llsWrong[idx];}
+                if(llsWrong.length > 0) {
+                    idx = random(0, llsWrong.length - 1)
+                    p = llsWrong[idx];
+                } else if(wasWrong.length > 0 && wasWrong[0] < (currentSet - 1) * deckSize) {
+                    idx = 0;
+                    p = wasWrong[0];
+                }
                 if(problems.indexOf(p) > -1) {
                     continue;
                 }
-                if(llsWrong.length > 0) {llsWrong.splice(idx, 1);}
+                if(llsWrong.length > 0) {
+                    llsWrong.splice(idx, 1);
+                } else if(wasWrong.length > 0 && idx !== undefined) {
+                    wasWrong.splice(0, 1);
+                }
                 problems.push(p);
                 k++;
             }
         }
         randomSet = problems;
+        console.log(randomSet);
         card = 0;
     }
 
@@ -155,7 +182,7 @@ var Game = (function() {
         // If a deck name actually exists
         if(deck !== "") {
             // Fetch deck
-            fetch("./data/"+deck+".json", {
+            fetch("./decks/"+deck+".json", {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
@@ -216,6 +243,11 @@ var Game = (function() {
         } else {
             llsWrong.push(randomSet[card]);
         }
+        if(totalWrong[""+randomSet[card]]) {
+            totalWrong[""+randomSet[card]] += 1;
+        } else {
+            totalWrong[""+randomSet[card]] = 1;
+        }
         correct();
         return false;
     }
@@ -234,8 +266,15 @@ var Game = (function() {
                 } else {
                     return incorrect();
                 }
-            case "timeline":
-                return;
+            case "ranking":
+                var isCorrect = true;
+                for(var i = 0; i < answer.length; i++) {
+                    if(answer[i] !== problemData.answer[i]) {
+                        isCorrect = false;
+                        console.log(answer[i], problemData.answer[i]);
+                    }
+                }
+                return isCorrect ? correct() : incorrect();
             case "matching":
                 return;
         }
