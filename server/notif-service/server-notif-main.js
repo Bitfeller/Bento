@@ -71,8 +71,9 @@ app.listen(port, () => {
 });
 
 const job = schedule.scheduleJob("0 0 12 * * *", () => {
-    for(let i = 0; i < subList.length; i++) {
-        webpush.sendNotification(subList[i], JSON.stringify({
+    const keys = Object.keys(subList);
+    for(let i = 0; i < keys.length; i++) {
+        webpush.sendNotification(subList[keys[i]], JSON.stringify({
             type: "reviewnotifcheck"
         }))
     }

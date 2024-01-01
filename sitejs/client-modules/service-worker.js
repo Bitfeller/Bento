@@ -65,15 +65,17 @@ self.addEventListener("push", async e => {
         user = _user;
         let deckcount = 0;
         let reviews = user.reviews;
-        for(let i = 0; i < reviews.length; i++) {
-            let [success, deck] = await DeckGateway.get(reviews[i].deckid);
+        let r_keys = Object.keys(reviews);
+        for(let i = 0; i < r_keys.length; i++) {
+            let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]));
             if(!success) continue;
             let count = 0;
-            for(let j = 0; j < reviews[i].cards.length; j++) {
-                let term = reviews[i].cards[j];
-                if(UserGateway.calculateNTR(term.box, term.lastSeen)) count++;
+            let c_keys = Object.keys(reviews[r_keys[i]]);
+            for(let j = 0; j < c_keys.length; j++) {
+                let term = reviews[r_keys[i]][c_keys[j]];
+                if(UserGateway.calculateNTR(term.box, term.last)) count++;
             }
-            count += deck.data.deckData.length - reviews[i].cards.length;
+            count += Object.keys(deck.data.contnt).length - c_keys.length;
             if(count > 0) deckcount++;
         }
         elapsedDays += 1;
