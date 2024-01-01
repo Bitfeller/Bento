@@ -6,7 +6,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     if(document.getElementById('header') == null) return;
 
     // Elements
-    const back = document.getElementById("header:back");
+    // const back = document.getElementById("header:back");
     const logout = document.getElementById("header:logout");
     const pfp = document.getElementById("header:pfp");
     const feedback = document.getElementById("header:feedback");
@@ -93,7 +93,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
 
     // Removes header elements only for logged-in users only
     function remove_uo_elements() {
-        back.remove();
+        // back.remove();
         logout.remove();
         pfp.remove();
         feedback.remove();
@@ -101,7 +101,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     }
 
     // Remove back button if no previous_pages exist
-    if (previous_pages.length === 0) back.remove();
+    // if (previous_pages.length === 0) back.remove();
 
     // LOADED: ran by a loading script when the script has finished loading
     window.LOADED = () => {
@@ -208,19 +208,19 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     }
 
     // Listeners for back button/previous_pages functionality
-    window.addEventListener("beforeunload", async () => {
-        // Add to array of visited pages before leaving current page and save
-        previous_pages.push(current_page); // Add current page to array
-        localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
-    });
-    back.addEventListener("mousedown", async () => {
-        // Set this to the most recently visited page 
-        window.location.href = previous_pages[previous_pages.length - 1];
-        // Remove current page from array and save it
-        previous_pages.pop();
-        previous_pages.pop();
-        localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
-    });
+    // window.addEventListener("beforeunload", async () => {
+    //     // Add to array of visited pages before leaving current page and save
+    //     previous_pages.push(current_page); // Add current page to array
+    //     localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
+    // });
+    // back.addEventListener("mousedown", async () => {
+    //     // Set this to the most recently visited page 
+    //     window.location.href = previous_pages[previous_pages.length - 1];
+    //     // Remove current page from array and save it
+    //     previous_pages.pop();
+    //     previous_pages.pop();
+    //     localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
+    // });
 
     // Logout functionality
     logout.addEventListener("mousedown", async () => {

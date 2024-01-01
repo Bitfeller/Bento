@@ -156,6 +156,12 @@
     padding: 5px;
     border-radius: 5px;
 }
+#global-back-box {
+    filter: brightness(30%);
+    & * {
+        user-select: none;
+    }
+}
 #password, #email {
     margin-top: 5px;
 }
