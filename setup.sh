@@ -42,15 +42,24 @@ cd ../../..
 cd ./server/node
 npm install
 
+# Remove all README files
 rm -R README.md
 
+# Make sure all log files exist
 cd logs
 touch backup.log
 touch misc.log
-touch notif-service.log
 touch sql.log
 touch suspend-server.log
 cd ..
+
+# Set normal state for server
+echo "0" > ../conf/config-suspend-server
+
+# Start all Node.js scripts
+pm2 start ./backup/backup.js --name backup
+pm2 start ./suspend-server/suspend-server.js --name suspend-server
+pm2 save
 
 cd ../..
 
