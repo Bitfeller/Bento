@@ -1,12 +1,12 @@
 import { UserGateway } from '../server/client-gateway/user-gateway.js';
 
 const resend = document.getElementById('resend');
-const resendSuccess = document.getElementById('resend-suc');
+const resendSuccess = document.getElementById('resendSuccess');
 
 const changePwd = document.getElementById('change-pwd');
 const email = document.getElementById('change-email');
 const changeEmailBtn = document.getElementById('change-email-btn');
-const changeSuccess = document.getElementById('change-suc');
+const changeSuccess = document.getElementById('changeSuccess');
 const delaccPwd = document.getElementById('curr-pwd');
 const delaccBtn = document.getElementById('delacc-btn');
 
