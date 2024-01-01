@@ -179,7 +179,7 @@ function refresh() {
             let input = document.createElement("input");
             input.type = "text";
             input.className = "op-input";
-            input.placeholder = "Enter an answer here... [math formatting happens between two $]";
+            input.placeholder = "Enter an answer here... (math formatting happens between two $)";
             input.autofocus = true;
             objs.push(input);
             cont_a.appendChild(input);
