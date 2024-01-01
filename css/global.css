@@ -193,11 +193,19 @@ input {
     font-size: 38px;
     font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 200, "opsz" 48;
 }
+.header span {
+    transition: 0.3s;
+    transition-timing-function: ease-in-out;
+}
 .header span:hover {
     color: var(--accent-1);
 }
 .logo {
     cursor: pointer;
+    transition: 0.3s;
+}
+.logo:hover {
+    filter: brightness(85%);
 }
 .right-header {
     float: right;
@@ -273,7 +281,19 @@ input:checked + .slider:before {
 dialog::backdrop{
     background-color: rgba(0, 0, 0, 0.9);
 }
-
+.deck-divider {
+    background-color: var(--light-gray);
+    height: 5px; 
+    margin: 40px 15px; 
+    border-radius: 5px;
+}
+.line-up-icons {
+    display: flex;
+    align-items: center;
+}
+.line-up-icons span {
+    margin-left: 5px;
+}
 @keyframes t_fadeout {
     0% {
         opacity: 100%;
