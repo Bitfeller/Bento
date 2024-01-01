@@ -52,6 +52,7 @@ input {
     border-color: black;
     border-style: solid;
     text-align: center;
+    height: 5vh;
 }
 .bento-logo:hover, button:hover {
     background-color: #E9E9ED;
@@ -59,6 +60,14 @@ input {
     animation-duration: 0.25s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards; 
+}
+.modal-content > p,u,input,button {
+    font-size: 20pt;
+}
+.modal-content > button {
+    height: 5vh;
+    border-width: 2px;
+    border-style: solid;
 }
 .learning {
     font-size: 96pt;
@@ -196,8 +205,9 @@ hr {
     flex-direction: column;
     gap: 1vh;   
     background-color: white;
+    border-style: none;
     margin: 15% auto; 
-    padding: 20px;
+    padding: 30px;
     width: 30%; 
     border-radius: 10px;
     animation-name: animatetop;
