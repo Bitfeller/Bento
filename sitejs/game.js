@@ -180,10 +180,29 @@ function refresh() {
             cont_a.appendChild(input);
             document.getElementsByClassName("op-input")[0].focus();
             input.addEventListener("keydown", (e) => {
-                if(e.key == "Enter" && !toProceed) answerHandler();
+                if(e.key == "Enter" && !toProceed) {
+                    e.preventDefault();
+                    answerHandler();
+                }
             });
             input.addEventListener('keyup', async (e) => {
                 if((await renderable(input.innerHTML)) && input.innerHTML.match(/\$[^$]*\$/g)) showDisplay(input.innerHTML); else hideDisplay();
+            });
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                let data = e.clipboardData.getData('text/plain');
+                let sanitized = data.replace(/\n+/g, '');
+                let sel = window.getSelection();
+                if(sel.rangeCount > 0) {
+                    let range = sel.getRangeAt(0);
+                    let node = document.createTextNode(sanitized);
+                    range.deleteContents();
+                    range.insertNode(node);
+                    range.setStartAfter(node);
+                    range.collapse(true);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
             });
         break;
         case "ranking":

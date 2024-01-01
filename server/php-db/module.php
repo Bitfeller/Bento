@@ -103,6 +103,9 @@
         }
     }
     //      Content sanitizer
+    function _traverse_str_sanitize(string $content) {
+        return str_replace("\n", "\\n", htmlspecialchars($content));
+    }
     function _traverse_array_sanitize(array $content) {
         $newContnt = [];
         foreach($content as $val) {
@@ -114,7 +117,7 @@
                 $newVal = _traverse_object_sanitize($val);
             }
             if(gettype($val) == "string") {
-                $newVal = htmlspecialchars(strip_tags($val));
+                $newVal = _traverse_str_sanitize($val);
             }
             if(gettype($val) == "double" || gettype($val) == "integer") {
                 $newVal = $val;
@@ -135,7 +138,7 @@
                 $newVal = _traverse_object_sanitize($val);
             }
             if(gettype($val) == "string") {
-                $newVal = htmlspecialchars(strip_tags($val));
+                $newVal = _traverse_str_sanitize($val);
             }
             if(gettype($val) == "double" || gettype($val) == "integer") {
                 $newVal = $val;
@@ -152,7 +155,7 @@
             return _traverse_object_sanitize($content);
         }
         if(gettype($content) == "string") {
-            return htmlspecialchars(strip_tags($content));
+            return _traverse_str_sanitize($content);
         }
         return null;
     }
