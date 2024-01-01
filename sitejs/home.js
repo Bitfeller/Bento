@@ -4,7 +4,8 @@ import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 const deckReminders = document.getElementById("deck-reminders");
 const notifText = document.getElementById("text");
 const tutorialDialog = document.getElementById("tutorial-background");
-const t_dialogmain = tutorialDialog.getElementsByClassName("dialog-main")[0];
+const tutorialBoxHolder = document.getElementById("tutorial-box-holder");
+const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
 
 
 (async () => {
@@ -65,8 +66,11 @@ const t_dialogmain = tutorialDialog.getElementsByClassName("dialog-main")[0];
     });
     const paramList = new URLSearchParams(window.location.search);
     if(paramList.get("new") == "1") {
+        // replace URL so that user doesn't accidentally re-activate tutorial later
+        // history.replaceState(null, "", "home"); // /home?new=1  ==>  /home
         // tutorial feature
         tutorialDialog.style.display = "block";
+        tutorialBoxHolder.style.display = "block";
         // function to make things easier
         function next(text, btns) {
             t_dialogmain.innerHTML = text;
@@ -99,39 +103,62 @@ const t_dialogmain = tutorialDialog.getElementsByClassName("dialog-main")[0];
                                     <button class='continuebtn'>continue...</button>
                                 `, {
                                     continuebtn: () => {
+                                        document.getElementsByTagName("header")[0].style.zIndex = "initial";
+                                        document.getElementById("header:pfp").className = "pfp right-header-ico lit-up";
+                                        document.getElementById("header:logout").className = "header-nav material-symbols-outlined right-header-ico lit-up";
                                         next(`
                                                 <p>You're currently on your home screen. Here, you can see, at the top right corner, two buttons: one leads to your profile settings, and the other signs you out.</p>
                                                 <button class='continuebtn'>continue...</button>
                                             `, {
                                                 continuebtn: () => {
+                                                    document.getElementsByTagName("header")[0].style.zIndex = 10;
+                                                    document.getElementById("header:pfp").className = "pfp right-header-ico";
+                                                    document.getElementById("header:logout").className = "header-nav material-symbols-outlined right-header-ico";
+                                                    document.getElementById("rightsushi").setAttribute("class", "lit-up");
+                                                    document.getElementById("tutorial").style.top = "70%";
+                                                    document.getElementById("tutorial").style.animation = "move-tutorial-box-down 1s ease";
                                                     next(`
-                                                            <p>Here, on your home screen, there are also three main buttons; one of these leads to the <b>Kitchen</b>, the community space where you can find decks made by the community with content you can learn. You'll go there to add decks to your <b>reviews</b>, which are the decks you'd like to learn.</p>
+                                                            <p>Here, on your home screen, there are also three main buttons; on eof these leads to the <b>Kitchen</b>, the community space where you can find decks made by the community with content you can learn. You'll go there to add decks to your <b>reviews</b>, which are the decks you'd like to learn.</p>
                                                             <p>There, you can also see the decks that are in your reviews and that you are actively learning, and <b>you can also see the decks that you made and be able to edit them.</b></p>
                                                             <button class='continuebtn'>continue...</button>
                                                         `, {
                                                             continuebtn: () => {
+                                                                document.getElementById("rightsushi").setAttribute("class", "");
+                                                                document.getElementById("leftsushi").setAttribute("class", "lit-up");
+                                                                document.getElementsByClassName("deck-reminders-holder")[0].className = "deck-reminders-holder home-side-div lit-up";
                                                                 next(`
                                                                         <p>On your home screen, there is also a <b>Review</b> button; this leads you to a learning mode where you get to actually learn the decks you've put in your reviews. Here, you can edit your settings, such as how quickly you'd like to go through them and how the content should be shown to you. <b>You can also select specific decks and the decks that you need to review.</b></p>
                                                                         <p>Whenever you have something to review, you'll see it on the right side of your home screen. You can then click on "Review", select that you'd only like to review the decks you have to review, and then complete those decks accordingly.</p>
                                                                         <button class='continuebtn'>continue...</button>                                                                    
                                                                     `, {
                                                                         continuebtn: () => {
+                                                                            document.getElementById("leftsushi").setAttribute("class", "");
+                                                                            document.getElementsByClassName("deck-reminders-holder")[0].className = "deck-reminders-holder home-side-div";
+                                                                            document.getElementById("bottomsushi").setAttribute("class", "lit-up");
+                                                                            document.getElementById("tutorial").style.top = "20%";
+                                                                            document.getElementById("tutorial").style.animation = "move-tutorial-box-up 1s ease";
                                                                             next(`
                                                                                     <p>Finally, you have the <b>Cook</b> button; there, you can make your own decks with your own content or import a deck from <b>Quizlet</b> or <b>Bento</b>.</p>
                                                                                     <button class='continuebtn'>continue...</button>
                                                                                 `, {
                                                                                     continuebtn: () => {
+                                                                                        document.getElementById("bottomsushi").setAttribute("class", "");
+                                                                                        document.getElementsByClassName("notifications-holder")[0].className = "notifications-holder home-side-div lit-up";
                                                                                         next(`
                                                                                                 <p>Here, on the right side of your home screen, and under your decks to review, you can see a little section where you can toggle if you'd like notifications when you need to review.</p>
                                                                                                 <button class='continuebtn'>continue...</button>
                                                                                             `, {
                                                                                                 continuebtn: () => {
+                                                                                                    document.getElementsByClassName("notifications-holder")[0].className = "notifications-holder home-side-div";
+                                                                                                    document.getElementById("tutorial").style.top = "50%";
+                                                                                                    document.getElementById("tutorial").style.animation = "move-tutorial-box-init 1s ease";
                                                                                                     next(`
                                                                                                             <p>That's it! Have fun learning!</p>
                                                                                                             <button class='continuebtn'>Close</button>
                                                                                                         `, {
                                                                                                             continuebtn: () => {
                                                                                                                 tutorialDialog.style.display = "none";
+                                                                                                                tutorialBoxHolder.style.display = "none";
                                                                                                             }
                                                                                                         })
                                                                                                 }
@@ -152,6 +179,7 @@ const t_dialogmain = tutorialDialog.getElementsByClassName("dialog-main")[0];
             },
             skipbtn: () => {
                 tutorialDialog.style.display = "none";
+                tutorialBoxHolder.style.display = "none";
             }
         })
     }

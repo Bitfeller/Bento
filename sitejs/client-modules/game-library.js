@@ -62,6 +62,7 @@ function iterateProblem() {
 function newRandomDeck() {
     if(gameData.length - currentSet * deckSize <= 0) {
         active = false;
+        currentSet--;
         randomSet = [];
         rndSetData = {};
         card = 0;
@@ -74,17 +75,18 @@ function newRandomDeck() {
     }
     // calculate remaining cards, including this set
     let len = gameData.length - currentSet * deckSize;
+    let s_curr = curr, s_ls = ls, s_lls = lls;
     // if no last set OR last last set
     if(currentSet < 2) {
-        ls += lls;
-        lls = 0;
+        s_ls += s_lls;
+        s_lls = 0;
     }
     if(currentSet < 1) {
-        curr += ls;
-        ls = 0;
+        s_curr += s_ls;
+        s_ls = 0;
     }
     // If currentSet = 0 and len < deckSize; less problems than deckSize, so adjust accordingly
-    if(currentSet == 0 && len < deckSize) curr = len;
+    if(currentSet == 0 && len < deckSize) s_curr = len;
     // Get problems
     randomSet = [];
     let problems = [];
@@ -103,7 +105,7 @@ function newRandomDeck() {
         return newRandomDeck();
     }
     let k = 0;
-    while(k < curr) {
+    while(k < s_curr) {
         if(currWrong.length > 0) {
             let p = random(0, currWrong.length - 1);
             if(problems.indexOf(currWrong[p]) > -1) continue;
@@ -129,9 +131,9 @@ function newRandomDeck() {
         }
         k++;
     }
-    if(ls > 0) {
+    if(s_ls > 0) {
         k = 0;
-        while(k < ls) {
+        while(k < s_ls) {
             // Combat repetition of one/some particular terms constantly and distribute percentages of being shown across terms
             if(lsShown.length == 0) {
                 for(let i = 0; i < deckSize; i++) {lsShown.push((currentSet - 1) * deckSize + i);}
@@ -164,9 +166,9 @@ function newRandomDeck() {
             k++;
         }
     }
-    if(lls > 0) {
+    if(s_lls > 0) {
         k = 0;
-        while(k < lls) {
+        while(k < s_lls) {
             // Combat repetition of one/some particular terms constantly and distribute percentages of being shown across terms
             if(llsShown.length == 0) {
                 for(let i = 0; i < (currentSet - 1) * deckSize - 1; i++) {llsShown.push(i);}
@@ -362,8 +364,26 @@ function fetchProblem() {
 }
 function get_pwsets() {
     // Returns the additional number of sets that will be generated due to incorrect ls & lls problems
+    
+    // Due to cardRepeat, questions from currWrong may also count as normal questions which will be counted as normally seen; therefore, actual extra questions will differ.
+    // We will have to use rndSetData and currWrong to see which ones have been fully marked by rndSetData and aren't eligible to be seen normally, and then mark those as
+    // ACTUAL wrong questions.
+    let realWrong = currWrong.length;
+    if(cardRepeat > 1) {
+        console.log("ran here!")
+        realWrong = 0;
+        for(let i = 0; i < currWrong.length; i++) {
+            let seen = rndSetData[currWrong[i]];
+            if(seen >= cardRepeat) realWrong++;
+        }
+        console.log(currWrong.length, realWrong);
+    }
 
-    let S_ll = Math.ceil((deckSize * cardRepeat + currWrong.length) / curr) + C_lw;
+    let len = gameData.length - deckSize;
+    let real_deckSize = (currentSet == 0 && len < deckSize) ? len : deckSize;
+    
+    if(currentSet < 1) curr = real_deckSize;
+    let S_ll = Math.ceil((real_deckSize * cardRepeat + realWrong) / curr) + C_lw;
 
     // p functions: p_1 and p_2
     let p_1 = currentSet > 1 ? ls : ls + lls;
@@ -384,9 +404,22 @@ function get_pwsets() {
 function getProgress() {
     // Calculate new global/local caches for C_w
     let prev = ls + lls;
+    let len = gameData.length - currentSet * deckSize;
+    let real_deckSize = (currentSet == 0 && len < deckSize) ? len : deckSize;
+    // Due to cardRepeat, questions from currWrong may also count as normal questions which will be counted as normally seen; therefore, actual extra questions will differ.
+    // We will have to use rndSetData and currWrong to see which ones have been fully marked by rndSetData and aren't eligible to be seen normally, and then mark those as
+    // ACTUAL wrong questions.
+    let realWrong = currWrong.length;
+    if(cardRepeat > 1) {
+        realWrong = 0;
+        for(let i = 0; i < currWrong.length; i++) {
+            let seen = rndSetData[currWrong[i]];
+            if(seen >= cardRepeat) realWrong++;
+        }
+    }
     // 5 / 8?
-    let S_l = Math.ceil(((gameData.length - deckSize) * cardRepeat + currWrong.length) / curr) + C_gw;
-    let S_l_std = Math.ceil((gameData.length - deckSize) * cardRepeat / curr) + C_gw;
+    let S_l = Math.ceil((gameData.length - real_deckSize + realWrong) / curr) + C_gw;
+    let S_l_std = Math.ceil(gameData.length - real_deckSize / curr) + C_gw;
     if(S_l < 0) S_l = 0;
     if(S_l_std < 0) S_l_std = 0;
     if(S_l - S_l_std > 0) {
@@ -395,9 +428,9 @@ function getProgress() {
         C_gw += S_l - S_l_std;
     }
 
-    if(currentSet < 1) curr = deckSize;
-    let S_ll = Math.ceil((deckSize * cardRepeat + currWrong.length) / curr) + C_lw;
-    let S_ll_std = Math.ceil(deckSize * cardRepeat / curr) + C_lw;
+    if(currentSet < 1) curr = real_deckSize;
+    let S_ll = Math.ceil((real_deckSize * cardRepeat + realWrong) / curr) + C_lw;
+    let S_ll_std = Math.ceil(real_deckSize * cardRepeat / curr) + C_lw;
     if(S_ll - S_ll_std > 0) {
         // same logic, but for local
         C_lw += S_ll - S_ll_std;
@@ -410,9 +443,9 @@ function getProgress() {
         total: 
             // Initially based on a 16-card deck w/ deckSize 8:
             gameData.length * cardRepeat            // d_s * r  (all cards)
-            + currWrong.length                      // w        (all wrong cards)
+            + realWrong                             // w        (all wrong cards)
             + S_l * prev                            // S_l(2)   (all previous cards shown)
-            + (ls + lls) * left,                    // 2 * (ls_w - (ceil(8r / 6) + cl_w - e_s)(p(c_d)))
+            + prev * left,                          // 2 * (ls_w - (ceil(8r / 6) + cl_w - e_s)(p(c_d)))
         remaining: gameData.length * cardRepeat - seen
     };
 }
@@ -446,7 +479,11 @@ function correct() {
 function incorrect() {
     if(randomSet[card] >= currentSet * deckSize) {
         currWrong.push(randomSet[card]);
-        seen--;
+        // Usually, we'd deduct one from "seen" so that the progress system resolves in the end.
+        // However, with cardRepeat, the card may be shown as both incorrect and normally shown; so, no extra is shown.
+        // Therefore, we need to check for this exception.
+        seen--; // normally remove
+        if(cardRepeat > 1 && rndSetData[randomSet[card]] < cardRepeat) seen++; // remove the reduction to normalize
     } else if(randomSet[card] >= (currentSet - 1) * deckSize) {
         lsWrong.push(randomSet[card]);
         let left = get_pwsets();
