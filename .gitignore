@@ -1,5 +1,6 @@
 file_db/**/*.pfp
 file_db/**/*.pic
 **/node_modules/*
+**/target
+
 !**/node_modules/PLACEHOLDER
-config.json

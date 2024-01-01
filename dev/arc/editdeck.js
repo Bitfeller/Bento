@@ -1,5 +1,5 @@
-import { UserGateway } from "../server/client-gateway/user-gateway.js";
-import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
+import { UserGateway } from "../../server/client-gateway/user-gateway.js";
+import { DeckGateway } from "../../server/client-gateway/deck-gateway.js";
 import { gca, gc, gid, newEl } from "./client-modules/fn.js";
 // Other objects
 const name = gid('name');
