@@ -133,7 +133,7 @@ dialog button {
     background: transparent;
 }
 .lit-up {
-    z-index: 101 !important; 
+    z-index: 101 !important;
     position: relative;
 }
 #tutorial {
@@ -150,11 +150,11 @@ div.version {
     position: absolute;
     display: flex;
     flex-direction: row;
+    justify-content: flex-end;
     margin: 3px 5px;
     width: auto;
     font-family: kadwa;
     bottom: 0;
-    right: 0;
 }
 div.version:hover {
     cursor: pointer;
