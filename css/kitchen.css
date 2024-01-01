@@ -3,7 +3,7 @@ body > h2 {
     margin-left: 15px;
 }
 .deck-divider {
-    background-color: #292E32; 
+    background-color: #292E32;
     height: 5px; 
     margin: 40px 15px; 
     border-radius: 5px;
@@ -26,6 +26,7 @@ body > h2 {
 }
 .ingredients-container {
     display: flex;
+    flex-wrap: wrap;
     gap: 15px;
     margin-left: 15px;
 }
@@ -44,13 +45,33 @@ body > h2 {
 }
 .ingredient-box {
     display: flex;
+    overflow: hidden;
     margin-top: 15px;
     justify-content: space-between;
     height: 225px;
-    width: 505px;
+    width: calc(33.33% - 40px);
     padding: 10px;
     background-color: #1e1e1e;
     border-radius: 10px;
+    * {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}
+@media screen and (max-width: 768px) {
+    .ingredient-box {
+        width: calc(50% - 31px);
+    }
+}
+@media screen and (max-width: 480px) {
+    .ingredient-box {
+        width: calc(100% - 15px);
+    }
+}
+.username {
+    text-decoration: underline;
+    font-size: 18.5px;
 }
 .ingredient-box > :first-child {
     width: 70%;
@@ -99,6 +120,7 @@ dialog {
     border: none;
     border-radius: 10px;
     background-color: #1e1e1e;
+    min-width: 450px;
     h2 {
         display: inline;
     }
@@ -117,4 +139,15 @@ dialog {
 #loadBtn {
     padding: 0px 5px;
     margin-left: 10px;
+}
+div.preview-container-part {
+    background-color: rgba(50, 50, 50, 0.6);
+    margin: 5px 5px 10px 5px;
+    padding: 5px;
+    border-radius: 3px;    
+}
+span.views {
+    font-weight: bold;
+    font-size: 25px;
+    padding: 0px 5px 0px 0px;
 }

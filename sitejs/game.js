@@ -4,9 +4,12 @@ var problem = document.getElementById("problem");
 var cont_a = document.getElementById("cont_a");
 var answerbtn = document.getElementById("answerbtn");
 var left = document.getElementById("left");
+var info = document.getElementById("answer_info");
+var ans_a = document.getElementById("ans_a");
 
 var objs = [];
 var selected;
+let toProceed = false;
 
 // Ranking functionality (drag)
 var dragElements = [];
@@ -14,6 +17,18 @@ var centroids = [];
 var dragging;
 var dragLine = document.createElement("div");
 dragLine.style = "display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;";
+function noAnswer() {
+    info.style['background-color'] = "rgba(255, 0, 0, 0.4)";
+    info.style.display = "block";
+    info.innerHTML = "Please specify an answer!";
+    window.setTimeout(() => info.style.display = "none", 1000);
+}
+function contlabel() {
+    info.style['background-color'] = "rgba(0, 255, 0, 0.4)";
+    info.style.display = "block";
+    info.innerHTML = "correct...";
+    window.setTimeout(() => info.style.display = "none", 1000);
+}
 function computeCenter(el) {
     var rect = el.getBoundingClientRect();
     return {
@@ -138,41 +153,58 @@ function refresh() {
     left.innerHTML = "New terms left to review: <b>" + progress.remaining + "</b>";
 }
 answerbtn.addEventListener("mousedown", function() {
+    if(toProceed) {
+        answerbtn.innerHTML = "Answer";
+        ans_a.innerHTML = "";
+        ans_a.style.display = "none";
+        toProceed = false;
+        refresh();
+        return;
+    }
     if(!Game.isDead()) {
         var data = Game.fetchProblem();
         var correct = false;
         switch(data.type) {
             case "selection":
                 if(!selected) {
-                    answerbtn.innerHTML = "No answer provided!";
-                    window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
+                    noAnswer();
                     return;
                 }
                 correct = Game.attemptProblem(parseInt(selected.getAttribute("i")));
                 if(correct) {
-                    answerbtn.innerHTML = "Correct!";
-                    window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
+                    contlabel();
+                    refresh();
                 } else {
-                    answerbtn.innerHTML = "Wrong!";
-                    window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
+                    ans_a.style.display = "flex";
+                    ans_a.innerHTML = cont_a.innerHTML;
+                    for(let i = 0; i < ans_a.children.length; i++) {
+                        ans_a.children[i].disabled = true;
+                        ans_a.children[i].id = "not-select";
+                        if(data.answers[i] == data.correctAnswer) {
+                            ans_a.children[i].id = "select";
+                        }
+                    }
+                    answerbtn.innerHTML = "Continue >>>";
+                    toProceed = true;
                 }
-                refresh();
             break;
             case "input":
                 if(objs[0].value === "") {
-                    answerbtn.innerHTML = "No answer provided!";
-                    window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
+                    noAnswer();
                     return;
                 }
                 correct = Game.attemptProblem(objs[0].value.toLowerCase());
                 if(correct) {
-                    answerbtn.innerHTML = "Correct!";
-                    window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
+                    contlabel();
+                    refresh();
                 } else {
-                    answerbtn.innerHTML = "Wrong!";
-                    window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
+                    ans_a.style.display = "flex";
+                    ans_a.innerHTML = cont_a.innerHTML;
+                    ans_a.children[0].value = data.answer;
+                    ans_a.children[0].disabled = true;
+                    answerbtn.innerHTML = "Continue >>>";
+                    toProceed = true;
                 }
-                refresh();
             break;
             case "ranking":
                 var answerList = [];
@@ -181,13 +213,25 @@ answerbtn.addEventListener("mousedown", function() {
                 }
                 correct = Game.attemptProblem(answerList);
                 if(correct) {
-                    answerbtn.innerHTML = "Correct!";
-                    window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
+                    contlabel();
+                    refresh();
                 } else {
-                    answerbtn.innerHTML = "Wrong!";
-                    window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
+                    ans_a.style.display = "flex";
+                    let list = document.createElement("div");
+                    list.id = "ans-ranking-list";
+                    list.className = "ranking-list";
+                    ans_a.appendChild(list);
+                    for(let i = 0; i < data.answer.length; i++) {
+                        let item = data.answer[i];
+                        let el = document.createElement("div");
+                        el.className = "ranking-item";
+                        el.id = "item"+i;
+                        el.innerHTML = item;
+                        list.appendChild(el);
+                    }
+                    answerbtn.innerHTML = "Continue >>>";
+                    toProceed = true;
                 }
-                refresh();
             break;
             case "matching":
 

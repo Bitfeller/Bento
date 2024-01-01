@@ -21,6 +21,8 @@ var currWrong = [];
 var wasWrong = [];
 var lsWrong = [];
 var llsWrong = [];
+var lsShown = [];
+var llsShown = [];
 var card = 0;
 var active = true;
 var seen = 0;
@@ -178,8 +180,15 @@ function newRandomDeck() {
     if(ls > 0) {
         k = 0;
         while(k < ls) {
-            let p = random((currentSet - 1) * deckSize, currentSet * deckSize);
-            let idx;
+            // Combat repetition of one/some particular terms constantly and distribute percentages of being shown across terms
+            if(lsShown.length == 0) {
+                for(let i = 1; i <= deckSize; i++) {lsShown.push((currentSet - 1) * deckSize + i);}
+            }
+            let idx = random(0, lsShown.length - 1);
+            let p = lsShown[idx];
+            // DEPRECATED:
+            // let p = random((currentSet - 1) * deckSize, currentSet * deckSize);
+            // let idx;
             if(lsWrong > 0) {
                 idx = random(0, lsWrong.length - 1);
                 p = lsWrong[idx];
@@ -196,7 +205,9 @@ function newRandomDeck() {
             if(lsWrong.length > 0) {
                 lsWrong.splice(idx, 1);
             } else if(wasWrong.length > 0 && idx !== undefined) {
-                wasWrong.splice(0, 1);
+                wasWrong.splice(idx, 1);
+            } else {
+                lsShown.splice(idx, 1);
             }
             problems.push(p);
             k++;
@@ -205,8 +216,15 @@ function newRandomDeck() {
     if(lls > 0) {
         k = 0;
         while(k < lls) {
-            let p = random(0, (currentSet - 1) * deckSize - 1);
-            let idx;
+            // Combat repetition of one/some particular terms constantly and distribute percentages of being shown across terms
+            if(llsShown.length == 0) {
+                for(let i = 1; i <= (currentSet - 1) * deckSize - 1; i++) {llsShown.push(i);}
+            }
+            let idx = random(0, llsShown.length - 1);
+            let p = llsShown[idx];
+            // DEPRECATED:
+            // let p = random(0, (currentSet - 1) * deckSize - 1);
+            // let idx;
             if(llsWrong.length > 0) {
                 idx = random(0, llsWrong.length - 1);
                 p = llsWrong[idx];
@@ -223,6 +241,8 @@ function newRandomDeck() {
                 llsWrong.splice(idx, 1);
             } else if(wasWrong.length > 0 && idx !== undefined) {
                 wasWrong.splice(0, 1);
+            } else {
+                llsShown.splice(idx, 1);
             }
             problems.push(p);
             k++;
@@ -316,7 +336,6 @@ async function init(_decks, info) {
         let json = JSON.stringify(user.reviews);
         await UserGateway.editUser("reviews", json);
     }
-    console.log(deckInfo);
     // Add terms to deckInfo
     for(let i = 0; i < deckInfo.length; i++) {
         for(let j = 0; j < deckInfo[i].length; j++) {
@@ -371,7 +390,6 @@ async function init(_decks, info) {
                     cardFound = true;
                     if(!cache_boxes[card.question]) cache_boxes[card.question] = user.reviews[idx].cards[j].box;
                     if(!cache_termScores[card.question]) cache_termScores[card.question] = user.reviews[idx].cards[j].termScore;
-                    console.log(cache_boxes[card.question]);
                     user.reviews[idx].cards[j].lastSeen = Date.now();
                     let thisScore = cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] || 0)); // correct - wrong
                     user.reviews[idx].cards[j].termScore = (cache_termScores[card.question] * 0.8 + thisScore * 1.1).toFixed(3);

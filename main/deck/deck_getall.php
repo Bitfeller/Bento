@@ -19,19 +19,19 @@
         }
         $cond = [];
         foreach ((array) $searchTerms as $term) {
-            $cond[] = "name LIKE CONCAT('%', ?, '%')";
+            $cond[] = "name LIKE CONCAT('%', ?, '%') OR owner LIKE CONCAT('%', ?, '%')";
         }
         $sql .= implode(" OR ", $cond);
         if(!empty($searchTerms)) {
             $sql .= ") ";
         }
-        $sql .= "ORDER BY viewnum DESC LIMIT 60 OFFSET ?;";
+        $sql .= "ORDER BY id DESC LIMIT 60 OFFSET ?;";
         $sql = (string) $sql;
         $stmt = $conn->prepare($sql);
         $public = 1;
         $tble = [$offset];
-        $stmt->bind_param("is" . str_repeat("s", count((array) $searchTerms)) . "i", $public, $_SESSION['username'], ...$searchTerms, ...$tble);
-        //$sql = "SELECT * FROM decks WHERE public = ? OR owner = ? ORDER BY viewnum DESC LIMIT 60 OFFSET ?;";
+        $stmt->bind_param("is" . str_repeat("ss", count((array) $searchTerms)) . "i", $public, $_SESSION['username'], ...$searchTerms, ...$searchTerms, ...$tble);
+        //$sql = "SELECT * FROM decks WHERE public = ? OR owner = ? ORDER BY viewdata DESC LIMIT 60 OFFSET ?;";
         //$stmt = $conn->prepare($sql);
         //$public = 1;
         //$stmt->bind_param("isi", $public, $_SESSION['username'], $offset);
@@ -45,7 +45,7 @@
             $decks[] = $row;
         }
         $stmt->close();
-        // Sort results
+        /*// Sort results
         if(!empty($searchTerms)) {
             function calculateScore($result, $searchTerms) {
                 $score = 0;
@@ -59,7 +59,7 @@
                 $scoreB = calculateScore($b, $searchTerms);
                 return $scoreB - $scoreA;
             });
-        }
+        }*/
         success(json_encode($decks));
     } catch(Exception $e) {
         fail("exception: " . $e->getMessage());
