@@ -7,6 +7,11 @@ const tutorialDialog = document.getElementById("tutorial-background");
 const tutorialBoxHolder = document.getElementById("tutorial-box-holder");
 const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
 
+const svgHolder = document.getElementsByClassName("bento-svg")[0];
+const blankSvg = document.getElementById("blanksvg");
+const leftSushi = document.getElementById("Leftest_Sushi");
+const bottomSushi = document.getElementById("Bottom_Sushi");
+const rightSushi = document.getElementById("Right_Sushi");
 
 (async () => {
     let [success, data] = await UserGateway.getuser();
@@ -67,7 +72,7 @@ const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
     const paramList = new URLSearchParams(window.location.search);
     if(paramList.get("new") == "1") {
         // replace URL so that user doesn't accidentally re-activate tutorial later
-        // history.replaceState(null, "", "home"); // /home?new=1  ==>  /home
+        history.replaceState(null, "", "home"); // /home?new=1  ==>  /home
         // tutorial feature
         tutorialDialog.style.display = "block";
         tutorialBoxHolder.style.display = "block";
@@ -84,6 +89,20 @@ const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
                 }
             }
         }
+        // Create individual SVGs
+        const leftsvg = blankSvg.cloneNode(true)
+        const bottomsvg = blankSvg.cloneNode(true)
+        const rightsvg = blankSvg.cloneNode(true)
+        leftsvg.appendChild(leftSushi.cloneNode(true))
+        bottomsvg.appendChild(bottomSushi.cloneNode(true))
+        rightsvg.appendChild(rightSushi.cloneNode(true))
+        leftsvg.style.zIndex = 9
+        bottomsvg.style.zIndex = 9
+        rightsvg.style.zIndex = 9
+        blankSvg.style.zIndex = 10
+        svgHolder.appendChild(leftsvg)
+        svgHolder.appendChild(bottomsvg)
+        svgHolder.appendChild(rightsvg)
         next(`
                 <p>We're about to take you on the tutorial so that you can learn Bento better.</p>
                 <p>However, if you'd like to, you can skip this tutorial.</p>
@@ -114,7 +133,7 @@ const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
                                                     document.getElementsByTagName("header")[0].style.zIndex = 10;
                                                     document.getElementById("header:pfp").className = "pfp right-header-ico";
                                                     document.getElementById("header:logout").className = "header-nav material-symbols-outlined right-header-ico";
-                                                    document.getElementById("rightsushi").setAttribute("class", "lit-up");
+                                                    rightsvg.setAttribute("class", "lit-up");
                                                     document.getElementById("tutorial").style.top = "70%";
                                                     document.getElementById("tutorial").style.animation = "move-tutorial-box-down 1s ease";
                                                     next(`
@@ -123,8 +142,8 @@ const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
                                                             <button class='continuebtn'>continue...</button>
                                                         `, {
                                                             continuebtn: () => {
-                                                                document.getElementById("rightsushi").setAttribute("class", "");
-                                                                document.getElementById("leftsushi").setAttribute("class", "lit-up");
+                                                                rightsvg.setAttribute("class", "");
+                                                                leftsvg.setAttribute("class", "lit-up");
                                                                 document.getElementsByClassName("deck-reminders-holder")[0].className = "deck-reminders-holder home-side-div lit-up";
                                                                 next(`
                                                                         <p>On your home screen, there is also a <b>Review</b> button; this leads you to a learning mode where you get to actually learn the decks you've put in your reviews. Here, you can edit your settings, such as how quickly you'd like to go through them and how the content should be shown to you. <b>You can also select specific decks and the decks that you need to review.</b></p>
@@ -132,9 +151,9 @@ const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
                                                                         <button class='continuebtn'>continue...</button>                                                                    
                                                                     `, {
                                                                         continuebtn: () => {
-                                                                            document.getElementById("leftsushi").setAttribute("class", "");
+                                                                            leftsvg.setAttribute("class", "");
                                                                             document.getElementsByClassName("deck-reminders-holder")[0].className = "deck-reminders-holder home-side-div";
-                                                                            document.getElementById("bottomsushi").setAttribute("class", "lit-up");
+                                                                            bottomsvg.setAttribute("class", "lit-up");
                                                                             document.getElementById("tutorial").style.top = "20%";
                                                                             document.getElementById("tutorial").style.animation = "move-tutorial-box-up 1s ease";
                                                                             next(`
@@ -142,7 +161,7 @@ const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
                                                                                     <button class='continuebtn'>continue...</button>
                                                                                 `, {
                                                                                     continuebtn: () => {
-                                                                                        document.getElementById("bottomsushi").setAttribute("class", "");
+                                                                                        bottomsvg.setAttribute("class", "");
                                                                                         document.getElementsByClassName("notifications-holder")[0].className = "notifications-holder home-side-div lit-up";
                                                                                         next(`
                                                                                                 <p>Here, on the right side of your home screen, and under your decks to review, you can see a little section where you can toggle if you'd like notifications when you need to review.</p>
@@ -159,6 +178,10 @@ const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
                                                                                                             continuebtn: () => {
                                                                                                                 tutorialDialog.style.display = "none";
                                                                                                                 tutorialBoxHolder.style.display = "none";
+                                                                                                                leftsvg.remove()
+                                                                                                                rightsvg.remove()
+                                                                                                                bottomsvg.remove()
+                                                                                                                blankSvg.style.zIndex = "initial";
                                                                                                             }
                                                                                                         })
                                                                                                 }
@@ -180,6 +203,10 @@ const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
             skipbtn: () => {
                 tutorialDialog.style.display = "none";
                 tutorialBoxHolder.style.display = "none";
+                leftsvg.remove()
+                rightsvg.remove()
+                bottomsvg.remove()
+                blankSvg.style.zIndex = "initial";
             }
         })
     }
