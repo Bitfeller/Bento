@@ -9,7 +9,7 @@
 </head>
 <body>
     <?php require_once "header.php"?>
-    <h2>Added Decks</h2>
+    <h2 style="display: inline;">Added Decks</h2><button id="createDeckBtn">&plus;</button>
     <div class="ingredients-container">
         <div class="ingredient-box">
             <div>
