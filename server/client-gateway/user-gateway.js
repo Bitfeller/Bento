@@ -1,4 +1,4 @@
-import { types, sameUser, senderror, gateway_fetch } from './gateway-mod.js';
+import { types, sameUser, senderror, gateway_fetch, cache, getCache } from './gateway-mod.js';
 
 const moduleurl = new URL(import.meta.url);
 const spath = moduleurl.pathname + "/../..";
@@ -9,11 +9,13 @@ async function isCommon(pwd) {
         if(pwd.includes(list[i])) return true;
     return false;
 }
+
 let UserGateway = {
     getuser: async (getpfp = false, getudata = false, getreviews = true, getdrafts = false) => {
         if(!types("bbbb", getpfp, getudata, getreviews, getdrafts)) return [false, "invalid params"];
         if(!await sameUser()) return [false, "no session"];
         let success = false, data = 'fetch-err', fres;
+        let pfpHash = getCache('pfp-hash') ?? "";
         await fetch(spath + "/php-db/user/user_get.php", {
             method: "post",
             headers: {
@@ -23,7 +25,8 @@ let UserGateway = {
                 getpfp,
                 getudata,
                 getreviews,
-                getdrafts
+                getdrafts,
+                pfpHash
             })
         }).then(async res => {
             if(!res.ok) throw "couldn't fetch! (bad response)";
@@ -31,10 +34,20 @@ let UserGateway = {
             return res.json();
         }).then(res => {
             success = res.status == 'success';
-            if(!success) data = res.reason;
+            if(!success) 
+                data = res.reason;
             else {
                 data = res.data;
-                if(data.userdata) data.userdata = JSON.parse(data.userdata);
+                if(data.userdata) 
+                    data.userdata = JSON.parse(data.userdata);
+                if(data.pfp) {
+                    // New pfp, update pfp + cache
+                    cache('pfp-hash', data.pfphash);
+                    cache('pfp', data.pfp);
+                } else if(getpfp) {
+                    // the hash we sent matches the server's; use the cached pfp
+                    data.pfp = getCache('pfp') ?? "";
+                }
             }
         }).catch(async e => {
             console.log('backend[user-gateway.js:getuser]:', e);
