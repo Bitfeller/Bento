@@ -68,7 +68,7 @@ function update(search) {
             div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>`;
             deckReminders.appendChild(div);
             div.addEventListener('mouseenter', () => show(decks[i]));
-            div.addEventListener('mouseleave', hide);    
+            div.addEventListener('mouseleave', hide);
         }
     }
     if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks that match." : "You don't have any decks in your reviews."} --</p>`;
