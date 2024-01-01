@@ -4,20 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento - Home</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+
 </head>
 <body>
-    <nav class="menu">
-        <p class="menu-title">Bento</p>
-        <ul>
-            <li><a href="/home.html">Home</a></li>
-            <li><a href="/home.html">Discover</a></li>
-        </ul>
-    </nav>
-    <div id="body">
-        <p class="title">Bento</p>
-        <p class="main-desc">An advanced quizzing platform designed to help you practice.</p>
-        <button class="main-btn">Try now</button>
+    <div class="top-bar">
+        <div class="top-bar-side">
+            
+            <p onclick="location.href='/home.html'">
+                Bento! 🍱
+            </p>
+        </div>
+        <div class="top-bar-side">
+
+            <span class="material-symbols-outlined top-bar-icons" onclick="location.href='profile.html'"> <!-- Profile picture here! -->account_circle </span>
+            <!-- <p>Username</p> -->
+            <buton class="material-symbols-outlined top-bar-icons" onclick="location.href='settings.html'"> Tune</buttons>
+        </div>
+    </div>
+    <div class="main-bento">
+        <svg width="750" height="500" xmlns="http://www.w3.org/2000/svg">
+
+            <g>
+             <rect stroke-width="99" id="svg_7" height="85" width="223.99999" y="61" x="61.99999" stroke="#000" fill="#65451f"/>
+             <rect stroke-width="99" id="svg_8" height="95" width="173.00002" y="61" x="508.99997" stroke="#000" fill="#65451f"/>
+             <rect id="svg_10" height="1" width="20" y="61" x="397" stroke-width="99" stroke="#000" fill="#65451f"/>
+             <rect id="middleBox" onclick="location.href='game.html'" height="1" width="3" y="170.00001" x="397" stroke-width="99" stroke="#000" fill="#65451f"/>
+             <rect id="svg_14" height="99.00001" width="136" y="285.99998" x="58" stroke-width="99" stroke="#000" fill="#65451f"/>
+             <rect id="svg_16" height="99.00001" width="136" y="283.99998" x="551" stroke-width="99" stroke="#000" fill="#65451f"/>
+             <rect id="svg_17" height="99.00001" width="136" y="284.99998" x="299" stroke-width="99" stroke="#000" fill="#65451f"/>
+            </g>
+           </svg>
+
     </div>
 </body>
 </html>
+
+ <!-- onclick="location.href='game.html'" -->
