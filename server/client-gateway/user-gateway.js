@@ -15,6 +15,25 @@ function types(t, ...args) {
         return false;
     });
 }
+let pwdcache;
+async function pwdfetch() {
+    if(pwdcache) return pwdcache;
+    try {
+        const resp = await fetch(spath + "/conf/commonpwd.json");
+        if(!resp.ok) throw "couldn't fetch!";
+        const data = await resp.json();
+        return pwdcache = data;
+    } catch(e) {
+        console.error('backend: Failed to fetch common passwords:', e);
+        return [];
+    }
+}
+async function isCommon(pwd) {
+    let list = await pwdfetch();
+    for(let i = 0; i < list.length; i++)
+        if(pwd.includes(list[i])) return true;
+    return false;
+}
 let UserGateway = {
     getuser: async (getpfp = false, getudata = false, getreviews = true, getdrafts = false) => {
         if(!types("bbbb", getpfp, getudata, getreviews, getdrafts)) return [false, "invalid params"];
@@ -67,6 +86,7 @@ let UserGateway = {
     signup: async (username, pwd, email) => {
         if(!types("SSS", username, pwd, email)) return [false, "invalid params"];
         if(pwd.length < 8) return [false, "bad pwd"];
+        if(await isCommon(pwd)) return [false, "bad pwd"];
         let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/user/user_new.php", {
             method: 'post',
