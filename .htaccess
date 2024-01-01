@@ -1,29 +1,38 @@
-# This .htaccess code should be utilized on Windows machines for the purposes of testing.
-# Compatible with XAMPP.
+# This .htaccess code should be utilized on **local environments** for **Windows** only.
+# Compatible with XAMPP, Windows 10/11.
 
+# Allow any origin and headers
 Header set Access-Control-Allow-Origin "*"
 Header set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS"
 
+# Disable content caching
 Header set Cache-Control "no-cache, no-store, must-revalidate"
 Header set Pragma "no-cache"
 Header set Expires 0
 
+# NOTE: [L] prevents further rule checking and exists immediately.
 RewriteEngine on
 
+# Fetch file we're attempting to request
 SetEnvIf REQUEST_URI /(.*) NEWURI=$1
 
+# Redirect blank => index.php
 RewriteRule ^$ /site/index.php [L]
 
+# Redirect to supposed file under /site/ if it exists.
 RewriteCond ./site/%{ENV:NEWURI}\.php -F
 RewriteRule ^(.*)$ /site/$1.php [L]
 
+# Redirect to 404 if file does not exist.
 RewriteCond ./site/%{ENV_NEWURI} -d
 RewriteRule ^(.*)$ /site/404.php [L]
 
+# Set directory.
 <IfModule mod_dirtractive.c>
     DirectoryIndex index.php
 </IfModule>
 
+# Set 404 redirect page.
 ErrorDocument 404 /site/404.php
 
 # Block all test folders
