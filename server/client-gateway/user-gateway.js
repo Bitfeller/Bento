@@ -226,8 +226,8 @@ class UserGateway {
         });
         return [success, reason];
     }
-    static async resetPwd(username) {
-        if(typeof(username) !== "string") {
+    static async resetPwd(email) {
+        if(typeof(email) !== "string") {
             return [false, "invalid params"];
         }
         var success, reason;
@@ -237,7 +237,7 @@ class UserGateway {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username
+                email
             })
         }).then(function(res) {
             if(!res.ok) {
