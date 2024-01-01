@@ -1,7 +1,8 @@
 const fs = require('fs');
 const Logger = require('../utils/logger.js');
 
-const log = new Logger('shutdown-server.js', '../logs', '');
+const log = new Logger('shutdown-server.js', '../logs');
+let lastChange = Date.now();
 
 function set_htaccess(name) {
     try { fs.unlinkSync('../../../.htaccess'); } catch(_) {}
@@ -9,18 +10,24 @@ function set_htaccess(name) {
 }
 function get_state() {
     let state = fs.readFileSync('../../conf/config-suspend-server', 'utf8');
-    return parseInt(state);
+    return parseInt(state) ?? 1;
 }
 
-fs.watch('../../conf/config-suspend-server', (_, __) => {
+function update() {
+    if(Date.now() - lastChange < 1) return;
+    lastChange = Date.now();
+
     let state = get_state();
     if (state == 1) {
-        log.info('suspend-server.log', 'Server was suspended.');
+        log.log('suspend-server.log', 'Server was suspended.');
         set_htaccess('suspend');
     } else if (state == 0) {
-        log.info('suspend-server.log', 'Server is now active.');
+        log.log('suspend-server.log', 'Server is now active.');
         set_htaccess('normal');
     }
-});
+}
 
-set_htaccess(get_state() == 1 ? 'suspend' : 'normal');
+fs.watch('../../conf/config-suspend-server', (event, _) => {
+    if(event == 'change') update();
+});
+update();
