@@ -167,8 +167,6 @@ button {
 	height: calc(9vh*2.75);
 	width: calc(16vh*2.75);
     display: inline-block;
-}
-.deck-pic > img {
     object-fit: cover;
 }
 .file-selector {
