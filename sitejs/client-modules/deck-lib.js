@@ -1,4 +1,4 @@
-import { UserGateway } from "../../server/client-gateway/user-gateway.js";
+ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
 import { DeckGateway } from "../../server/client-gateway/deck-gateway.js";
 
 const name = document.getElementById("name");
@@ -9,6 +9,8 @@ const addCard = document.getElementById("addcard");
 const resetpic = document.getElementById("picReset");
 const fileselecttrigger = document.getElementById("fileselecttrigger");
 const picimg = document.getElementById("deckpic");
+const tags = document.getElementById("tags");
+const tagInput = document.getElementById("tagInput");
 
 let cards = [], deckpic = '', drag;
 let user;
@@ -335,7 +337,7 @@ function generator_mtch(card, mtchlist, r, txt) {
     });
     if(r) delbtn.addEventListener('mousedown', () => pair.remove());
 }
-// Builders
+// Card Builders
 function init_mc(card, n, q) {
     card.innerHTML = `
         <div class='cardsel'>
@@ -569,6 +571,19 @@ resetpic.addEventListener('mousedown', () => {
     deckpic = '';
     picimg.src = '../../img/defaultdeckpic.png';
 });
+tagInput.addEventListener('keydown', e => {
+    if(e.key == 'Enter' && tagInput.value.trim() != '') {
+        e.preventDefault();
+        tags.innerHTML += `
+            <div class='tag remove-tag' onclick='this.remove()'>
+                <div class='material-symbols-outlined'>remove</div>
+                <p class='tag-value'>${tagInput.value.trim()}</p>
+            </div>
+        `;
+        tagInput.value = '';
+        tagInput.focus();
+    }
+});
 
 
 // --------------------------------------------------- \\
@@ -705,7 +720,8 @@ function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
     }
     data = {
         desc: description.value,
-        contnt: data
+        contnt: data,
+        tags: Array(document.getElementsByClassName('tag-value')).map(x => x.textContent),
     };
     if(isEmpty(data.contnt)) data.contnt = {};
     return [name.value, deckpic, data, isPublic.checked];
@@ -821,7 +837,7 @@ const i_cancel = document.getElementById('i-cancel');
 const import_q = document.getElementById('importing-questions');
 const qSelectAll = document.getElementById('qSelectAll');
 
-let temp_name, temp_desc, temp_contnt;
+let temp_name, temp_desc, temp_tags, temp_contnt;
 
 b_importbtn.addEventListener("mousedown", () => b_modal.style.display = "block");
 q_importbtn.addEventListener("mousedown", () => q_modal.style.display = "block");
@@ -906,8 +922,17 @@ function continue_import_modal() {
     let data = {};
     for(let i = 0; i < boxes.length; i++)
         if(boxes[i].checked) data[boxes[i].dataset.q] = temp_contnt[boxes[i].dataset.q];
-    temp_name ? name.value = temp_name : "";
-    temp_desc ? description.value = temp_desc : "";
+    if(temp_name) name.value = temp_name;
+    if(temp_desc) description.value = temp_desc;
+    if(temp_tags) 
+        temp_tags.map(tag => {
+            tags.innerHTML += `
+                <div class='tag remove-tag' onclick='this.remove()'>
+                    <div class='material-symbols-outlined'>remove</div>
+                    <p class='tag-value'>${tag}</p>
+                </div>
+            `;
+        });
     try {
         appendToCards(data);
     } catch(e) {
@@ -922,7 +947,7 @@ function close_import_modal() {
     i_import.disabled = true;
     i_cancel.disabled = true;
     import_q.innerHTML = "";
-    temp_name = undefined, temp_desc = undefined, temp_contnt = undefined;
+    temp_name = undefined, temp_desc = undefined, temp_tags = undefined, temp_contnt = undefined;
 }
 i_import.addEventListener("mousedown", () => continue_import_modal(temp_contnt));
 i_cancel.addEventListener("mousedown", close_import_modal);
@@ -958,6 +983,7 @@ b_createbtn.addEventListener("mousedown", () => {
                 let val_name = window.lib.dpwrapper(dp, main.name);
                 let val_desc = window.lib.dpwrapper(dp, main.desc);
                 let val_contnt = window.lib.dpwrapper(dp, main.contnt);
+                temp_tags = window.lib.dpwrapper(dp, main.tags);
                 if(b_replacename.checked) temp_name = val_name;
                 if(b_replacedesc.checked) temp_desc = val_desc;
                 open_import_modal(val_contnt);
