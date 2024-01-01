@@ -11,20 +11,15 @@
     try {
         $conn = connect_to_db();
         if($mode === "emailverif") {
-            $sql = "SELECT * FROM users WHERE id = ?;";
+            $sql = "SELECT * FROM users WHERE id = ? LIMIT 1;";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("i", $uid);
             $stmt->execute();
-            $res = mysqli_fetch_assoc($stmt->get_result());
-            if(!$res) {
-                fail("no user");
-            }
+            $res = $stmt->get_result()->fetch_assoc();
+            if(!$res) fail("no user");
             $userVerif = $res['verif'];
-            $valid = $verif == $userVerif;
-            if(!$valid) {
-                fail("invalid verif");
-            }
-            $sql = "UPDATE users SET verified = ?, verif = ? WHERE id = ?;";
+            if($verif != $userVerif) fail("invalid verif");
+            $sql = "UPDATE users SET verified = ?, verif = ? WHERE id = ? LIMIT 1;";
             $stmt = $conn->prepare($sql);
             $verified = 1;
             $verif = "";
@@ -32,9 +27,7 @@
             $stmt->execute();
             $stmt->close();
             session_start();
-            if(isset($_SESSION['uid'])) {
-                $_SESSION['verified'] = true;
-            }
+            if(isset($_SESSION['uid'])) $_SESSION['verified'] = true;
             success();
         } else if($mode === "pwdrecover") {
             session_start();
@@ -43,42 +36,30 @@
                 unset($_SESSION['pwd_uid']);
                 unset($_SESSION['pwd_timestamp']);
             }
-            $sql = "SELECT * FROM users WHERE id = ?;";
+            $sql = "SELECT * FROM users WHERE id = ? LIMIT 1;";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("i", $uid);
             $stmt->execute();
-            $res = mysqli_fetch_assoc($stmt->get_result());
-            if(!$res) {
-                fail("no user");
-            }
-            $verified = $res['verified'];
-            if($verified === 0) {
-                fail("not verified");
-            }
+            $res = $stmt->get_result()->fetch_assoc();
+            if(!$res) fail("no user");
+            if($res['verified'] === 0) fail("not verified");
             $userVerif = $res['verif'];
-            $valid = $verif == $userVerif;
-            if(!$valid) {
-                fail("invalid verif");
-            }
+            if($verif != $userVerif) fail("invalid verif");
             $_SESSION['pwd_change'] = true;
             $_SESSION['pwd_uid'] = $uid;
             $_SESSION['pwd_timestamp'] = time();
             success();
         } else if($mode === "newpwd") {
             session_start();
-            if(!isset($_SESSION['pwd_change']) || !isset($_SESSION['pwd_uid'])) {
-                fail("not valid");
-            }
+            if(!isset($_SESSION['pwd_change']) || !isset($_SESSION['pwd_uid'])) fail("not valid");
             if((time() - $_SESSION['pwd_timestamp']) > 10 * 60) {
                 unset($_SESSION['pwd_change']);
                 unset($_SESSION['pwd_uid']);
                 unset($_SESSION['pwd_timestamp']);
                 fail('past time');
             }
-            if(!isset($newPwd)) {
-                fail("no pwd");
-            }
-            $sql = "UPDATE users SET password = ?, verif = ? WHERE id = ?;";
+            if(!isset($newPwd)) fail("no pwd");
+            $sql = "UPDATE users SET password = ?, verif = ? WHERE id = ? LIMIT 1;";
             $stmt = $conn->prepare($sql);
             $hashPwd = password_hash($newPwd, PASSWORD_DEFAULT);
             $verif = "";

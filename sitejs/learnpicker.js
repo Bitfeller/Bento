@@ -43,8 +43,7 @@ function updateDecks(decks) {
         o_infinite_mode.disabled = true;
         o_infinite_mode.setAttribute("data-enabled", String(o_infinite_mode.checked));
         o_infinite_mode.checked = false;
-        infinite_mode_text.innerHTML =
-            "You can't use Infinite Mode when learning decks to review.";
+        infinite_mode_text.innerHTML = "You can't use Infinite Mode when learning decks to review.";
         let r_keys = Object.keys(reviews);
         for (let i = 0; i < r_keys.length; i++) {
             if (decks[i] == 0) continue;
@@ -181,12 +180,10 @@ function updateDecks(decks) {
             shuffle,
             infinite_mode = o_infinite_mode.checked ? 1 : 0,
             require_correct = o_require_correct.checked ? 1 : 0;
-        for (let i = 0; i < o_repeat.length; i++) {
+        for (let i = 0; i < o_repeat.length; i++)
             if (o_repeat[i].checked == true) repeat = i + 1;
-        }
-        for (let i = 0; i < o_shuffle.length; i++) {
+        for (let i = 0; i < o_shuffle.length; i++)
             if (o_shuffle[i].checked == true) shuffle = i + 1;
-        }
         window.location.href =
             "/learn/game?ds=" +
             selectedDecks.join(",") +

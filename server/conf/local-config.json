@@ -14,6 +14,7 @@
     },
     "admins": [1],
     "check_image": false,
+    "max_image_size": 2000000,
     "mail_smtp_server": "",
     "mail_username": "",
     "mail_password": "",

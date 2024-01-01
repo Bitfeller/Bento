@@ -5,9 +5,7 @@
     require_types('nss', 'd_id', 'setting', 'val');
     // Make sure session exists
     session_start();
-    if(!isset($_SESSION['uid'])) {
-        fail("no session");
-    }
+    if(!isset($_SESSION['uid'])) fail("no session");
     // Get body values
     $id = $data['d_id'];
     $owner = $_SESSION['username'];
@@ -17,33 +15,27 @@
         $conf = get_server_config();
         $conn = connect_to_db();
         // Fetch deck
-        $sql = "SELECT * FROM decks WHERE id = ? AND owner = ?;";
+        $sql = "SELECT * FROM decks WHERE id = ? AND owner = ? LIMIT 1;";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("is", $id, $owner);
         $stmt->execute();
-        $result = mysqli_fetch_assoc($stmt->get_result());
-        if(!$result) {
-            fail("no deck");
-        }
+        $result = $stmt->get_result()->fetch_assoc();
+        if(!$result) fail("no deck");
         $stmt->close();
         switch($setting) {
             case "name":
-                if($result['name'] == $val) {
-                    success();
-                }
-                // Sanitize name
-                $val = htmlspecialchars(strip_tags($val));
+                // Sanitize name; check
+                $val = sanitize($val);
+                $result['name'] == $val && success();
                 // Check if name is already taken by another deck from same user
-                $sql = "SELECT * FROM decks WHERE name = ? AND owner = ?;";
+                $sql = "SELECT * FROM decks WHERE name = ? AND owner = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("ss", $val, $owner);
                 $stmt->execute();
-                if(mysqli_fetch_assoc($stmt->get_result())) {
-                    fail("name taken");
-                }
+                if($stmt->get_result()->fetch_assoc()) fail("name taken");
                 $stmt->close();
                 // Update name
-                $sql = "UPDATE decks SET name = ? WHERE id = ?;";
+                $sql = "UPDATE decks SET name = ? WHERE id = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("si", $val, $id);
                 $stmt->execute();
@@ -53,28 +45,22 @@
             case "deckpic":
                 if($val !== "" && $conf['check_image'] == true) {
                     try {
-                        $data = explode(",", $val, 2);
-                        $data = $data[1];
+                        $data = explode(",", $val, 2)[1];
                         $decodedVal = base64_decode($data);
-                        $imageValid = imagecreatefromstring($decodedVal);
-                        if($imageValid === false) {
-                            fail("exception: deckpic isn't a valid image. For security purposes, the server has denied the image.");
-                        }
+                        if(!imagecreatefromstring($decodedVal)) fail("not a valid/secure image");
                     } catch(Throwable $e) {
-                        fail("exception: deckpic isn't a valid image. For security purposes, the server has denied the image.");
+                        fail("not a valid/secure image.");
                     }
                 }
-                if(strlen($val) > 2 * 1000 * 1000) {
-                    fail('size limit');
-                }
+                if(strlen($val) > $conf['max_image_size']) fail('size limit');
                 $path = $conf['file_db'] . 'decks/primary/' . $id . '.pic';
-                file_put_contents($path, data: $val);
+                file_put_contents($path, $val);
                 success();
             case "data":
                 $val = json_decode($val, false);
                 $safeVal = sanitize($val);
                 $safeVal = json_encode($safeVal);
-                $sql = "UPDATE decks SET data = ? WHERE id = ?;";
+                $sql = "UPDATE decks SET data = ? WHERE id = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("si", $safeVal, $id);
                 $stmt->execute();
@@ -82,12 +68,9 @@
                 success();
             break;
             case "public":
-                $sql = "UPDATE decks SET public = ? WHERE id = ?;";
+                $sql = "UPDATE decks SET public = ? WHERE id = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
-                $val = (int)$val;
-                if($val > 1 || $val < 0) {
-                    $val = 0;
-                }
+                $val = ($val == 0 || $val == 1) ? (int)$val : 0;
                 $stmt->bind_param("ii", $val, $id);
                 $stmt->execute();
                 $stmt->close();
@@ -101,7 +84,10 @@
                 $stmt->close();
                 success();
             break;
+            default:
+                fail("invalid setting");
+            break;
         }
-    } catch(Exception $e) {
+    } catch(Throwable $e) {
         fail("exception: " . $e->getMessage());
     }
