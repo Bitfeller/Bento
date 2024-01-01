@@ -1,7 +1,8 @@
 import { UserGateway } from "../server/client-gateway/user-gateway.js";
 import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 
-const deckReminders = document.getElementsByClassName("review-schedule")[0];
+const deckReminders = document.getElementsByClassName("review-schedule")[0].getElementsByClassName('container')[0];
+const searcher = document.getElementById('search-reviews');
 // Tutorial required elements
 // const tutorialDialog = document.getElementById("tutorial-background");
 // const tutorialBoxHolder = document.getElementById("tutorial-box-holder");
@@ -20,12 +21,19 @@ const feedback_dialog = document.getElementById("header:feedback_dialog");
 (async () => {
     let [success, data] = await UserGateway.getuser();
     if(!success) return;
-    deckReminders.innerHTML = "<h3>Upcoming Reviews:</h3>";
+    deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
     let reviews = data.userdata.reviews;
+    
+    
     let r_keys = Object.keys(reviews);
+    let decks = [];
+    let counts = [];
+    let coll = 0;
+
     for(let i = 0; i < r_keys.length; i++) {
         let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), false, false, true);
         if(!success) continue;
+        decks.push(deck);
         let count = 0;
         let c_keys = Object.keys(reviews[r_keys[i]]);
         for(let j = 0; j < c_keys.length; j++) {
@@ -33,7 +41,9 @@ const feedback_dialog = document.getElementById("header:feedback_dialog");
             if(UserGateway.calculateNTR(term.box, term.last)) count++;
         }
         count += deck.contnt_len - c_keys.length;
+        counts.push(count);
         if(count > 0) {
+            coll++;
             deckReminders.innerHTML += `
                 <div class="review-container">
                     <span class="review-name">${deck.name}</span><span class="review-number">${count}</span>
@@ -41,7 +51,67 @@ const feedback_dialog = document.getElementById("header:feedback_dialog");
             `;
         }
     }
-    if(deckReminders.innerHTML == "") deckReminders.innerHTML = "<p class='info-blank'>-- There aren't any decks to review. --</p>";
+    if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- There aren't any decks to review. --</p>";
+    deckReminders.innerHTML += "<h3>All Decks</h3>";
+    for(let i = 0; i < decks.length; i++) {
+        deckReminders.innerHTML += `
+            <div class="review-container">
+                <span class="review-name"><span class='material-symbols-outlined'>arrow_back_ios</span>${decks[i].name}</span>
+            </div>
+        `;
+    }
+    searcher.addEventListener('input', () => {
+        if(searcher.value == '') {
+            let coll = 0;
+            deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
+            for(let i = 0; i < decks.length; i++) {
+                if(counts[i] > 0) {
+                    coll++;
+                    deckReminders.innerHTML += `
+                        <div class="review-container">
+                            <span class="review-name">${decks[i].name}</span><span class="review-number">${counts[i]}</span>
+                        </div>
+                    `;
+                }
+            }
+            if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- There aren't any decks to review. --</p>";
+            deckReminders.innerHTML += "<h3>All Decks</h3>";
+            for(let i = 0; i < decks.length; i++) {
+                deckReminders.innerHTML += `
+                    <div class="review-container">
+                        <span class="review-name"><span class='material-symbols-outlined'>arrow_back_ios</span>${decks[i].name}</span>
+                    </div>
+                `;
+            }
+        } else {
+            let coll = 0;
+            deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
+            for(let i = 0; i < decks.length; i++) {
+                if(counts[i] > 0 && decks[i].name.toLowerCase().includes(searcher.value.toLowerCase())) {
+                    coll++;
+                    deckReminders.innerHTML += `
+                        <div class="review-container">
+                            <span class="review-name">${decks[i].name}</span><span class="review-number">${counts[i]}</span>
+                        </div>
+                    `;
+                }
+            }
+            if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- There are't any decks for review that match. --</p>";
+            deckReminders.innerHTML += "<h3>All Decks</h3>";
+            coll = 0;
+            for(let i = 0; i < decks.length; i++) {
+                if(decks[i].name.toLowerCase().includes(searcher.value.toLowerCase())) {
+                    coll++;
+                    deckReminders.innerHTML += `
+                        <div class="review-container">
+                            <span class="review-name"><span class='material-symbols-outlined'>arrow_back_ios</span>${decks[i].name}</span>
+                        </div>
+                    `;
+                }
+            }
+            if(coll == 0) deckReminders.innerHTML += "<p class='info-blank'>-- There are't any decks that match. --</p>";
+        }
+    });
     window.LOADED();
 })();
 version.addEventListener('mousedown', () => {

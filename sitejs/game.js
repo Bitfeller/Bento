@@ -109,7 +109,6 @@ function refresh() {
     let data = Game.fetchProblem();
     problem.innerHTML = data.q;
     if(data.type == 'mc' && data.req == 1) problem.innerHTML += "<p style='font-size: 15px;'>Select all correct answers.</p>";
-    console.log(problem.textContent);
     typeset(problem);
     for(var i = 0; i < objs.length; i++) objs[i].remove();
     objs = [];
@@ -237,7 +236,6 @@ function refresh() {
                     let bottom;
                     let y = e.pageY;
                     for (let i = 0; i < dragElements.length; i++) {
-                        console.log(dragElements[i], centroids[i].y, y);
                         if (centroids[i].y < y) continue;
                         else if (i - 1 >= 0) {
                             top = dragElements[i - 1];
@@ -300,7 +298,6 @@ function answerHandler() {
                 if(data.req == 1) {
                     selected = false;
                     if(mc_sel.length == 0) return noAnswer();
-                    console.log(mc_sel);
                     correct = Game.isCorrect(mc_sel);
                     if (correct) {
                         for(let i = 0; i < objs.length; i++) {
@@ -312,7 +309,7 @@ function answerHandler() {
                         }, 1000);
                     } else {
                         for(let i = 0; i < mc_sel.length; i++) {
-                            objs[mc_sel[i]].innerHTML = `<p class="answer-symbol">${data.ans.indexOf(parseInt(objs[i].getAttribute('i'))) > -1 ? '☑️' : '❌'}</p> ` + objs[mc_sel[i]].getAttribute('orig');
+                            objs[mc_sel[i]].innerHTML = `<p class="answer-symbol">${data.ans.indexOf(mc_sel[i]) > -1 ? '☑️' : '❌'}</p> ` + objs[mc_sel[i]].getAttribute('orig');
                         }
                         for (let j = 0; j < cont_a.children.length; j++) {
                             let item = cont_a.children[j];
