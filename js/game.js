@@ -3,7 +3,7 @@ import { UserGateway } from "../main/user_gateway.js";
 var problem = document.getElementById("problem");
 var cont_a = document.getElementById("cont_a");
 var answerbtn = document.getElementById("answerbtn");
-var fillBar = document.getElementById("fill-bar");
+var left = document.getElementById("left");
 
 var objs = [];
 var selected;
@@ -135,8 +135,7 @@ function refresh() {
         break;
     }
     var progress = Game.getProgress();
-    fillBar.innerHTML = progress.remaining;
-    // fillBar.style.width = (100 * progress.current / progress.max) + "%";
+    left.innerHTML = "New terms left to review: <b>" + progress.remaining + "</b>";
 }
 answerbtn.addEventListener("mousedown", function() {
     if(!Game.isDead()) {
@@ -234,9 +233,11 @@ async function main() {
         problem.innerHTML = "You must be logged in to use Bento Learn!<br>This is a TEST version. To log in, visit this link:<br>localhost/html/test_user.html<br>login problems? contact me (you know who i am)";
         return;
     }
-    await Game.init([1], {
+    await Game.init([2], {
+        NTRonly: false,
+        randomTerms: false,
         deckSize: 5,
-        cardRepeat: 2,
+        cardRepeat: 1, // set to 2 in official
         curr_p: 0.5,
         ls_p: 0.3,
         lls_p: 0.2

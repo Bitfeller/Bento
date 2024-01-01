@@ -27,30 +27,35 @@ var seen = 0;
 
 var totalWrong = {};
 var cardsSeen = {};
+var updateFunc;
 
 // -------------------------------------------------------- \\
 
 function random(a, b) {
     return Math.floor(Math.random() * (b - a) + a + 0.5);
 }
-function limit(val, a, b) {
-    return val < a ? a : (val > b ? b : val);
-}
 
 // -------------------------------------------------------- \\
 
 function iterateProblem() {
-    card += 1;
-    seen += 1;
-    if(card >= randomSet.length) {
-        // finished set! next set + restart process
-        return newRandomDeck();
-    }
     // edit cardsSeen
     if(cardsSeen[""+randomSet[card]]) {
         cardsSeen[""+randomSet[card]] += 1;
     } else {
         cardsSeen[""+randomSet[card]] = 1;
+    }
+    // next
+    card += 1;
+    if(card >= randomSet.length) {
+        // finished set! next set + restart process
+        let res = newRandomDeck();
+        if(randomSet[card] >= currentSet * deckSize) {
+            seen += 1;
+        }
+        return res;
+    }
+    if(randomSet[card] >= currentSet * deckSize) {
+        seen += 1;
     }
     return true;
 }
@@ -60,6 +65,7 @@ function newRandomDeck() {
         randomSet = [];
         rndSetData = {};
         card = 0;
+        updateFunc();
         return false;
     }
     // percentages
@@ -177,9 +183,14 @@ function newRandomDeck() {
             if(lsWrong > 0) {
                 idx = random(0, lsWrong.length - 1);
                 p = lsWrong[idx];
-            } else if(wasWrong.length > 0 && wasWrong[0] < currentSet * deckSize && wasWrong[0] >= (currentSet - 1) * deckSize) {
-                idx = 0;
-                p = wasWrong[0];
+            } else if(wasWrong.length > 0) {
+                for(let i = 0; i < wasWrong.length; i++) {
+                    if(wasWrong[i] < currentSet * deckSize && wasWrong[i] >= (currentSet - 1) * deckSize) {
+                        idx = i;
+                        p = wasWrong[i];
+                        break;
+                    }
+                }
             }
             if(problems.indexOf(p) > -1) continue;
             if(lsWrong.length > 0) {
@@ -199,9 +210,13 @@ function newRandomDeck() {
             if(llsWrong.length > 0) {
                 idx = random(0, llsWrong.length - 1);
                 p = llsWrong[idx];
-            } else if(wasWrong.length > 0 && wasWrong[0] < (currentSet - 1) * deckSize) {
-                idx = 0;
-                p = wasWrong[0];
+            } else if(wasWrong.length > 0) {
+                for(let i = 0; i < wasWrong.length; i++) {
+                    if(wasWrong[i] < (currentSet - 1) * deckSize) {
+                        idx = i;
+                        p = wasWrong[i];
+                    }
+                }
             }
             if(problems.indexOf(p) > -1) continue;
             if(llsWrong.length > 0) {
@@ -230,6 +245,7 @@ async function init(_decks, info) {
     user = userData;
     // Get deck info
     let deckInfo = [];
+    let updateReviews = false;
     for(let i = 0; i < _decks.length; i++) {
         let deck = _decks[i];
         // Get deck
@@ -256,47 +272,63 @@ async function init(_decks, info) {
             let json = JSON.stringify(user.reviews);
             await UserGateway.editUser("reviews", json);
         }
-        let updateReviews = false;
+        let updateIdx = false;
         for(let j = 0; j < userReview.cards.length; j++) {
             let userCard = userReview.cards[j];
             let question = userCard.question;
             let lastSeen = userCard.lastSeen;
-            let successCount = userCard.successCount;
+            let box = userCard.box;
+            // deprecated: let successCount = userCard.successCount;
             let found = false;
             for(let k = 0; k < data.data.deckData.length; k++) {
                 if(data.data.deckData[k].question == question) {
                     found = true;
                     // calculate if only need-to-review cards AND whether it's needed for review
                     if(info.NTRonly) {
-                        let ntr = UserGateway.calculateNTR(successCount, lastSeen);
+                        let ntr = UserGateway.calculateNTR(box, lastSeen);
                         if(!ntr) {
                             data.data.deckData.splice(k, 1);
-                            k -= 1;
-                            continue;
                         }
                     }
+                    break;
                 }
             }
             if(!found) {
                 userReview.cards.splice(j, 1);
-                j -= 1;
                 updateReviews = true;
+                updateIdx = true;
+                j -= 1;
             }
             // ["question", 0, last_time_they_saw_it = -1]
         }
-        if(updateReviews) {
+        if(updateIdx) {
             user.reviews[idx] = userReview;
-            let json = JSON.stringify(user.reviews);
-            await UserGateway.editUser("reviews", json);
+        }
+        for(let i = 0; i < data.data.deckData.length; i++) {
+            data.data.deckData[i].deckid = deck;
         }
         deckInfo.push(data.data.deckData);
         decks.push(data.name);
+    }
+    if(updateReviews) {
+        let json = JSON.stringify(user.reviews);
+        await UserGateway.editUser("reviews", json);
     }
     console.log(deckInfo);
     // Add terms to deckInfo
     for(let i = 0; i < deckInfo.length; i++) {
         for(let j = 0; j < deckInfo[i].length; j++) {
             gameData.push(deckInfo[i][j]);
+        }
+    }
+    // Scramble terms if needed
+    if(info.randomTerms) {
+        let save = gameData;
+        gameData = [];
+        while(save.length > 0) {
+            let idx = random(0, save.length - 1);
+            gameData.push(save[idx]);
+            save.splice(idx, 1);
         }
     }
     // Edit settings
@@ -306,7 +338,75 @@ async function init(_decks, info) {
     ls_p = info.ls_p;
     lls_p = info.lls_p;
     card = 0;
+    seen = 1;
     newRandomDeck();
+    
+    // Cache
+    let cache_boxes = {};
+    let cache_termScores = {};
+    let cache_deckIds = {};
+
+    const update = async () => {
+        let csKeys = Object.keys(cardsSeen);
+        for(let i = 0; i < csKeys.length; i++) {
+            let card = gameData[parseInt(csKeys[i])];
+            let holder = card.deckid;
+            let idx;
+            if(cache_deckIds[""+holder]) {
+                idx = cache_deckIds[""+holder];
+            } else {
+                for(let j = 0; j < user.reviews.length; j++) {
+                    if(user.reviews[j].deckid == holder) {
+                        idx = j;
+                        cache_deckIds[""+holder] = idx;
+                        break;
+                    }
+                }
+            }
+            let cardFound = false;
+            for(let j = 0; j < user.reviews[idx].cards.length; j++) {
+                if(user.reviews[idx].cards[j].question == card.question) {
+                    cardFound = true;
+                    if(!cache_boxes[card.question]) cache_boxes[card.question] = user.reviews[idx].cards[j].box;
+                    if(!cache_termScores[card.question]) cache_termScores[card.question] = user.reviews[idx].cards[j].termScore;
+                    console.log(cache_boxes[card.question]);
+                    user.reviews[idx].cards[j].lastSeen = Date.now();
+                    let thisScore = cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] || 0)); // correct - wrong
+                    user.reviews[idx].cards[j].termScore = (cache_termScores[card.question] * 0.8 + thisScore * 1.1).toFixed(3);
+                    if(user.reviews[idx].cards[j].termScore < -1.25) {
+                        user.reviews[idx].cards[j].box = Math.max(cache_boxes[card.question] - 1, 1);
+                    } else if(user.reviews[idx].cards[j].termScore > 1.25) {
+                        user.reviews[idx].cards[j].box = Math.min(cache_boxes[card.question] + 1, 6);
+                    }
+                    break;
+                    // DEPRECATED:
+                    // let val = (totalWrong[csKeys[i]] / cardsSeen[csKeys[i]]) * 2 - 1;
+                    // user.reviews[idx].cards[j].successCount += val;
+                }
+            }
+            if(!cardFound) {
+                let newcard = {
+                    question: card.question,
+                    lastSeen: Date.now(),
+                    box: 1,
+                    termScore: ((cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] || 0))) * 1.1).toFixed(3),
+                    // DEPRECATED: successCount: (totalWrong[csKeys[i]] / cardsSeen[csKeys[i]]) * 2 - 1
+                };
+                newcard.box = newcard.termScore > 1.25 ? 2 : 1;
+                cache_boxes[card.question] = newcard.box;
+                cache_termScores[card.question] = newcard.termScore;
+                user.reviews[idx].cards.push(newcard);
+            }
+        }
+        let json = JSON.stringify(user.reviews);
+        await UserGateway.editUser("reviews", json);
+    };
+    updateFunc = update;
+    const updater = window.setInterval(() => {
+        if(!active) window.clearInterval(updater);
+        update();
+    }, 5000);
+    window.addEventListener("beforeunload", update);
     return true;
 }
 function fetchCurrentDecks() {

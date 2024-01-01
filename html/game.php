@@ -11,12 +11,12 @@
 <body>
     <?php require_once "header.php"?>    
     <div id="main">
+        <div id="left">
+            
+        </div><br>
         <p id="problem"></p>
         <div id="cont_a"></div>
         <br>
-        <div id="bar">
-            <div id="fill-bar"></div>
-        </div>
         <br>
         <button id="answerbtn">Answer</button>
         <p><i>Note: this version of Bento's learn has preset settings.<br>Set size: 5<br>Vocab repetition: often<br>Show previous vocab: yes<br>These settings cannot be edited.</i></p>
