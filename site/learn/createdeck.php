@@ -29,8 +29,8 @@
     <div class="container">
         <div class="create-container">
             <h1>Create a Deck</h1>
-            <button id="flush" class="line-up-icons">
-                <span class="material-symbols-outlined" id="picAddBtn">delete</span>
+            <button id="flush">
+                <span class="material-symbols-outlined">delete</span>
             </button>
             <input type="text" placeholder="Name" id="name">
             <input type="text" placeholder="Description" id="description">

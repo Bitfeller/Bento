@@ -107,7 +107,6 @@ button {
     cursor: pointer;
     transition: 0.3s;
     padding: 0px 5px;
-    font-size: 12pt;
 }
 button:hover {
     filter: brightness(85%);
