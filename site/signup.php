@@ -1,3 +1,4 @@
+<?php $_X_NUO = true; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,12 +28,6 @@
     </div>
     <script type='module'>
         import { UserGateway } from "../server/client-gateway/user-gateway.js";
-
-        (async () => {
-            let [success, reason] = await UserGateway.getuser();
-            if(success)
-                window.location.href = "/home";
-        })();
         
         const s_user = document.getElementById("signUpUsername");
         const s_pass = document.getElementById("signUpPassword");
@@ -59,7 +54,7 @@
                         window.SHOW_ERROR("Please enter in a valid email.");
                     break;
                     case "user exists":
-                        window.SHOW_ERROR("That username is already taken.");
+                        window.SHOW_ERROR("That username/email is already taken.");
                     break;
                     case "autologin":
                         window.SHOW_ERROR("We successfully made an account for you; but we failed to log you in automatically. Try logging in with your new account manually.");
@@ -71,7 +66,7 @@
                 }
                 return;
             }
-            window.location.href = "/home";
+            window.location.href = "/home?new=1";
         }
         s_btn.addEventListener("mousedown", signup);
         window.onkeydown = async (e) => {

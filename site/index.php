@@ -1,3 +1,4 @@
+<?php $_X_NUO = true; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +15,7 @@
             <img id="logo" alt="Bento! Logo" src="/img/bento logo white.svg" height="40px" onclick="location.href='/home'">
         </div>
         <div class="right-header">
-            <button class="header-button" id="signInBtn">Login</button>
+            <button class="header-button" id="signInBtn" onclick="location.href='/login'">Login</button>
             <nav>
                 <!-- <a class="header-nav">About Us</a>
                 <a class="header-nav">Science</a> -->
@@ -30,7 +31,7 @@
                 Learn in <mark>simple, bite sized <p></p></mark>pieces so you really <mark>remember<p></p> </mark>what you study
 
             </h2>
-            <button id="signUpBtn"><p>Sign Up</p></button>
+            <button id="signUpBtn" onclick="location.href='/signup'"><p>Sign Up</p></button>
         </div>
     </section>
     
@@ -108,7 +109,7 @@
         </div>
         <section id="cta">
             <h1>Sign Up NOW</h1>
-            <button id="cta-button">Sign Up</button>
+            <button id="cta-button" onclick="location.href='/signup'">Sign Up</button>
         </section>
         <hr>
     </section>
@@ -139,18 +140,18 @@
                 <p style="font-size: 13px; font-family: kadwa;">Your password is always secure. No one can see your password, not even us.</p>
                 <p>Confirm Password:</p>
                 <input type="password" id="signUpPassword2">
-                <button class="submitBtn" id="signUpBtn">Sign Up</button>
+                <button class="submitBtn" id="signUpBtnM">Sign Up</button>
                 <p class="info-error" id="signup-err"></p>
             </div>
         </dialog>
         <dialog class="modal" id="signInModal">
             <div class="modal-content">
                 <p><u>Login</u></p>
-                <p>Username:</p>
+                <p>Username/Email:</p>
                 <input type="text" id="signInUsername">
                 <p>Password:</p>
                 <input type="password" id="signInPassword">
-                <button class="submitBtn" id="signInBtn">Login</button>
+                <button class="submitBtn" id="signInBtnM">Login</button>
                 <p class='login-box-selector' onclick="location.href='/user/resetpwd'">I forgot my password >></p>
                 <p class="info-error" id="login-err"></p>
             </div>

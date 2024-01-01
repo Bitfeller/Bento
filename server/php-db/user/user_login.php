@@ -27,6 +27,7 @@
             fclose($handle);
             $pfp = "";
         }
+        increment('../info/user_logins');
         session_start();
         $_SESSION['uid'] = $result['id'];
         $_SESSION['username'] = $result['username'];

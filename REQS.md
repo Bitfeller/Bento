@@ -1,3 +1,3 @@
 SERVER:
     MySQL:
-        - All decks and userdata content will have to be filtered for all \r and \n
+        - All decks will need a "tags" defined to [] under column `data`.
