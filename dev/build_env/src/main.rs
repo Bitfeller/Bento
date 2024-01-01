@@ -107,7 +107,7 @@ fn main() {
     let xampp_path = Path::new(xampp_path).to_path_buf();
     let path = std::env::current_dir().unwrap();
 
-    println!("\n========================= Rebuild =========================");
+    println!("\n======================= build_env =======================");
     println!("XAMPP path: {}", xampp_path.to_string_lossy());
     println!("Current path: {}", path.to_string_lossy());
     println!("===========================================================");
