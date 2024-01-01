@@ -24,12 +24,28 @@
 	height: 50vh;
 	width: 50vh;
 }
+.file-selector {
+  background: transparent;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
 .setting-box {
   height: min-content;
 }
-#pfpAddBtn {
+#pfpAddBtn, #pfpReset {
   cursor: pointer;
   color: #5992e8;
+  height: 50px;
+}
+#pfpAddBtn {
+  margin: 30px 10px 0px 0px;
+}
+#pfpReset {
+  margin: 30px 50px 0px 0px;
 }
 @media screen and (max-width: 1300px) {
   #profile-container {
@@ -48,5 +64,23 @@
   }
   .setting-box > input, .setting-box > button {
     width: 95%;
+  }
+}
+dialog {
+  margin: auto;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background-color: #1e1e1e;
+  min-width: 450px;
+  h2 {
+      display: inline;
+  }
+  button {
+      font-size: 12pt;
+      height: 30px;
+      width: auto;
+      padding: 0px 5px;
+      margin: 0px 5px;
   }
 }

@@ -7,36 +7,50 @@
     <?php require_once "../globalreqs.php"?>
     <link rel="stylesheet" href="../../css/settings.css"/>
     <link rel="stylesheet" href="../../css/profile.css"/>
+    <script type="module" src="../../sitejs/profile.js"></script>
 </head>
 <body data-uo="true">
     <?php require_once "../header.php"?>
     <div id="profile-container">
         <div id="left-div">
-            <img src="../../img/default-pfp.png" class="profile-picture">
+            <img src="../../img/defaultpfp.png" class="profile-picture" id="pfp">
+            <input class='file-selector' accept="image/png,image/jpeg" id="fileselecttrigger" type="file">
             <span class="material-symbols-outlined" id="pfpAddBtn">add_a_photo</span>
+            <span class="material-symbols-outlined" id="pfpReset">refresh</span>
         </div>
         <div id="right-div">
             <div class="setting-box">
                 <h2>Change Email</h2>
-                <input type="email" class="change-input" placeholder="New Email">
-                <button>Submit</button>
+                <input type="password" id="e_currpwd" class="change-input" placeholder="Current Password">
+                <input type="email" id='emailfield' class="change-input" placeholder="New Email">
+                <button id="emailbtn">Submit</button>
                 <pre>
                 </pre>
                 <h2>Change Password</h2>
-                <input type="password" class="change-input" placeholder="New Password">
-                <button>Submit</button>
+                <input type="password" id="currpwd" class="change-input" placeholder="Current Password">
+                <input type="password" id='pwdfield' class="change-input" placeholder="New Password">
+                <button id="pwdbtn">Submit</button>
                 <pre>
                 </pre>
                 <h2>Change Username</h2>
-                <input type="text" class="change-input" placeholder="New Username">
-                <button>Submit</button>
+                <input type="text" id='userfield' class="change-input" placeholder="New Username">
+                <button id="userbtn">Submit</button>
             </div>
             <div class="setting-box" id="dangerZoneBox">
                 <h2>Danger Zone</h2>
-                <button>Delete Account</button>
-                <button>Reset Account</button>
+                <button id="delacc">Delete Account</button>
+                <button id="resetacc">Reset Account</button>
             </div>
         </div>
     </div>
+    <section>
+        <dialog id="warningdialog">
+            <div class="title-bar">
+                <h2>Are you sure?</h2>
+                <button class="closeBtns" id="leave">Go back</button>
+            </div>
+            <div class="main"></div>
+        </dialog>
+    </section>
 </body>
 </html>
