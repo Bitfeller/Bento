@@ -157,7 +157,6 @@ function updateDecks(decks) {
             let checkbox = box.querySelectorAll('input[type="checkbox"]')[0];
             box.addEventListener("mousedown", () => {
                 if(checkbox.disabled) return;
-                if (checkbox.disabled) return
                 checkbox.checked = !checkbox.checked;
             });
         }
