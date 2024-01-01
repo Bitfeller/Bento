@@ -1,13 +1,48 @@
-.mc-option-sel {
-    background-color: rgb(0, 150, 255);
+.mc-option-sel, .selbtn-select {
+    color: #EEEEEE;
+    background-color: #236bd6;
 }
-.selbtn-select {
-    background-color: rgb(0, 150, 255);
+button:hover {
+    transition-duration: 0.2s;
+    box-shadow: 0px 1px 4px rgba(255, 255, 255, 0.3);
 }
 .create-container {
     display: flex;
     flex-direction: column;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
     width: 30%;
     margin-left: 35%;
-    background-color: black;
+    background-color: #1e1e1e;
+    input,button {
+        font-size: 11pt;
+        border-radius: 5px;
+        margin-top: 10px;
+        padding: 5px;
+    }
+    button {
+        margin-left: 5px;
+        padding: 0px 8px;
+    }
+    input {
+        border: none;
+        margin-bottom: 10px;
+        background-color: rgb(56, 56, 56);
+        color: #EEEEEE;
+    }
+    ::placeholder {
+        opacity: 0.4;
+        color: #CADDA0;
+    } 
+    .mcbtn {
+        margin-left: 0px;
+    }
+}
+.mc-add, .card-del {
+    color: #EEEEEE;
+    background-color: #236bd6;
+}
+#addcard, #create {
+    background-color: #EEEEEE;
 }
