@@ -8,7 +8,7 @@ var info = document.getElementById("answer_info");
 var ans_a = document.getElementById("ans_a");
 
 var objs = [];
-var selected;
+let selected;
 let toProceed = false;
 
 // Ranking functionality (drag)
@@ -346,39 +346,26 @@ async function main() {
     refresh();
 }
 main();
-/*btn.addEventListener("mousedown", function() {
-    if(Game.isActive() === false) {
-        switch(Game.getMode()) {
-            case Game.modes.Selection:
-                
-            break;
-            case Game.modes.Input:
-
-            break;
-            case Game.modes.Ranking:
-
-            break;
-            case Game.modes.Matching:
-
-            break;
+window.addEventListener("keydown", function(e) {
+    if(e.key >= "0" && e.key <= "9") {
+        let i;
+        if(e.key == "0") {
+            i = 9;
+        } else {
+            i = parseInt(e.key)-1;
         }
-    }
-    if(Game.isActive() === false) {
-        problem.innerHTML = "Finished game!";
-    } else {
-        Game.answerProblem(0);
-        if(Game.isActive() === true) {
-            problem.innerHTML = Game.getProblem();
+        for (const child of cont_a.children) {
+            try {
+                if (child.attributes.i.value == i) {
+                    if(selected) {
+                        selected.id = "not-select";
+                    }
+                    selected = child;
+                    selected.id = "select";
+                }
+            } catch (error) {
+                // Not a ms questions （多分）
+            }
         }
     }
 });
-getwrong.addEventListener("mousedown", function() {
-    if(Game.isActive() === false) {
-        problem.innerHTML = "Finished game!";
-    } else {
-        Game.answerProblem(1);
-        if(Game.isActive() === true) {
-            problem.innerHTML = Game.getProblem();
-        }
-    }
-})*/
