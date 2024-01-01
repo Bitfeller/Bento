@@ -1,6 +1,14 @@
 input {
     background-color: var(--light-gray);
 }
+.mc-option-del, .mc-option-input, .mc-option-nosel, .mc-option-sel {
+    height: 27px;
+    width: 27px;
+    padding: 0px;
+}
+.mc-option-del:hover, .mc-option-input:hover, .mc-option-nosel:hover, .mc-option-sel:hover {
+    filter: brightness(115%);
+}
 .mc-option-sel, .selbtn-select {
     color: var(--light-text);
     background-color: var(--select-blue);
@@ -8,7 +16,10 @@ input {
 .mc-option-sel {
     background-color: var(--select-green);
 }
-.mc-option-sel > span {
+.mc-option-nosel {
+    background-color: var(--light-gray);
+}
+.mc-option-sel > span, .mc-option-del > span, .mc-option-nosel > span {
     font-size: 15px;
     margin: 7px 0;
     padding: 0;
