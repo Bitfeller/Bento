@@ -355,6 +355,9 @@ button {
         left: 52%;
     }
 }
+#picAddBtn, #fileselecttrigger {
+    cursor: pointer;
+}
 @media only screen and (max-width: 1025px) {
     .options-container {
         margin: 10px 0px;
