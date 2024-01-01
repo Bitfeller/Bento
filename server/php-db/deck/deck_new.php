@@ -13,7 +13,7 @@
     $deckData = $data['data'];
     $public = $data['public'];
     if(strlen($name) == 0) fail("invalid name");
-    if(strlen($deckData) == 0) $deckData = '{"desc":"","contnt":[]}';
+    if(strlen($deckData) == 0) $deckData = '{"desc":"","contnt":{}}';
     try {
         $conf = get_server_config();
         $conn = connect_to_db();
