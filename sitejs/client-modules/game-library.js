@@ -92,8 +92,20 @@ function newSet() {
     lastWrong = currWrong;
     currWrong = [];
 
+    // scramble
+    if(currSet.length > 0) {
+        let save = currSet;
+        currSet = [];
+        while(save.length > 0) {
+            let idx = random(0, save.length - 1);
+            currSet.push(save[idx]);
+            save.splice(idx, 1);
+        }
+    }
+
     let min = Math.min(gameData.length, curr + deckSize);
-    for(let i = curr; i < min; i++) currSet.push(i);
+    for(let i = curr; i < min; i++) 
+        currSet.push(i);
     
     curr = min;
     card = 0;
