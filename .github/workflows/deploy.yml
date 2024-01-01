@@ -31,4 +31,6 @@ jobs:
         cd /home/orange/
         ./server_update.sh
         # Any other deployment commands
+        cd /var/www/bento.valleynas.uk
+        source packages.sh
         EOF
