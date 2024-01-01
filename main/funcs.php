@@ -13,6 +13,7 @@
         exit();
     }
     function validate_request() {
+        header("Access-Control-Allow-Origin: *");
         if(!isset($_SERVER['CONTENT_TYPE'])) {
             access_fail();
         }
