@@ -182,21 +182,18 @@ function show(deck) {
         (a, b) => review[b].box + review[b].score / 100 - (review[a].box + review[a].score / 100)
     );
 
-    if (worst.length == 0) {
+    if (worst.length == 0)
         worst = `<p class='info-blank'>-- No terms to show${
             deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''
         } --</p>`;
-    }
-    if (learning.length == 0) {
+    if (learning.length == 0)
         learning = `<p class='info-blank'>-- No terms to show${
             deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''
         } --</p>`;
-    }
-    if (best.length == 0) {
+    if (best.length == 0)
         best = `<p class='info-blank'>-- No terms to show${
             deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''
         } --</p>`;
-    }
     
     deckViewer.innerHTML = `
         <div class='title deck-container-overview' id='deck-container-overview'>
@@ -208,7 +205,7 @@ function show(deck) {
             <div class='deck-container-mastered'>
                 <div class='green-box'></div><span class='dc-masterbox'>Mastered ${mastered} terms</span>
                 <div class='yellow-box'></div><span class='dc-masterbox'>Learning ${keys.length - mastered} terms</span>
-                <div class='red-box'></div><span class='dc-masterbox'>Haven't seen ${deck.contnt_len - keys.length} terms</span>
+                <div class='red-box'></div><span class='dc-masterbox'>Haven't seen ${deck.contnt_len - keys.length < 0 ? 0 : deck.contnt_len - keys.length} terms</span>
             </div>
             <div class="terms-display-container">
                 <div class='deck-container-worst-terms'>
