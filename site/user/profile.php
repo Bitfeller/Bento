@@ -64,8 +64,8 @@
         </div>
         <div class="grid-box change-box">
             <h2>Change Password</h2>
-            <input type="text" id="password-curr-password" placeholder="Current Password">
-            <input type="text" id="password" placeholder="New Password">
+            <input type="password" id="password-curr-password" placeholder="Current Password">
+            <input type="password" id="password" placeholder="New Password">
             <p>Passwords must be at least 8 characters long <p><i>for now...</i></p></p>
             <button id="change-password">Change</button>
         </div>
@@ -90,7 +90,7 @@
             <p>This action is irreversible and will remove all of your data from our servers.</p>
             <br>
             <p>Enter your current password to continue...</p>
-            <input type="text" id="delete-account-password" placeholder="Current Password">
+            <input type="password" id="delete-account-password" placeholder="Current Password">
             <br>
             <button id="delete-account-confirm">Delete Account</button>
             <button id="delete-account-cancel">Cancel</button>
