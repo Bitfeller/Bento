@@ -1,5 +1,5 @@
-import { Game } from "../main/library.js";
-import { UserGateway } from "../main/user_gateway.js";
+import { Game } from "./library.js";
+import { UserGateway } from "../user_gateway.js";
 var problem = document.getElementById("problem");
 var cont_a = document.getElementById("cont_a");
 var answerbtn = document.getElementById("answerbtn");
@@ -22,7 +22,7 @@ function computeCenter(el) {
     }
 }
 function refresh() {
-    if(Game.isDead()) {
+    if(Game.isActive() === false) {
         problem.innerHTML = "You completed Bento's Learn!";
         for(var i = 0; i < objs.length; i++) {
             objs[i].remove();
@@ -30,7 +30,7 @@ function refresh() {
         selected = undefined;
         return;
     }
-    var data = Game.fetchProblem();
+    var data = Game.getProblemData();
     problem.innerHTML = data.question;
     for(var i = 0; i < objs.length; i++) {
         objs[i].remove();
@@ -135,12 +135,11 @@ function refresh() {
         break;
     }
     var progress = Game.getProgress();
-    fillBar.innerHTML = progress.remaining;
-    // fillBar.style.width = (100 * progress.current / progress.max) + "%";
+    fillBar.style.width = (100 * progress.current / progress.max) + "%";
 }
 answerbtn.addEventListener("mousedown", function() {
-    if(!Game.isDead()) {
-        var data = Game.fetchProblem();
+    if(Game.isActive() !== false) {
+        var data = Game.getProblemData();
         var correct = false;
         switch(data.type) {
             case "selection":
@@ -149,7 +148,7 @@ answerbtn.addEventListener("mousedown", function() {
                     window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
                     return;
                 }
-                correct = Game.attemptProblem(parseInt(selected.getAttribute("i")));
+                correct = Game.answerProblem(parseInt(selected.getAttribute("i")));
                 if(correct) {
                     answerbtn.innerHTML = "Correct!";
                     window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
@@ -165,7 +164,7 @@ answerbtn.addEventListener("mousedown", function() {
                     window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
                     return;
                 }
-                correct = Game.attemptProblem(objs[0].value.toLowerCase());
+                correct = Game.answerProblem(objs[0].value.toLowerCase());
                 if(correct) {
                     answerbtn.innerHTML = "Correct!";
                     window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
@@ -180,7 +179,7 @@ answerbtn.addEventListener("mousedown", function() {
                 for(var i = 0; i < dragElements.length; i++) {
                     answerList.push(dragElements[i].innerHTML);
                 }
-                correct = Game.attemptProblem(answerList);
+                correct = Game.answerProblem(answerList);
                 if(correct) {
                     answerbtn.innerHTML = "Correct!";
                     window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
@@ -234,13 +233,7 @@ async function main() {
         problem.innerHTML = "You must be logged in to use Bento Learn!<br>This is a TEST version. To log in, visit this link:<br>localhost/html/test_user.html<br>login problems? contact me (you know who i am)";
         return;
     }
-    await Game.init([1], {
-        deckSize: 5,
-        cardRepeat: 2,
-        curr_p: 0.5,
-        ls_p: 0.3,
-        lls_p: 0.2
-    });
+    await Game.setDeck(1);
     refresh();
 }
 main();
