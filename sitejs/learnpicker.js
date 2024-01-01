@@ -164,7 +164,9 @@ function updateDecks(decks, counts) {
     });
     inertiaButton.addEventListener('mousedown', () => {
         let selectedDecks = [], shuffle;
-        for (let item in deckContainer.children) {
+        for (let i = 0; i < deckContainer.children.length; i++) {
+            let item = deckContainer.children[i];
+            console.log(item);
             let idx = item.dataset.idx;
             let checkbox = item.getElementsByClassName("deckCheck")[0];
             if (checkbox.checked) selectedDecks.push(parseInt(idx));
