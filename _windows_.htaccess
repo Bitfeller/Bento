@@ -1,0 +1,36 @@
+# This .htaccess code should be utilized on Windows machines for the purposes of testing.
+
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS"
+
+Header set Cache-Control "no-cache, no-store, must-revalidate"
+Header set Pragma "no-cache"
+Header set Expires 0
+
+RewriteEngine on
+
+SetEnvIf REQUEST_URI /(.*) NEWURI=$1
+
+RewriteRule ^$ /site/index.php [L]
+
+RewriteCond ./site/%{ENV:NEWURI}\.php -F
+RewriteRule ^(.*)$ /site/$1.php [L]
+
+RewriteCond ./site/%{ENV_NEWURI} -d
+RewriteRule ^(.*)$ /site/404.php [L]
+
+<IfModule mod_dirtractive.c>
+    DirectoryIndex index.php
+</IfModule>
+
+ErrorDocument 404 /site/404.php
+
+# Block all test folders
+RewriteRule ^.*\/test.*$ - [F]
+
+# Block server-related folders
+RewriteRule ^.*\/conf.*$ - [F]
+RewriteRule ^.*\/notif-service.*$ - [F]
+
+# Block dev folder
+RewriteRule ^.*dev.*$ - [F]

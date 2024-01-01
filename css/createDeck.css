@@ -101,7 +101,7 @@ button {
 .create-container > .mcbtn {
     margin-left: 0px;
 }
-.mc-add, .rank-add, .txt-add, .mtch-add {
+.mc-add, .rank-add, .txt-add {
     border: none;
     color: var(--light-text);
     background-color: var(--select-blue);
@@ -166,7 +166,7 @@ button {
     margin: 50px auto;
     padding: 30px;
     width: 50%;
-    min-height: 70%;
+    height: 70%;
     border-radius: 10px;
 }
 .options-container {
@@ -357,36 +357,6 @@ button {
 }
 #picAddBtn, #fileselecttrigger {
     cursor: pointer;
-}
-input[type="file"] {
-    max-width: 200px;
-}
-.rank-clone, .mtch-clone, .txt-clone, .mc-clone {
-    .small-ico {
-        color: var(--dark-text);
-    }
-}
-.import-card {
-    position: relative;
-    border-radius: 5px;
-    margin: 0px 5px;
-    padding: 10px;
-    background-color: var(--gray);
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.import-card:hover {
-    filter: brightness(125%);
-}
-.import-question-checkbox {
-    position: absolute;
-    right: 10px;
-}
-.import-sel {
-    position: absolute;
-    top: 15px;
-    left: 10px;
 }
 @media only screen and (max-width: 1025px) {
     .options-container {

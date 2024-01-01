@@ -27,7 +27,6 @@
                 // Sanitize name; check
                 $val = sanitize($val);
                 $result['name'] == $val && success();
-                if(filter($val) == true) fail("flagged");
                 // Check if name is already taken by another deck from same user
                 $sql = "SELECT * FROM decks WHERE name = ? AND owner = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
@@ -60,7 +59,6 @@
             case "data":
                 $val = json_decode($val, false);
                 $safeVal = sanitize($val);
-                if(filter($safeVal) == true) fail("flagged");
                 $safeVal = json_encode($safeVal);
                 $sql = "UPDATE decks SET data = ? WHERE id = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);

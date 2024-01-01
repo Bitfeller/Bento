@@ -3,8 +3,9 @@
 ### Feature Tasks:
 - Add more interactive games?
 
+- Allow cards to be shown both ways
 - Allow grouping; random selection for incorrect options
-- Allow images?
+- Allow more types of questions; matching? images?
 
 - Google account integration?
 
@@ -13,6 +14,8 @@
 
 
 
+- Allow cards to be shown both ways
+- Make inertia better + release to the public
 
 
 # All changes:

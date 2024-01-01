@@ -47,9 +47,6 @@
     font-size: 24pt;
     color: var(--accent-1);
 }
-.small-text {
-    font-size: 15px;
-}
 .op-input {
     width: 99%;
     margin: auto;

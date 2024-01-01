@@ -138,9 +138,6 @@ class Asteroid {
     let ntronly = parseFloat(paramList.get("m")) == 1;
     let randomTerms = parseFloat(paramList.get("sh")) == 1;
 
-    // Unsanitize
-    user.userdata.reviews = window.lib.recur_decode(user.userdata.reviews);
-
     let deckContnt = [];
     let updateReviews = false;
     for(let i = 0; i < decks.length; i++) {
@@ -162,14 +159,19 @@ class Asteroid {
         let r_keys = Object.keys(userReview);
         for(let i = 0; i < r_keys.length; i++) {
             let userCard = userReview[r_keys[i]];
-            let [q, last, box] = [userCard.q, userCard.last, userCard.box];
+            let q = r_keys[i];
+            let last = userCard.last;
+            let box = userCard.box;
             let deckCard = data.data.contnt[q];
+            if(ntronly && deckCard) {
+                let ntr = UserGateway.calculateNTR(box, last);
+                if(!ntr) delete data.data.contnt[q];
+            }
             if(!deckCard) {
                 delete userReview[r_keys[i]];
                 updateReviews = true;
                 updateIdx = true;
             }
-            if(ntronly && !UserGateway.calculateNTR(box, last)) delete data.data.contnt[q];
         }
         if(updateIdx) user.userdata.reviews[deck] = userReview;
         let d_keys = Object.keys(data.data.contnt);

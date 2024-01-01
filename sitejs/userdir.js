@@ -3,7 +3,7 @@ import { UserGateway } from '../server/client-gateway/user-gateway.js';
 const section = document.getElementsByClassName('holder')[0];
 const newPassword = document.getElementById('new-password');
 const resetPwdBtn = document.getElementById('changepwd');
-const successEl = document.getElementsByClassName('info-success')[0];
+const error = document.getElementsByClassName('info-error')[0];
 const passwordInputs = document.getElementsByClassName('password-inputs')[0];
 
 (async () => {
@@ -26,22 +26,23 @@ const passwordInputs = document.getElementsByClassName('password-inputs')[0];
         if(!success) {
             switch(data) {
                 case 'not valid':
-                    window.SHOW_ERROR("Looks like there's an issue on our side. Try again later.");
+                    error.innerHTML = "Looks like there's an issue on our side. Try again later.";
                 break;
                 case 'past time':
                     handled = true;
-                    window.SHOW_ERROR("For security purposes, there's only a 10 minute window between opening this site and resetting your password. Reload this page to restart that window, and then try again.");
+                    error.innerHTML = "For security purposes, there's only a 10 minute window between opening this site and resetting your password. Reload this page to restart that window, and then try again.";
                 break;
                 case 'no pwd':
-                    window.SHOW_ERROR("Did you specify a password?");
+                    error.innerHTML = "Did you specify a password?";
                 break;
                 default:
                     console.log(data);
-                    window.SHOW_ERROR("Looks like there's an issue on our side. Try again later.");
+                    error.innerHTML = "Looks like there's an issue on our side. Try again later.";
                 break;
             }
         } else {
-            successEl.innerHTML = "Success! Your password has been reset. You can close this page now and login normally when you're done.";
+            error.className = 'info-success';
+            error.innerHTML = "Success! Your password has been reset. You can close this page now and login normally when you're done.";
             handled = true;
         }
     });

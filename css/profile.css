@@ -151,20 +151,6 @@
     content: url("https://static.miraheze.org/hololivewiki/e/e6/Gawr_Gura_-_Portrait_VR_01.png");
     animation: ability-to-use 600s;
 }
-#global-back-box {
-    background-color: var(--gray);
-    padding: 5px;
-    border-radius: 5px;
-}
-#global-back-box {
-    filter: brightness(30%);
-    & * {
-        user-select: none;
-    }
-}
-#password, #email {
-    margin-top: 5px;
-}
 @keyframes ability-to-use {
     0% {opacity: 0;}
     10% {opacity: 0;}
