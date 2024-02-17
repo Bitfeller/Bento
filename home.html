@@ -4,20 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento - Home</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+
 </head>
 <body>
-    <nav class="menu">
-        <p class="menu-title">Bento</p>
-        <ul>
-            <li><a href="/home.html">Home</a></li>
-            <li><a href="/home.html">Discover</a></li>
-        </ul>
-    </nav>
-    <div id="body">
-        <p class="title">Bento</p>
-        <p class="main-desc">An advanced quizzing platform designed to help you practice.</p>
-        <button class="main-btn">Try now</button>
+    <div class="top-bar">
+        <div class="top-bar-side">
+            
+            <p onclick="location.href='/home.html'">
+                Bento! 🍱
+            </p>
+        </div>
+        <div class="top-bar-side">
+
+            <span class="material-symbols-outlined top-bar-icons" onclick="location.href='profile.html'"> <!-- Profile picture here! -->account_circle </span>
+            <!-- <p>Username</p> -->
+            <buton class="material-symbols-outlined top-bar-icons" onclick="location.href='settings.html'"> Tune</buttons>
+        </div>
+    </div>
+    <div class="main-bento">
+        <img src="bento.svg" class="bento-svg">
+
     </div>
 </body>
 </html>
+
+ <!-- onclick="location.href='game.html'" -->
