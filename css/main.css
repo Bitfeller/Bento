@@ -33,9 +33,27 @@ body {
     margin-top: 0.5vh;
 }
 .main-bento {
-    margin-top: 1%;
+    margin-top: 4%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .bento-svg {
-    margin-left: 7.5%;
-    width: 85%;
+    width: 90%;
+}
+.svg-button {
+    filter: drop-shadow(0 0 1rem black);
+    cursor: pointer; 
+    animation-name: sushi-shine;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;  
+    animation-fill-mode: forwards; 
+    transition: scale 1s;
+}
+.svg-button:hover {
+    scale: 1.02;
+    animation-play-state: paused;
+}
+@keyframes sushi-shine {
+    50% {filter: drop-shadow(0 0 2rem gold);}
 }
