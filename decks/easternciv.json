@@ -27,24 +27,26 @@
         "correctAnswer": "Austroasiatic"
     },
     {
-        "question": "The main countries are India, Bangladesh, Pakistan, Afghanistan, Nepal, Bhutan, Sri Lanka (Ceylon), and ",
-        "type": "input",
-        "correctAnswer": "maldives"
+        "question": "Which one of these features is north-west AND in India?",
+        "type": "selection",
+        "answers": ["Vindhyas", "Thar Desert", "Ghats", "Kunlun Desert"],
+        "correctAnswer": "Thar Desert"
     },
     {
-        "question": "The main countries are India, Bangladesh, Pakistan, Afghanistan, Nepal, Bhutan, Sri Lanka (Ceylon), and ",
+        "question": "What were the people who lived in the cities of Harappa and Mohenjo-Daro called?",
         "type": "input",
-        "correctAnswer": "maldives"
+        "correctAnswer": "dravidians"
     },
     {
-        "question": "The main countries are India, Bangladesh, Pakistan, Afghanistan, Nepal, Bhutan, Sri Lanka (Ceylon), and ",
-        "type": "input",
-        "correctAnswer": "maldives"
+        "question": "What does varna mean?",
+        "type": "selection",
+        "answers": ["color", "color and caste", "caste", "classes"],
+        "correctAnswer": "color and caste"
     },
     {
-        "question": "The main countries are India, Bangladesh, Pakistan, Afghanistan, Nepal, Bhutan, Sri Lanka (Ceylon), and ",
-        "type": "input",
-        "correctAnswer": "maldives"
+        "question": "Put the caste levels in the correct order.",
+        "type": "ranking",
+        "correctAnswer": ["Brahmins", "Kshatriyas", "Vaishyas", "Sudras"]
     },
     {
         "question": "The main countries are India, Bangladesh, Pakistan, Afghanistan, Nepal, Bhutan, Sri Lanka (Ceylon), and ",
