@@ -1,4 +1,4 @@
-import {Game} from "./library.js";
+import {Game} from "../main/library.js";
 
 var problem = document.getElementById("problem");
 var cont_a = document.getElementById("cont_a");
@@ -7,6 +7,20 @@ var fillBar = document.getElementById("fill-bar");
 
 var objs = [];
 var selected;
+
+// Ranking functionality (drag)
+var dragElements = [];
+var centroids = [];
+var dragging;
+var dragLine = document.createElement("div");
+dragLine.style = "display: flex; background-color: rgb(0, 150, 255); width: 100px; height: 1px;";
+function computeCenter(el) {
+    var rect = el.getBoundingClientRect();
+    return {
+        x: (rect.left + rect.right) / 2 + scrollX,
+        y: (rect.top + rect.bottom) / 2 + scrollY
+    }
+}
 
 function refresh() {
     if(Game.isActive() === false) {
@@ -23,8 +37,10 @@ function refresh() {
         objs[i].remove();
     }
     objs = [];
-    console.log(objs);
     selected = undefined;
+    dragElements = [];
+    centroids = [];
+    dragging = undefined;
     switch(data.type) {
         case "selection":
             for(var i = 0; i < data.answers.length; i++) {
@@ -52,8 +68,68 @@ function refresh() {
             objs.push(input);
             cont_a.appendChild(input);
         break;
-        case "timeline":
-
+        case "ranking":
+            var list = document.createElement("ul");
+            list.id = "ranking-list";
+            list.className = "ranking-list";
+            cont_a.appendChild(list);
+            objs.push(list);
+            var answerList = data.answer.slice();
+            for(var i = 0; i < data.answer.length; i++) {
+                var idx = Math.floor(Math.random() * (answerList.length - 1) + 0.5);
+                var item = answerList[idx];
+                var el = document.createElement("li");
+                el.className = "ranking-item";
+                el.id = "item"+i;
+                el.setAttribute("draggable", "true");
+                el.innerHTML = item;
+                answerList.splice(idx, 1);
+                list.appendChild(el);
+                el.addEventListener("dragstart", function(e) {
+                    dragging = this;
+                    this.style["background-color"] = "rgb(150, 200, 255)";
+                    list.prepend(dragLine);
+                });
+                el.addEventListener("dragend", function(e) {
+                    if(dragging !== this) {return;}
+                    this.style["background-color"] = "";
+                    dragLine.remove();
+                    var top;
+                    var bottom;
+                    var y = e.clientY;
+                    for(var i = 0; i < dragElements.length; i++) {
+                        if(centroids[i].y < y) {
+                            continue;
+                        } else if((i - 1) >= 0) {
+                            top = dragElements[i-1];
+                            bottom = dragElements[i];
+                            list.insertBefore(this, bottom);
+                            break;
+                        } else {
+                            top = dragElements[i];
+                            this.remove();
+                            list.prepend(this);
+                            break;
+                        }
+                    }
+                    if(!top) {
+                        this.remove();
+                        list.appendChild(this);
+                    }
+                    dragging = undefined;
+                    dragElements.sort((a, b) => {
+                        var centerA = computeCenter(a);
+                        var centerB = computeCenter(b);
+                        return centerA.y - centerB.y;
+                    })
+                    centroids = [];
+                    dragElements.forEach(function(val) {
+                        centroids.push(computeCenter(val));
+                    })
+                });
+                centroids.push(computeCenter(el));
+                dragElements.push(el);
+            }
         break;
         case "matching":
 
@@ -86,7 +162,6 @@ answerbtn.addEventListener("mousedown", function() {
                 refresh();
             break;
             case "input":
-                console.log(objs[0]);
                 if(objs[0].value === "") {
                     answerbtn.innerHTML = "No answer provided!";
                     window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
@@ -102,15 +177,59 @@ answerbtn.addEventListener("mousedown", function() {
                 }
                 refresh();
             break;
-            case "timeline":
-
+            case "ranking":
+                console.log("ranking");
+                var answerList = [];
+                for(var i = 0; i < dragElements.length; i++) {
+                    answerList.push(dragElements[i].innerHTML);
+                }
+                correct = Game.answerProblem(answerList);
+                if(correct) {
+                    answerbtn.innerHTML = "Correct!";
+                    window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
+                } else {
+                    answerbtn.innerHTML = "Wrong!";
+                    window.setTimeout(function() {answerbtn.innerHTML = "Answer";}, 1000);
+                }
+                refresh();
             break;
             case "matching":
 
             break;
         }
     }
-})
+});
+
+// Dragging event
+window.addEventListener("dragover", function(e) {
+    if(!dragging) {return;}
+    var list = document.getElementById("ranking-list");
+    if(dragLine.parentNode !== list) {
+        list.prepend(dragLine);
+    }
+    var top;
+    var bottom;
+    var y = e.clientY;
+    for(var i = 0; i < dragElements.length; i++) {
+        if(centroids[i].y < y) {
+            continue;
+        } else if((i - 1) >= 0) {
+            top = dragElements[i-1];
+            bottom = dragElements[i];
+            list.insertBefore(dragLine, bottom);
+            break;
+        } else {
+            top = dragElements[i];
+            dragLine.remove();
+            list.prepend(dragLine);
+            break;
+        }
+    }
+    if(!top) {
+        dragLine.remove();
+        list.appendChild(dragLine);
+    }
+});
 /*btn.addEventListener("mousedown", function() {
     if(Game.isActive() === false) {
         switch(Game.getMode()) {
@@ -120,7 +239,7 @@ answerbtn.addEventListener("mousedown", function() {
             case Game.modes.Input:
 
             break;
-            case Game.modes.Timeline:
+            case Game.modes.Ranking:
 
             break;
             case Game.modes.Matching:
