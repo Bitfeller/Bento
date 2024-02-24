@@ -1,0 +1,8 @@
+.ingredient-box {
+    width: 30%;
+    height: 25vh;
+    background-color: aqua;
+}
+#ingredient-flexbox {
+    margin: 1vh;
+}

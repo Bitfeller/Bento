@@ -51,7 +51,7 @@ body {
     transition: scale 1s;
 }
 .svg-button:hover {
-    scale: 1.02;
+    scale: 1.005;
     animation-play-state: paused;
 }
 @keyframes sushi-shine {
