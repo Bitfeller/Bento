@@ -1,20 +1,25 @@
 * {
     padding: 0;
     margin: 0;
+    font-size: 28pt;  
+    color: rgb(56, 38, 26);
+    border-color: rgb(56, 38, 26);
+}
+.logo {
+    color: white;
 }
 body {
-    background-color: rgba(200, 174, 125, 0.55);
+    background-color: rgba(221, 184, 146, 0.55);
     font-family: "Noto Sans", sans-serif;
-    font-size: 32pt;
 }
 .top-bar {
     color: white;
-    background-color: rgb(101, 69, 31);
+    background-color: rgb(127, 85, 57);
     display: flex;
     flex-direction: row;
     justify-content: space-between; 
     border-bottom: 10px;
-    border-color: rgb(101, 69, 31);
+    border-color: rgb(127, 85, 57);
     border-style: solid;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
