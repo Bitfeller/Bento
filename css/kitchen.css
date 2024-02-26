@@ -7,9 +7,29 @@
     border-style: solid;
     border-width: 5px;
     border-color: rgb(127, 85, 57);
+    display: flex;
 }
 #ingredient-flexbox {
     margin: 1vh;
     display: flex;
     flex-direction: row;
+}
+.ingredient-box-buttons-flexbox {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+}
+.ingredient-box-button {
+    border-radius: 15px;
+    margin-top: 4%;
+    height: 45%;
+    width: 100%;
+}
+.ingredient-box-description {
+    font-size: 10pt;
+}
+.ingredient-box-image {
+    margin-top: 2%;
+    margin-left: 2%;
+    border-radius: 15px;
 }

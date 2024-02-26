@@ -17,8 +17,8 @@ body {
     background-color: rgb(127, 85, 57);
     display: flex;
     flex-direction: row;
-    justify-content: space-between; 
-    border-bottom: 10px;
+    justify-content: space-between;
+    border-bottom: 5px;
     border-color: rgb(127, 85, 57);
     border-style: solid;
     border-bottom-left-radius: 15px;
@@ -38,7 +38,7 @@ body {
     margin-top: 0.5vh;
 }
 .main-bento {
-    margin-top: 4%;
+    margin-top: 1%;
     display: flex;
     align-items: center;
     justify-content: center;
