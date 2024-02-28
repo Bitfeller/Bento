@@ -1,6 +1,6 @@
 .ingredient-box {
     width: 28vw;
-    height: 30vh;
+    height: 28vh;
     background-color: rgb(221, 184, 146);
     border-radius: 20px;
     border-style: solid;
@@ -38,7 +38,7 @@ button {
     font-size: 1.7vw;
 }
 .ingredient-box-description {
-    font-size: 1vw;
+    font-size: 1.4vw;
     width: 19vw;
     height: 20vh;
 }
@@ -51,7 +51,9 @@ button {
 .ingredient-box-icon {
     float: left;
     margin-right: 10px;
-    margin-top: 5px;
+    margin-top: 6px;
+    height: 3vw;
+    width: 3vw;
 }
 .ingredient-box-description-flexbox {
     margin-left: 2%;
