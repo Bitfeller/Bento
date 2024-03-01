@@ -1,16 +1,28 @@
-.set-size-setting {
+.setting-box {
     border-radius: 20px;
     margin-left: 0.5%;
     margin-top: 2vh;
-    background-color: aqua;
+    background-color: rgb(221, 184, 146);
+    border-color: rgb(127, 85, 57);
+    border-width: 5px;
+    border-style: solid;
     display: flex;
     flex-direction: row;
     width: 50%;
-    height: 10vh;
-    gap: 2%
-
+    height: 8vh;
+    gap: 2%;
+    align-items: center;
 }
-.set-size-setting>p {
-    margin-left: 1%;
-    margin-top: 3%;
+.setting-box>p {
+    margin-left: 2%;
+}
+input[type="radio"] {
+  transform: scale(1.5);
+  margin-bottom: 1.5vh;
+}
+.radio-label {
+  margin-top: 1.5vh;
+}
+input[type="range"] {
+    cursor: grabbing;
 }
