@@ -7,22 +7,38 @@
     border-width: 5px;
     border-style: solid;
     display: flex;
-    flex-direction: row;
     width: 50%;
     height: 8vh;
     gap: 2%;
     align-items: center;
 }
+#vocab-repetition-setting {
+  flex-direction: column;
+  height: fit-content;
+  align-items: baseline;
+}
 .setting-box>p {
     margin-left: 2%;
 }
-input[type="radio"] {
-  transform: scale(1.5);
-  margin-bottom: 1.5vh;
+.setting-box>div {
+  display: flex;
+  flex-direction: row;
+  gap: 2vh;
 }
-.radio-label {
-  margin-top: 1.5vh;
+button {
+  background-color: bisque;
+  margin-left: 1vh;
 }
-input[type="range"] {
+input, button {
+  text-align: center; 
+  border-radius: 10px;
+}
+input[type="checkbox"], input[type="radio"] {
+  transform: scale(1.8);
+  margin-left: 2vh;
+}
+#set-size-slider {
     cursor: grabbing;
+    transform: scale(1);
 }
+
