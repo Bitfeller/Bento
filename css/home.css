@@ -13,6 +13,7 @@ body > div {
     cursor: pointer;
 }
 .bento-logo {
+    background-color: #E9E9ED;
     font-size: 30pt;
     border-radius: 10px;
 }
@@ -41,12 +42,39 @@ button {
     border-radius: 10px;
     border-width: 0px;
 }
+.bento-logo:hover, button:hover {
+    background-color: #E9E9ED;
+    animation-name: button-box-shadow;
+    animation-duration: 0.25s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards; 
+}
 .learning {
     font-size: 96pt;
     font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
 }
-#faster {
-    margin-left: 15%;
+#faster, #better {
+    /* margin-left: 15%; */
+}
+#faster-text {
+    animation-name: faster-vroom;
+    animation-duration: 5.5s;
+    animation-iteration-count: infinite;
+    animation-delay: 1s;
+    font-weight: bold;
+    font-style: italic;
+    position: relative;
+}
+#better-text {
+    transform: translate(200vh);
+    animation-name: better-vroom;
+    animation-duration: 5.5s;
+    animation-iteration-count: infinite;
+    animation-delay: 1s;   
+    font-weight: bold;
+    font-style: italic;
+    position: absolute;
+    top: 10%;
 }
 #sales-pitch {
     margin-top: 5%;
@@ -97,5 +125,49 @@ hr {
 #bottom-text {
     text-align: center;
 }
+#bottom-bar {
+    background: rgb(10,57,57);
+    background: linear-gradient(0deg, rgba(10,57,57,1) 0%, rgba(10,57,57,0) 100%); 
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin: 0;
+}
+#bottom-bar-text {
+    font-size: 18pt;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+@keyframes faster-vroom {
+    25% {transform: translate(500vh); visibility: hidden;}
+    26% {transform: translate(-150vh); visibility: hidden;}
+    27% {transform: translate(-90vh); visibility: hidden;}
+    40% {transform: translate(2vh); visibility: hidden;}
+    50% {transform: translate(0vh); visibility: hidden;}
+    75% {transform: translate(500vh); visibility: hidden;}
+    76% {transform: translate(-150vh); visibility: hidden;}
+    77% {transform: translate(-90vh); visibility: visible;}
+    90% {transform: translate(2vh);}
+    100% {transform: translate(0vh);}
+}
+@keyframes better-vroom {
+    25% {transform: translate(500vh); visibility: hidden;}
+    26% {transform: translate(-150vh); visibility: hidden;}
+    27% {transform: translate(-90vh); visibility: visible;}
+    40% {transform: translate(2vh); visibility: visible;}
+    50% {transform: translate(0vh); visibility: visible;}
+    75% {transform: translate(500vh); visibility: hidden;}
+    76% {transform: translate(-150vh); visibility: hidden;}
+    77% {transform: translate(-90vh); visibility: hidden;}
+    90% {transform: translate(2vh); visibility: hidden;}
+    100% {transform: translate(0vh); visibility: hidden;}
+}
+@keyframes button-box-shadow {
+    100% {box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);}
+}
+
 
 
