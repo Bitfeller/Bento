@@ -92,3 +92,7 @@ button {
     border-radius: 10px;
     background-color: white;
 }
+@keyframes animatetop {
+    from {transform: translate(0, -15vh); opacity: 0}
+    to {transform: translate(0, 0vh); opacity: 1}
+}

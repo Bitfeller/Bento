@@ -1,7 +1,6 @@
 * {
     padding: 0;
     margin: 0;
-    font-size: 24pt;
 }
 body {
     overflow-x: hidden;
@@ -61,7 +60,7 @@ input {
     animation-iteration-count: 1;
     animation-fill-mode: forwards; 
 }
-.modal-content > p,u,input,button {
+.modal-content {
     font-size: 20pt;
 }
 .modal-content > button {
@@ -99,24 +98,26 @@ input {
     font-size: 24pt;
     margin-bottom: 2.5%;
 }
-#bento-pitch > p,i {
+#bento-pitch > p {
     font-size: 24pt;
     margin-top: 1%;
     font-family: "Noto Sans", sans-serif;
 }
-#bento-description > p,i,b {
+.bento-description {
     font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
     text-align: center;
-    font-size: 30pt;
+    font-size: 30pt; 
 }
 .bento-pitch {
     margin-left: 15%;
     margin-top: 3%;
 }
-.bento-pitch > p,i {
+.bento-pitch {
     font-size: 30pt;
 }
 #call-to-action {
+    font-weight: bold;
+    text-align: center;
     padding-right: 5%;
     padding-top: 2%;
     font-size: 48pt;
@@ -141,6 +142,7 @@ hr {
 }
 #bottom-text {
     text-align: center;
+    font-size: 18pt;
 }
 #bottom-bar {
     background: rgb(10,57,57);
@@ -151,11 +153,41 @@ hr {
     margin: 0;
 }
 #bottom-bar-text {
-    font-size: 18pt;
+    font-size: 20pt;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%);
+}
+#bento-explainer {
+    margin-left: 10%;
+    display: flex;
+    flex-direction: column;
+    gap: 4vh;
+}
+.explainer-box {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    background-color: white;
+    margin: 0.25%;
+    padding: 2%;
+    font-size: 22pt;
+    border-radius: 10px;
+    width: 50%;
+}
+#top-explainer-box {
+    margin-left: 20%;
+}
+#mid-explainer-box {
+    margin-left: 40%;
+    flex-direction: column;
+}
+#bot-explainer-box {
+    margin-left: 5%;
+}
+.explainer-box > p {
+    margin-top: 7%;
 }
 @keyframes faster-vroom {
     25% {transform: translate(500vh); visibility: hidden;}
