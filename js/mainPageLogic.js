@@ -1,3 +1,5 @@
+// Modal code
+
 var signInModel = document.getElementById('signInModal');
 var signUpModal = document.getElementById('signUpModal');
 
@@ -29,4 +31,20 @@ window.onclick = function(event) {
         signInModel.style.display = "none";
         signUpModal.style.display = "none";
     }
-} 
+}
+
+// Scroll Animation Code
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+        } else {
+            entry.target.classList.remove('show');
+        }
+    })
+});
+
+const hiddenElements = document.querySelectorAll('.hidden');
+
+hiddenElements.forEach((element) => observer.observe(element));
