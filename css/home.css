@@ -30,7 +30,7 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 1%;
+    padding: 0.7%;
     border-style: solid;
     border-width: 0px;
 }
@@ -146,13 +146,14 @@ hr {
     transition: background-color 0.25s, box-shadow 0.25s;
 }
 #bottom-text {
+    margin-top: 10dvh;
     text-align: center;
     font-size: 18pt;
 }
 #bottom-bar {
     background: rgb(24,24,24);
     background: linear-gradient(180deg, rgba(24,24,24,0) 0%, rgba(50,27,65,1) 100%); 
-    height: 300px;
+    height: 30dvh;
     display: flex;
     position: relative;
     margin: 0;
@@ -163,6 +164,11 @@ hr {
     top: 50%;
     left: 50%;
     transform: translate(-50%);
+}
+#call-to-action-container {
+    display: flex;
+    flex-direction: column;
+    height: 64dvh;
 }
 #bento-explainer {
     margin-left: 10%;
@@ -217,6 +223,7 @@ hr {
     border-style: none;
 }
 #bot-explainer-box > img {
+    width: 50%;
     border-color: rgb(134, 215, 47);
 }
 .explainer-box > p {
@@ -268,8 +275,9 @@ hr {
 .modal-content {
     display: flex;
     flex-direction: column;
-    gap: 1dvh;   
-    background-color: white;
+    justify-content: space-between;
+    gap: 1dvh;
+    background-color: rgb(33, 33, 33);
     border-style: none;
     margin: 15% auto; 
     padding: 30px;
@@ -277,5 +285,16 @@ hr {
     border-radius: 10px;
     animation-name: animatetop;
     animation-duration: 0.4s;
+    height: 35dvh;
 }
-
+.modal-content > input {
+    font-size: 20pt;
+    background-color: rgb(56, 56, 56);
+    border-width: 2px;
+}
+.modal-content > button {
+    margin-top: 1.5dvh;
+    font-size: 16pt;
+    border-style: none;
+    background-color: rgb(200, 200, 200);
+}
