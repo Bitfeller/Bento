@@ -13,7 +13,6 @@ class UserGateway {
             if(res.length === 0) {return;}
             data = res;
             data.reviews = JSON.parse(data.reviews);
-            data.sets = JSON.parse(data.sets);
         }).catch(function(err) {
             if(err === "Error: none") {
                 return;

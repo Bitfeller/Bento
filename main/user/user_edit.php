@@ -119,11 +119,22 @@
                     mysqli_stmt_execute($stmt);
                     mysqli_stmt_close($stmt);
                 break;
+                case 'reviews':
+                    $sql = "UPDATE users SET reviews = \"?\" WHERE id = ?";
+                    $stmt = mysqli_stmt_init($conn);
+                    if(!mysqli_stmt_prepare($stmt, $sql)) {
+                        fail("stmt: ". mysqli_stmt_error($stmt));
+                    }
+                    mysqli_stmt_bind_param($stmt, "si", $val, $result['id']);
+                    mysqli_stmt_execute($stmt);
+                    mysqli_stmt_close($stmt);
+                    $_SESSION['reviews'] = $reviews;
+                break;
                 case 'remove':
                     if(!password_verify($verifpwd, $result['password'])) {
                         fail('invalid pwd');
                     }
-                    $sql = "UPDATE users SET reviews = '[]' AND decks = '[]' WHERE id = ?";
+                    $sql = "UPDATE users SET reviews = '[]' WHERE id = ?";
                     $stmt = mysqli_stmt_init($conn);
                     if(!mysqli_stmt_prepare($stmt, $sql)) {
                         fail("stmt: ". mysqli_stmt_error($stmt));
@@ -132,7 +143,6 @@
                     mysqli_stmt_execute($stmt);
                     mysqli_stmt_close($stmt);
                     $_SESSION['reviews'] = '[]';
-                    $_SESSION['decks'] = '[]';
                 break;
             }
             success();
