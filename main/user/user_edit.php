@@ -48,6 +48,22 @@
             }
             switch($setting) {
                 case 'username':
+                    // Make sure username is valid
+                    if(!preg_match("/^[A-Za-z0-9]*$/", $val)) {
+                        fail("invalid username");
+                    }
+                    // Check if username is taken
+                    $sql = "SELECT * FROM users WHERE username = ?";
+                    $stmt = mysqli_stmt_init($conn);
+                    if(!mysqli_stmt_prepare($stmt, $sql)) {
+                        fail("stmt: ". mysqli_stmt_error($stmt));
+                    }
+                    mysqli_stmt_bind_param($stmt, "s", $val);
+                    mysqli_stmt_execute($stmt);
+                    if(mysqli_fetch_assoc( mysqli_stmt_get_result($stmt) )) {
+                        fail("username taken");
+                    }
+                    // Set username
                     $sql = "UPDATE users SET username = ? WHERE id = ?";
                     $stmt = mysqli_stmt_init($conn);
                     if(!mysqli_stmt_prepare($stmt, $sql)) {
@@ -62,6 +78,22 @@
                     if(!password_verify($verifpwd, $result['password'])) {
                         fail('invalid pwd');
                     }
+                    // Make sure email is valid
+                    if(!filter_var($val, FILTER_VALIDATE_EMAIL)) {
+                        fail("invalid email");
+                    }
+                    // Check if username is taken
+                    $sql = "SELECT * FROM users WHERE email = ?";
+                    $stmt = mysqli_stmt_init($conn);
+                    if(!mysqli_stmt_prepare($stmt, $sql)) {
+                        fail("stmt: ". mysqli_stmt_error($stmt));
+                    }
+                    mysqli_stmt_bind_param($stmt, "s", $val);
+                    mysqli_stmt_execute($stmt);
+                    if(mysqli_fetch_assoc( mysqli_stmt_get_result($stmt) )) {
+                        fail("email taken");
+                    }
+                    // Set email
                     $sql = "UPDATE users SET email = ? AND verified = 0 WHERE id = ?";
                     $stmt = mysqli_stmt_init($conn);
                     if(!mysqli_stmt_prepare($stmt, $sql)) {
