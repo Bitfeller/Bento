@@ -50,7 +50,7 @@
             $_SESSION["username"] = $result["username"];
             $_SESSION["email"] = $result["email"];
             $_SESSION["reviews"] = $result["reviews"];
-            $_SESSION["sets"] = $result["sets"];
+            $_SESSION["decks"] = $result["decks"];
             $_SESSION["verified"] = $result["verified"] === 0 ? false : true;
             success();
         } catch (Exception $e) {

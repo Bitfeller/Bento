@@ -51,15 +51,15 @@
             }
             mysqli_stmt_close($stmt);
             // Create user
-            $sql = "INSERT INTO users (username, password, email, reviews, sets, verified) VALUES (?, ?, ?, ?, ?, false);";
+            $sql = "INSERT INTO users (username, password, email, reviews, decks, verified) VALUES (?, ?, ?, ?, ?, false);";
             $stmt = mysqli_stmt_init($conn);
             if(!mysqli_stmt_prepare($stmt, $sql)) {
                 fail("" . mysqli_stmt_error($stmt));
             }
             $reviews = "[]";
-            $sets = "[]";
+            $decks = "[]";
             $newPwd = password_hash($pwd, PASSWORD_DEFAULT);
-            mysqli_stmt_bind_param($stmt, "sssss", $username, $newPwd, $email, $reviews, $sets);
+            mysqli_stmt_bind_param($stmt, "sssss", $username, $newPwd, $email, $reviews, $decks);
             mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
             // Autologin user
@@ -84,7 +84,7 @@
             $_SESSION["username"] = $username;
             $_SESSION["email"] = $email;
             $_SESSION["reviews"] = $reviews;
-            $_SESSION["sets"] = $sets;
+            $_SESSION["decks"] = $decks;
             $_SESSION["verified"] = false;
             success();
         } catch (Exception $e) {
