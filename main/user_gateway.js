@@ -10,7 +10,10 @@ class UserGateway {
             }
             return res.json();
         }).then(function(res) {
-            if(res.length === 0) {return;}
+            if(res.length === 0) {
+                data = [];
+                return;
+            }
             data = res;
             data.reviews = JSON.parse(data.reviews);
         }).catch(function(err) {
