@@ -71,7 +71,7 @@
                     if(!mysqli_stmt_prepare($stmt, $sql)) {
                         fail("stmt: ". mysqli_stmt_error($stmt));
                     }
-                    mysqli_stmt_bind_param($stmt, "si", $val, $result['id']);
+                    mysqli_stmt_bind_param($stmt, "si", $val, $_SESSION['uid']);
                     mysqli_stmt_execute($stmt);
                     mysqli_stmt_close($stmt);
                     $_SESSION['username'] = $val;
@@ -102,7 +102,7 @@
                     if(!mysqli_stmt_prepare($stmt, $sql)) {
                         fail("stmt: ". mysqli_stmt_error($stmt));
                     }
-                    mysqli_stmt_bind_param($stmt, "si", $val, $result['id']);
+                    mysqli_stmt_bind_param($stmt, "si", $val, $_SESSION['uid']);
                     mysqli_stmt_execute($stmt);
                     mysqli_stmt_close($stmt);
                     $_SESSION['email'] = $val;
@@ -118,7 +118,7 @@
                         fail("stmt: ". mysqli_stmt_error($stmt));
                     }
                     $newPwd = password_hash($val, PASSWORD_DEFAULT);
-                    mysqli_stmt_bind_param($stmt, "si", $newPwd, $result['id']);
+                    mysqli_stmt_bind_param($stmt, "si", $newPwd, $_SESSION['uid']);
                     mysqli_stmt_execute($stmt);
                     mysqli_stmt_close($stmt);
                 break;
@@ -128,7 +128,7 @@
                     if(!mysqli_stmt_prepare($stmt, $sql)) {
                         fail("stmt: ". mysqli_stmt_error($stmt));
                     }
-                    mysqli_stmt_bind_param($stmt, "si", $val, $result['id']);
+                    mysqli_stmt_bind_param($stmt, "si", $val, $_SESSION['uid']);
                     mysqli_stmt_execute($stmt);
                     mysqli_stmt_close($stmt);
                     $_SESSION['reviews'] = $reviews;
@@ -142,7 +142,7 @@
                     if(!mysqli_stmt_prepare($stmt, $sql)) {
                         fail("stmt: ". mysqli_stmt_error($stmt));
                     }
-                    mysqli_stmt_bind_param($stmt, "i", $result['id']);
+                    mysqli_stmt_bind_param($stmt, "i", $_SESSION['uid']);
                     mysqli_stmt_execute($stmt);
                     mysqli_stmt_close($stmt);
                     $_SESSION['reviews'] = '[]';
