@@ -51,6 +51,7 @@
             $_SESSION["email"] = $result["email"];
             $_SESSION["reviews"] = $result["reviews"];
             $_SESSION["verified"] = $result["verified"] === 0 ? false : true;
+            mysqli_stmt_close($stmt);
             success();
         } catch (Exception $e) {
             fail("exception: " . $e->getMessage());
