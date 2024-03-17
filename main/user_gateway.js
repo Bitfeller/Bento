@@ -104,7 +104,7 @@ class UserGateway {
             })
         }).then(function(res) {
             if(!res.ok) {
-                console.log("backend: signup() received an improper response when editing new user.");
+                console.log("backend: editUser() received an improper response when editing new user.");
                 throw new Error("none");
             }
             return res.json();
