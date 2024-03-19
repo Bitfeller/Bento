@@ -1,5 +1,5 @@
 ## TO DO
-- work on deck php scripts
-- work on test_deck.html
-- work on test_deck.js
-- set up deck database + system
+- create handling for empty values in php scripts
+- update viewdata value
+- create verification system for emails
+- create password reset system for accounts
