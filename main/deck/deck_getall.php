@@ -1,35 +1,30 @@
 <?php
-    // Essential functions
-    function fail($reason) {
-        echo json_encode(['status' => 'error', 'reason' => $reason]);
-        exit();
+    require_once '../funcs.php';
+    validate_request();
+    // Make sure session exists
+    session_start();
+    if(!isset($_SESSION['uid'])) {
+        fail("no session");
     }
-    function access_fail() {
-        echo "Invalid.";
-        exit();
+    try {
+        require_once '../dbh.php';
+        // Fetch decks
+        $sql = "SELECT * FROM decks WHERE public = ? OR owner = ?;";
+        $stmt = $conn->prepare($sql);
+        $public = 1;
+        $stmt->bind_param("is", $public, $_SESSION['username']);
+        $stmt->execute();
+        $raw_res = $stmt->get_result();
+        $decks = [];
+        while($row = mysqli_fetch_assoc($raw_res)) {
+            if($row['owner'] !== $_SESSION['username']) {
+                unset($row['viewdata']);
+                unset($row['public']);
+            }
+            $decks[] = $row;
+        }
+        $stmt->close();
+        success(json_encode($decks));
+    } catch(Exception $e) {
+        fail("exception: " . $e->getMessage());
     }
-    // Make valid request
-    $content_type = $_SERVER['CONTENT_TYPE'];
-    if($content_type !== 'application/json') {
-        access_fail();
-    }
-    // Fetch decks
-    require_once 'deck_dbh.php';
-    if(!$conn) {
-        fail("conn: " . mysqli_connect_error());
-    }
-    $sql = "SELECT * FROM decks WHERE public = 1";
-    $stmt = mysqli_stmt_init($conn);
-    if(!mysqli_stmt_prepare($stmt, $sql)) {
-        fail("stmt: ". mysqli_stmt_error($stmt));
-    }
-    mysqli_stmt_execute($stmt);
-    $raw_result = mysqli_stmt_get_result($stmt);
-    $decks = [];
-    while($row = mysqli_fetch_assoc($raw_result)) {
-        unset($row->viewdata);
-        unset($row->public);
-        $decks[] = $row;
-    }
-    mysqli_stmt_close($stmt);
-    echo json_encode(['status' => 'success', 'data' => json_encode($decks)]);
