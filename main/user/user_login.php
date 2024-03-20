@@ -27,6 +27,7 @@
         $_SESSION['email'] = $result['email'];
         $_SESSION['reviews'] = $result['reviews'];
         $_SESSION['verified'] = $result['verified'] === 0 ? false : true;
+        $_SESSION['creation_date'] = $result['creation_date'];
         $stmt->close();
         success();
     } catch(Exception $e) {
