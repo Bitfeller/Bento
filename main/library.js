@@ -1,8 +1,16 @@
-var Game = (function() {
+import {UserGateway} from './user_gateway.js';
+import {DeckGateway} from './deck_gateway.js';
+var Game = (async function() {
 
-    var deck = sessionStorage.getItem("deck") || "";
-    var deckSize = parseInt(localStorage.getItem("set-size"+deck)) || 5;
-    var cardRepeat = parseInt(localStorage.getItem("cardrep"+deck)) || 1;
+    var [success, user] = await UserGateway.getuser();
+    if(!success) {
+        return;
+    }
+    
+    var deck = "";
+    var deckSize = 5;
+    var cardRepeat = 1;
+    var curr_p = 0.6, ls_p = 0.3, lls_p = 0.1;
     var deckData;
     var currentSet = 0;
     
@@ -42,9 +50,9 @@ var Game = (function() {
             return false;
         }
         // percentages
-        var curr = 0.6;
-        var ls = 0.3;
-        var lls = 0.1;
+        var curr = curr_p;
+        var ls = ls_p;
+        var lls = lls_p;
         // if current set isn't equal to deckSize (make sure there are at least 3 sets; otherwise, don't override)
         var len = deckData.length - currentSet * deckSize;
         // if no last set OR last last set
@@ -178,44 +186,49 @@ var Game = (function() {
         card = 0;
     }
 
-    function reload(onload) {
+    async function reload() {
         // If a deck name actually exists
-        if(deck !== "") {
-            // Fetch deck
-            fetch("./decks/"+deck+".json", {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+        if(deck && typeof(deck) == "number") {
+            var [success, data] = await DeckGateway.get(deck);
+            if(!success) {
+                return false;
+            }
+            deckData = data.deckData;        
+            var userReview;
+            for(var i = 0; i < user.reviews.length; i++) {
+                if(user.reviews[i].deckid == deck) {
+                    userReview = user.reviews[i];
                 }
-            }).then(function(res) {
-                if(!res.ok) {
-                    console.error("Failed to fetch deck.");
-                }
-                return res.json();
-            }).then(function(res) {
-                // Make sure deck actually exists and has something
-                deckData = res;
-                if(!deckData || deckData.length === 0) {
-                    console.error("No deck set with the associated name exists.");
-                    return;
-                }
-                // Set currentSet to get user's previous progress
-                currentSet = (localStorage.getItem("decksp_"+deck) || 0) % Math.ceil(deckData.length / deckSize);
-                deckSize = parseInt(localStorage.getItem("set-size"+deck)) || 5;
-                cardRepeat = parseInt(localStorage.getItem("cardrep"+deck)) || 2;
-                card = 0;
-                newRandomDeck();
-            }).then(function(res) {
-                onload();
-            }).catch(function(err) {
-                console.log("FETCH ERROR: " + err);
-            });
+            }
+            if(!userReview) {
+                userReview = {
+                    deckid: deck,
+                    currentSet: 0,
+                    deckSize: 0,
+                    cardRepeat: 2,
+                    curr_p: 0.6,
+                    ls_p: 0.3,
+                    lls_p: 0.1
+                };
+                user.reviews.push(userReview);
+                var json = JSON.stringify(user.reviews);
+                await UserGateway.editUser("reviews", json);
+            }
+            currentSet = userReview.currentSet;
+            deckSize = userReview.deckSize;
+            cardRepeat = userReview.cardRepeat;
+            curr_p = userReview.curr_p;
+            ls_p = userReview.ls_p;
+            lls_p = userReview.lls_p;
+            card = 0;
+            return true;
+        } else {
+            return false;
         }
     }
-    reload();
-    function setDeck(deckName, onload) {
+    async function setDeck(deckName) {
         deck = deckName;
-        reload(onload);
+        return await reload();
     }
     function getDeck() {
         return deck;
