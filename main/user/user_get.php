@@ -6,6 +6,6 @@
         fail('no session');
     } else {
         success(
-            ["uid"=>$_SESSION['uid'], "username"=>$_SESSION['username'], "email"=>$_SESSION['email'], "reviews"=>$_SESSION['reviews'], "verified"=>$_SESSION['verified']]
+            ["uid"=>$_SESSION['uid'], "username"=>$_SESSION['username'], "email"=>$_SESSION['email'], "reviews"=>$_SESSION['reviews'], "verified"=>$_SESSION['verified'], "creation_date"=>$_SESSION['creation_date']]
         );
     }

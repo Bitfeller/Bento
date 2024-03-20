@@ -26,14 +26,26 @@
         }
         $stmt->close();
         // Create user
-        $sql = "INSERT INTO users (username, password, email, reviews, verified) VALUES (?, ?, ?, ?, ?);";
+        $sql = "INSERT INTO users (username, password, email, reviews, verified, verif, creation_date) VALUES (?, ?, ?, ?, ?, ?, ?);";
         $stmt = $conn->prepare($sql);
         $reviews = '[]';
         $verified = 0;
+        $date = date("Y-m-d");
+        // Generate verifStr
+        $verifStr = '';
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-=_+[]\\{}|;\':",./<>?`~';
+        $len = strlen($chars);
+        for($i = 0; $i < $len; $i++) {
+            $verifStr .= $chars[random_int(0, $len-1)];
+        }
+        // Generate hashed pwd + verifStr
         $newPwd = password_hash($pwd, PASSWORD_DEFAULT);
-        $stmt->bind_param("ssssi", $username, $newPwd, $email, $reviews, $verified);
+        $hashVerif = password_hash($verifStr, PASSWORD_DEFAULT);
+        // Bind new params
+        $stmt->bind_param("ssssiss", $username, $newPwd, $email, $reviews, $verified, $hashVerif, $date);
         $stmt->execute();
         $stmt->close();
+        // mail($email, "Welcome to Bento!", "Hey there! Welcome to Bento.\r\nWe'd like to make sure you get the best experience, so we'd like to\r\nmake sure we've got the right email. To verify your email, please visit:\r\nhttps://valleynas.uk", "From: coolstuff@bento.com");
         // Autologin user
         $sql = "SELECT * FROM users WHERE username = ? OR email = ?;";
         $stmt = $conn->prepare($sql);
@@ -54,6 +66,7 @@
         $_SESSION["email"] = $email;
         $_SESSION["reviews"] = $reviews;
         $_SESSION["verified"] = false;
+        $_SESSION['creation_date'] = $date;
         $stmt->close();
         success();
     } catch(Exception $e) {

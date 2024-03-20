@@ -5,7 +5,7 @@ class DeckGateway {
     static async getall() {
         var success, data;
         await fetch("../main/deck/deck_getall.php", {
-            method: 'get',
+            method: 'search',
             headers: {
                 'Content-Type': 'application/json'
             }
