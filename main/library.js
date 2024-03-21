@@ -1,11 +1,8 @@
 import {UserGateway} from './user_gateway.js';
 import {DeckGateway} from './deck_gateway.js';
-var Game = (async function() {
+var Game = (function() {
 
-    var [success, user] = await UserGateway.getuser();
-    if(!success) {
-        return;
-    }
+    var user;
     
     var deck = "";
     var deckSize = 5;
@@ -189,11 +186,18 @@ var Game = (async function() {
     async function reload() {
         // If a deck name actually exists
         if(deck && typeof(deck) == "number") {
+            // Get user
+            var [success, userData] = await UserGateway.getuser();
+            if(!success) {
+                return false;
+            }
+            user = userData;
+            // Get deck
             var [success, data] = await DeckGateway.get(deck);
             if(!success) {
                 return false;
             }
-            deckData = data.deckData;        
+            deckData = data.data.deckData;        
             var userReview;
             for(var i = 0; i < user.reviews.length; i++) {
                 if(user.reviews[i].deckid == deck) {
@@ -204,7 +208,7 @@ var Game = (async function() {
                 userReview = {
                     deckid: deck,
                     currentSet: 0,
-                    deckSize: 0,
+                    deckSize: 5,
                     cardRepeat: 2,
                     curr_p: 0.6,
                     ls_p: 0.3,
@@ -221,6 +225,7 @@ var Game = (async function() {
             ls_p = userReview.ls_p;
             lls_p = userReview.lls_p;
             card = 0;
+            newRandomDeck();
             return true;
         } else {
             return false;

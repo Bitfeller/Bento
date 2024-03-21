@@ -92,6 +92,7 @@ class DeckGateway {
                 data = res.reason;
             } else {
                 data = JSON.parse(res.data);
+                data.data = JSON.parse(data.data);
             }
         }).catch(function(err) {
             if(err == "none") {return;}
