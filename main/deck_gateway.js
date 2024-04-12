@@ -46,7 +46,7 @@ class DeckGateway {
             body: JSON.stringify({
                 name: name,
                 data: data,
-                public: parseInt(isPublic)
+                public: (false ? 0 : 1)
             })
         }).then(function(res) {
             if(!res.ok) {
