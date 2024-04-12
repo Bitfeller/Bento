@@ -289,7 +289,6 @@ var Game = (function() {
                 for(var i = 0; i < answer.length; i++) {
                     if(answer[i] !== problemData.answer[i]) {
                         isCorrect = false;
-                        console.log(answer[i], problemData.answer[i]);
                     }
                 }
                 return isCorrect ? correct() : incorrect();

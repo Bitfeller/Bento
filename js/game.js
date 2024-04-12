@@ -1,4 +1,5 @@
 import {Game} from "../main/library.js";
+import {UserGateway} from "../main/user_gateway.js";
 var problem = document.getElementById("problem");
 var cont_a = document.getElementById("cont_a");
 var answerbtn = document.getElementById("answerbtn");
@@ -94,7 +95,7 @@ function refresh() {
                     dragLine.remove();
                     var top;
                     var bottom;
-                    var y = e.clientY;
+                    var y = e.pageY;
                     for(var i = 0; i < dragElements.length; i++) {
                         if(centroids[i].y < y) {
                             continue;
@@ -174,7 +175,6 @@ answerbtn.addEventListener("mousedown", function() {
                 refresh();
             break;
             case "ranking":
-                console.log("ranking");
                 var answerList = [];
                 for(var i = 0; i < dragElements.length; i++) {
                     answerList.push(dragElements[i].innerHTML);
@@ -205,7 +205,7 @@ window.addEventListener("dragover", function(e) {
     }
     var top;
     var bottom;
-    var y = e.clientY;
+    var y = e.pageY;
     for(var i = 0; i < dragElements.length; i++) {
         if(centroids[i].y < y) {
             continue;
@@ -228,7 +228,12 @@ window.addEventListener("dragover", function(e) {
 });
 // Main
 async function main() {
-    await Game.setDeck(1);
+    var [success, data] = await UserGateway.getuser();
+    if(!success && data == "no session") {
+        problem.innerHTML = "You must be logged in to use Bento Learn!<br>This is a TEST version. To log in, visit this link:<br>localhost/html/test_user.html<br>login problems? contact me (you know who i am)";
+        return;
+    }
+    await Game.setDeck(6);
     refresh();
 }
 main();
