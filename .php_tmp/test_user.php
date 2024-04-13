@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>user test</title>
     <script type="module" src="../js/test_user.js" type="text/javascript"></script>
+    <?php require_once "globalReqs.php"?>
 </head>
 <body>
+    <?php require_once "header.php"?>
     <p>this is a testing software for making, logging into, fetching, and signing out of acc</p>
     <p>perfectly functional</p>
     <p>do not doubt</p>
