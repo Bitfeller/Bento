@@ -4,17 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento - Home</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <?php require_once "globalReqs.php"?>
     <link rel="stylesheet" href="/css/main.css"/>
-    <link rel="stylesheet" href="/css/global.css"/>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
-
 </head>
 <body>
-    <header class=header><img alt="Bento! Logo"class=logo height=40px onclick='location.href="/html/"'src="/img/bento logo white.svg"><div class=right-header><span class="header-nav material-symbols-outlined">account_circle</span> <span class="header-nav material-symbols-outlined">tune</span></div></header>
+    <?php require_once "header.php"?>       
     <div class="main-bento">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 1080" class="bento-svg">
             <g>
@@ -266,5 +260,3 @@
     </div>
 </body>
 </html>
-
- <!-- onclick="location.href='game.html'" -->
