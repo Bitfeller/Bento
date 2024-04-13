@@ -20,9 +20,9 @@ function computeCenter(el) {
 function initMc(newDiv, n) {
     newDiv.innerHTML = `
         <div id='c${n}-s' class='card-sel'>
-            <button id='c${n}-s-1' class='selbtn selbtn-select'>Multiple Choice</button>
-            <button id='c${n}-s-2' class='selbtn selbtn-noselect'>Text</button>
-            <button id='c${n}-s-3' class='selbtn selbtn-noselect'>Ranking</button>
+            <button id='c${n}-s-1' class='mcbtn selbtn selbtn-select'>Multiple Choice</button>
+            <button id='c${n}-s-2' class='txtbtn selbtn selbtn-noselect'>Text</button>
+            <button id='c${n}-s-3' class='rankbtn selbtn selbtn-noselect'>Ranking</button>
         </div>
         <div id='c${n}-h' class='card-main'>
             Question: <input type='input' id='c${n}-h-p' class='question' placeholder='The question...'><br>
@@ -53,13 +53,13 @@ function initMc(newDiv, n) {
         <button id='c${n}-del' class='card-del'>Delete Card</button>
     `;
     // Set up selector
-    document.getElementById(`c${n}-s-2`).addEventListener("mousedown", function() {
+    newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
         initTxt(newDiv, n);
     });
-    document.getElementById(`c${n}-s-3`).addEventListener("mousedown", function() {
+    newDiv.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
         initRanking(newDiv, n);
     });
-    document.getElementById(`c${n}-del`).addEventListener("mousedown", function() {
+    newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
         if(cards.length <= 1) return;
         var idx = cards.indexOf(newDiv);
         if(idx > -1) {
@@ -68,16 +68,15 @@ function initMc(newDiv, n) {
         newDiv.remove();
     });
     // Set up multiple choice card functionality
-    var cardmc = document.getElementById(`c${n}-h-b`);
-    var addBtn = document.getElementById(`c${n}-h-b-add`);
+    var cardmc = newDiv.getElementsByClassName('card-mc')[0];
+    var addBtn = newDiv.getElementsByClassName('mc-add')[0];
     addBtn.addEventListener("mousedown", function() {
         var newOp = document.createElement("div");
-        newOp.id = `c${n}-h-b-a`;
         newOp.className = "mc-option";
         newOp.innerHTML = `
-            <input type='input' id='c${n}-h-b-a-i' class='mc-option-input' placeholder='...'>
-            <button id='c${n}-h-b-a-d' class='mc-option-del'>X</button>
-            <button id='c${n}-h-b-a-c' class='mc-option-correct mc-option-nosel'>C</button>
+            <input type='input' class='mc-option-input' placeholder='...'>
+            <button class='mc-option-del'>X</button>
+            <button class='mc-option-correct mc-option-nosel'>C</button>
         `;
         cardmc.appendChild(newOp);
         var delBtn = newOp.getElementsByClassName("mc-option-del")[0];
@@ -125,9 +124,9 @@ function initMc(newDiv, n) {
 function initTxt(newDiv, n) {
     newDiv.innerHTML = `
         <div id='c${n}-s' class='card-sel'>
-            <button id='c${n}-s-1' class='selbtn selbtn-noselect'>Multiple Choice</button>
-            <button id='c${n}-s-2' class='selbtn selbtn-select'>Text</button>
-            <button id='c${n}-s-3' class='selbtn selbtn-noselect'>Ranking</button>
+            <button id='c${n}-s-1' class='mcbtn selbtn selbtn-noselect'>Multiple Choice</button>
+            <button id='c${n}-s-2' class='txtbtn selbtn selbtn-select'>Text</button>
+            <button id='c${n}-s-3' class='rankbtn selbtn selbtn-noselect'>Ranking</button>
         </div>
         <div id='c${n}-h' class='card-main'>
             Question: <input type='input' id='c${n}-h-p' class='question' placeholder='The question...'><br>
@@ -136,13 +135,13 @@ function initTxt(newDiv, n) {
         <button id='c${n}-del' class='card-del'>Delete Card</button>
     `;
     // Set up selector
-    document.getElementById(`c${n}-s-1`).addEventListener("mousedown", function() {
+    newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
         initMc(newDiv, n);
     });
-    document.getElementById(`c${n}-s-3`).addEventListener("mousedown", function() {
+    newDiv.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
         initRanking(newDiv, n);
     });
-    document.getElementById(`c${n}-del`).addEventListener("mousedown", function() {
+    newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
         if(cards.length <= 1) return;
         var idx = cards.indexOf(newDiv);
         if(idx > -1) {
@@ -154,9 +153,9 @@ function initTxt(newDiv, n) {
 function initRanking(newDiv, n) {
     newDiv.innerHTML = `
         <div id='c${n}-s' class='card-sel'>
-            <button id='c${n}-s-1' class='selbtn selbtn-noselect'>Multiple Choice</button>
-            <button id='c${n}-s-2' class='selbtn selbtn-noselect'>Text</button>
-            <button id='c${n}-s-3' class='selbtn selbtn-select'>Ranking</button>
+            <button id='c${n}-s-1' class='mcbtn selbtn selbtn-noselect'>Multiple Choice</button>
+            <button id='c${n}-s-2' class='txtbtn selbtn selbtn-noselect'>Text</button>
+            <button id='c${n}-s-3' class='rankbtn selbtn selbtn-select'>Ranking</button>
         </div>
         <div id='c${n}-h' class='card-main'>
             Question: <input type='input' id='c${n}-h-p' class='question' placeholder='The question...'><br>
@@ -175,13 +174,13 @@ function initRanking(newDiv, n) {
         <button id='c${n}-del' class='card-del'>Delete Card</button>
     `;
     // Set up selector
-    document.getElementById(`c${n}-s-1`).addEventListener("mousedown", function() {
+    newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
         initMc(newDiv, n);
     });
-    document.getElementById(`c${n}-s-2`).addEventListener("mousedown", function() {
+    newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
         initTxt(newDiv, n);
     });
-    document.getElementById(`c${n}-del`).addEventListener("mousedown", function() {
+    newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
         if(cards.length <= 1) return;
         var idx = cards.indexOf(newDiv);
         if(idx > -1) {
@@ -190,16 +189,15 @@ function initRanking(newDiv, n) {
         newDiv.remove();
     });
     // Set up ranking card functionality
-    var rankingList = document.getElementById(`c${n}-h-r`);
-    var addBtn = document.getElementById(`c${n}-h-add`);
+    var rankingList = newDiv.getElementsByClassName('ranking-list')[0];
+    var addBtn = newDiv.getElementsByClassName('rank-add')[0];
     addBtn.addEventListener("mousedown", function() {
         var item = document.createElement("div");
-        item.id = `c${n}-h-r-e`;
         item.className = 'ranking-item';
         item.setAttribute("draggable", true);
         item.innerHTML = `
-            <input type='text' id='c${n}-h-r-e-i' class='ranking-item-txt' placeholder='...'>
-            <button id='c${n}-h-r-e-d' class='ranking-item-del'>X</button>
+            <input type='text' class='ranking-item-txt' placeholder='...'>
+            <button class='ranking-item-del'>X</button>
         `;
         rankingList.appendChild(item);
         item.addEventListener("dragstart", function() {
@@ -311,61 +309,87 @@ createBtn.addEventListener("mousedown", async function() {
     for(var i = 0; i < cards.length; i++) {
         var card = cards[i];
         var type = card.getElementsByClassName('selbtn-select')[0];
-        switch(type.id) {
-            case `c${i+1}-s-1`:
-                var cardData = {
-                    question: '',
-                    type: 'selection',
-                    answers: [],
-                    correctAnswer: ''
-                };
-                var question = card.getElementsByClassName('question')[0];
-                cardData.question = question.value;
-                var answers = card.getElementsByClassName('mc-option');
-                for(var j = 0; j < answers.length; j++) {
-                    var answer = answers[j].getElementsByClassName('mc-option-input')[0];
-                    cardData.answers.push(answer.value);
-                    var isCorrect = answers[j].getElementsByClassName('mc-option-sel');
-                    if(isCorrect.length > 0) {
-                        cardData.correctAnswer = answer.value;
-                    }
+        if(!type) {
+            console.log("how dare you attempt to modify the html. how malevolent of you.\n\n(to summarize - the system encountered an error parsing the cards and has associated it with an unexpected change in the HTML)");
+            return;
+        }
+        var classNames = type.className.split(" ");
+        if(classNames.includes('mcbtn')) {
+            var cardData = {
+                question: '',
+                type: 'selection',
+                answers: [],
+                correctAnswer: ''
+            };
+            var question = card.getElementsByClassName('question')[0];
+            if(!question) {
+                console.log("how dare you attempt to modify the html. how malevolent of you.\n\n(to summarize - the system encountered an error parsing the cards and has associated it with an unexpected change in the HTML)");
+                return;
+            }
+            cardData.question = question.value;
+            var answers = card.getElementsByClassName('mc-option');
+            if(answers.length < 2) {
+                console.log("how dare you attempt to modify the html. how malevolent of you.\n\n(to summarize - the system encountered an error parsing the cards and has associated it with an unexpected change in the HTML)");
+                return;
+            }
+            for(var j = 0; j < answers.length; j++) {
+                var answer = answers[j].getElementsByClassName('mc-option-input')[0];
+                if(!answer) {
+                    console.log("how dare you attempt to modify the html. how malevolent of you.\n\n(to summarize - the system encountered an error parsing the cards and has associated it with an unexpected change in the HTML)");
+                    return;
                 }
-                data.push(cardData);
-            break;
-            case `c${i+1}-s-2`:
-                var cardData = {
-                    question: '',
-                    type: 'input',
-                    correctAnswer: ''
-                };
-                var question = card.getElementsByClassName('question')[0];
-                var answer = card.getElementsByClassName('txt-answer')[0];
-                cardData.question = question.value;
-                cardData.correctAnswer = answer.value;
-                data.push(cardData);
-            break;
-            case `c${i+1}-s-3`:
-                var cardData = {
-                    question: '',
-                    type: 'ranking',
-                    answer: []
-                };
-                var question = card.getElementsByClassName('question')[0];
-                cardData.question = question.value;
-                var items = card.getElementsByClassName('ranking-item');
-                for(var j = 0; j < items.length; j++) {
-                    var item = items[j];
-                    var txt = item.getElementsByClassName('ranking-item-txt')[0];
-                    cardData.answer.push(txt.value);
+                cardData.answers.push(answer.value);
+                var isCorrect = answers[j].getElementsByClassName('mc-option-sel');
+                if(isCorrect.length > 0) {
+                    cardData.correctAnswer = answer.value;
                 }
-                data.push(cardData);
-            break;
+            }
+            data.push(cardData);
+        } else if(classNames.includes('txtbtn')) {
+            var cardData = {
+                question: '',
+                type: 'input',
+                correctAnswer: ''
+            };
+            var question = card.getElementsByClassName('question')[0];
+            var answer = card.getElementsByClassName('txt-answer')[0];
+            if(!question || !answer) {
+                console.log("how dare you attempt to modify the html. how malevolent of you.\n\n(to summarize - the system encountered an error parsing the cards and has associated it with an unexpected change in the HTML)");
+                return;
+            }
+            cardData.question = question.value;
+            cardData.correctAnswer = answer.value;
+            data.push(cardData);
+        } else if(classNames.includes('rankbtn')) {
+            var cardData = {
+                question: '',
+                type: 'ranking',
+                answer: []
+            };
+            var question = card.getElementsByClassName('question')[0];
+            if(!question) {
+                console.log("how dare you attempt to modify the html. how malevolent of you.\n\n(to summarize - the system encountered an error parsing the cards and has associated it with an unexpected change in the HTML)");
+                return;
+            }
+            cardData.question = question.value;
+            var items = card.getElementsByClassName('ranking-item');
+            for(var j = 0; j < items.length; j++) {
+                var item = items[j];
+                var txt = item.getElementsByClassName('ranking-item-txt')[0];
+                if(!txt) {
+                    console.log("how dare you attempt to modify the html. how malevolent of you.\n\n(to summarize - the system encountered an error parsing the cards and has associated it with an unexpected change in the HTML)");
+                    return;
+                }
+                cardData.answer.push(txt.value);
+            }
+            data.push(cardData);
         }
     }
     data = {
         description: description.value,
         deckData: data
     };
+    // console.log(name.value, JSON.stringify(data), isPublic.checked);
     var res = await DeckGateway.add(name.value, JSON.stringify(data), isPublic.checked);
     console.log(res);
 });
