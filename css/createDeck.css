@@ -1,0 +1,13 @@
+.mc-option-sel {
+    background-color: rgb(0, 150, 255);
+}
+.selbtn-select {
+    background-color: rgb(0, 150, 255);
+}
+.create-container {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    margin-left: 35%;
+    background-color: black;
+}
