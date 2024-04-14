@@ -126,7 +126,7 @@
     </footer>
 
     <section id="modals">
-        <div class="modal" id="signUpModal">
+        <dialog class="modal" id="signUpModal">
             <div class="modal-content">
                 <p><u>Sign Up</u></p>
                 <p>Username:</p>
@@ -135,8 +135,8 @@
                 <input type="text" id="signUpPassword">
                 <button class="submitBtn">Sign Up</button>
             </div>
-        </div>
-        <div class="modal" id="signInModal">
+        </dialog>
+        <dialog class="modal" id="signInModal">
             <div class="modal-content">
                 <p><u>Login</u></p>
                 <p>Username:</p>
@@ -145,7 +145,7 @@
                 <input type="text" id="signInPassword">
                 <button class="submitBtn">Login</button>
             </div>
-        </div>
+        </dialog>
     </section>
 </body>
 </html>
