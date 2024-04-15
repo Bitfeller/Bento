@@ -49,8 +49,9 @@ function initMc(newDiv, n) {
                 </div>
             </div>
             <button id='c${n}-h-b-add' class='mc-add'>+</button>
+            <button id='c${n}-del' class='card-del'>Delete Card</button>
         </div>
-        <button id='c${n}-del' class='card-del'>Delete Card</button>
+
     `;
     // Set up selector
     newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
