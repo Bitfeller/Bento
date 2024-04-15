@@ -11,13 +11,13 @@
 <body>
     <?php require_once "header.php"?>
     <div class="create-container">
-        <h1>Create Deck</h1>
+        <h1>Create a Deck</h1>
         <input type="text" placeholder="Name" id="name">
-        <div>
-            <span>Make public:</span>
-            <input type="checkbox" id="isPublic">
-        </div>
         <input type="text" placeholder="Description" id="description">
+        <div>
+            <input type="checkbox" id="isPublic">
+            <span>| Make public</span>
+        </div>
         <div id="cardcontain">
             
         </div>
