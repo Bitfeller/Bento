@@ -1,44 +1,58 @@
+#settings-container {
+  margin-left: 35%;
+  max-height: calc(100vh - 95px);
+}
 .setting-box {
-    border-radius: 20px;
-    margin-left: 0.5%;
-    margin-top: 2vh;
-    background-color: rgb(221, 184, 146);
-    border-color: rgb(127, 85, 57);
-    border-width: 5px;
     border-style: solid;
     display: flex;
+    flex-direction: column;
+    border: 0;
     width: 50%;
-    height: 8vh;
-    gap: 2%;
-    align-items: center;
+    margin: 1.5%;
+    border-radius: 10px;
+    padding: 1%;
+    background-color: rgb(33, 33, 33);
+}
+.setting-box > button, .setting-box > input {
+  max-width: 30%;
 }
 #vocab-repetition-setting {
   flex-direction: column;
   height: fit-content;
   align-items: baseline;
 }
-.setting-box>p {
-    margin-left: 2%;
-}
-.setting-box>div {
-  display: flex;
-  flex-direction: row;
-  gap: 2vh;
-}
-button {
-  background-color: bisque;
-  margin-left: 1vh;
-}
 input, button {
-  text-align: center; 
-  border-radius: 10px;
+  text-align: center;
+  border-radius: 5px;
+  border: none;
+  font-size: 12pt;
 }
 input[type="checkbox"], input[type="radio"] {
-  transform: scale(1.8);
-  margin-left: 2vh;
+  margin-left: 0;
+}
+input[type="checkbox"] {
+  width: min-content;
+}
+.change-input {
+  color: #EEEEEE;
+  background-color: rgb(56, 56, 56);
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+#dangerZoneBox {
+  button {
+    margin-top: 2%;
+  }
 }
 #set-size-slider {
-    cursor: grabbing;
-    transform: scale(1);
+  cursor: grabbing;
 }
-
+#set-size-slider-stuff {
+  display: flex; 
+  align-items: center;
+  gap: 10px;
+}
+::placeholder {
+  opacity: 0.4;
+  color: #CADDA0;
+}

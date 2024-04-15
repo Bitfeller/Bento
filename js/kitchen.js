@@ -1,16 +1,13 @@
 
-var previewModal = document.getElementById('previewModal');
-var getModal = document.getElementById('getModal');
-function previewModalShow() {
-    previewModal.style.display = "block";
-}
-function getModalShow() {
-    getModal.style.display = "block";    
-}
+const previewDialog = document.getElementById("previewDialog");
+const addDialog = document.getElementById("addDialog");
+const previewBtns = document.getElementsByClassName("previewBtns");
+const addBtns = document.getElementsByClassName("addBtns");
+const closeBtns = document.getElementsByClassName("closeBtns");
 
 window.onclick = function(event) {
-    if (event.target === getModal || event.target === previewModal) {
-        getModal.style.display = "none";
-        previewModal.style.display = "none";
+    if (event.target === previewDialog || event.target === addDialog) {
+        previewDialog.close();
+        addDialog.close();
     }
-} 
+}
