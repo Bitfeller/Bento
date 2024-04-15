@@ -1,5 +1,6 @@
 #settings-container {
   margin-left: 35%;
+  max-height: calc(100vh - 95px);
 }
 .setting-box {
     border-style: solid;
@@ -24,8 +25,6 @@ input, button {
   text-align: center;
   border-radius: 5px;
   border: none;
-  background-color: #CADDA0;
-  color: #292E32;
   font-size: 12pt;
 }
 input[type="checkbox"], input[type="radio"] {
@@ -35,6 +34,7 @@ input[type="checkbox"] {
   width: min-content;
 }
 .change-input {
+  color: #EEEEEE;
   background-color: rgb(56, 56, 56);
   margin-top: 2%;
   margin-bottom: 2%;
@@ -52,4 +52,7 @@ input[type="checkbox"] {
   align-items: center;
   gap: 10px;
 }
-
+::placeholder {
+  opacity: 0.4;
+  color: #CADDA0;
+}

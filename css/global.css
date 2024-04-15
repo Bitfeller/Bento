@@ -1,67 +1,71 @@
 * {
-    color:#eeeeee;
-    font-family:kadwa, karla, sans-serif;
-    padding:0;
-    margin:0;
+    color: #eeeeee;
+    font-family: kadwa, karla, sans-serif;
+    padding: 0;
+    margin: 0;
 }
 h1 {
-    font-weight:normal;
-    font-size:56pt;
-    letter-spacing:-0.03em;
-    font-family:karla;
+    font-weight: normal;
+    font-size: 56pt;
+    letter-spacing: -0.03em;
+    font-family: karla;
 }
 h1 > * {
-    font-family:karla;
+    font-family: karla;
 }
 h2 {
-    font-weight:normal;
-    font-size:24pt;
-    letter-spacing:0;
-    font-family:karla;
+    font-weight: normal;
+    font-size: 24pt;
+    letter-spacing: 0;
+    font-family: karla;
 }
 h2 > * {
-    font-family:karla;
+    font-family: karla;
 }
 p, span {
-    font-size:12pt;
-    letter-spacing:40;
-    font-family:kadwa;
+    font-size: 12pt;
+    letter-spacing: 40;
+    font-family: kadwa;
 }
 p > * {
-    font-family:kadwa;
+    font-family: kadwa;
 }
 body {
-    background:rgb(17, 26, 35);
+    background: rgb(17, 26, 35);
 }
 button {
-    cursor:pointer;
+    border-radius: 5px;
+    border: none;
+    background-color: #cadda0;
+    color: #292E32;
+    cursor: pointer;
 }
 .header {
-    overflow:hidden;
-    background-color:#1e1e1e;
-    padding:0 5px;
-    border-radius:0 0 10px 10px
+    overflow: hidden;
+    background-color: #1e1e1e;
+    padding: 0 5px;
+    border-radius: 0 0 10px 10px
 }
 .header > * {
-    padding-top:12px;
+    padding-top: 12px;
 }
 .header span {
-    float:left;
-    font-weight:bold;
-    cursor:pointer;
-    line-height:25px;
-    padding:3px 5px
+    float: left;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 25px;
+    padding: 3px 5px
 }
 .material-symbols-outlined {
-    font-size:38px;
-    font-variation-settings:"FILL" 0, "wght" 400, "GRAD" 200, "opsz" 48;
+    font-size: 38px;
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 200, "opsz" 48;
 }
 .header span:hover {
-    color:#cadda0;
+    color: #cadda0;
 }
 .logo {
-    cursor:pointer;
+    cursor: pointer;
 }
 .right-header {
-    float:right;
+    float: right;
 }
