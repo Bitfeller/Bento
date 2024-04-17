@@ -39,7 +39,7 @@ button:hover {
         margin-left: 0px;
     }
 }
-.mc-add, .card-del {
+.mc-add, .rank-add, .card-del {
     color: #EEEEEE;
     background-color: #236bd6;
 }

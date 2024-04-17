@@ -131,8 +131,8 @@ function initTxt(newDiv, n) {
         <div class='card-main'>
             Question: <input type='input' class='question' placeholder='The question...'><br>
             Answer: <input type='input' class='txt-answer' placeholder='...'>
-            <button class='card-del'>Delete Card</button>
         </div>
+        <button class='card-del'>Delete Card</button>
     `;
     // Set up selector
     newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
@@ -293,6 +293,7 @@ function initRanking(newDiv, n) {
 function newCard() {
     var newDiv = document.createElement("div");
     var n = cards.length + 1;
+    newDiv.id = "c" + n;
     newDiv.className = "card";
     cardContain.appendChild(newDiv);
     cards.push(newDiv);
