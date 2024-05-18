@@ -132,7 +132,7 @@
                 <p>Username:</p>
                 <input type="text" id="signUpUsername">
                 <p>Password:</p>
-                <input type="text" id="signUpPassword">
+                <input type="password" id="signUpPassword">
                 <button class="submitBtn">Sign Up</button>
             </div>
         </dialog>
@@ -142,7 +142,7 @@
                 <p>Username:</p>
                 <input type="text" id="signInUsername">
                 <p>Password:</p>
-                <input type="text" id="signInPassword">
+                <input type="password" id="signInPassword">
                 <button class="submitBtn">Login</button>
             </div>
         </dialog>
