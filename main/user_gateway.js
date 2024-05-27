@@ -110,7 +110,7 @@ class UserGateway {
             body: JSON.stringify({
                 setting: setting,
                 val: val,
-                verifpwd: pwd
+                verifpwd: pwd || true
             })
         }).then(function(res) {
             if(!res.ok) {
@@ -138,9 +138,26 @@ class UserGateway {
         });
         return [true, undefined];
     }
-    static calculateNTR(successCount, lastSeen) {
-        // NEED TO WORK ON!
-        return true;
+    static calculateNTR(box, lastSeen) {
+        let tick = Date.now();
+        let dist = tick - lastSeen;
+        let days = (((dist / 1000) / 60) / 60) / 24;
+        switch(box) {
+            case 1:
+                return days >= 1;
+            case 2:
+                return days >= 3;
+            case 3:
+                return days >= 5;
+            case 4:
+                return days >= 7;
+            case 5:
+                return days >= 10;
+            case 6:
+                return days >= 14;
+            default:
+                return true;
+        }
     }
     constructor() {
         console.log("backend: invalid call of class.");
