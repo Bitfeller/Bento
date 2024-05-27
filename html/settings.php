@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="setting-box" id="vocab-repetition-setting">
-            <div>Vocab Repetition:</div>
+            <p>Vocab Repetition:</p>
             <div>
                 <input name="radio" type="radio" checked>
                 <span class="radio-label">| Something</span>
@@ -29,12 +29,11 @@
             </div>
         </div>
         <div class="setting-box">
+            <p>Other:</p>
             <div>
                 <input type="checkbox">
                 | Show Previous Vocab
             </div>
-        </div>
-        <div class="setting-box">
             <div>
                 <input type="checkbox">
                 | Vacation Mode
@@ -42,12 +41,11 @@
         </div>
         <div class="setting-box">
             <h2>Change Password</h2>
-            <input type="text" class="change-input" placeholder="Password">
+            <input type="password" class="change-input" placeholder="New Password">
             <button>Submit</button>
-        </div>
-        <div class="setting-box">
+            <br>
             <h2>Change Username</h2>
-            <input type="text" class="change-input" placeholder="Username">
+            <input type="text" class="change-input" placeholder="New Username">
             <button>Submit</button>
         </div>
         <div class="setting-box" id="dangerZoneBox">
