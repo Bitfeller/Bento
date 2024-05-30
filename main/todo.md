@@ -19,7 +19,9 @@
 - create getall.html to view all decks
 - create deck.html to see specific deck
 
-
+- load added decks first; update difference between added and unadded decks!
+- update createdeck so that only signed in users can access the page!
+- destroy all objects in kitchen.js when not logged in...
 
 
 # info references:
