@@ -2,7 +2,7 @@ function err(func) {
     console.log("backend: " + func + "() received an improper response.");
 }
 class DeckGateway {
-    static async getall(offset) {
+    static async getall(offset, searchTerms) {
         var success, data;
         await fetch("../main/deck/deck_getall.php", {
             method: 'search',
@@ -10,7 +10,8 @@ class DeckGateway {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                offset: offset
+                offset: offset,
+                searchTerms: searchTerms || []
             })
         }).then(function(res) {
             if(!res.ok) {

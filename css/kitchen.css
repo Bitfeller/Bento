@@ -8,8 +8,21 @@ body > h2 {
     margin: 40px 15px; 
     border-radius: 5px;
 }
-#createDeckBtn {
+/* #createDeckBtn {
     float: inline-start;
+} */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 50px 0;
+}
+.search-bar {
+    padding: 3px 7px;
+    width: 350px;
+    height: 20px;
+    font: inherit;
+    color: black;
 }
 .ingredients-container {
     display: flex;

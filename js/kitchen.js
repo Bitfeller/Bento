@@ -4,8 +4,10 @@ import { DeckGateway } from "../main/deck_gateway.js";
 let user;
 let decks = [];
 let reviewDecks = [];
-let loaded = 0;
-// Container
+let loaded = -1;
+// Containers
+const mainContainer = document.getElementsByClassName("container")[0];
+const searchedDecksContainer = document.getElementById("searched_decks");
 const addedDecksContainer = document.getElementById("added_decks");
 const marketplace = document.getElementById("marketplace");
 // Dialogs
@@ -13,6 +15,30 @@ const previewDialog = document.getElementById("previewDialog");
 const reviews_updateDialog = document.getElementById("reviews_updateDialog");
 // Load btn
 const loadBtn = document.getElementById("loadBtn");
+// Search
+const search = document.getElementById("search");
+const searchText = document.getElementById("searchText");
+
+function box(idx, inReviews = false, deckName, ofAddedDecks = false) {
+    let a = document.createElement("div");
+    a.className = "ingredient-box";
+    a.setAttribute("data-idx", idx);
+    a.innerHTML = `
+        <div>
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png" alt="Russian Flag">
+            <div>
+                <h2>${deckName}</h2>
+            </div>
+        </div>
+        <div>
+            <button class="previewBtns" data-idx="${idx}">View</button>
+            <button class="userReviewsUpdateBtns" data-idx="${idx}">${inReviews ? "Remove" : "Add"}</button>
+        </div>
+    `;
+    a.getElementsByClassName("previewBtns")[0].addEventListener("mousedown", (e) => {preview(e.currentTarget, ofAddedDecks);});
+    a.getElementsByClassName("userReviewsUpdateBtns")[0].addEventListener("mousedown", (e) => {reviews_update(e.currentTarget, ofAddedDecks);});
+    return a;
+}
 
 async function update() {
     if(loaded >= decks.length - 1) {
@@ -26,24 +52,8 @@ async function update() {
             let [success, deck] = await DeckGateway.get(deckid);
             if(!success) continue;
             reviewDecks.push(deck);
-            let newBox = document.createElement("div");
-            newBox.className = "ingredient-box";
-            newBox.setAttribute("data-idx", reviewDecks.length - 1);
-            newBox.innerHTML = `
-                <div>   
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png" alt="Russian Flag">
-                    <div>
-                        <h2>${deck.name}</h2>
-                    </div>
-                </div>
-                <div>
-                    <button class="previewBtns" data-idx="${reviewDecks.length - 1}">View</button>
-                    <button class="userReviewsUpdateBtns" data-idx="${reviewDecks.length - 1}">Remove</button>
-                </div>
-            `;
+            let newBox = box(deck.id, true, deck.name, true);
             addedDecksContainer.appendChild(newBox);
-            newBox.getElementsByClassName("previewBtns")[0].addEventListener("mousedown", (e) => {preview(e.currentTarget, true);});
-            newBox.getElementsByClassName("userReviewsUpdateBtns")[0].addEventListener("mousedown", (e) => {reviews_update(e.currentTarget, true);});
         }
     }
     // Update marketplace
@@ -57,31 +67,15 @@ async function update() {
             }
         }
         // Create new container item and display deck
-        let newBox = document.createElement("div");
-        newBox.className = "ingredient-box";
-        newBox.innerHTML = `
-            <div>   
-                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png" alt="Russian Flag">
-                <div>
-                    <h2>${decks[i].name}</h2>
-                </div>
-            </div>
-            <div>
-                <button class="previewBtns" data-idx="${i}">View</button>
-                <button class="userReviewsUpdateBtns" data-idx="${i}">${inReviews ? "Remove" : "Add"}</button>
-            </div>
-        `;
+        let newBox = box(decks[i].id, inReviews, decks[i].name, false);
         marketplace.appendChild(newBox);
-        newBox.getElementsByClassName("previewBtns")[0].addEventListener("mousedown", (e) => {preview(e.currentTarget);});
-        newBox.getElementsByClassName("userReviewsUpdateBtns")[0].addEventListener("mousedown", (e) => {reviews_update(e.currentTarget);});
     }
     loaded = decks.length - 1;
 }
 async function init() {
     let [success, data] = await UserGateway.getuser();
     if(!success && data == "no session") {
-        marketplace.remove();
-        addedDecksContainer.remove();
+        mainContainer.remove();
         document.body.innerHTML += "You must be signed in to view decks!";
         return;
     }
@@ -108,11 +102,40 @@ async function init() {
         await update();
         loadBtn.innerHTML = "[[ LOAD MORE DECKS ]]";
     });
+    search.addEventListener("keyup", async () => {
+        searchedDecksContainer.innerHTML = "";
+        searchText.style.display = "none";
+        searchedDecksContainer.style.display = "none";
+        if(search.value == "" || search.value == " ") return;
+        let [success, data] = await DeckGateway.getall(0, search.value.split(" "));
+        if(!success) return;
+        if(data.length == 0) return;
+        searchText.style.display = "block";
+        searchedDecksContainer.style.display = "flex";
+        for(let i = 0; i < data.length; i++) {
+            let deck = data[i];
+            let inReviews = false;
+            for(let j = 0; j < user.reviews.length; j++) {
+                if(user.reviews[j].deckid == deck.id) {
+                    inReviews = true;
+                    break;
+                }
+            }
+            let newBox = box(deck.id, inReviews, deck.name, false);
+            searchedDecksContainer.appendChild(newBox);
+        }
+    });
 }
 init();
 function preview(_this, isAdded) {
     previewDialog.showModal();
-    let deck = isAdded ? reviewDecks[_this.dataset.idx] : decks[_this.dataset.idx];
+    let deck;
+    let target = isAdded ? reviewDecks : decks;
+    for(let i = 0; i < target.length; i++) {
+        if(target[i].id == _this.dataset.idx) {
+            deck = target[i];
+        }
+    }
     let list = "";
     console.log(deck);
     if(!deck.data.deckData) {
@@ -135,7 +158,13 @@ function preview(_this, isAdded) {
 async function reviews_update(_this, isAdded) {
     console.log(_this);
     reviews_updateDialog.showModal();
-    let deck = isAdded ? reviewDecks[_this.dataset.idx] : decks[_this.dataset.idx];
+    let deck;
+    let target = isAdded ? reviewDecks : decks;
+    for(let i = 0; i < target.length; i++) {
+        if(target[i].id == _this.dataset.idx) {
+            deck = target[i];
+        }
+    }
     let inReviews = false;
     let info = "This deck has now been added to your list of reviews.";
     for(let i = 0; i < user.reviews.length; i++) {
@@ -152,13 +181,20 @@ async function reviews_update(_this, isAdded) {
                 }
             }
             // find div in added decks container
-            console.log(addedDecksContainer.children);
             for(let j = 0; j < addedDecksContainer.children.length; j++) {
-                if(addedDecksContainer.children[j].dataset.idx == i) {
+                if(addedDecksContainer.children[j].dataset.idx == deck.id) {
                     addedDecksContainer.children[j].remove();
+                    break;
                 }
             }
-            _this.innerHTML = "Add";
+            // update div in marketplace
+            let divs = document.getElementsByClassName("ingredient-box");
+            for(let j = 0; j < divs.length; j++) {
+                if(divs[j].dataset.idx == deck.id) {
+                    divs[j].getElementsByClassName("userReviewsUpdateBtns")[0].innerHTML = "Add";
+                    break;
+                }
+            }
             break;
         }
     }
@@ -169,24 +205,8 @@ async function reviews_update(_this, isAdded) {
         });
         // Add to list of reviewDecks
         reviewDecks.push(deck);
-        let newBox = document.createElement("div");
-        newBox.className = "ingredient-box";
-        newBox.setAttribute("data-idx", reviewDecks.length - 1);
-        newBox.innerHTML = `
-            <div>   
-                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png" alt="Russian Flag">
-                <div>
-                    <h2>${deck.name}</h2>
-                </div>
-            </div>
-            <div>
-                <button class="previewBtns" data-idx="${reviewDecks.length - 1}">View</button>
-                <button class="userReviewsUpdateBtns" data-idx="${reviewDecks.length - 1}">Remove</button>
-            </div>
-        `;
+        let newBox = box(deck.id, true, deck.name, true);
         addedDecksContainer.appendChild(newBox);
-        newBox.getElementsByClassName("previewBtns")[0].addEventListener("mousedown", (e) => {preview(e.currentTarget, true);});
-        newBox.getElementsByClassName("userReviewsUpdateBtns")[0].addEventListener("mousedown", (e) => {reviews_update(e.currentTarget, true);});
         _this.innerHTML = "Remove";
     }
     let json = JSON.stringify(user.reviews);

@@ -3,6 +3,7 @@
     validate_request();
     $data = get_data();
     $offset = $data['offset'];
+    $searchTerms = $data['searchTerms'] or [];
     // Make sure session exists
     session_start();
     if(!isset($_SESSION['uid'])) {
@@ -11,10 +12,28 @@
     try {
         require_once '../dbh.php';
         // Fetch decks
-        $sql = "SELECT * FROM decks WHERE public = ? OR owner = ? ORDER BY viewnum DESC LIMIT 60 OFFSET ?;";
+        $sql = "SELECT * FROM decks WHERE (public = ? OR owner = ?)";
+        if(!empty($searchTerms)) {
+            $sql .= " AND (";
+        }
+        $cond = [];
+        foreach ((array) $searchTerms as $term) {
+            $cond[] = "name LIKE CONCAT('%', ?, '%')";
+        }
+        $sql .= implode(" OR ", $cond);
+        if(!empty($searchTerms)) {
+            $sql .= ") ";
+        }
+        $sql .= "ORDER BY viewnum DESC LIMIT 60 OFFSET ?;";
+        $sql = (string) $sql;
         $stmt = $conn->prepare($sql);
         $public = 1;
-        $stmt->bind_param("isi", $public, $_SESSION['username'], $offset);
+        $tble = [$offset];
+        $stmt->bind_param("is" . str_repeat("s", count((array) $searchTerms)) . "i", $public, $_SESSION['username'], ...$searchTerms, ...$tble);
+        //$sql = "SELECT * FROM decks WHERE public = ? OR owner = ? ORDER BY viewnum DESC LIMIT 60 OFFSET ?;";
+        //$stmt = $conn->prepare($sql);
+        //$public = 1;
+        //$stmt->bind_param("isi", $public, $_SESSION['username'], $offset);
         $stmt->execute();
         $raw_res = $stmt->get_result();
         $decks = [];
