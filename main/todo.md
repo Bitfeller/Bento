@@ -1,7 +1,6 @@
 # TODO:
 - test game mode?
 - create **UI** for selecting options for learn mode
-- discovery for public sets + searching
 - fixing **UI**
 - [extra] add calculated fetching for ls & lls (no extra "weight")
 - [extra] brainstorm new options for the user
@@ -16,13 +15,9 @@
 - update viewdata value
 - create verification system for emails
 - create password reset system for accounts
-- create getall.html to view all decks
-- create deck.html to see specific deck
+- create deck.html to see specific deck (*OPTIONAL*)
 
-- load added decks first; update difference between added and unadded decks!
-- update createdeck so that only signed in users can access the page!
-- destroy all objects in kitchen.js when not logged in...
-
+- increase number of loaded decks when searching; have terms searched in more than just deck name
 
 # info references:
 - NTRonly

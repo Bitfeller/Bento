@@ -7,7 +7,7 @@ RewriteCond ./html/%{ENV:NEWURI}\.php -F
 RewriteRule ^(.*)$ /html/$1.php [L]
 
 <IfModule mod_dirtractive.c>
-    DirectoryIndex index.html
+    DirectoryIndex index.php
 </IfModule>
 
 ErrorDocument 404 /html/404.php
