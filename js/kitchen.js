@@ -102,16 +102,21 @@ async function init() {
         await update();
         loadBtn.innerHTML = "[[ LOAD MORE DECKS ]]";
     });
-    search.addEventListener("keyup", async () => {
+    search.addEventListener("keyup", async (e) => {
+        if(e.key !== "Enter") return;
         searchedDecksContainer.innerHTML = "";
         searchText.style.display = "none";
         searchedDecksContainer.style.display = "none";
         if(search.value == "" || search.value == " ") return;
         let [success, data] = await DeckGateway.getall(0, search.value.split(" "));
+        searchText.style.display = "block";
+        searchedDecksContainer.style.display = "flex";
+        searchedDecksContainer.innerHTML = "There weren't any decks that matched your search results.";
         if(!success) return;
         if(data.length == 0) return;
         searchText.style.display = "block";
         searchedDecksContainer.style.display = "flex";
+        searchedDecksContainer.innerHTML = "";
         for(let i = 0; i < data.length; i++) {
             let deck = data[i];
             let inReviews = false;
@@ -142,7 +147,7 @@ function preview(_this, isAdded) {
         list = "Interesting... this deck seems to be corrupt. If you could, please contact a developer of Bento about this. (include the name of the deck, please!)";
     } else {
         for(let i = 0; i < deck.data.deckData.length; i++) {
-            list += "<p>Q: " + deck.data.deckData[i].question + "</p><p>A:" + (deck.data.deckData[i].correctAnswer || "[this is a ranking question]") + "</p>";
+            list += "<p>Q: " + deck.data.deckData[i].question + "</p><p>A: " + (deck.data.deckData[i].correctAnswer || "[this is a ranking question]") + "</p>";
         }
     }
     previewDialog.innerHTML = `

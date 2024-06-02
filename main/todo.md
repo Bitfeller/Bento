@@ -11,13 +11,13 @@
         - Randomize: *Shuffle terms (recommended)* (s:true), *Don't shuffle terms (not recommended)* (s:false)
 - [extra] refine essential system to focus primarily on new vocab, with *slight* weight on previous vocab
 
-- create handling for empty values in php scripts
 - update viewdata value
 - create verification system for emails
 - create password reset system for accounts
-- create deck.html to see specific deck (*OPTIONAL*)
 
 - increase number of loaded decks when searching; have terms searched in more than just deck name
+- improve deck viewing in kitchen
+- make a stronger search algorithm for kitchen
 
 # info references:
 - NTRonly

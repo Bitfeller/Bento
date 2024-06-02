@@ -1,15 +1,13 @@
 <?php
     require_once '../funcs.php';
     validate_request();
-    $data = get_data("mode");
+    $data = get_data('mode', 'uid', 'verif');
+    require_types('snss', 'mode', 'uid', 'verif', 'newPwd');
     // Get body values
     $mode = $data['mode'];
     $uid = $data['uid'];
     $verif = $data['verif'];
-    $newPwd = null;
-    if(isset($data['newPwd'])) {
-        $newPwd = $data['newPwd'];
-    }
+    $newPwd = $data['newPwd'] or null;
     try {
         require_once "../dbh.php";
         if($mode === "emailverif") {
