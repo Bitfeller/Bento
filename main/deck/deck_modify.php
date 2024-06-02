@@ -1,7 +1,8 @@
 <?php
     require_once '../funcs.php';
     validate_request();
-    $data = get_data('d_id');
+    $data = get_data('d_id', 'setting', 'val');
+    require_types('nss', 'd_id', 'setting', 'val');
     // Make sure session exists
     session_start();
     if(!isset($_SESSION['uid'])) {

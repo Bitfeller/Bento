@@ -20,11 +20,48 @@
             access_fail();
         }
     }
-    function get_data($required_value = null) {
+    function get_data(...$required_values) {
         $json_data = file_get_contents('php://input');
         $data = json_decode($json_data, true);
-        if($required_value && !isset($data[$required_value])) {
-            access_fail();
+        if(!empty($required_values)) {
+            foreach ($required_values as $req_value) {
+                if(!isset($data[$req_value])) {
+                    access_fail();
+                }
+            }
         }
         return $data;
+    }
+    function require_types($types, ...$params) {
+        $data = get_data();
+        if(!is_string($types) or !is_array($params)) {
+            return;
+        }
+        if(strlen($types) !== sizeof($params)) {
+            return;
+        }
+        foreach ($params as $index => $param) {
+            // format type
+            $type;
+            $secondType = ""; // if applicable
+            switch($types[$index]) {
+                case "s":
+                    $type = "string";
+                break;
+                case "n":
+                    $type = "integer";
+                    $secondType = "double";
+                break;
+                case "a":
+                    $type = "array";
+                break;
+                case "b":
+                    $type = "boolean";
+                break;
+            }
+            $val = $data[$param];
+            if(isset($val) and (gettype($val) !== $type and gettype($val) !== ($secondType or $type))) {
+                access_fail();
+            }
+        }
     }

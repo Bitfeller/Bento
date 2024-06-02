@@ -1,7 +1,8 @@
 <?php
     require_once '../funcs.php';
     validate_request();
-    $data = get_data();
+    $data = get_data('offset');
+    require_types('na', 'offset', 'searchTerms');
     $offset = $data['offset'];
     $searchTerms = $data['searchTerms'] or [];
     // Make sure session exists
@@ -44,6 +45,21 @@
             $decks[] = $row;
         }
         $stmt->close();
+        // Sort results
+        if(!empty($searchTerms)) {
+            function calculateScore($result, $searchTerms) {
+                $score = 0;
+                foreach ($searchTerms as $term) {
+                    $score += substr_count(strtolower($result['name']), strtolower($term));
+                }
+                return $score;
+            }
+            usort($decks, function($a, $b) use ($searchTerms) {
+                $scoreA = calculateScore($a, $searchTerms);
+                $scoreB = calculateScore($b, $searchTerms);
+                return $scoreB - $scoreA;
+            });
+        }
         success(json_encode($decks));
     } catch(Exception $e) {
         fail("exception: " . $e->getMessage());

@@ -1,7 +1,8 @@
 <?php
     require_once '../funcs.php';
     validate_request();
-    $data = get_data('setting');
+    $data = get_data('setting', 'val');
+    require_types('sss', 'setting', 'val', 'verifpwd');
     // Make sure session exists
     session_start();
     if(!isset($_SESSION['uid'])) {

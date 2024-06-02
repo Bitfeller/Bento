@@ -1,7 +1,8 @@
 <?php
     require_once '../funcs.php';
     validate_request();
-    $data = get_data('username');
+    $data = get_data('username', 'pwd');
+    require_types('ss', 'username', 'pwd');
     // Get body values
     $username = $data['username'];
     $pwd = $data['pwd'];
