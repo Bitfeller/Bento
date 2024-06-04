@@ -133,7 +133,7 @@
                     <!--  -->
                 </div>
             </div>
-            <button id="reviewBtn"><h1>Review! →</h1></button>
+            <button id="reviewBtn" onclick='location.href="/game"'><h1>Review! →</h1></button>
         </div>
     </div>
 </body>

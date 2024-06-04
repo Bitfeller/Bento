@@ -15,29 +15,29 @@ button:hover {
     width: 30%;
     margin-left: 35%;
     background-color: #1e1e1e;
-    input,button {
-        font-size: 11pt;
-        border-radius: 5px;
-        margin-top: 10px;
-        padding: 5px;
-    }
-    button {
-        margin-left: 5px;
-        padding: 0px 8px;
-    }
-    input {
-        border: none;
-        margin-bottom: 10px;
-        background-color: rgb(56, 56, 56);
-        color: #EEEEEE;
-    }
-    ::placeholder {
-        opacity: 0.4;
-        color: #CADDA0;
-    } 
-    .mcbtn {
-        margin-left: 0px;
-    }
+}
+.create-container > input, .create-container > button {
+    font-size: 11pt;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding: 5px;
+}
+button {
+    margin-left: 5px;
+    padding: 0px 8px;
+}
+.create-container > input, .question, .mc-option-input {
+    border: none;
+    margin-bottom: 10px;
+    background-color: rgb(56, 56, 56);
+    color: #EEEEEE;
+}
+.create-container > ::placeholder {
+    opacity: 0.4;
+    color: #CADDA0;
+} 
+.create-container > .mcbtn {
+    margin-left: 0px;
 }
 .mc-add, .rank-add, .card-del {
     color: #EEEEEE;
