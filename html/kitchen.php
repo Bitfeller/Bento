@@ -12,8 +12,8 @@
     <?php require_once "header.php"?>
     <div class='container'>
         <div class="search-container">
-            <input type="text" name="search" id="search" class="search-bar" placeholder="Search something from the marketplace...">
             <p>(enter to search)</p>
+            <input type="text" name="search" id="search" class="search-bar" placeholder="Search something from the marketplace...">
         </div>
         <h2 style="display: none;" id="searchText">Search Results</h2>
         <div style="display: none;" class="ingredients-container" id="searched_decks">
