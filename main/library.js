@@ -257,9 +257,10 @@ async function init(_decks, info) {
         let userReview;
         let idx;
         for(let j = 0; j < user.reviews.length; j++) {
-            if(user.reviews[i].deckid == deck) {
-                userReview = user.reviews[i];
-                idx = i;
+            if(user.reviews[j].deckid == deck) {
+                userReview = user.reviews[j];
+                idx = j;
+                break;
             }
         }
         if(!userReview) {

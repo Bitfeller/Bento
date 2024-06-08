@@ -6,6 +6,7 @@
     <title>Learn Picker</title>
     <?php require_once "globalReqs.php"?>
     <link rel="stylesheet" href="/css/learnPicker.css"/>
+    <script type="module" src="/js/learnpicker.js"> </script>
 </head>
 <body>
     <?php require_once "header.php"?>
@@ -15,7 +16,7 @@
             <span class="material-symbols-outlined" id="deckSelectAll">select_all</span>
             <!-- select_all (on click) -> check_box (on uncertain) -> indeterminate_check_box -->
             <div id="deck-container">
-                <div class="deck-box">
+                <!--<div class="deck-box">
                     <p>Deck 1</p>
                     <input type="checkbox" id="deck1Check">
                 </div>
@@ -27,7 +28,7 @@
                     <p>Deck 3</p>
                     <input type="checkbox" id="deck3Check">
                 </div>
-                <!-- Example decks to test overflow -->
+                <!-- Example decks to test overflow --\>
                 <div class="deck-box">
                     <p>Deck 1</p>
                     <input type="checkbox">
@@ -111,7 +112,7 @@
                 <div class="deck-box">
                     <p>Deck 3</p>
                     <input type="checkbox">
-                </div>
+                </div> -->
             </div>
         </div>
         <div>
@@ -133,7 +134,7 @@
                     <!--  -->
                 </div>
             </div>
-            <button id="reviewBtn" onclick='location.href="/game"'><h1>Review! →</h1></button>
+            <button id="reviewBtn"><h1>Review! →</h1></button>
         </div>
     </div>
 </body>
