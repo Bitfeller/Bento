@@ -26,4 +26,4 @@ Have fun learning and writing code!
  ┳━┳ ノ( ゜-゜ノ)
 
 
-Note: This project is copyrighted by its owners, namely *Bitfeller* and *IffyDeathValley99*.
+Note: This project is copyrighted by its owners.
