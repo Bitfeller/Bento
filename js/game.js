@@ -233,7 +233,21 @@ async function main() {
         problem.innerHTML = "You must be logged in to use Bento Learn!<br>This is a TEST version. To log in, visit this link:<br>localhost/html/test_user.html<br>login problems? contact me (you know who i am)";
         return;
     }
-    await Game.init([2], {
+    let a = location.href;
+    if(a.indexOf("?") < 0) {
+        problem.innerHTML = "Looks like there's something wrong. Go back to Learn Picker and go from there.";
+        return;
+    }
+    let paramList = a.substring(a.indexOf("?") + 1).split("&");
+    let params = {};
+    paramList.forEach((val) => {let _ = val.split("="); params[_[0]] = _[1];});
+    if(!params["ds"]) {
+        problem.innerHTML = "Looks like there's something wrong. Go back to Learn Picker and go from there.";
+        return;
+    }
+    let dsVal = params["ds"].split(",");
+    dsVal.forEach((val, idx) => {dsVal[idx] = parseInt(val);});
+    await Game.init(dsVal, {
         NTRonly: false,
         randomTerms: false,
         deckSize: 5,

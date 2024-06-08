@@ -27,7 +27,7 @@
     <?php require_once "header.php" ?>
     <section id="404-content"> 
         <h2>Uh oh! Looks like you landed at a 404. (The page you tried accessing doesn't exist...)</h2>
-        <a href="/html/home">Go Home</a>      
+        <a href="/home">Go Home</a>
     </section>
 </body>
 </html>
