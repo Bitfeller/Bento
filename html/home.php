@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento - Home</title>
     <?php require_once "globalReqs.php"?>
-    <link rel="stylesheet" href="/css/main.css"/>
+    <link rel="stylesheet" href="/css/home.css"/>
 </head>
 <body>
     <?php require_once "header.php"?>       
