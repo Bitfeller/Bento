@@ -6,7 +6,7 @@
     <title>Bento!</title>
     <?php require_once "globalReqs.php"?>
     <link rel="stylesheet" href="/css/index.css"/>
-    <script defer type='module' src="/js/mainPageLogic.js"></script>
+    <script type='module' src="/js/mainPageLogic.js"></script>
 </head>
 <body>
     <header>
