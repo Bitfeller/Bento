@@ -8,7 +8,7 @@
     <?php require_once "globalReqs.php"?>
     <script type="module" src="../js/game.js"></script>
 </head>
-<body>
+<body data-uo="true">
     <?php require_once "header.php"?>    
     <div id="main">
         <div id="left">

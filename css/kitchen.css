@@ -2,7 +2,7 @@ body > h2 {
     margin-top: 10px;
     margin-left: 15px;
 }
-#deck-divider {
+.deck-divider {
     background-color: #292E32; 
     height: 5px; 
     margin: 40px 15px; 
@@ -113,4 +113,8 @@ dialog {
 }
 #addDialog > button {
     margin-left: 95%;
+}
+#loadBtn {
+    padding: 0px 5px;
+    margin-left: 10px;
 }

@@ -8,19 +8,18 @@
     <link rel="stylesheet" href="/css/kitchen.css"/>
     <script src="../js/kitchen.js" type="module"></script>
 </head>
-<body>
+<body data-uo="true">
     <?php require_once "header.php"?>
     <div class='container'>
         <div class="search-container">
-            <p>(enter to search)</p>
-            <input type="text" name="search" id="search" class="search-bar" placeholder="Search something from the marketplace...">
+            <input type="text" name="search" id="search" class="search-bar" placeholder="Search from the marketplace... 　(Enter)">
         </div>
         <h2 style="display: none;" id="searchText">Search Results</h2>
         <div style="display: none;" class="ingredients-container" id="searched_decks">
             <!-- searched terms here -->
         </div>
-        <div id="deck-divider" style=""></div>
-        <h2 style="display: inline;">Added Decks</h2> <button id="createDeckBtn">[+] create</button>
+        <div class="deck-divider"></div>
+        <h2 style="display: inline;">Added Decks</h2> 
         <div class="ingredients-container" id="added_decks">
             <!--<div class="ingredient-box">
                 <div>
@@ -37,7 +36,7 @@
                 </div>
             </div>-->
         </div>
-        <div id="deck-divider" style=""></div>
+        <div class="deck-divider"></div>
         <h2>Marketplace</h2>
         <div class="ingredients-container" id="marketplace">
             <!--<div class="ingredient-box">

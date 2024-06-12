@@ -40,6 +40,16 @@ button {
     color: #292E32;
     cursor: pointer;
 }
+input {
+    border: none;
+    border-radius: 5px;
+    color: #EEEEEE;
+    background-color: rgb(56, 56, 56);
+}
+::placeholder {
+    opacity: 0.4;
+    color: #CADDA0;
+}
 .header {
     overflow: hidden;
     background-color: #1e1e1e;
@@ -49,12 +59,19 @@ button {
 .header > * {
     padding-top: 12px;
 }
-.header span {
+.header span, .pfp {
     float: left;
     font-weight: bold;
     cursor: pointer;
     line-height: 25px;
-    padding: 3px 5px
+    padding: 8px 5px;
+}
+.pfp {
+    height: 44px;
+    width: 44px;
+    border-radius: 50%;
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
 .material-symbols-outlined {
     font-size: 38px;

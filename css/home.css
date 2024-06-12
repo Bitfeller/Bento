@@ -5,7 +5,7 @@
     justify-content: center;
 }
 .bento-svg {
-    max-height: 91vh;
+    max-height: 90vh;
 }
 .svg-button {
     filter: drop-shadow(0 0 1rem black);
@@ -15,6 +15,9 @@
     animation-iteration-count: infinite;  
     animation-fill-mode: forwards; 
     transition: scale 1s;
+}
+.inactive-svg-button {
+    animation-name: none;
 }
 .svg-button:hover {
     scale: 1.005;
