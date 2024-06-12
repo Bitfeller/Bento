@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/css/learnPicker.css"/>
     <script type="module" src="/js/learnpicker.js"> </script>
 </head>
-<body>
+<body data-uo="true">
     <?php require_once "header.php"?>
     <div id="overall-container">
         <div class="big-box">
@@ -16,103 +16,11 @@
             <span class="material-symbols-outlined" id="deckSelectAll">select_all</span>
             <!-- select_all (on click) -> check_box (on uncertain) -> indeterminate_check_box -->
             <div id="deck-container">
-                <!--<div class="deck-box">
+                <!-- <div class="deck-box">
                     <p>Deck 1</p>
                     <input type="checkbox" id="deck1Check">
                 </div>
-                <div class="deck-box">
-                    <p>Deck 2</p>
-                    <input type="checkbox" id="deck2Check">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 3</p>
-                    <input type="checkbox" id="deck3Check">
-                </div>
-                <!-- Example decks to test overflow --\>
-                <div class="deck-box">
-                    <p>Deck 1</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 2</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 3</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 1</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 2</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 3</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 1</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 2</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 3</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 1</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 2</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 3</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 1</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 2</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 3</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 1</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 2</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 3</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 1</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 2</p>
-                    <input type="checkbox">
-                </div>
-                <div class="deck-box">
-                    <p>Deck 3</p>
-                    <input type="checkbox">
-                </div> -->
+                -->
             </div>
         </div>
         <div>

@@ -22,11 +22,16 @@
         </div>
     </header>
     <section id="hero">
-        <pre id="hero-elements">
-            <h1>Accelerate <u>your</u> 
-learning</h1><h2>Learn in <mark>simple, bite sized <p></p></mark>pieces so you really <mark>remember<p></p></mark>what you study</h2>
+    <div id="hero-elements">
+            <h1>
+                Accelerate <u>your</u> learning
+            </h1>
+            <h2>
+                Learn in <mark>simple, bite sized <p></p></mark>pieces so you really <mark>remember<p></p> </mark>what you study
+
+            </h2>
             <button id="signUpBtn"><p>Sign Up</p></button>
-        </pre>
+        </div>
     </section>
     
     <section class="pitch">
