@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learn Picker</title>
-    <?php require_once "../globalReqs.php"?>
+    <?php require_once "../globalreqs.php"?>
     <link rel="stylesheet" href="../../css/learnPicker.css"/>
     <script type="module" src="../../sitejs/learnpicker.js"> </script>
 </head>

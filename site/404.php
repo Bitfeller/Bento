@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento - 404!</title>
-    <?php require_once "globalReqs.php"?>
+    <?php require_once "globalreqs.php"?>
 </head>
 <style>
     section {
