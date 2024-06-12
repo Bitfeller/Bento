@@ -1,20 +1,26 @@
-# This code has been commented out and is only to be utilized on the primary server.
+# This code is only to be utilized on the primary server.
 
-# Header set Access-Control-Allow-Origin "*"
-# Header set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS"
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS"
 
-# RewriteEngine on
+RewriteEngine on
 
-# SetEnvIf REQUEST_URI /(.*) NEWURI=$1
+SetEnv MAINTENANCE_MODE true
+SetEnvIf REQUEST_URI /(.*) NEWURI=$1
 
-# RewriteCond %{DOCUMENT_ROOT}/../%{ENV:NEWURI} !-f
-# RewriteCond %{DOCUMENT_ROOT}/../%{ENV:NEWURI} !-d
-# RewriteCond %{DOCUMENT_ROOT}/%{ENV:NEWURI}\.php -f
-# RewriteRule ^(.*)$ $1.php [L]
+RewriteCond %{ENV:MAINTENANCE_MODE} true
+RewriteCond %{ENV:NEWURI} ^(.*)\/css\/(.*)$ [OR]
+RewriteCond %{ENV:NEWURI} ^globalreqs.php$
+RewriteRule ^(.*)$ maintenance.php [END]
 
-# RewriteCond %{DOCUMENT_ROOT}/%{ENV:NEWURI} -d
-# RewriteRule ^(.*)$ 404.php [L]
+RewriteCond %{DOCUMENT_ROOT}/../%{ENV:NEWURI} !-f
+RewriteCond %{DOCUMENT_ROOT}/../%{ENV:NEWURI} !-d
+RewriteCond %{DOCUMENT_ROOT}/%{ENV:NEWURI}\.php -f
+RewriteRule ^(.*)$ $1.php [L]
 
-# DirectoryIndex index.php
+RewriteCond %{DOCUMENT_ROOT}/%{ENV:NEWURI} -d
+RewriteRule ^(.*)$ 404.php [L]
 
-# ErrorDocument 404 /site/404.php
+DirectoryIndex index.php
+
+ErrorDocument 404 /site/404.php
