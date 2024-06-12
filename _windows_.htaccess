@@ -5,6 +5,8 @@ RewriteEngine on
 
 SetEnvIf REQUEST_URI /(.*) NEWURI=$1
 
+RewriteRule ^/.gitignore$ /html/404.php
+
 RewriteRule ^$ /html/index.php [L]
 
 RewriteCond ./html/%{ENV:NEWURI}\.php -F
