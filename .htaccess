@@ -6,8 +6,12 @@ RewriteEngine on
 SetEnvIf REQUEST_URI /(.*) NEWURI=$1
 
 RewriteRule ^$ /html/index.php [L]
-RewriteCond ./%{ENV:NEWURI}\.php -f
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
 
-ErrorDocument 404 /html/%{ENV:NEWURI}\.php
+RewriteCond ./html/%{ENV:NEWURI}\.php -F
+RewriteRule ^(.*)$ /html/$1.php [L]
+
+<IfModule mod_dirtractive.c>
+    DirectoryIndex index.php
+</IfModule>
+
+ErrorDocument 404 /html/404.php
