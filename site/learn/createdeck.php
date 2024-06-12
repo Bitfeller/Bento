@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento | New Deck</title>
-    <?php require_once "globalReqs.php"?>
-    <link rel="stylesheet" href="/css/createDeck.css"/>
-    <script type="module" src="../js/createdeck.js"></script>
+    <?php require_once "../globalReqs.php"?>
+    <link rel="stylesheet" href="../../css/createDeck.css"/>
+    <script type="module" src="../../sitejs/createdeck.js"></script>
 </head>
 <body data-uo="true">
-    <?php require_once "header.php"?>
+    <?php require_once "../header.php"?>
     <div class="create-container">
         <h1>Create a Deck</h1>
         <input type="text" placeholder="Name" id="name">

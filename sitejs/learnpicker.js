@@ -36,7 +36,7 @@ async function init() {
                 selectedDecks.push(parseInt(idx));
             }
         }
-        window.location.href = "/game?ds=" + selectedDecks.join(",");
+        window.location.href = "/learn/game?ds=" + selectedDecks.join(",");
     })
 }
 
