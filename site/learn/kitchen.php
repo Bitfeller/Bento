@@ -60,16 +60,7 @@
                     <h2>Preview:</h2>
                     <button class="closeBtns" id="previewDialog_leave">x</button>
                 </div>
-                <!-- First 3 questions of the set -->
-                <div class="preview-container">
-                    <p>#1 Q (input): What were the peasants of Russia called?</p>
-                    <p>A: Serfs</p>
-                    <p>#1 Q (input): What were the peasants of Russia called?</p>
-                    <p>A: Serfs</p>
-                    <p>#1 Q (input): What were the peasants of Russia called?</p>
-                    <p>A: Serfs</p>
-                </div>
-
+                <div class="preview-container"></div>
             </dialog>
             <dialog id="reviews_updateDialog">
                 <button class="closeBtns" id="ruDialog_leave">x</button>

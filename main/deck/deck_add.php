@@ -29,10 +29,10 @@
         }
         $stmt->close();
         // Add deck to database
-        $sql = "INSERT INTO decks (name, owner, data, viewnum, public) VALUES (?, ?, ?, ?, ?);";
+        $sql = "INSERT INTO decks (name, owner, data, viewdata, public) VALUES (?, ?, ?, ?, ?);";
         $stmt = $conn->prepare($sql);
-        $viewnum = 0;
-        $stmt->bind_param("sssii", $name, $owner, $deckData, $viewnum, $public);
+        $viewdata = '[]';
+        $stmt->bind_param("ssssi", $name, $owner, $deckData, $viewdata, $public);
         $stmt->execute();
         $stmt->close();
         success();

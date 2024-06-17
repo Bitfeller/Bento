@@ -109,6 +109,35 @@
                 $stmt->close();
                 $_SESSION['reviews'] = $val;
             break;
+            case 'view':
+                $sql = "SELECT * FROM decks WHERE id = ?;";
+                $stmt = $conn->prepare($sql);
+                $val = (int)$val;
+                $stmt->bind_param("i", $val);
+                $stmt->execute();
+                $result = mysqli_fetch_assoc($stmt->get_result());
+                if(!$result) {
+                    $stmt->close();
+                    fail("no deck");
+                }
+                $viewdata = json_decode($result['viewdata']);
+                $exists = false;
+                foreach($viewdata as $idx => $res) {
+                    if ($res == $_SESSION['uid']) {
+                        $exists = true;
+                        break;
+                    }
+                }
+                if($exists == false) {
+                    $viewdata[] = $_SESSION['uid'];
+                    $viewdata = json_encode($viewdata);
+                    $sql = "UPDATE decks SET viewdata = ? WHERE id = ?;";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("si", $viewdata, $val);
+                    $stmt->execute();
+                    $stmt->close();
+                }
+            break;
         }
         success();
     } catch(Exception $e) {
