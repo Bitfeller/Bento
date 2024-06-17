@@ -18,16 +18,16 @@ h2 {
     border-radius: 10px;
     background-color: rgb(33, 33, 33);
 }
-#deck-container, #settings-container {
+.deck-container, .settings-container {
     display: flex;
     flex-direction: column;
     background-color: rgb(33, 33, 33);
     overflow: scroll;
 }
-#deck-container {
+.deck-container {
     max-height: 73vh;
 }
-#settings-container {
+.settings-container {
     max-height: min-content;
 }
 .setting-box, .deck-box {
@@ -74,7 +74,7 @@ h2 {
     .big-box {
         margin: 10px;
     }
-    #deck-container, #settings-container {
+    .deck-container, .settings-container {
         max-height: 30vh;
     }
     .big-box {
