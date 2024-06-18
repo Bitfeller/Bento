@@ -1,6 +1,5 @@
 br {
   height: 20px;
-
 }
 #settings-container {
   margin-left: 35%;
@@ -10,18 +9,18 @@ button:hover {
   box-shadow: 0px 1px 4px rgba(255, 255, 255, 0.1);
 }
 .setting-box {
-    border-style: solid;
-    display: flex;
-    flex-direction: column;
-    border: 0;
-    width: 50%;
-    margin: 1.5%;
-    border-radius: 10px;
-    padding: 1%;
-    background-color: rgb(33, 33, 33);
+  border-style: solid;
+  display: flex;
+  flex-direction: column;
+  border: 0;
+  width: 50%;
+  margin: 1.5%;
+  border-radius: 10px;
+  padding: 1%;
+  background-color: rgb(33, 33, 33);
 }
 .setting-box > button, .setting-box > input {
-  max-width: 45%;
+  width: 45%;
 }
 #vocab-repetition-setting {
   flex-direction: column;
@@ -48,6 +47,8 @@ input[type="checkbox"] {
 }
 #dangerZoneBox > button {
   margin-top: 2%;
+  background-color: #E01F15;
+  color: #EEEEEE;
 }
 #set-size-slider {
   cursor: grabbing;

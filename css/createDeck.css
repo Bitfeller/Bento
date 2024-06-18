@@ -46,3 +46,10 @@ button {
 #addcard, #create {
     background-color: #EEEEEE;
 }
+@media only screen and (max-width: 1450px) {
+    .create-container {
+        width: 90%;
+        margin: auto;
+        margin-top: 20px;
+    }
+}
