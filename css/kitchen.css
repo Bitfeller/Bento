@@ -3,7 +3,7 @@ body > h2 {
     margin-left: 15px;
 }
 .deck-divider {
-    background-color: #292E32;
+    background-color: var(--dark-text);
     height: 5px; 
     margin: 40px 15px; 
     border-radius: 5px;
@@ -35,9 +35,9 @@ body > h2 {
     height: 235px;
     width: 235px;
     border-radius: 10px;
-    background-color: rgb(195, 228, 134);
+    background-color: var(--light-green);
     button {
-        background-color: rgb(195, 228, 134);
+        background-color: var(--light-green);
         font-size: 18pt;
         width: 100%;
         height: 100%;
@@ -51,7 +51,7 @@ body > h2 {
     height: 225px;
     width: calc(33.33% - 40px);
     padding: 10px;
-    background-color: #1e1e1e;
+    background-color: var(--dark-gray);
     border-radius: 10px;
     * {
         overflow: hidden;
@@ -89,7 +89,7 @@ body > h2 {
     justify-content: space-between;
     button {
         font-size: 12pt;
-        background-color: #cadda0;
+        background-color: var(--light-green);
         height: 47%;
     }
     button:hover {
@@ -119,7 +119,7 @@ dialog {
     padding: 15px;
     border: none;
     border-radius: 10px;
-    background-color: #1e1e1e;
+    background-color: var(--dark-gray);
     min-width: 450px;
     h2 {
         display: inline;
