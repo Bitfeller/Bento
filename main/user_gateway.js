@@ -98,7 +98,7 @@ class UserGateway {
         return [success, reason];
     }
     static async editUser(setting, val, pwd) {
-        if(!setting || !val || setting.length === 0) {
+        if(typeof(setting) !== "string" || typeof(val) !== "string" || setting.length === 0) {
             return [false, "invalid params"];
         }
         var success, reason;
