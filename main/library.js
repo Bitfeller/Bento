@@ -425,7 +425,7 @@ async function init(_decks, info) {
     const updater = window.setInterval(() => {
         if(!active) window.clearInterval(updater);
         update();
-    }, 5000);
+    }, 60_000);
     window.addEventListener("beforeunload", update);
     return true;
 }
