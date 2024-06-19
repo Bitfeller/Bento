@@ -16,7 +16,7 @@
         <input type="text" placeholder="Description" id="description">
         <div>
             <input type="checkbox" id="isPublic">
-            <span>| Make public</span>
+            <span>| Public Deck</span>
         </div>
         <div id="cardcontain">
             
