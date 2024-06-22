@@ -3,6 +3,7 @@ import { UserGateway } from "../main/user_gateway.js";
 
 const icons = document.getElementsByClassName("right-header-ico");
 const logout = document.getElementById("header:logout");
+const pfp = document.getElementById("header:pfp");
 const uo = document.body.dataset.uo;
 /*const hover = document.createElement("div");
 hover.style = "background-color: rgb(150, 150, 150); position: absolute; width: auto; padding: 7px; height: auto;";*/
@@ -13,10 +14,16 @@ loader.innerHTML = "<div class='load-rot'></div>";
 document.body.appendChild(loader);
 
 (async () => {
-    let [success, reason] = await UserGateway.getuser();
-    if(!success && reason == "no session") {
+    let [success, data] = await UserGateway.getuser();
+    if(!success && data == "no session") {
         logout.remove();
+        pfp.remove();
         if(uo == "true") window.location.href = "/login";
+    } else {
+        // update pfp
+        if(data.pfp && data.pfp.length > 0) {
+            pfp.src = data.pfp;
+        }
     }
     loader.remove();
 })();
@@ -32,4 +39,7 @@ document.body.appendChild(loader);
 logout.addEventListener("mousedown", async () => {
     await UserGateway.signout();
     window.location.href = "";
+});
+pfp.addEventListener("mousedown", () => {
+    window.location.href = "/user/profile";
 });
