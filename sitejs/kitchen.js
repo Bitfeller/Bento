@@ -101,7 +101,7 @@ async function init() {
         }
         decks.push(...data);
         await update();
-        loadBtn.innerHTML = "[[ LOAD MORE DECKS ]]";
+        loadBtn.innerHTML = "Load more decks...";
     });
     search.addEventListener("keyup", async (e) => {
         if(e.key !== "Enter") return;
@@ -113,7 +113,7 @@ async function init() {
         let [success, data] = await DeckGateway.getall(0, orig);
         searchText.style.display = "block";
         searchedDecksContainer.style.display = "flex";
-        searchedDecksContainer.innerHTML = "There weren't any decks that matched your search results.";
+        searchedDecksContainer.innerHTML = "There weren't any decks that matched your search results :(";
         if(!success) return;
         if(data.length == 0) return;
         searchText.style.display = "block";
@@ -134,7 +134,7 @@ async function init() {
         let loaded = data.length;
         let s_loadBtn = document.createElement("button");
         s_loadBtn.id = "search_loadBtn";
-        s_loadBtn.innerHTML = "[[ LOAD MORE DECKS ]]";
+        s_loadBtn.innerHTML = "Load more decks...";
         searchedDecksContainer.appendChild(s_loadBtn);
         s_loadBtn.addEventListener("mousedown", async () => {
             let [success, data] = await DeckGateway.getall(loaded, orig);
@@ -205,7 +205,7 @@ async function preview(_this, isAdded) {
     });
 }
 async function reviews_update(_this, isAdded) {
-    reviews_updateDialog.showModal();
+    // reviews_updateDialog.showModal();
     let deck;
     let target = isAdded ? reviewDecks : decks;
     for(let i = 0; i < target.length; i++) {
@@ -259,20 +259,20 @@ async function reviews_update(_this, isAdded) {
     }
     let json = JSON.stringify(user.reviews);
     await UserGateway.editUser("reviews", json);
-    reviews_updateDialog.innerHTML = `
-        <button class='closeBtns' id='ruDialog_leave'>x</button>
-        <br>
-        <h2>${info}</h2>
-    `;
-    reviews_updateDialog.getElementsByClassName("closeBtns")[0].addEventListener("mousedown", () => {
-        reviews_updateDialog.close();
-    });
+    // reviews_updateDialog.innerHTML = `
+    //     <button class='closeBtns' id='ruDialog_leave'>x</button>
+    //     <br>
+    //     <h2>${info}</h2>
+    // `;
+    // reviews_updateDialog.getElementsByClassName("closeBtns")[0].addEventListener("mousedown", () => {
+    //     reviews_updateDialog.close();
+    // });
 }
 
 // Close dialogs when user presses outside dialog
 window.onclick = function(event) {
     if (event.target === previewDialog || event.target === reviews_updateDialog) {
         previewDialog.close();
-        reviews_updateDialog.close();
+        // reviews_updateDialog.close();
     }
 }
