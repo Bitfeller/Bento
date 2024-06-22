@@ -5,6 +5,9 @@ import { UserGateway } from "../main/user_gateway.js";
 function random(a, b) {
     return Math.floor(Math.random() * (b - a) + a + 0.5);
 }
+function round(a) {
+    return Math.floor(a + 0.5);
+}
 
 const input = document.getElementById("input");
 const pause = document.getElementById("pause");
@@ -12,6 +15,9 @@ const restart = document.getElementById("restart");
 const asteroidImg = document.getElementById("asteroidImg");
 const canvas = document.getElementById("game");
 const render = canvas.getContext("2d");
+
+const scoreEl = document.getElementById("score");
+const levelEl = document.getElementById("level");
 
 let width, height;
 
@@ -23,138 +29,137 @@ window.onresize = () => {
 }; 
 window.onresize();
 
-let running = false;
 let paused = false;
-let currentDeck;
+let ended = false;
 let deck;
-let deckKeys;
+let deckData;
 let asteroids = [];
 
-let counter = 0;
+let frameCount = 0;
+let mainfn;
 let score = 0;
 let level = 1;
 
+// Preset values
+render.textAlign = "center";
+
 function createAsteroid() {
     let speed = random(1, 2);
-    let questionNumber = deckKeys[random(0, deckKeys.length-1)];
-    return new Asteroid(speed, questionNumber);
+    let card = round(random(0, deckData.length - 1));
+    while(deckData[card].type == "ranking") {
+        card = round(random(0, deckData.length - 1));
+    }
+    card = deckData[card];
+    return new Asteroid(speed, card);
 }
 
 function updateDisplay () {
-    document.getElementById("score").innerHTML = score;
-    document.getElementById("level").innerHTML = level;
+    scoreEl.innerHTML = score;
+    levelEl.innerHTML = level;
 }
 
 function endGame () {
-    if (!paused) {
-        render.font = "30px Kadwa";
-        render.fillStyle = "red";
-        render.clearRect(0, 0, canvas.width, canvas.height);
-        render.fillText("Game Over", canvas.width/2-100, canvas.height/2);
-    
-        let counter = 0;
-        let score = 0;
-        let level = 1;
-        updateDisplay();
-    }
+    asteroids = [];
+    ended = true;
+    window.clearInterval(mainfn);
+    render.clearRect(0, 0, width, height);
+    render.font = "30px Kadwa";
+    render.fillStyle = "red";
+    render.fillText("Game Over!", width/2, height / 2);
+    updateDisplay();
 }
 
 function pauseGame () {
-    if (running === true) {
+    if(ended) return;
+    if(!paused) {
         paused = true;
-        running = false;
         asteroids.forEach((asteroid) => {
             render.drawImage(asteroidImg, asteroid.x, asteroid.y, 200, 200);
             render.font = "14px Kadwa";
             render.fillStyle = "black";
-            render.fillText("❌🧀", asteroid.x+80, asteroid.y+180);
-            if (asteroid.y > 0) {
-                running = false;
+            render.fillText("❌🧀", asteroid.x + 100, asteroid.y+180);
+            if (asteroid.y + 200 > height) {
+                endGame();
             }
         });
     } else {
-        running = true;
-        gameStart();
+        paused = false;
+        requestAnimationFrame(frame);
     }
 }
 
 function gameStart () {
-    if (!running) {return};
-    setInterval(() => {
-        counter++;
-        if (counter % 10 == 0) {
+    mainfn = window.setInterval(() => {
+        frameCount++;
+        if(paused) return;
+        if(ended) return;
+        if(frameCount % (15 - level < 1 ? 1 : 15 - level) == 0) {
+            asteroids.push(createAsteroid());
+        }
+        if(frameCount % 100 == 0) {
             level++;
             updateDisplay();
         }
-        asteroids.push(createAsteroid());
-        console.log(asteroids[asteroids.length - 1]);
-    }, 5000+(5000*(-level/30)));
-    gameFrame();
+    }, 100);
+    requestAnimationFrame(frame);
 }
 
-function gameFrame () {
-    if (!running) {
-        endGame();
-        return;
-    };
-    render.clearRect(0, 0, canvas.width, canvas.height);
+function frame() {
+    if(paused) return;
+    if(ended) return;
+    render.clearRect(0, 0, width, height);
     asteroids.forEach((asteroid) => {
-        asteroid.y += (asteroid.speed/20)+counter/10;
+        if(ended) return;
+        asteroid.y += (asteroid.speed) + level;
         render.drawImage(asteroidImg, asteroid.x, asteroid.y, 200, 200);
+        render.fillStyle = "rgb(255, 255, 255)";
+        render.rect(asteroid.x, asteroid.y, 500, 500);
         render.font = "10px Kadwa";
         render.fillStyle = "black";
-        render.fillText(asteroid.text, asteroid.x+80, asteroid.y+180);
-        if (asteroid.y > 0) {
-            running = false;
+        render.fillText(asteroid.text, asteroid.x+100, asteroid.y+180);
+        if(asteroid.y + 200 > height) {
+            endGame();
         }
     });
-    requestAnimationFrame(gameFrame);
+    if(ended) return;
+    requestAnimationFrame(frame);
 }
 
 class Asteroid {
-    constructor(speed, questionNumber) {
-        this.x = random(0, canvas.width-100);
-        this.y = -(canvas.height)-300;
+    constructor(speed, card) {
+        this.x = random(20, width-220);
+        this.y = -200;
         this.speed = speed;
-        if (deck[questionNumber].type === "ranking") {
-            this.answer = deck[questionNumber].answer[0];
-        } else {
-            this.answer = deck[questionNumber].correctAnswer;
-        }
-        this.text = deck[questionNumber].question;
+        this.answer = card.correctAnswer || card.answer;
+        this.text = card.question;
     }
 }
 
 (async () => {
     let [success, data] = await UserGateway.getuser();
     if (!success) {console.error(data); return}
-    [success, currentDeck] = await DeckGateway.get(1);
-    if (!success) {console.error(currentDeck); return}
-
-    deck = currentDeck.data.deckData;
-    deckKeys = Object.keys(deck);
-    running = true;
+    [success, deck] = await DeckGateway.get(1);
+    if (!success) {console.error(deck); return}
+    
+    deckData = deck.data.deckData;
     gameStart();
-})();
-
-input.onkeyup = (e) => {
-    if (!running) {return};
-    asteroids.forEach((asteroid) => {
-        if (input.value == asteroid.answer) {
-            input.value = "";
-            asteroids.splice(asteroids.indexOf(asteroid), 1);
-            score++;
-            updateDisplay();
-        }
+    input.addEventListener("keyup", () => {
+        asteroids.forEach((asteroid) => {
+            if(input.value == asteroid.answer) {
+                input.value = "";
+                asteroids.splice(asteroids.indexOf(asteroid), 1);
+                score++;
+                updateDisplay();
+            }
+        })
     });
-}
-
-pause.onclick = function() {
-    pauseGame();
-}
-
-restart.onclick = function() {
-    endGame();
-    running = true;
-    gameStart();
-}
+    pause.addEventListener("mousedown", pauseGame);
+    restart.addEventListener("mousedown", () => {
+        score = 0;
+        level = 1;
+        asteroids = [];
+        frameCount = 0;
+        paused = false;
+        ended = false;
+    });
+})();
