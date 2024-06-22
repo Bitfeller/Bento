@@ -1,0 +1,65 @@
+body > div {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: calc(100vh - 63px);
+}
+#right-div, #left-div {
+    display: flex;
+    height: calc(100vh - 63px);
+}
+#right-div {
+    width: 70%;
+    background-image: url('/img/asteroid-background.png');
+    background-size: cover;
+}
+#input {
+    position: absolute;
+    left: 55%;
+    bottom: 40px;
+    border: solid 2.5px black;
+    width: 25%;
+    height: 2.5%;
+    padding: 1%;
+    text-align: center;
+    background-color: var(--dark-gray);
+    color: var(--light-text);
+    font-size: 20pt;
+    font-family: karla;
+}
+::placeholder {
+    opacity: 0.4;
+    color: var(--light-text);
+}
+#left-div {
+    width: 30%;
+    flex-direction: column;
+}
+#left-div > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+#left-div button {
+    width: 40%;
+    padding: 2%;
+    margin-top: 20px;
+}
+#left-div button > h2 {
+    font-size: 24pt;
+    color: var(--dark-text);
+}
+#score-display {
+    background-color: var(--gray);
+    width: 40%;
+    padding: 1%;
+    margin-top: 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+#score-dipslay > h2, #score-display > h2 {
+    display: inline;
+}
