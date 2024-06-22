@@ -6,6 +6,23 @@ function random(a, b) {
     return Math.floor(Math.random() * (b - a) + a + 0.5);
 }
 
+const input = document.getElementById("input");
+const pause = document.getElementById("pause");
+const restart = document.getElementById("restart");
+const asteroidImg = document.getElementById("asteroidImg");
+const canvas = document.getElementById("game");
+const render = canvas.getContext("2d");
+
+let width, height;
+
+window.onresize = () => {
+    width = window.innerWidth * 0.7 * devicePixelRatio;
+    height = (window.innerHeight - 63) * devicePixelRatio;
+    canvas.width = width;
+    canvas.height = height;
+}; 
+window.onresize();
+
 let running = false;
 let paused = false;
 let currentDeck;
@@ -32,8 +49,8 @@ function endGame () {
     if (!paused) {
         render.font = "30px Kadwa";
         render.fillStyle = "red";
-        render.clearRect(0, 0, gameElement.width, gameElement.height);
-        render.fillText("Game Over", gameElement.width/2-100, gameElement.height/2);
+        render.clearRect(0, 0, canvas.width, canvas.height);
+        render.fillText("Game Over", canvas.width/2-100, canvas.height/2);
     
         let counter = 0;
         let score = 0;
@@ -70,6 +87,7 @@ function gameStart () {
             updateDisplay();
         }
         asteroids.push(createAsteroid());
+        console.log(asteroids[asteroids.length - 1]);
     }, 5000+(5000*(-level/30)));
     gameFrame();
 }
@@ -79,7 +97,7 @@ function gameFrame () {
         endGame();
         return;
     };
-    render.clearRect(0, 0, gameElement.width, gameElement.height);
+    render.clearRect(0, 0, canvas.width, canvas.height);
     asteroids.forEach((asteroid) => {
         asteroid.y += (asteroid.speed/20)+counter/10;
         render.drawImage(asteroidImg, asteroid.x, asteroid.y, 200, 200);
@@ -95,8 +113,8 @@ function gameFrame () {
 
 class Asteroid {
     constructor(speed, questionNumber) {
-        this.x = random(0, gameElement.width-100);
-        this.y = -(gameElement.height)-300;
+        this.x = random(0, canvas.width-100);
+        this.y = -(canvas.height)-300;
         this.speed = speed;
         if (deck[questionNumber].type === "ranking") {
             this.answer = deck[questionNumber].answer[0];
@@ -106,13 +124,6 @@ class Asteroid {
         this.text = deck[questionNumber].question;
     }
 }
-
-const input = document.getElementById("input");
-const pause = document.getElementById("pause");
-const restart = document.getElementById("restart");
-const asteroidImg = document.getElementById("asteroidImg");
-const gameElement = document.getElementById("game");
-const render = gameElement.getContext("2d");
 
 (async () => {
     let [success, data] = await UserGateway.getuser();

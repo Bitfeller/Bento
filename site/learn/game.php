@@ -21,7 +21,6 @@
         <br>
         <button id="answerbtn">Answer</button>
         <div id="answer_info">Please specify an answer!</div>
-        <p><i>Note: this version of Bento's learn has preset settings.<br>Set size: 5<br>Vocab repetition: often<br>Show previous vocab: yes<br>These settings cannot be edited.</i></p>
     </div>
 </body>
 </html>
