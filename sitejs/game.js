@@ -291,14 +291,18 @@ async function main() {
     }
     let dsVal = params["ds"].split(",");
     dsVal.forEach((val, idx) => {dsVal[idx] = parseInt(val);});
+    let m = parseFloat(params["m"]);
+    let s = parseFloat(params["r"]);
+    let r = parseFloat(params["s"]);
+    let sh = parseFloat(params["sh"]);
     await Game.init(dsVal, {
-        NTRonly: false,
-        randomTerms: false,
-        deckSize: 5,
-        cardRepeat: 1, // set to 2 in official
-        curr_p: 0.5,
-        ls_p: 0.3,
-        lls_p: 0.2
+        NTRonly: m == 1 ? true : false,
+        randomTerms: sh == 1 ? true : false,
+        deckSize: s == 1 ? 7 : 5,
+        cardRepeat: r == 1 ? 2 : 1, // set to 2 in official
+        curr_p: s == 1 ? 0.7 : 0.5,
+        ls_p: s == 1 ? 0.2 : 0.3,
+        lls_p: s == 1 ? 0.1 : 0.2
     });
     refresh();
 }

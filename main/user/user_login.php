@@ -25,6 +25,7 @@
         session_start();
         $_SESSION['uid'] = $result['id'];
         $_SESSION['username'] = $result['username'];
+        $_SESSION['pfp'] = $result['pfp'];
         $_SESSION['email'] = $result['email'];
         $_SESSION['reviews'] = $result['reviews'];
         $_SESSION['verified'] = $result['verified'] === 0 ? false : true;
