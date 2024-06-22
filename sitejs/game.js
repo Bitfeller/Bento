@@ -292,8 +292,8 @@ async function main() {
     let dsVal = params["ds"].split(",");
     dsVal.forEach((val, idx) => {dsVal[idx] = parseInt(val);});
     let m = parseFloat(params["m"]);
-    let s = parseFloat(params["r"]);
-    let r = parseFloat(params["s"]);
+    let s = parseFloat(params["s"]);
+    let r = parseFloat(params["r"]);
     let sh = parseFloat(params["sh"]);
     await Game.init(dsVal, {
         NTRonly: m == 1 ? true : false,
