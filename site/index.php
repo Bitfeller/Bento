@@ -11,7 +11,7 @@
 <body>
     <header>
         <div class="left-header">
-            <img id="logo" alt="Bento! Logo" src="/img/bento logo white.svg" height="40px" onclick="location.href='/html/'">
+            <img id="logo" alt="Bento! Logo" src="/img/bento logo white.svg" height="40px" onclick="location.href='/home'">
         </div>
         <div class="right-header">
             <button class="header-button" id="signInBtn">Login</button>
@@ -22,7 +22,7 @@
         </div>
     </header>
     <section id="hero">
-    <div id="hero-elements">
+        <div id="hero-elements">
             <h1>
                 Accelerate <u>your</u> learning
             </h1>

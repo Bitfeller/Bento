@@ -9,8 +9,8 @@ SetEnv MAINTENANCE_MODE true
 SetEnvIf REQUEST_URI /(.*) NEWURI=$1
 
 RewriteCond %{ENV:MAINTENANCE_MODE} true
-RewriteCond %{ENV:NEWURI} ^(.*)\/css\/(.*)$ [OR]
-RewriteCond %{ENV:NEWURI} ^(.*)globalreqs.php(.*)$
+RewriteCond %{ENV:NEWURI} !^(.*)\/css\/(.*)$ [OR]
+RewriteCond %{ENV:NEWURI} !^(.*)globalreqs.php(.*)$
 RewriteRule ^(.*)$ maintenance.php [END]
 
 RewriteCond %{DOCUMENT_ROOT}/../%{ENV:NEWURI} !-f
