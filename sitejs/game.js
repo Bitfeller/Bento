@@ -39,6 +39,7 @@ function computeCenter(el) {
 function refresh() {
     if(Game.isDead()) {
         problem.innerHTML = "You completed Bento's Learn!";
+        answerbtn.innerHTML = "Go back home >>>";
         for(var i = 0; i < objs.length; i++) {
             objs[i].remove();
         }
@@ -153,6 +154,7 @@ function refresh() {
     left.innerHTML = "New terms left to review: <b>" + progress.remaining + "</b>";
 }
 answerbtn.addEventListener("mousedown", function() {
+    if(Game.isDead()) window.location.href = "/home";
     if(toProceed) {
         answerbtn.innerHTML = "Answer";
         ans_a.innerHTML = "";

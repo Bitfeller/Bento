@@ -62,13 +62,6 @@
                 </div>
                 <div class="preview-container"></div>
             </dialog>
-            <dialog id="reviews_updateDialog">
-                <button class="closeBtns" id="ruDialog_leave">x</button>
-                <br>
-                <h2>This set will now appear in your reviews</h2>
-                <br>
-                <h2>So get ready...</h2>
-            </dialog>
         </section>
         <button id="loadBtn">Load more decks...</button>
     </div>
