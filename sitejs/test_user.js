@@ -1,4 +1,4 @@
-import { UserGateway } from "../main/user_gateway.js";
+import { UserGateway } from "../server/client-gateway/user-gateway.js";
 function g(el) {return document.getElementById(el);}
 var username = g('username');
 var pwd = g('pwd');
@@ -30,3 +30,4 @@ edit.addEventListener("mousedown", async function() {
     var [success, reason] = await UserGateway.editUser(setting.value, val.value, pwd.value);
     console.log("edit:", success, reason);
 });
+

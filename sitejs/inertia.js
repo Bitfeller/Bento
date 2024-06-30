@@ -1,5 +1,5 @@
-import { DeckGateway } from "../main/deck_gateway.js";
-import { UserGateway } from "../main/user_gateway.js";
+import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
+import { UserGateway } from "../server/client-gateway/user-gateway.js";
 // import { Game } from "../main/library.js";
 
 function random(a, b) {

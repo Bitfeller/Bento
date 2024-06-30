@@ -58,16 +58,36 @@
         }
     </style>
     <script type='module'>
-        import { UserGateway } from "../main/user_gateway.js";
+        import { UserGateway } from "../server/client-gateway/user-gateway.js";
 
+        (async () => {
+            let [success, reason] = await UserGateway.getuser();
+            if(success) {
+                const paramList = new URLSearchParams(window.location.search);
+                if(paramList.get("s")) {
+                    window.location.href = "/" + paramList.get("s");
+                } else {
+                    window.location.href = "/home";
+                }
+            }
+        })();
+        
         const l_user = document.getElementById("signInUsername");
         const l_pass = document.getElementById("signInPassword");
         const l_btn = document.getElementById("signInBtnM");
 
         l_btn.addEventListener("mousedown", async () => {
             let [success, reason] = await UserGateway.login(l_user.value, l_pass.value);
-            if(!success) return;
-            window.location.href = "/home";
+            if(!success) {
+                console.log(reason);
+                return;
+            }
+            const paramList = new URLSearchParams(window.location.search);
+            if(paramList.get("s")) {
+                window.location.href = "/" + paramList.get("s");
+            } else {
+                window.location.href = "/home";
+            }
         });
     </script>
 </body>

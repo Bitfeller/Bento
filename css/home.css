@@ -23,6 +23,72 @@
     scale: 1.005;
     animation-play-state: paused;
 }
+.home-side-div-holder {
+    width: 300px;
+    margin: 10px;
+    background-color: transparent;
+    height: auto;
+    overflow: hidden;
+}
+.home-side-div {
+    background-color: rgb(50, 50, 50);
+    border-radius: 5px;
+    width: 100%;
+    height: auto;
+    margin: 10px 0px;
+}
+.deck-reminders-holder {
+    height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.notifications-holder {
+    display: flex;
+    height: auto;
+}
+.notifications-holder * {
+    word-break: normal;
+}
+.notifications-holder span {
+    font-size: 15px;
+    margin: 0px 5px;
+    line-height: 100%;
+    height: 100%;
+}
+.notifications-holder span.material-symbols-outlined {
+    font-size: 15px;
+    line-height: normal;
+    padding: 5px;
+    margin: 0;
+}
+.notifications-holder > span:hover {
+    color: var(--light-green);
+    cursor: pointer;
+    span {
+        color: var(--light-green);
+    }
+}
+.deck-reminders-holder > h3 {
+    text-align: center;
+}
+.dr-deck {
+    display: flex;
+    width: calc(100% - 10px);
+    margin: 0px 5px;
+}
+.dr-dname {
+    width: calc(100% - 80px);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.dr-dterms {
+    width: 80px;
+    text-align: right;
+    white-space: nowrap;
+    color: rgb(150, 150, 50);
+}
+
 @keyframes sushi-shine {
     50% {filter: drop-shadow(0 0 2rem gold);}
 }
