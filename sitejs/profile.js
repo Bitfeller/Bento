@@ -1,4 +1,4 @@
-import { UserGateway } from "../main/user_gateway.js";
+import { UserGateway } from "../server/client-gateway/user-gateway.js";
 
 let user;
 

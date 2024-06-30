@@ -1,5 +1,5 @@
-import { UserGateway } from "../main/user_gateway.js";
-import { DeckGateway } from "../main/deck_gateway.js";
+import { UserGateway } from "../server/client-gateway/user-gateway.js";
+import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 // User
 var user;
 // Other objects
@@ -421,23 +421,14 @@ addCard.addEventListener("mousedown", newCard);
         console.log("You're not logged in.");
         mainContainer.remove();
         return;
-    }    
-    let a = location.href;
-    if(a.indexOf("?") < 0) {
+    }
+    const paramList = new URLSearchParams(window.location.search);
+    if(!paramList.get("d")) {
         console.log("Looks like there was an error. Go back to where you came from, and try again. If you continue to experience errors, please contact either Bitfeller or Valley.");
         mainContainer.remove();
         return;
     }
-    user = data;
-    let paramList = a.substring(a.indexOf("?") + 1).split("&");
-    let params = {};
-    paramList.forEach((val) => {let _ = val.split("="); params[_[0]] = _[1];});
-    if(!params['d']) {
-        console.log("Looks like there was an error. Go back to where you came from, and try again. If you continue to experience errors, please contact either Bitfeller or Valley.");
-        mainContainer.remove();
-        return;
-    }
-    let dVal = parseInt(params['d']);
+    let dVal = parseInt(paramList.get('d'));
     deck = dVal;
     [success, deckData] = await DeckGateway.get(deck);
     if(!success) return;

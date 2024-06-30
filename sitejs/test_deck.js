@@ -1,4 +1,4 @@
-import { DeckGateway } from "../main/deck_gateway.js";
+import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 function g(el) {return document.getElementById(el);}
 var name = g('name');
 var data = g('data');

@@ -1,5 +1,5 @@
-import { Game } from "../main/library.js";
-import { UserGateway } from "../main/user_gateway.js";
+import { Game } from "./client-modules/game-library.js";
+import { UserGateway } from "../server/client-gateway/user-gateway.js";
 var problem = document.getElementById("problem");
 var cont_a = document.getElementById("cont_a");
 var answerbtn = document.getElementById("answerbtn");
@@ -82,6 +82,9 @@ function refresh() {
             input.placeholder = "Enter an answer here...";
             objs.push(input);
             cont_a.appendChild(input);
+            input.addEventListener("keydown", (e) => {
+                if(e.key == "Enter") answerHandler();
+            });
         break;
         case "ranking":
             var list = document.createElement("div");
@@ -153,7 +156,7 @@ function refresh() {
     var progress = Game.getProgress();
     left.innerHTML = "New terms left to review: <b>" + progress.remaining + "</b>";
 }
-answerbtn.addEventListener("mousedown", function() {
+function answerHandler() {
     if(Game.isDead()) window.location.href = "/home";
     if(toProceed) {
         answerbtn.innerHTML = "Answer";
@@ -202,7 +205,7 @@ answerbtn.addEventListener("mousedown", function() {
                 } else {
                     ans_a.style.display = "flex";
                     ans_a.innerHTML = cont_a.innerHTML;
-                    ans_a.children[0].value = data.answer;
+                    ans_a.children[0].value = data.correctAnswer;
                     ans_a.children[0].disabled = true;
                     answerbtn.innerHTML = "Continue >>>";
                     toProceed = true;
@@ -240,7 +243,8 @@ answerbtn.addEventListener("mousedown", function() {
             break;
         }
     }
-});
+}
+answerbtn.addEventListener("mousedown", answerHandler);
 
 // Dragging event
 window.addEventListener("dragover", function(e) {
@@ -279,24 +283,17 @@ async function main() {
         problem.innerHTML = "You must be logged in to use Bento Learn!<br>This is a TEST version. To log in, visit this link:<br>localhost/html/test_user.html<br>login problems? contact me (you know who i am)";
         return;
     }
-    let a = location.href;
-    if(a.indexOf("?") < 0) {
+    const paramList = new URLSearchParams(window.location.search);
+    if(!paramList.get("ds")) {
         problem.innerHTML = "Looks like there's something wrong. Go back to Learn Picker and go from there.";
         return;
     }
-    let paramList = a.substring(a.indexOf("?") + 1).split("&");
-    let params = {};
-    paramList.forEach((val) => {let _ = val.split("="); params[_[0]] = _[1];});
-    if(!params["ds"]) {
-        problem.innerHTML = "Looks like there's something wrong. Go back to Learn Picker and go from there.";
-        return;
-    }
-    let dsVal = params["ds"].split(",");
+    let dsVal = paramList.get("ds").split(",");
     dsVal.forEach((val, idx) => {dsVal[idx] = parseInt(val);});
-    let m = parseFloat(params["m"]);
-    let s = parseFloat(params["s"]);
-    let r = parseFloat(params["r"]);
-    let sh = parseFloat(params["sh"]);
+    let m = parseFloat(paramList["m"]);
+    let s = parseFloat(paramList["s"]);
+    let r = parseFloat(paramList["r"]);
+    let sh = parseFloat(paramList["sh"]);
     await Game.init(dsVal, {
         NTRonly: m == 1 ? true : false,
         randomTerms: sh == 1 ? true : false,
