@@ -1,12 +1,15 @@
 
+const subsave = require('./sub-save.json');
+
 const express = require('express');
 const webpush = require('web-push');
 const schedule = require('node-schedule');
+const fs = require('fs');
 
 const app = express();
 const port = 3000;
 
-const subList = {};
+const subList = subsave || {};
 
 webpush.setVapidDetails(
     'https://bento.valleynas.uk/report',
@@ -25,7 +28,6 @@ app.use((req, res, next) => {
 });
 
 app.post('/notify', async (req, res) => {
-    console.log("RECEIVED!");
     const ip = req.ip;
     // Verify request
     if(!ip) {
@@ -61,6 +63,7 @@ app.post('/notify', async (req, res) => {
     }
     // Add subscription to list
     subList[ip] = sub;
+    fs.writeFileSync('./sub-save.json', JSON.stringify(subList));
     res.status(201).json({status: "success"});
 });
 app.listen(port, () => {
