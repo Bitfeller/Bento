@@ -6,10 +6,6 @@
     <title>Bento! | Maintenance</title>
     <?php require_once "globalreqs.php"?>
     <link rel="stylesheet" href="/css/index.css"/>
-    <script>
-        // Code to update time expectancy for when Bento will be back up
-        // still has to be implemented...
-    </script>
 </head>
 <body>
     <header>
@@ -25,12 +21,31 @@
             <h2>
                 Bento's currently under maintenance, but we'll be back up shortly. Check again later.
             </h2>
-            <p>We should be back up <b>in 5 minutes.</b></p>
+            <p>We should be back up <b id="time">in 5 minutes.</b></p>
         </div>
     </section>
     <!--<section id="404-content"> 
         <h2>Uh oh! Looks like the site is under maintenance. Please check back later!</h2>
     </section>
     <img id="a">-->
+    <script>
+        let date = new Date("2024-07-01T12:00:00");
+        
+        const timeText = document.getElementById("time");
+
+        function updateTime() {
+            let now = Date.now();
+            let diff = date.getTime() - now;
+            let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            timeText.innerHTML = `in ${days > 0 ? days + "d " : ""}${hours > 0 ? hours + "h " : ""}${minutes > 0 ? minutes + "m" : ""}`;
+            if(minutes <= 0) timeText.innerHTML = `within the next few moments.`;
+        }
+
+        const interval = window.setInterval(updateTime, 1000);
+
+        updateTime();
+    </script>
 </body>
 </html>
