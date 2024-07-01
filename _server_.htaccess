@@ -8,7 +8,8 @@ RewriteEngine on
 SetEnvIf REQUEST_URI /(.*) NEWURI=$1
 
 # THESE LINES TO BE UNCOMMENTED WHEN THE WEBSITE IS UNDER MAINTENANCE MODE:
-# RewriteCond %{ENV:NEWURI} !^(.*)\/css\/(.*)$ [OR]
+# RewriteCond %{ENV:NEWURI} !^(.*)css\/(.*)$
+# RewriteCond %{ENV:NEWURI} !^(.*)img\/(.*)$
 # RewriteCond %{ENV:NEWURI} !^(.*)globalreqs.php(.*)$
 # RewriteRule ^(.*)$ /site/maintenance.php [END]
 
