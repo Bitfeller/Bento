@@ -402,6 +402,7 @@ createBtn.addEventListener("mousedown", async function() {
         description: description.value,
         deckData: data
     };
+    console.log(data);
     // console.log(name.value, JSON.stringify(data), isPublic.checked);
     let res = await DeckGateway.add(name.value, JSON.stringify(data), isPublic.checked);
     console.log(res);
@@ -453,3 +454,48 @@ window.addEventListener("dragover", function(e) {
         list.appendChild(dragLine);
     }
 });
+
+// Importing from Quizlet functionality
+const importModal = document.getElementById("importModal");
+const importModalContent = document.getElementById("modal-content");
+const importBtn = document.getElementById("importBtn");
+const importCreateBtn = document.getElementById("importCreateBtn");
+
+window.addEventListener("mousedown", function(event) {
+    if (event.target === importModal) {
+        importModal.style.display = "none";
+    }
+});
+
+importBtn.addEventListener("mousedown", function() {
+    importModal.style.display = "block";
+});
+
+importCreateBtn.addEventListener("mousedown", async function() {
+    const importPublicCheckbox = document.getElementById("importPublicCheckbox");
+    const importName = document.getElementById("importName").value;
+    const importDescription = document.getElementById("importDescription").value;
+    const importText = document.getElementById("importText").value;
+
+    class Deck {
+        constructor(description, deckData) {
+            this.description = description;
+            this.deckData = deckData;
+        }
+    }
+
+    let deckData = importText.split("^").map(card => {
+        const [question, answer] = card.split(">");
+        const type = "input";
+        return { question, type, answer };
+    });
+
+    deckData.pop();
+
+    const deck = new Deck(importDescription, deckData);
+    console.log(deck);
+    let res = await DeckGateway.add(importName, JSON.stringify(deck), importPublicCheckbox.checked);
+    console.log(res);
+    importModal.style.display = "none";
+});
+
