@@ -48,10 +48,39 @@
                 $stmt->close();
                 success();
             break;
+            case "deckpic":
+                $saveVal = htmlspecialchars(strip_tags($val));
+                if(strlen($safeVal) > 2 * 1000 * 1000) {
+                    fail('size limit');
+                }
+                $sql = "UPDATE decks SET deckpic = ? WHERE id = ?;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("si", $saveVal, $id);
+                $stmt->execute();
+                $stmt->close();
+                success();
             case "data":
+                $val = json_decode($val, true);
+                if($val == null) {
+                    fail("exception: data isn't valid JSON.");
+                }
+                $safeVal = [];
+                $safeVal['desc'] = htmlspecialchars(strip_tags($val['desc']));
+                $safeVal['contnt'] = [];
+                foreach($val['contnt'] as $prob => $data) {
+                    $newProb = htmlspecialchars(strip_tags($prob));
+                    $newItem = [];
+                    $newItem['type'] = htmlspecialchars(strip_tags($data['type']));
+                    if($data['op']) {
+                        $newItem['op'] = htmlspecialchars(strip_tags(json_encode($data['op'])));
+                    }
+                    $newItem['ans'] = htmlspecialchars(strip_tags($data['ans']));
+                    $safeVal['contnt'][$newProb] = $newItem;
+                }
+                $safeVal = json_encode($safeVal);
                 $sql = "UPDATE decks SET data = ? WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("si", $val, $id);
+                $stmt->bind_param("si", $safeVal, $id);
                 $stmt->execute();
                 $stmt->close();
                 success();

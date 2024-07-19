@@ -13,6 +13,10 @@ SetEnvIf REQUEST_URI /(.*) NEWURI=$1
 # RewriteCond %{ENV:NEWURI} !^(.*)globalreqs.php(.*)$
 # RewriteRule ^(.*)$ /site/maintenance.php [END]
 
+RewriteRule ^testdeck\.php$ - [F]
+
+RewriteRule ^testuser\.php$ - [F]
+
 RewriteCond %{DOCUMENT_ROOT}/../%{ENV:NEWURI} !-f
 RewriteCond %{DOCUMENT_ROOT}/../%{ENV:NEWURI} !-d
 RewriteCond %{DOCUMENT_ROOT}/%{ENV:NEWURI}\.php -f

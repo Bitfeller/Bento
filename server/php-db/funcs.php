@@ -1,14 +1,17 @@
 <?php
     // Essential functions
     function fail($reason) {
+        http_response_code(200);
         echo json_encode(["status" => "error", "reason" => $reason]);
         exit();
     }
     function success($data = null) {
+        http_response_code(200);
         echo json_encode(["status" => "success", "data" => $data]);
         exit();
     }
     function access_fail() {
+        http_response_code(400);
         echo "Invalid";
         exit();
     }

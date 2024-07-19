@@ -1,21 +1,26 @@
 import { UserGateway } from "../server/client-gateway/user-gateway.js";
 import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 // User
-var user;
+let user;
 // Other objects
-var mainContainer = document.getElementsByClassName("create-container")[0];
-var name = document.getElementById("name");
-var isPublic = document.getElementById("isPublic");
-var description = document.getElementById("description");
-var cardContain = document.getElementById("cardcontain");
-var addCard = document.getElementById("addcard");
-var createBtn = document.getElementById("create");
-var cards = [];
-var dragging;
-var dragLine = document.createElement("div");
+const name = document.getElementById("name");
+const isPublic = document.getElementById("isPublic");
+const description = document.getElementById("description");
+const cardContain = document.getElementById("cardcontain");
+const addCard = document.getElementById("addcard");
+const createBtn = document.getElementById("create");
+const errmsg = document.getElementById("edit-err");
+const editpic = document.getElementById("picAddBtn");
+const resetpic = document.getElementById("picReset");
+const fileselecttrigger = document.getElementById("fileselecttrigger");
+const picimg = document.getElementById("deckpic");
+let deckpic = "";
+let cards = [];
+let dragging;
+const dragLine = document.createElement("div");
 dragLine.style = 'display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;';
 // Deck
-let deck, deckData;
+let deck, contnt;
 
 function computeCenter(el) {
     let rect = el.getBoundingClientRect();
@@ -298,10 +303,6 @@ function initRanking(newDiv, n) {
     }
 }
 function newCard() {
-    if(!user) {
-        console.log("i will find you and your family if you ever attempt this again.\n\n(to summarize, you don't seem to be logged in.)");
-        return;
-    }
     let newDiv = document.createElement("div");
     let n = cards.length + 1;
     newDiv.id = "c" + n;
@@ -311,121 +312,187 @@ function newCard() {
     initMc(newDiv, n);
 }
 
+editpic.addEventListener("mousedown", () => {
+    fileselecttrigger.click();
+});
+resetpic.addEventListener("mousedown", () => {
+    deckpic = "";
+    picimg.src = "../../img/defaultdeckpic.png";
+});
+fileselecttrigger.addEventListener('change', () => {
+    let files = fileselecttrigger.files;
+    if(files && files[0]) {
+        let file = files[0];
+        if(!file.type.startsWith("image/")) {
+            console.log('failed - file type; ' + file.type);
+            return;
+        }
+        let reader = new FileReader();
+        reader.onload = async (e) => {
+            let content = e.target.result;
+            if(content.byteLength > 2 * 1000 * 100) {
+                console.log("Failed! Past size limit of 2 MB.");
+                return;
+            }
+            deckpic = content;
+            picimg.src = content;
+        }
+        reader.readAsDataURL(file);
+    }
+})
+
 createBtn.addEventListener("mousedown", async function() {
     if(!user) {
-        console.log("i will find you and your family if you ever attempt this again.\n\n(to summarize, you don't seem to be logged in.)");
+        errmsg.innerHTML = "Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)";
         return;
     }
     if(name.value == '') {
-        console.log("i am going to find you and strangle you until you choke and suffer as you die.\n\n(to summarize - please type in a name for this deck)");
+        errmsg.innerHTML = "Enter in a valid name for the deck";
         return;
     }
-    let data = [];
+    let data = {};
     for(let i = 0; i < cards.length; i++) {
         let card = cards[i];
         let type = card.getElementsByClassName('selbtn-select')[0];
         if(!type) {
-            console.log("how dare you attempt to modify the html. how malevolent of you.\n\n(to summarize - the system encountered an error parsing the cards and has associated it with an unexpected change in the HTML)");
+            errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
             return;
         }
         let classNames = type.className.split(" ");
         if(classNames.includes('mcbtn')) {
             let cardData = {
-                question: '',
-                type: 'selection',
-                answers: [],
-                correctAnswer: ''
+                type: 'mc',
+                op: [],
+                ans: ''
             };
             let question = card.getElementsByClassName('question')[0];
             if(!question) {
-                console.log("how dare you attempt to modify the html. how malevolent of you.\n\n(to summarize - the system encountered an error parsing the cards and has associated it with an unexpected change in the HTML)");
+                errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                 return;
             }
-            cardData.question = question.value;
+            // cardData.question = question.value;
             let answers = card.getElementsByClassName('mc-option');
             if(answers.length < 2) {
-                console.log("how dare you attempt to modify the html. how malevolent of you.\n\n(to summarize - the system encountered an error parsing the cards and has associated it with an unexpected change in the HTML)");
+                errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                 return;
             }
             for(let j = 0; j < answers.length; j++) {
                 let answer = answers[j].getElementsByClassName('mc-option-input')[0];
                 if(!answer) {
-                    console.log("how dare you attempt to modify the html. how malevolent of you.\n\n(to summarize - the system encountered an error parsing the cards and has associated it with an unexpected change in the HTML)");
+                    errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                     return;
                 }
-                cardData.answers.push(answer.value);
+                cardData.op.push(answer.value);
                 let isCorrect = answers[j].getElementsByClassName('mc-option-sel');
                 if(isCorrect.length > 0) {
-                    cardData.correctAnswer = answer.value;
+                    cardData.ans = answer.value;
                 }
             }
-            data.push(cardData);
+            data[question.value] = cardData;
         } else if(classNames.includes('txtbtn')) {
             let cardData = {
-                question: '',
-                type: 'input',
-                correctAnswer: ''
+                type: 'txt',
+                ans: ''
             };
             let question = card.getElementsByClassName('question')[0];
             let answer = card.getElementsByClassName('txt-answer')[0];
             if(!question || !answer) {
-                console.log("how dare you attempt to modify the html. how malevolent of you.\n\n(to summarize - the system encountered an error parsing the cards and has associated it with an unexpected change in the HTML)");
+                errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                 return;
             }
-            cardData.question = question.value;
-            cardData.correctAnswer = answer.value;
-            data.push(cardData);
+            // cardData.question = question.value;
+            cardData.ans = answer.value;
+            data[question.value] = cardData;
         } else if(classNames.includes('rankbtn')) {
             let cardData = {
-                question: '',
                 type: 'ranking',
-                answer: []
+                ans: []
             };
             let question = card.getElementsByClassName('question')[0];
             if(!question) {
-                console.log("how dare you attempt to modify the html. how malevolent of you.\n\n(to summarize - the system encountered an error parsing the cards and has associated it with an unexpected change in the HTML)");
+                errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                 return;
             }
-            cardData.question = question.value;
+            // cardData.question = question.value;
             let items = card.getElementsByClassName('ranking-item');
             for(let j = 0; j < items.length; j++) {
                 let item = items[j];
                 let txt = item.getElementsByClassName('ranking-item-txt')[0];
                 if(!txt) {
-                    console.log("how dare you attempt to modify the html. how malevolent of you.\n\n(to summarize - the system encountered an error parsing the cards and has associated it with an unexpected change in the HTML)");
+                    errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                     return;
                 }
-                cardData.answer.push(txt.value);
+                cardData.ans.push(txt.value);
             }
-            data.push(cardData);
+            data[question.value] = cardData;
         }
     }
     data = {
-        description: description.value,
-        deckData: data
+        desc: description.value,
+        contnt: data
     };
     // console.log(name.value, JSON.stringify(data), isPublic.checked);
-    let res1 = await DeckGateway.modify(deck, "name", name.value);
-    let res2 = await DeckGateway.modify(deck, "public", isPublic.checked ? "1" : "0");
-    let res3 = await DeckGateway.modify(deck, "data", JSON.stringify(data));
-    if(res1[0] && res2[0] && res3[0]) {
-        window.location.href = "/home";
+    let [s1, res1] = await DeckGateway.modify(deck, "name", name.value);
+    let [s2, res2] = await DeckGateway.modify(deck, "deckpic", deckpic);
+    let [s3, res3] = await DeckGateway.modify(deck, "public", isPublic.checked ? "1" : "0");
+    let [s4, res4] = await DeckGateway.modify(deck, "data", JSON.stringify(data));
+    if(!s1) {
+        switch(res1) {
+            case "no session":
+                errmsg.innerHTML = "Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)";
+            break;
+            case "invalid name":
+                errmsg.innerHTML = "That name has invalid characters. (Valid characters include dashes, a-z, A-Z, and 0-9)";
+            break;
+            case "name taken":
+                errmsg.innerHTML = "You've already created another deck with that name";
+            break;
+            default:
+                console.log(res1);
+                errmsg.innerHTML = "Looks like there's an issue on our side. Try again later.";
+            break;
+        }
+        return;
     }
+    if(!s2) {
+        switch(res2) {
+            case "size limit":
+                errmsg.innerHTML = "Looks like the deck's image exceeds the size limit of 2 MB.";
+            break;
+            default:
+                console.log(res2);
+                errmsg.innerHTML = "Looks like there's an issue on our side. Try again later.";
+            break;
+        }
+        return;
+    }
+    if(!s3) {
+        console.log(res3);
+        errmsg.innerHTML = "Looks like there's an issue on our side. Try again later.";
+        return;
+    }
+    if(!s4) {
+        console.log(res4);
+        errmsg.innerHTML = "Looks like there's an issue on our side. Try again later.";
+        return;
+    }
+    window.location.href = "/home?l=ed&s=1";
 });
 
 addCard.addEventListener("mousedown", newCard);
 
 (async () => {
     let [success, data] = await UserGateway.getuser();
-    if(!success && data == 'no session') {
-        console.log("You're not logged in.");
-        mainContainer.remove();
-        return;
-    }
+    if(!success) return;
     const paramList = new URLSearchParams(window.location.search);
     if(!paramList.get("d")) {
-        console.log("Looks like there was an error. Go back to where you came from, and try again. If you continue to experience errors, please contact either Bitfeller or Valley.");
-        mainContainer.remove();
+        errmsg.innerHTML = "Looks like there was an error. Go back to where you came from, and try again. (If you continue to experience errors, please inform us.)";
+        name.remove();
+        description.remove();
+        isPublic.parentNode.remove();
+        cardContain.remove();
+        addCard.remove();
+        createBtn.remove();
         return;
     }
     let dVal = parseInt(paramList.get('d'));
@@ -433,10 +500,15 @@ addCard.addEventListener("mousedown", newCard);
     [success, deckData] = await DeckGateway.get(deck);
     if(!success) return;
     name.value = deckData.name;
+    if(deckData.deckpic && deckData.deckpic.length > 0) {
+        picimg.src = deckData.deckpic;
+    }
     isPublic.checked = deckData.public;
-    description.value = deckData.data.description;
-    for(let i = 0; i < deckData.data.deckData.length; i++) {
-        let card = deckData.data.deckData[i];
+    description.value = deckData.data.desc;
+    let d_keys = Object.keys(deckData.data.contnt);
+    for(let i = 0; i < d_keys.length; i++) {
+        let card = deckData.data.contnt[d_keys[i]];
+        let q = d_keys[i];
         let newDiv = document.createElement("div");
         let n = cards.length + 1;
         newDiv.id = "c" + n;
@@ -446,16 +518,16 @@ addCard.addEventListener("mousedown", newCard);
         switch(card.type) {
             case "selection":
                 initMc(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].value = card.question;
+                newDiv.getElementsByClassName('question')[0].value = q;
                 let cardmc = newDiv.getElementsByClassName('card-mc')[0];
                 cardmc.innerHTML = "";
-                for(let i = 0; i < card.answers.length; i++) {
+                for(let i = 0; i < card.op.length; i++) {
                     let newOp = document.createElement("div");
                     newOp.className = "mc-option";
                     newOp.innerHTML = `
-                        <input type='input' class='mc-option-input' placeholder='...' value='${card.answers[i]}'>
+                        <input type='input' class='mc-option-input' placeholder='...' value='${card.op[i]}'>
                         <button class='mc-option-del'>X</button>
-                        <button class='mc-option-correct ${card.correctAnswer == card.answers[i] ? 'mc-option-sel' : 'mc-option-nosel'}'>C</button>
+                        <button class='mc-option-correct ${card.ans == card.op[i] ? 'mc-option-sel' : 'mc-option-nosel'}'>C</button>
                     `;
                     cardmc.appendChild(newOp);
                     let delBtn = newOp.getElementsByClassName("mc-option-del")[0];
@@ -480,20 +552,20 @@ addCard.addEventListener("mousedown", newCard);
             break;
             case "input":
                 initTxt(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].value = card.question;
-                newDiv.getElementsByClassName('txt-answer')[0].value = card.correctAnswer;
+                newDiv.getElementsByClassName('question')[0].value = q;
+                newDiv.getElementsByClassName('txt-answer')[0].value = card.ans;
             break;
             case "ranking":
                 initRanking(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].value = card.question;
+                newDiv.getElementsByClassName('question')[0].value = q;
                 let rankingList = newDiv.getElementsByClassName("ranking-list")[0];
                 rankingList.innerHTML = '';
-                for(let i = 0; i < card.answer.length; i++) {
+                for(let i = 0; i < card.ans.length; i++) {
                     let item = document.createElement("div");
                     item.className = 'ranking-item';
                     item.setAttribute("draggable", true);
                     item.innerHTML = `
-                        <input type='text' class='ranking-item-txt' placeholder='...' value='${card.answer[i]}'>
+                        <input type='text' class='ranking-item-txt' placeholder='...' value='${card.ans[i]}'>
                         <button class='ranking-item-del'>X</button>
                     `;
                     rankingList.appendChild(item);
@@ -543,7 +615,6 @@ addCard.addEventListener("mousedown", newCard);
             break;
         }
     }
-    newCard();
 })();
 
 // Dragging event

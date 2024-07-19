@@ -45,11 +45,13 @@ render.textAlign = "center";
 
 function createAsteroid() {
     let speed = random(1, 2);
-    let card = round(random(0, deckData.length - 1));
-    while(deckData[card].type == "ranking") {
-        card = round(random(0, deckData.length - 1));
+    let d_keys = Object.keys(deckData);
+    let card = round(random(0, d_keys.length - 1));
+    while(deckData[d_keys[card]].type == "ranking") {
+        card = round(random(0, d_keys.length - 1));
     }
-    card = deckData[card];
+    card = deckData[d_keys[card]];
+    card.q = d_keys[card];
     return new Asteroid(speed, card);
 }
 
@@ -130,22 +132,27 @@ class Asteroid {
         this.x = random(20, width-220);
         this.y = -200;
         this.speed = speed;
-        this.answer = card.correctAnswer || card.answer;
-        this.text = card.question;
+        this.answer = card.type !== "ranking" ? card.ans : "";
+        this.text = card.q;
     }
 }
 
 (async () => {
     let [success, data] = await UserGateway.getuser();
-    if (!success) {console.error(data); return}
+    if (!success) return;
+    const paramList = new URLSearchParams(window.location.search);
+    if(!paramList.get("d")) {
+        window.location.href = "/home";
+        return;
+    }
     [success, deck] = await DeckGateway.get(1);
-    if (!success) {console.error(deck); return}
+    if (!success) {console.log(deck); window.location.href = "/home"; return}
     
-    deckData = deck.data.deckData;
+    deckData = deck.data.contnt;
     gameStart();
     input.addEventListener("keyup", () => {
         asteroids.forEach((asteroid) => {
-            if(input.value == asteroid.answer) {
+            if(input.value == asteroid.ans) {
                 input.value = "";
                 asteroids.splice(asteroids.indexOf(asteroid), 1);
                 score++;
