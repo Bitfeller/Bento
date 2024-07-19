@@ -5,19 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php require_once "globalreqs.php"?>
     <title>Login</title>
-</head>
-<body>
-    <?php require_once "header.php"?>
-    <div class="modal" id="signInModal">
-        <div class="modal-content">
-            <p><u>Login</u></p>
-            <p>Username:</p>
-            <input type="text" id="signInUsername">
-            <p>Password:</p>
-            <input type="password" id="signInPassword">
-            <button class="submitBtn" id="signInBtnM">Login</button>
-        </div>
-    </div>
     <style>
         .modal {
             border: none;
@@ -57,6 +44,20 @@
             font-size: 18pt;
         }
     </style>
+</head>
+<body>
+    <?php require_once "header.php"?>
+    <div class="modal" id="signInModal">
+        <div class="modal-content">
+            <p><u>Login</u></p>
+            <p>Username:</p>
+            <input type="text" id="signInUsername" autofocus>
+            <p>Password:</p>
+            <input type="password" id="signInPassword">
+            <button class="submitBtn" id="signInBtnM">Login</button>
+            <p class="info-error" id="err"></p>
+        </div>
+    </div>
     <script type='module'>
         import { UserGateway } from "../server/client-gateway/user-gateway.js";
 
@@ -75,11 +76,20 @@
         const l_user = document.getElementById("signInUsername");
         const l_pass = document.getElementById("signInPassword");
         const l_btn = document.getElementById("signInBtnM");
+        const err = document.getElementById("err");
 
         l_btn.addEventListener("mousedown", async () => {
             let [success, reason] = await UserGateway.login(l_user.value, l_pass.value);
             if(!success) {
-                console.log(reason);
+                switch(reason) {
+                    case "bad u/p":
+                        err.innerHTML = "Bad username or password.";
+                    break;
+                    default:
+                        console.log(reason);
+                        err.innerHTML = "Looks like there's an issue on our side. Try again later.";
+                    break;
+                }
                 return;
             }
             const paramList = new URLSearchParams(window.location.search);
@@ -89,12 +99,27 @@
                 window.location.href = "/home";
             }
         });
-        console.log(l_btn);
         window.onkeydown = async (e) => {
             if (e.key === "Enter") {
                 let [success, reason] = await UserGateway.login(l_user.value, l_pass.value);
-                if(!success) return;
-                window.location.href = "/home";
+                if(!success) {
+                    switch(reason) {
+                        case "bad u/p":
+                            err.innerHTML = "Bad username or password.";
+                        break;
+                        default:
+                            console.log(reason);
+                            err.innerHTML = "Looks like there's an issue on our side. Try again later.";
+                        break;
+                    }
+                    return;
+                }
+                const paramList = new URLSearchParams(window.location.search);
+                if(paramList.get("s")) {
+                    window.location.href = "/" + paramList.get("s");
+                } else {
+                    window.location.href = "/home";
+                }
             }
         }
     </script>

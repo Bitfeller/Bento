@@ -4,6 +4,7 @@ import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 const mainContainer = document.getElementById("overall-container");
 const deckContainer = document.getElementsByClassName("deck-container")[0];
 const reviewBtn = document.getElementById("reviewBtn");
+const errmsg = document.getElementById("errmsg");
 
 const o_mode = document.getElementsByClassName("mode");
 const o_speed = document.getElementsByClassName("speed");
@@ -21,10 +22,20 @@ let user;
     deckContainer.innerHTML = "";
     user = data;
     let reviews = user.reviews;
-    for(let i = 0; i < reviews.length; i++) {
-        let id = reviews[i].deckid;
+    if(reviews.length == 0) {
+        window.location.href = "/learn/kitchen";
+        return;
+    }
+    let decks = [];
+    let r_keys = Object.keys(reviews);
+    for(let i = 0; i < r_keys.length; i++) {
+        let id = parseInt(r_keys[i]);
         let [success, deck] = await DeckGateway.get(id);
-        if(!success) continue;
+        if(!success) {
+            decks.push(0);
+            continue;
+        }
+        decks.push(deck);
         deckContainer.innerHTML += `
             <div class='deck-box' data-idx='${id}'>
                 <p>${deck.name}</p>
@@ -32,6 +43,48 @@ let user;
             </div>
         `;
     }
+    o_mode[0].addEventListener("change", () => {
+        if(o_mode[0].checked == true) {
+            deckContainer.innerHTML = "";
+            let r_keys = Object.keys(reviews);
+            for(let i = 0; i < r_keys.length; i++) {
+                if(decks[i] == 0) continue;
+                let deck = decks[i];
+                deckContainer.innerHTML += `
+                    <div class='deck-box' data-idx='${deck.id}'>
+                        <p>${deck.name}</p>
+                        <input type='checkbox' class='deckCheck'>    
+                    </div>
+                `;
+            }
+        }
+    })
+    o_mode[1].addEventListener("change", () => {
+        if(o_mode[1].checked == true) {
+            deckContainer.innerHTML = "";
+            let r_keys = Object.keys(reviews);
+            for(let i = 0; i < r_keys.length; i++) {
+                if(decks[i] == 0) continue;
+                let deck = decks[i];
+                let count = 0;
+                let c_keys = Object.keys(reviews[r_keys[i]]);
+                for(let j = 0; j < c_keys.length; j++) {
+                    let term = reviews[r_keys[i]][c_keys[j]];
+                    if(UserGateway.calculateNTR(term.box, term.last)) count++;
+                }
+                count += Object.keys(deck.data.contnt).length - c_keys.length;
+                if(count > 0) {
+                    deckContainer.innerHTML += `
+                        <div class="deck-box" data-idx='${deck.id}'>
+                            <p>${decks[i].name}</p>
+                            <input type='checkbox' class='deckCheck'>
+                        </div>
+                    `;
+                }
+            }
+            if(deckContainer.innerHTML == "") deckContainer.innerHTML = "<p class=\"info-blank\">You don't have any decks to review.</p>";
+        }
+    });
     reviewBtn.addEventListener("mousedown", () => {
         let selectedDecks = [];
         for(let i = 0; i < deckContainer.children.length; i++) {
@@ -42,14 +95,13 @@ let user;
                 selectedDecks.push(parseInt(idx));
             }
         }
-        // Set options
-        let mode, speed, repeat, shuffle;
-        for(let i = 0; i < o_mode.length; i++) {
-            if(o_mode[i].checked == true && i == 1) {
-                mode = 1;
-            }
+        if(selectedDecks.length == 0) {
+            errmsg.innerHTML = "Please select at least one deck to review.";
+            return;
         }
-        if(!mode) mode = 0;
+        // Set options
+        let mode = 0, speed, repeat, shuffle;
+        if(o_mode[1].checked == true) mode = 1;
         for(let i = 0; i < o_speed.length; i++) {
             if(o_speed[i].checked == true) {
                 speed = i + 1;

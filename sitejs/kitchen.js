@@ -18,13 +18,13 @@ const loadBtn = document.getElementById("loadBtn");
 const search = document.getElementById("search");
 const searchText = document.getElementById("searchText");
 
-function box(idx, inReviews = false, deckName, author, ofAddedDecks = false) {
+function box(idx, inReviews = false, deckName, deckpic, author, ofAddedDecks = false) {
     let a = document.createElement("div");
     a.className = "ingredient-box";
     a.setAttribute("data-idx", idx);
     a.innerHTML = `
         <div>
-            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png" alt="Russian Flag">
+            <img src="${deckpic && deckpic.length > 0 ? deckpic : "../../img/defaultdeckpic.png"}" alt="Deck image">
             <div>
                 <h2>${deckName}</h2>
                 <p>by <span class='username'>${author}</p>
@@ -47,27 +47,23 @@ async function update() {
     }
     // Update decks in the user's review list
     if(reviewDecks.length == 0) {
-        for(let i = 0; i < user.reviews.length; i++) {
-            let deckid = user.reviews[i].deckid;
+        let keys = Object.keys(user.reviews);
+        if(keys.length > 0) addedDecksContainer.innerHTML = "";
+        for(let i = 0; i < keys.length; i++) {
+            let deckid = parseInt(keys[i]);
             let [success, deck] = await DeckGateway.get(deckid);
             if(!success) continue;
             reviewDecks.push(deck);
-            let newBox = box(deck.id, true, deck.name, deck.owner, true);
+            let newBox = box(deck.id, true, deck.name, deck.deckpic, deck.owner, true);
             addedDecksContainer.appendChild(newBox);
         }
     }
     // Update marketplace
     for(let i = loaded + 1; i < decks.length; i++) {
         // In reviews?
-        let inReviews = false;
-        for(let j = 0; j < user.reviews.length; j++) {
-            if(user.reviews[j].deckid == decks[i].id) {
-                inReviews = true;
-                break;
-            }
-        }
+        let inReviews = user.reviews[decks[i].id] ? true : false;
         // Create new container item and display deck
-        let newBox = box(decks[i].id, inReviews, decks[i].name, decks[i].owner, false);
+        let newBox = box(decks[i].id, inReviews, decks[i].name, decks[i].deckpic, decks[i].owner, false);
         marketplace.appendChild(newBox);
     }
     loaded = decks.length - 1;
@@ -112,7 +108,7 @@ async function update() {
         let [success, data] = await DeckGateway.getall(0, orig);
         searchText.style.display = "block";
         searchedDecksContainer.style.display = "flex";
-        searchedDecksContainer.innerHTML = "There weren't any decks that matched your search results :(";
+        searchedDecksContainer.innerHTML = "<p class=\"info-blank\">There weren't any decks that matched your search results.</p>";
         if(!success) return;
         if(data.length == 0) return;
         searchText.style.display = "block";
@@ -120,14 +116,8 @@ async function update() {
         searchedDecksContainer.innerHTML = "";
         for(let i = 0; i < data.length; i++) {
             let deck = data[i];
-            let inReviews = false;
-            for(let j = 0; j < user.reviews.length; j++) {
-                if(user.reviews[j].deckid == deck.id) {
-                    inReviews = true;
-                    break;
-                }
-            }
-            let newBox = box(deck.id, inReviews, deck.name, deck.owner, false);
+            let inReviews = user.reviews[deck.id] ? true : false;
+            let newBox = box(deck.id, inReviews, deck.name, deck.deckpic, deck.owner, false);
             searchedDecksContainer.appendChild(newBox);
         }
         let loaded = data.length;
@@ -144,14 +134,8 @@ async function update() {
             }
             for(let i = 0; i < data.length; i++) {
                 let deck = data[i];
-                let inReviews = false;
-                for(let j = 0; j < user.reviews.length; j++) {
-                    if(user.reviews[j].deckid == deck.id) {
-                        inReviews = true;
-                        break;
-                    }
-                }
-                let newBox = box(deck.id, inReviews, deck.name, deck.owner, false);
+                let inReviews = user.reviews[deck.id] ? true : false;
+                let newBox = box(deck.id, inReviews, deck.name, deck.deckpic, deck.owner, false);
                 searchedDecksContainer.appendChild(newBox);
             }
             loaded += data.length;
@@ -169,14 +153,15 @@ async function preview(_this, isAdded) {
     }
     await UserGateway.editUser("view", String(deck.id));
     let answer_list = "";
-    if(!deck.data.deckData) {
+    if(!deck.data.contnt) {
         answer_list = "[CORRUPT DECK]";
     } else {
-        for(let i = 0; i < deck.data.deckData.length; i++) {
-            answer_list += `<p><b>Q: ${deck.data.deckData[i].question}</b></p>${deck.data.deckData[i].type == "selection" ? "<p>All Answers: " + deck.data.deckData[i].answers.join(", ") + "</p>" : ""}<p>A: ${deck.data.deckData[i].correctAnswer || deck.data.deckData[i].answer.join(", ")}</p><div class='deck-divider' style='margin: 7px 3px; background-color: rgb(230, 230, 230); height: 2px;'></div>`;
+        let contnt = deck.data.contnt;
+        let keys = Object.keys(contnt);
+        for(let i = 0; i < keys.length; i++) {
+            answer_list += `<p><b>Q: ${keys[i]}</b></p>${contnt[keys[i]].type == "mc" ? "<p>All Answers: " + contnt[keys[i]].op.join(", ") + "</p>" : ""}<p>A: ${typeof(contnt[keys[i]].ans) == "string" ? contnt[keys[i]].ans : contnt[keys[i]].ans.join(", ")}</p><div class='deck-divider' style='margin: 7px 3px; background-color: rgb(230, 230, 230); height: 2px;'></div>`;
         }
     }
-    console.log(deck);
     previewDialog.innerHTML = `
         <div class='title-bar'>
             <h2>Preview:</h2>
@@ -186,11 +171,12 @@ async function preview(_this, isAdded) {
             <div class='preview-container-part' id='overview'>
                 <h2>${deck.name}</h2>
                 <p>by <span class='username'>${deck.owner}</span></p>
-                <p><span class='views'>${deck.viewdata.length}</span> view${deck.viewdata.length > 1 ? "s" : ""}</p>
+                <p><span class='views'>${deck.viewdata.length}</span> view${deck.viewdata.length != 1 ? "s" : ""}</p>
+                ${user.username == deck.owner ? "<button class='export-btn' style='padding: 3px;'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>download</span> Export</button>" : ""}
             </div>
             <div class='preview-container-part' id='description'>
                 <h3>Description:</h3>
-                <p>${deck.data.description}</p>
+                <p>${deck.data.desc}</p>
             </div>
             <div class='preview-container-part' id='cards'>
                 <h3>Cards</h3>
@@ -201,6 +187,25 @@ async function preview(_this, isAdded) {
     previewDialog.getElementsByClassName("closeBtns")[0].addEventListener("mousedown", () => {
         previewDialog.close();
     });
+    if(user.username == deck.owner) {    
+        previewDialog.getElementsByClassName("export-btn")[0].addEventListener("mousedown", () => {
+            const data = {
+                name: deck.name,
+                desc: deck.data.desc,
+                deckData: deck.data.contnt
+            };
+            const json = JSON.stringify(data);
+            const file = new File([json], deck.name+'.txt', {type: "text/plain"});
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(file);
+            link.href = url;
+            link.download = file.name;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url); 
+        });
+    }
 }
 async function reviews_update(_this, isAdded) {
     let deck;
@@ -210,45 +215,37 @@ async function reviews_update(_this, isAdded) {
             deck = target[i];
         }
     }
-    let inReviews = false;
-    for(let i = 0; i < user.reviews.length; i++) {
-        if(user.reviews[i].deckid == deck.id) {
-            inReviews = true;
-            // update reviews
-            user.reviews.splice(i, 1);
-            // find in list of reviewDecks
-            for(let j = 0; j < reviewDecks.length; j++) {
-                if(reviewDecks[j].id == deck.id) {
-                    reviewDecks.splice(j, 1);
-                    break;
-                }
+    if(user.reviews[deck.id]) {
+        delete user.reviews[deck.id];
+        // find in list of reviewDecks
+        for(let j = 0; j < reviewDecks.length; j++) {
+            if(reviewDecks[j].id == deck.id) {
+                reviewDecks.splice(j, 1);
+                break;
             }
-            // find div in added decks container
-            for(let j = 0; j < addedDecksContainer.children.length; j++) {
-                if(addedDecksContainer.children[j].dataset.idx == deck.id) {
-                    addedDecksContainer.children[j].remove();
-                    break;
-                }
-            }
-            // update div in marketplace
-            let divs = document.getElementsByClassName("ingredient-box");
-            for(let j = 0; j < divs.length; j++) {
-                if(divs[j].dataset.idx == deck.id) {
-                    divs[j].getElementsByClassName("userReviewsUpdateBtns")[0].innerHTML = "Add";
-                    break;
-                }
-            }
-            break;
         }
-    }
-    if(!inReviews) {
-        user.reviews.push({
-            deckid: deck.id,
-            cards: []
-        });
+        // find div in added decks container
+        for(let j = 0; j < addedDecksContainer.children.length; j++) {
+            if(addedDecksContainer.children[j].dataset.idx == deck.id) {
+                addedDecksContainer.children[j].remove();
+                if(addedDecksContainer.innerHTML.length == 0) addedDecksContainer.innerHTML = "<p class=\"info-blank\">You haven't added any decks to your reviews yet.</p>";
+                break;
+            }
+        }
+        // update div in marketplace
+        let divs = document.getElementsByClassName("ingredient-box");
+        for(let j = 0; j < divs.length; j++) {
+            if(divs[j].dataset.idx == deck.id) {
+                divs[j].getElementsByClassName("userReviewsUpdateBtns")[0].innerHTML = "Add";
+                break;
+            }
+        }
+    } else {
+        user.reviews[deck.id] = {};
         // Add to list of reviewDecks
         reviewDecks.push(deck);
-        let newBox = box(deck.id, true, deck.name, deck.owner, true);
+        let newBox = box(deck.id, true, deck.name, deck.deckpic, deck.owner, true);
+        if(addedDecksContainer.children.length == 1 && addedDecksContainer.children[0].className == "info-blank") addedDecksContainer.innerHTML = "";
         addedDecksContainer.appendChild(newBox);
         _this.innerHTML = "Remove";
     }
