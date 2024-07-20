@@ -45,6 +45,31 @@ let user;
             </div>
         `;
     }
+    for(let i = 0; i < deckContainer.children.length; i++) {
+        let item = deckContainer.children[i];
+        let checkbox = item.getElementsByClassName('deckCheck')[0];
+        checkbox.addEventListener("change", () => {
+            let allSelected = true;
+            let isSelected = false;
+            for(let j = 0; j < deckContainer.children.length; j++) {
+                let thatcheckbox = deckContainer.children[j].getElementsByClassName('deckCheck')[0];
+                if(thatcheckbox.checked == false) {
+                    allSelected = false;
+                } else {
+                    isSelected = true;
+                }
+            }
+            if(allSelected) {
+                deckSelect.innerHTML = "check_box";
+            } else {
+                if(isSelected) {
+                    deckSelect.innerHTML = "indeterminate_check_box";
+                } else {
+                    deckSelect.innerHTML = "select_all";
+                }
+            }
+        });
+    }
     o_mode[0].addEventListener("change", () => {
         if(o_mode[0].checked == true) {
             deckContainer.innerHTML = "";
@@ -58,6 +83,31 @@ let user;
                         <input type='checkbox' class='deckCheck'>    
                     </div>
                 `;
+            }
+            for(let i = 0; i < deckContainer.children.length; i++) {
+                let item = deckContainer.children[i];
+                let checkbox = item.getElementsByClassName('deckCheck')[0];
+                checkbox.addEventListener("change", () => {
+                    let allSelected = false;
+                    let isSelected = false;
+                    for(let j = 0; j < deckContainer.children.length; j++) {
+                        let thatcheckbox = deckContainer.children[j].getElementsByClassName('deckCheck')[0];
+                        if(thatcheckbox.checked == false) {
+                            allSelected = false;
+                        } else {
+                            isSelected = true;
+                        }
+                    }
+                    if(allSelected) {
+                        deckSelect.innerHTML = "check_box";
+                    } else {
+                        if(isSelected) {
+                            deckSelect.innerHTML = "indeterminate_check_box";
+                        } else {
+                            deckSelect.innerHTML = "select_all";
+                        }
+                    }
+                });
             }
         }
     })
@@ -83,6 +133,31 @@ let user;
                         </div>
                     `;
                 }
+            }
+            for(let i = 0; i < deckContainer.children.length; i++) {
+                let item = deckContainer.children[i];
+                let checkbox = item.getElementsByClassName('deckCheck')[0];
+                checkbox.addEventListener("change", () => {
+                    let allSelected = true;
+                    let isSelected = false;
+                    for(let j = 0; j < deckContainer.children.length; j++) {
+                        let thatcheckbox = deckContainer.children[j].getElementsByClassName('deckCheck')[0];
+                        if(thatcheckbox.checked == false) {
+                            allSelected = false;
+                        } else {
+                            isSelected = true;
+                        }
+                    }
+                    if(allSelected) {
+                        deckSelect.innerHTML = "check_box";
+                    } else {
+                        if(isSelected) {
+                            deckSelect.innerHTML = "indeterminate_check_box";
+                        } else {
+                            deckSelect.innerHTML = "select_all";
+                        }
+                    }
+                });
             }
             if(deckContainer.innerHTML == "") deckContainer.innerHTML = "<p class=\"info-blank\">You don't have any decks to review.</p>";
         }
@@ -136,13 +211,14 @@ let user;
                 let checkbox = item.getElementsByClassName('deckCheck')[0];
                 checkbox.checked = true;
             }
+            deckSelect.innerHTML = "check_box";
         } else {
             for(let i = 0; i < deckContainer.children.length; i++) {
                 let item = deckContainer.children[i];
                 let checkbox = item.getElementsByClassName('deckCheck')[0];
                 checkbox.checked = false;
             }
-        
+            deckSelect.innerHTML = "select_all";
         }
     });
 })();
