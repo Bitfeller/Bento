@@ -8,9 +8,6 @@ body > h2 {
     margin: 40px 15px; 
     border-radius: 5px;
 }
-/* #createDeckBtn {
-    float: inline-start;
-} */
 .search-container {
     display: flex;
     justify-content: center;
@@ -40,18 +37,20 @@ body > h2 {
 .previewBtns {
     margin-top: 10px;
 }
+.previewBtns, .userReviewsUpdateBtns {
+    border: solid;
+    border-width: 0.75px;
+    border-color: var(--light-text);
+    background-color: var(--light-gray);
+    color: var(--light-text);
+    padding: 2.5px;
+}
 .create-deck-box {
     margin-top: 15px;
     height: 235px;
     width: 235px;
     border-radius: 10px;
     background-color: var(--light-green);
-    button {
-        background-color: var(--light-green);
-        font-size: 18pt;
-        width: 100%;
-        height: 100%;
-    }
 }
 .ingredient-box {
     display: flex;
@@ -63,11 +62,6 @@ body > h2 {
     padding: 10px;
     background-color: var(--dark-gray);
     border-radius: 10px;
-    * {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
 }
 @media screen and (max-width: 768px) {
     .ingredient-box {
@@ -80,12 +74,12 @@ body > h2 {
 }
 .ingredient-box > :first-child {
     width: 50%;
-    img {
-        border-radius: 5px;
-        object-fit: fill;
-        width: 100%;
-        height: 65%;
-    }
+}
+.ingredient-box > :first-child img {
+    border-radius: 5px;
+    object-fit: fill;
+    width: 100%;
+    height: 65%;
 }
 .ingredient-box > :last-child {
     width: 45%;
@@ -93,18 +87,6 @@ body > h2 {
     flex-direction: column;
     justify-content: space-between;
     vertical-align: middle;
-    button {
-        font-size: 12pt;
-        background-color: var(--light-green);
-        height: 47%;
-    }
-    button:hover {
-        transition-duration: 0.3s;
-        box-shadow: 0px 1px 4px rgba(255, 255, 255, 0.5);
-    }
-    .addBtns {
-        background-color: rgb(195, 228, 134);
-    }
 }
 ::backdrop {
     background-image: radial-gradient(45deg, black);
@@ -139,14 +121,6 @@ dialog {
     border-radius: 10px;
     background-color: var(--dark-gray);
     width: 50%;
-    /* h2 {
-        display: inline;
-    }
-    button {
-        font-size: 12pt;
-        height: 30px;
-        width: 30px;
-    } */
 }
 #addDialog {
     overflow-x: hidden;
