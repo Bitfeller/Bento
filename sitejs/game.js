@@ -8,7 +8,7 @@ var info = document.getElementById("answer_info");
 var ans_a = document.getElementById("ans_a");
 
 var objs = [];
-let selected;
+let selected = false;
 let toProceed = false;
 
 // Ranking functionality (drag)
@@ -43,7 +43,6 @@ function refresh() {
         for(var i = 0; i < objs.length; i++) {
             objs[i].remove();
         }
-        selected = undefined;
         return;
     }
     var data = Game.fetchProblem();
@@ -52,52 +51,36 @@ function refresh() {
         objs[i].remove();
     }
     objs = [];
-    selected = undefined;
     dragElements = [];
     centroids = [];
     dragging = undefined;
+    answerbtn.style.display = "block";
     switch(data.type) {
         case "mc":
-            // Makes the answer button dissapear
-            // Answers are insted submitted by clicking on the options
-            // answerbtn.style.display = "none";
-            for(var i = 0; i < data.op.length; i++) {
-                var op_i = document.createElement("button");
+            answerbtn.style.display = "none";
+            for(let i = 0; i < data.op.length; i++) {
+                let op_i = document.createElement("button");
                 op_i.className = "option";
-                // Adds the symbol for the answer that should also correspond to a keyboard key
-                // Ex. when the user presses "3" the third option is submitted for answer
                 op_i.innerHTML = `<p class="answer-symbol">&#${9312+i}</p> <p>${data.op[i]}</p>`;
                 op_i.id = "not-select";
                 op_i.setAttribute("i", i);
                 op_i.addEventListener("mousedown", function() {
-                    if(selected) {
-                        selected.id = "not-select";
+                    if(selected) return;
+                    selected = true;
+                    let correct = Game.attemptProblem(parseInt(this.getAttribute("i")));
+                    if(correct) {
+                        this.innerHTML = `<p class="answer-symbol">✅</p> ` + this.innerHTML;
+                        window.setTimeout(refresh, 1000);
+                    } else {
+                        for(let j = 0; j < cont_a.children.length; j++) {
+                            let item = cont_a.children[j];
+                            if(data.op[j] == data.ans) item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
+                        }
+                        this.innerHTML = `<p class="answer-symbol">❌</p> ` + this.innerHTML;
+                        answerbtn.style.display = "block";
+                        answerbtn.innerHTML = "Continue >>>";
+                        toProceed = true;
                     }
-                    selected = this;
-                    selected.id = "select";
-                    // Checks if the submitted answer is correct and if it is adds a checkmark to the html
-                    // let correct = Game.attemptProblem(parseInt(selected.getAttribute("i")));
-                    // if(correct) {
-                    //     selected.innerHTML = `<p class="answer-symbol">✅</p> <p>${selected.innerHTML}</p>`;
-                    //     selected.id = "correct";
-                    //     window.setTimeout(() => {
-                    //         answerbtn.style.display = "block";
-                    //         contlabel();
-                    //         refresh();
-                    //     }, 1000);
-                    // } else {
-                    //     // When the answer is not correct it adds a checkmark to the correct answer and an x to the selected answer
-                    //     for (let e of cont_a.children) {
-                    //         if (correct = Game.attemptProblem(parseInt(e.getAttribute("i")))) {
-                    //             e.innerHTML = `<p class="answer-symbol">✅</p> <p>${e.children[1].innerHTML}</p>`;
-                    //             e.id = "correct";
-                    //         }
-                    //     }
-                    //     selected.innerHTML = `<p class="answer-symbol">❌</p> <p>${selected.children[1].innerHTML}</p>`;
-                    //     answerbtn.innerHTML = "Continue >>>";
-                    //     answerbtn.style.display = "block";
-                    //     toProceed = true;
-                    // }
                 });
                 objs.push(op_i);
                 cont_a.appendChild(op_i);
@@ -147,7 +130,7 @@ function refresh() {
                     list.prepend(dragLine);
                 });
                 el.addEventListener("dragend", function(e) {
-                    if(dragging !== this) {return}
+                    if(dragging !== this) {return;}
                     this.style["background-color"] = "";
                     dragLine.remove();
                     var top;
@@ -205,32 +188,9 @@ function answerHandler() {
         return;
     }
     if(!Game.isDead()) {
-        var data = Game.fetchProblem();
-        var correct = false;
+        let data = Game.fetchProblem();
+        let correct = false;
         switch(data.type) {
-            case "mc":
-                if(!selected) {
-                    noAnswer();
-                    return;
-                }
-                correct = Game.attemptProblem(parseInt(selected.getAttribute("i")));
-                if(correct) {
-                    contlabel();
-                    refresh();
-                } else {
-                    ans_a.style.display = "flex";
-                    ans_a.innerHTML = cont_a.innerHTML;
-                    for(let i = 0; i < ans_a.children.length; i++) {
-                        ans_a.children[i].disabled = true;
-                        ans_a.children[i].id = "not-select";
-                        if(data.op[i] == data.ans) {
-                            ans_a.children[i].id = "select";
-                        }
-                    }
-                    answerbtn.innerHTML = "Continue >>>";
-                    toProceed = true;
-                }
-            break;
             case "txt":
                 if(objs[0].value === "") {
                     noAnswer();
@@ -330,7 +290,7 @@ async function main() {
     }
     let dsVal = paramList.get("ds").split(",");
     dsVal.forEach((val, idx) => {dsVal[idx] = parseInt(val);});
-    let m = parseFloat(paramList["m"] || 1);
+    let m = parseFloat(paramList["m"]);
     let s = parseFloat(paramList["s"]);
     let r = parseFloat(paramList["r"]);
     let sh = parseFloat(paramList["sh"]);
@@ -346,26 +306,69 @@ async function main() {
     refresh();
 }
 main();
-window.addEventListener("keydown", function(e) {
-    if(e.key >= "0" && e.key <= "9") {
-        let i;
-        if(e.key == "0") {
-            i = 9;
-        } else {
-            i = parseInt(e.key)-1;
+let mc_keynum = "";
+let prob;
+window.addEventListener("keydown", (e) => {
+    let data = Game.fetchProblem();
+    let nums = "0123456789";
+    if(data.type == "mc" && (nums.indexOf(e.key) > -1 || e.key == "Enter")) {
+        if(prob && data.q !== prob) mc_keynum = "";
+        prob = data.q;
+        if(nums.indexOf(e.key) > -1) {
+            let len = data.op.length;
+            let strlen = String(len);
+            mc_keynum += e.key;
+            problem.innerHTML = data.q + "<p style='font-size: 10px;'>" + mc_keynum + "</p>";
+            if(strlen.length > mc_keynum) return;
         }
-        for (const child of cont_a.children) {
-            try {
-                if (child.attributes.i.value == i) {
-                    if(selected) {
-                        selected.id = "not-select";
-                    }
-                    selected = child;
-                    selected.id = "select";
-                }
-            } catch (error) {
-                // Not a ms questions （多分）
+        if(mc_keynum.length == 0) {
+            problem.innerHTML = data.q;
+            return;
+        }
+        let num = parseInt(mc_keynum);
+        if(num > data.op.length) {
+            problem.innerHTML = data.q;
+            mc_keynum = "";
+            return;
+        }
+        mc_keynum = "";
+        prob = undefined;
+        let correct = Game.attemptProblem(parseInt(num - 1));
+        if(correct) {
+            cont_a.children[num - 1].innerHTML = `<p class="answer-symbol">✅</p> ` + cont_a.children[num - 1].innerHTML;
+            window.setTimeout(refresh, 1000);
+        } else {
+            for(let i = 0; i < cont_a.children.length; i++) {
+                let item = cont_a.children[i];
+                if(data.op[i] == data.ans) item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
             }
+            cont_a.children[num - 1].innerHTML = `<p class="answer-symbol">❌</p> ` + cont_a.children[num - 1].innerHTML;
+            answerbtn.style.display = "block";
+            answerbtn.innerHTML = "Continue >>>";
+            toProceed = true;
         }
     }
 });
+// window.addEventListener("keydown", function(e) {
+//     if(e.key >= "0" && e.key <= "9") {
+//         let i;
+//         if(e.key == "0") {
+//             i = 9;
+//         } else {
+//             i = parseInt(e.key)-1;
+//         }
+//         for (const child of cont_a.children) {
+//             try {
+//                 if (child.attributes.i.value == i) {
+//                     if(selected) {
+//                         selected.id = "not-select";
+//                     }
+//                     selected = child;
+//                     selected.id = "select";
+//                 }
+//             } catch (error) {
+//                 // Not a ms questions （多分）
+//             }
+//         }
+//     }
+// });

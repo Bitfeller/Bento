@@ -67,8 +67,14 @@
                 $safeVal = [];
                 $safeVal['desc'] = htmlspecialchars(strip_tags($val['desc']));
                 $safeVal['contnt'] = [];
+                // Check for duplicate questions
+                $problems = [];
                 foreach($val['contnt'] as $prob => $data) {
                     $newProb = htmlspecialchars(strip_tags($prob));
+                    if(in_array($newProb, $problems)) {
+                        fail('same problem');
+                    }
+                    $problems[] = $newProb;
                     $newItem = [];
                     $newItem['type'] = htmlspecialchars(strip_tags($data['type']));
                     if(isset($data['op'])) {
