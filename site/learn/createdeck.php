@@ -16,7 +16,7 @@
             <input type="text" placeholder="Name" id="name">
             <input type="text" placeholder="Description" id="description">
             <p>Deck picture:</p>
-            <div>
+            <div class="deck-pick-container">
                 <img src="../../img/defaultdeckpic.png" class="deck-pic" id="deckpic">
                 <input class='file-selector' accept="image/png,image/jpeg" id="fileselecttrigger" type="file">
                 <span class="material-symbols-outlined" id="picAddBtn">add_a_photo</span>
@@ -24,7 +24,7 @@
             </div>
             <div>
                 <input type="checkbox" id="isPublic">
-                <span>| Public Deck</span> <button id="importBtn">Import from Quizlet</button>
+                <span>| Public Deck</span>
             </div>
             <div id="cardcontain"></div>
             <button id="addcard">Add New Card</button>
