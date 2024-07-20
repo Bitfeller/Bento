@@ -64,17 +64,30 @@ h2 {
 #deckSelectAll {
     font-size: 22px;
     float: inline-end;
-    color: #6591d2;
+    color: #4a6f9b;
     cursor: pointer;
+    transition: 0.3s;
+}
+#deckSelectAll:hover {
+    color: #6591d2;
 }
 #reviewBtn {
+    background-color: var(--light-gray);
     float: right;
     padding: 0px 10px;
     margin-right: 29px;
     min-width: 50%;
+    transition: 0.3s;
 }
 #reviewBtn > h1 {
-    color: #292E32;
+    color: var(--light-text);
+    transition: 0.3s;
+}
+#reviewBtn:hover {
+    background-color: var(--light-green);
+}
+#reviewBtn:hover > h1 {
+    color: var(--dark-text);
 }
 @media only screen and (max-width: 1300px) {
     /* #settings-big-box {

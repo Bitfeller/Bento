@@ -26,7 +26,7 @@ function noAnswer() {
 function contlabel() {
     info.style['background-color'] = "rgba(0, 255, 0, 0.4)";
     info.style.display = "block";
-    info.innerHTML = "correct.";
+    info.innerHTML = "Correct.";
     window.setTimeout(() => info.style.display = "none", 1000);
 }
 function computeCenter(el) {
@@ -203,6 +203,8 @@ function answerHandler() {
                 } else {
                     ans_a.style.display = "flex";
                     ans_a.innerHTML = cont_a.innerHTML;
+                    cont_a.children[0].style.backgroundColor = `rgba(255, 0, 0, 0.5)`;
+                    ans_a.children[0].style.backgroundColor = `rgba(0, 255, 0, 0.5)`;
                     ans_a.children[0].value = data.ans;
                     ans_a.children[0].disabled = true;
                     answerbtn.innerHTML = "Continue >>>";

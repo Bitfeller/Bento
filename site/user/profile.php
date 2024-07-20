@@ -50,8 +50,9 @@
         <dialog id="warningdialog">
             <div class="title-bar">
                 <h2>Are you sure?</h2>
-                <button class="closeBtns" id="leave">Go back</button>
+                <button class="closeBtns" id="leave">Back...</button>
             </div>
+            <br>
             <div class="main"></div>
         </dialog>
     </section>

@@ -53,6 +53,35 @@
 #pfpReset {
   right: 55px;
 }
+dialog {
+  margin: auto;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background-color: #1e1e1e;
+  min-width: 450px;
+  h2 {
+      display: inline;
+  }
+  button {
+      font-size: 12pt;
+      height: 30px;
+      width: auto;
+      padding: 0px 5px;
+      margin: 0px 5px;
+  }
+}
+.title-bar {
+  display: flex;
+  justify-content: space-between;
+}
+#leave, .go_back, .confirm {
+  padding: 0px 5px;
+}
+.confirm {
+  background-color: var(--danger-red);
+  color: var(--light-text);
+}
 @media screen and (max-width: 1400px) {
   #profile-container {
     flex-direction: column;
@@ -70,23 +99,5 @@
   }
   .setting-box > input, .setting-box > button {
     width: 95%;
-  }
-}
-dialog {
-  margin: auto;
-  padding: 15px;
-  border: none;
-  border-radius: 10px;
-  background-color: #1e1e1e;
-  min-width: 450px;
-  h2 {
-      display: inline;
-  }
-  button {
-      font-size: 12pt;
-      height: 30px;
-      width: auto;
-      padding: 0px 5px;
-      margin: 0px 5px;
   }
 }
