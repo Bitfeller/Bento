@@ -102,19 +102,19 @@ button {
 .options-container {
     display: flex;
     flex-direction: column;
-    padding: 10px;;
+    background-color: var(--light-gray);
+    padding: 10px;
     width: 200px;
-    height: 300px;
+    height: min-content;
     margin: 0px 15px;
     border-radius: 10px;
-    align-items: flex-end;
 }
 .options-container button {
     margin: 5px 0px;
 }
-.options-container p {
+.options-container > p {
     font-size: 13px;
-    text-align: right;
+    text-align: center;
 }
 .options-container button#quizlet-import {
     background-color: rgb(100, 150, 255);
@@ -148,10 +148,28 @@ button {
     margin-top: 10px;
     padding: 5px;
 }
+.deck-pick-container { 
+    position: relative;
+	height: calc(9vh*2.75);
+	width: calc(16vh*2.75);
+    margin: 5px 0;
+}
+.deck-pick-container > span {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+#picReset {
+    right: 55px;
+}
 .deck-pic {
-	height: 20vh;
-	width: 40vh;
+    border-radius: 10px;
+	height: calc(9vh*2.75);
+	width: calc(16vh*2.75);
     display: inline-block;
+}
+.deck-pic > img {
+    object-fit: cover;
 }
 .file-selector {
     display: inline-block;
@@ -164,12 +182,25 @@ button {
     opacity: 0;
 }
 #picAddBtn, #picReset {
-    display: inline-block;
     cursor: pointer;
     color: #5992e8;
     height: 35px;
     width: 35px;
-    vertical-align: top;
+}
+@media only screen and (max-width: 1025px) {
+    .deck-pick-container, .deck-pic {
+        height: calc(9vh*2.4);
+        width: calc(16vh*2.4);
+    }
+    .options-container {
+        margin: 10px 0px;
+        width: calc(93%);
+
+    }
+    .container {
+        width: 93%;
+        flex-direction: column;
+    }
 }
 @media only screen and (max-width: 700px) {
     #addcard, #create {
@@ -182,4 +213,9 @@ button {
     #modal-content > h1 {
         font-size: 24pt;
     }
+    .create-container {
+        width: calc(100% - 10px);
+        padding: 5px;
+    }
+
 }
