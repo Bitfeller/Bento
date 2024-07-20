@@ -11,16 +11,17 @@
 <body data-uo="true">
     <?php require_once "../header.php"?>    
     <div id="main">
-        <div id="left"></div><br>
-        <p id="problem"></p>
-        <div id="a_container">
-            <div id="cont_a"></div>
-            <div id="ans_a"></div>
+        <div id="left"></div>
+        <h2 id="problem"></h2>
+        <div>
+            <div id="a_container">
+                <div id="cont_a"></div>
+                <div id="ans_a"></div>
+            </div>
+            <button id="answerbtn">Answer</button>
+            <div id="answer_info"></div>
         </div>
         <br>
-        <br>
-        <button id="answerbtn">Answer</button>
-        <div id="answer_info">Please specify an answer!</div>
     </div>
 </body>
 </html>

@@ -1,7 +1,95 @@
 #main {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
     display: flex;
     flex-direction: column;
+    position: absolute;
+    justify-content: space-between;
+    left: 25%;
+    top: 25%;
+    height: 50vh;
+    width: 50%;
+    background-color: var(--dark-gray);
+    border-radius: 10px;
+    padding: 15px;
+}
+#left {
+    display: none;
+}
+#cont_a {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+#problem {
+    text-align: center;
+}
+.op-input {
+    width: 100%;
+    height: 5vh;
+    font-size: 18pt;
+    text-align: center;
+}
+#answerbtn {
+    margin-top: 2%;
+    width: 100%;
+    height: 5vh;
+    font-size: 18pt;
+}
+.option {
+    display: flex;
+    flex-direction: row;
+    border: solid;
+    border-width: 2px;
+    border-color: var(--lighter-gray);
+    background-color: var(--gray);
+    width: 49%;
+    margin-top: 2%;
+    min-height: 5vh;
+}
+.option:hover {
+    border-color: #6a6a6a;
+}
+.option p {
+    color: var(--light-text);
+    font-size: 16pt;
+    padding: 1%;
+    width: 90%;
+}
+.option .answer-symbol {
+    margin-left: 5px;
+    width: initial;
+}
+#select {
+    border-color: var(--light-text);
+}
+#correct {
+    border-color: var(--light-green);
+}
+#ranking-list {
+    width: 100%;
+    min-height: 4vh;
+}
+.ranking-item {
+    width: calc(100% - (2% + 2px));
+    margin-top: 10px;
+    cursor: grab;
+    padding: 1%;
+    border: solid;
+    border-radius: 10px;
+    border-width: 2px;
+    border-color: var(--lighter-gray);
+    background-color: var(--gray);
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.ranking-item:hover {
+    border-color: #6a6a6a;
+}
+.ranking-item p {
+    margin-left: 5px;
+}
+#correct-input {
+    margin-top: 10px;
 }

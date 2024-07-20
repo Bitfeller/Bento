@@ -58,10 +58,15 @@ function refresh() {
     dragging = undefined;
     switch(data.type) {
         case "mc":
+            // Makes the answer button dissapear
+            // Answers are insted submitted by clicking on the options
+            // answerbtn.style.display = "none";
             for(var i = 0; i < data.op.length; i++) {
                 var op_i = document.createElement("button");
                 op_i.className = "option";
-                op_i.innerHTML = data.op[i];
+                // Adds the symbol for the answer that should also correspond to a keyboard key
+                // Ex. when the user presses "3" the third option is submitted for answer
+                op_i.innerHTML = `<p class="answer-symbol">&#${9312+i}</p> <p>${data.op[i]}</p>`;
                 op_i.id = "not-select";
                 op_i.setAttribute("i", i);
                 op_i.addEventListener("mousedown", function() {
@@ -70,6 +75,29 @@ function refresh() {
                     }
                     selected = this;
                     selected.id = "select";
+                    // Checks if the submitted answer is correct and if it is adds a checkmark to the html
+                    // let correct = Game.attemptProblem(parseInt(selected.getAttribute("i")));
+                    // if(correct) {
+                    //     selected.innerHTML = `<p class="answer-symbol">✅</p> <p>${selected.innerHTML}</p>`;
+                    //     selected.id = "correct";
+                    //     window.setTimeout(() => {
+                    //         answerbtn.style.display = "block";
+                    //         contlabel();
+                    //         refresh();
+                    //     }, 1000);
+                    // } else {
+                    //     // When the answer is not correct it adds a checkmark to the correct answer and an x to the selected answer
+                    //     for (let e of cont_a.children) {
+                    //         if (correct = Game.attemptProblem(parseInt(e.getAttribute("i")))) {
+                    //             e.innerHTML = `<p class="answer-symbol">✅</p> <p>${e.children[1].innerHTML}</p>`;
+                    //             e.id = "correct";
+                    //         }
+                    //     }
+                    //     selected.innerHTML = `<p class="answer-symbol">❌</p> <p>${selected.children[1].innerHTML}</p>`;
+                    //     answerbtn.innerHTML = "Continue >>>";
+                    //     answerbtn.style.display = "block";
+                    //     toProceed = true;
+                    // }
                 });
                 objs.push(op_i);
                 cont_a.appendChild(op_i);
@@ -85,6 +113,17 @@ function refresh() {
             input.addEventListener("keydown", (e) => {
                 if(e.key == "Enter") answerHandler();
             });
+            // On input event checks if answer is correct and if so, automatically submits otherwise does nothing
+            // input.addEventListener("input", ()=> {
+            //     if (input.value == "") return;
+            //     console.log(input.value);
+            //     let correct = Game.attemptProblem(objs[0].value.toLowerCase());
+            //     console.log(correct);
+            //     if(correct) {
+            //         contlabel();
+            //         refresh();
+            //     }
+            // });
         break;
         case "ranking":
             var list = document.createElement("div");
@@ -100,16 +139,15 @@ function refresh() {
                 el.className = "ranking-item";
                 el.id = "item"+i;
                 el.setAttribute("draggable", "true");
-                el.innerHTML = item;
+                el.innerHTML = `<p>${item}</p>`;
                 answerList.splice(idx, 1);
                 list.appendChild(el);
                 el.addEventListener("dragstart", function(e) {
                     dragging = this;
-                    this.style["background-color"] = "rgb(150, 200, 255)";
                     list.prepend(dragLine);
                 });
                 el.addEventListener("dragend", function(e) {
-                    if(dragging !== this) {return;}
+                    if(dragging !== this) {return}
                     this.style["background-color"] = "";
                     dragLine.remove();
                     var top;
