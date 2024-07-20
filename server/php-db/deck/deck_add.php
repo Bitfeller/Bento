@@ -43,9 +43,19 @@
             $newItem = [];
             $newItem['type'] = htmlspecialchars(strip_tags($data['type']));
             if(isset($data['op'])) {
-                $newItem['op'] = json_decode(htmlspecialchars(strip_tags(json_encode($data['op']))));
+                $newItem['op'] = [];
+                foreach($data['op'] as $op) {
+                    $newItem['op'][] = htmlspecialchars(strip_tags($op));
+                }
             }
-            $newItem['ans'] = json_decode(htmlspecialchars(strip_tags(json_encode($data['ans']))));
+            if(gettype($data['ans']) == 'array') {
+                $newItem['ans'] = [];
+                foreach($data['ans'] as $ans) {
+                    $newItem['ans'][] = htmlspecialchars(strip_tags($ans));
+                }
+            } else {
+                $newItem['ans'] = htmlspecialchars(strip_tags($data['ans']));
+            }
             $newVal['contnt'][$newProb] = $newItem;
         }
         $deckData = json_encode($newVal);
