@@ -255,7 +255,6 @@ function newRandomDeck() {
         }
     }
     randomSet = problems;
-    console.log(randomSet);
     card = 0;
 }
 
@@ -277,7 +276,7 @@ async function init(_decks, info) {
         // Get deck
         let [success, data] = await DeckGateway.get(deck);
         if(!success) {
-            console.log("Encountered while attempting to fetch deck of d_id(" + deck + "): " + data);
+            console.error("Encountered while attempting to fetch deck of d_id(" + deck + "): " + data);
             return false;
         }
         let userReview = user.reviews[deck];
@@ -307,7 +306,6 @@ async function init(_decks, info) {
         }
         let updateIdx = false;
         let r_keys = Object.keys(userReview);
-        console.log(userReview);
         for(let i = 0; i < r_keys.length; i++) {
             let userCard = userReview[r_keys[i]];
             let q = r_keys[i];

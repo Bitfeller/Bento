@@ -84,7 +84,7 @@ const usernameEl = document.getElementById("username");
         warningDialog.showModal();
         wd_main.innerHTML = `
             <p>Once you delete your account, you won't be able to recover it again.</p><br>
-            <p>Enter your current password to continue.</p>
+            <p>Enter your current password to continue...</p>
             <input type='password' class='password-field' placeholder='Current Password'><br><br><br>
             <button class='confirm'>Delete Account</button> or 
             <button class='go_back'>Go Back</button>

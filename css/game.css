@@ -33,6 +33,7 @@
     height: 5vh;
     font-size: 18pt;
     text-align: center;
+    margin-top: 5px;
 }
 #answerbtn {
     margin-top: 2%;
@@ -97,4 +98,9 @@
 }
 #correct-input {
     margin-top: 10px;
+}
+#answer_info {
+    margin-top: 10px;
+    padding: 5px;
+    border-radius: 10px;
 }

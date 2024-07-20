@@ -71,12 +71,7 @@ body > h2 {
 }
 @media screen and (max-width: 768px) {
     .ingredient-box {
-        width: calc(50% - 31px);
-    }
-}
-@media screen and (max-width: 480px) {
-    .ingredient-box {
-        width: calc(100% - 15px);
+        width: calc(100% - 31px);
     }
 }
 .username {
