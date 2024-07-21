@@ -43,9 +43,10 @@ function refresh() {
         for(var i = 0; i < objs.length; i++) {
             objs[i].remove();
         }
+        selected = false;
         return;
     }
-    var data = Game.fetchProblem();
+    let data = Game.fetchProblem();
     problem.innerHTML = data.q;
     for(var i = 0; i < objs.length; i++) {
         objs[i].remove();
@@ -54,6 +55,7 @@ function refresh() {
     dragElements = [];
     centroids = [];
     dragging = undefined;
+    selected = false;
     answerbtn.style.display = "block";
     switch(data.type) {
         case "mc":
