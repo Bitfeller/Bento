@@ -8,7 +8,7 @@ var info = document.getElementById("answer_info");
 var ans_a = document.getElementById("ans_a");
 
 var objs = [];
-let selected = false;
+let selected = true;
 let toProceed = false;
 
 // Ranking functionality (drag)
@@ -43,7 +43,6 @@ function refresh() {
         for(var i = 0; i < objs.length; i++) {
             objs[i].remove();
         }
-        selected = false;
         return;
     }
     let data = Game.fetchProblem();
@@ -55,10 +54,10 @@ function refresh() {
     dragElements = [];
     centroids = [];
     dragging = undefined;
-    selected = false;
     answerbtn.style.display = "block";
     switch(data.type) {
         case "mc":
+            selected = false;
             answerbtn.style.display = "none";
             for(let i = 0; i < data.op.length; i++) {
                 let op_i = document.createElement("button");
@@ -298,17 +297,16 @@ async function main() {
     let dsVal = paramList.get("ds").split(",");
     dsVal.forEach((val, idx) => {dsVal[idx] = parseInt(val);});
     let m = parseFloat(paramList["m"]);
-    let s = parseFloat(paramList["s"]);
     let r = parseFloat(paramList["r"]);
     let sh = parseFloat(paramList["sh"]);
     await Game.init(dsVal, {
         NTRonly: m == 1 ? true : false,
         randomTerms: sh == 1 ? true : false,
-        deckSize: s == 1 ? 7 : 5,
-        cardRepeat: r == 1 ? 2 : 1, // set to 2 in official
-        curr_p: s == 1 ? 0.7 : 0.5,
-        ls_p: s == 1 ? 0.2 : 0.3,
-        lls_p: s == 1 ? 0.1 : 0.2
+        deckSize: 8,
+        cardRepeat: r == 1 ? 2 : 1,
+        curr_p: 0.8,
+        ls_p: 0.1,
+        lls_p: 0.1
     });
     refresh();
 }
