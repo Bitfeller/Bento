@@ -210,8 +210,10 @@ function newRandomDeck() {
             if(problems.indexOf(p) > -1) continue;
             if(lsWrong.length > 0) {
                 lsWrong.splice(idx, 1);
+                if(lsShown.indexOf(p) > -1) lsShown.slice(lsShown.indexOf(p));
             } else if(wasWrong.length > 0 && idx !== undefined) {
                 wasWrong.splice(idx, 1);
+                if(lsShown.indexOf(p) > -1) lsShown.slice(lsShown.indexOf(p));
             } else {
                 lsShown.splice(idx, 1);
             }
@@ -245,8 +247,10 @@ function newRandomDeck() {
             if(problems.indexOf(p) > -1) continue;
             if(llsWrong.length > 0) {
                 llsWrong.splice(idx, 1);
+                if(llsShown.indexOf(p) > -1) llsShown.slice(llsShown.indexOf(p));
             } else if(wasWrong.length > 0 && idx !== undefined) {
                 wasWrong.splice(0, 1);
+                if(llsShown.indexOf(p) > -1) llsShown.slice(llsShown.indexOf(p));
             } else {
                 llsShown.splice(idx, 1);
             }
