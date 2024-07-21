@@ -27,6 +27,9 @@
         $stmt->close();
         switch($setting) {
             case "name":
+                if($result['name'] == $val) {
+                    success();
+                }
                 // Check if name is valid
                 if(!preg_match("/^[\-A-Za-z0-9\s]*$/", $val)) {
                     fail("invalid name");
@@ -49,13 +52,13 @@
                 success();
             break;
             case "deckpic":
-                $saveVal = htmlspecialchars(strip_tags($val));
+                $safeVal = htmlspecialchars(strip_tags($val));
                 if(strlen($safeVal) > 2 * 1000 * 1000) {
                     fail('size limit');
                 }
                 $sql = "UPDATE decks SET deckpic = ? WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("si", $saveVal, $id);
+                $stmt->bind_param("si", $safeVal, $id);
                 $stmt->execute();
                 $stmt->close();
                 success();
@@ -78,9 +81,19 @@
                     $newItem = [];
                     $newItem['type'] = htmlspecialchars(strip_tags($data['type']));
                     if(isset($data['op'])) {
-                        $newItem['op'] = json_decode(htmlspecialchars(strip_tags(json_encode($data['op']))));
+                        $newItem['op'] = [];
+                        foreach($data['op'] as $op) {
+                            $newItem['op'][] = htmlspecialchars(strip_tags($op));
+                        }
                     }
-                    $newItem['ans'] = json_decode(htmlspecialchars(strip_tags(json_encode($data['ans']))));
+                    if(gettype($data['ans']) == 'array') {
+                        $newItem['ans'] = [];
+                        foreach($data['ans'] as $ans) {
+                            $newItem['ans'][] = htmlspecialchars(strip_tags($ans));
+                        }
+                    } else {
+                        $newItem['ans'] = htmlspecialchars(strip_tags($data['ans']));
+                    }
                     $safeVal['contnt'][$newProb] = $newItem;
                 }
                 $safeVal = json_encode($safeVal);

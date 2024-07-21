@@ -1,7 +1,5 @@
 import { UserGateway } from "../server/client-gateway/user-gateway.js";
 import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
-// User
-let user;
 // Other objects
 const name = document.getElementById("name");
 const isPublic = document.getElementById("isPublic");
@@ -342,10 +340,6 @@ fileselecttrigger.addEventListener('change', () => {
 })
 
 createBtn.addEventListener("mousedown", async function() {
-    if(!user) {
-        errmsg.innerHTML = "Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)";
-        return;
-    }
     if(name.value == '') {
         errmsg.innerHTML = "Enter in a valid name for the deck";
         return;
@@ -504,17 +498,19 @@ addCard.addEventListener("mousedown", newCard);
     }
     let dVal = parseInt(paramList.get('d'));
     deck = dVal;
-    [success, deckData] = await DeckGateway.get(deck);
-    if(!success) return;
-    name.value = deckData.name;
-    if(deckData.deckpic && deckData.deckpic.length > 0) {
-        picimg.src = deckData.deckpic;
+    [success, contnt] = await DeckGateway.get(deck);
+    if(!success) window.location.href = "/home";
+    if(contnt.owner !== data.username) window.location.href = "/home";
+    name.value = contnt.name;
+    if(contnt.deckpic && contnt.deckpic.length > 0) {
+        picimg.src = contnt.deckpic;
+        deckpic = contnt.deckpic;
     }
-    isPublic.checked = deckData.public;
-    description.value = deckData.data.desc;
-    let d_keys = Object.keys(deckData.data.contnt);
+    isPublic.checked = contnt.public;
+    description.value = contnt.data.desc;
+    let d_keys = Object.keys(contnt.data.contnt);
     for(let i = 0; i < d_keys.length; i++) {
-        let card = deckData.data.contnt[d_keys[i]];
+        let card = contnt.data.contnt[d_keys[i]];
         let q = d_keys[i];
         let newDiv = document.createElement("div");
         let n = cards.length + 1;
@@ -523,7 +519,7 @@ addCard.addEventListener("mousedown", newCard);
         cardContain.appendChild(newDiv);
         cards.push(newDiv);
         switch(card.type) {
-            case "selection":
+            case "mc":
                 initMc(newDiv, n);
                 newDiv.getElementsByClassName('question')[0].value = q;
                 let cardmc = newDiv.getElementsByClassName('card-mc')[0];
@@ -557,7 +553,7 @@ addCard.addEventListener("mousedown", newCard);
                     });
                 }
             break;
-            case "input":
+            case "txt":
                 initTxt(newDiv, n);
                 newDiv.getElementsByClassName('question')[0].value = q;
                 newDiv.getElementsByClassName('txt-answer')[0].value = card.ans;
