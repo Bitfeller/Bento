@@ -9,6 +9,33 @@ const uo = document.body.dataset.uo;
 hover.style = "background-color: rgb(150, 150, 150); position: absolute; width: auto; padding: 7px; height: auto;";*/
 
 const loader = document.getElementsByClassName("loader")[0];
+const tips = document.getElementsByClassName("tips")[0];
+
+const tipslist = [
+    "When making ranking questions, you can drag answers...",
+    "If you own a Bento deck, you can export it when viewing it in the Kitchen...",
+    "Have feedback? Let us know!",
+    "Decks can be deleted by going to the Kitchen.",
+    "You can find the decks you've made in the Kitchen.",
+    "You can enable notifications on the home screen, and you'll get notified when you have to review.",
+    "You can import sets from Quizlet into Bento when making a deck.",
+    "This won't take long to load.",
+    "Taking too long to load? Consider letting us know.",
+    "Found a bug? Let us know!"
+];
+
+function tip_changer(newtext) {
+    return new Promise((res, rej) => {
+        tips.innerHTML = `<p class='prev-tip'>${tips.innerHTML}</p>`;
+        window.setTimeout(() => {
+            tips.innerHTML = `<p class='new-tip'>${newtext}</p>`;
+            window.setTimeout(() => {
+                tips.innerHTML = newtext;
+                res();
+            }, 500);
+        }, 500);
+    });
+}
 
 (async () => {
     let [success, data] = await UserGateway.getuser();
@@ -25,7 +52,7 @@ const loader = document.getElementsByClassName("loader")[0];
             pfp.src = data.pfp;
         }
     }
-    loader.remove();
+    // loader.remove();
     // Initialize service-worker for notifications if allowed
     if(Notification.permission == "granted" && data.notifsub != "0") {
         try {
@@ -36,6 +63,19 @@ const loader = document.getElementsByClassName("loader")[0];
             console.log("serviceworker_err:", e);
         }
     }
+    tips.innerHTML = tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)];
+    let tipper = setInterval(async () => {
+        await tip_changer(tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)])
+    }, 5000);
+    if(document.readyState == "complete") {
+        clearInterval(tipper);
+        loader.remove();
+        return;
+    }
+    window.addEventListener("load", () => {
+        clearInterval(tipper);
+        loader.remove();
+    })
 })();
 
 
