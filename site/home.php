@@ -426,12 +426,14 @@
         </div>
     </div>
     <section>
-        <dialog id="tutorial">
-            <div class="title-bar">
-                <h2>Hey there, welcome to Bento!</h2>
+        <div id="tutorial-background">
+            <div id="tutorial">
+                <div class="title-bar">
+                    <h2>Hey there, welcome to Bento!</h2>
+                </div>
+                <div class="dialog-main"></div>
             </div>
-            <div class="dialog-main"></div>
-        </dialog>
+        </div>
     </section>
 </body>
 </html>
