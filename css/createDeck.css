@@ -1,3 +1,6 @@
+input {
+    background-color: var(--light-gray);
+}
 .mc-option-sel, .selbtn-select {
     color: var(--light-text);
     background-color: var(--select-blue);
@@ -71,6 +74,9 @@ button {
     width: 76%;
     max-width: 700px;
 }
+#create {
+    background-color: var(--light-green);
+}
 .card {
     margin-top: 10px;
 }
@@ -102,7 +108,7 @@ button {
 .options-container {
     display: flex;
     flex-direction: column;
-    background-color: var(--light-gray);
+    background-color: var(--gray);
     padding: 10px;
     width: 200px;
     height: min-content;
@@ -188,6 +194,9 @@ button {
 }
 #picAddBtn:hover, #picReset:hover {
     filter: brightness(85%);
+}
+#cardcontain {
+    transition: 0.3s;
 }
 @media only screen and (max-width: 1025px) {
     .deck-pick-container, .deck-pic {
