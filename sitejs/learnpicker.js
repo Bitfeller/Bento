@@ -103,7 +103,7 @@ let user;
                         if(isSelected) {
                             deckSelect.innerHTML = "indeterminate_check_box";
                         } else {
-                            deckSelect.innerHTML = "select_all";
+                            deckSelect.innerHTML = "check_box_outline_blank";
                         }
                     }
                 });
@@ -153,7 +153,7 @@ let user;
                         if(isSelected) {
                             deckSelect.innerHTML = "indeterminate_check_box";
                         } else {
-                            deckSelect.innerHTML = "select_all";
+                            deckSelect.innerHTML = "check_box_outline_blank";
                         }
                     }
                 });

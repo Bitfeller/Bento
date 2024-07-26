@@ -116,6 +116,14 @@
                 $stmt->close();
                 success();
             break;
+            case 'delete':
+                $sql = "DELETE FROM decks WHERE id = ?;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $d_id);
+                $stmt->execute();
+                $stmt->close();
+                success();
+            break;
         }
     } catch(Exception $e) {
         fail("exception: " . $e->getMessage());
