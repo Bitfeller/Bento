@@ -79,10 +79,10 @@
     padding-bottom: 7.5px;
 }
 .notifications-holder > span:hover {
-    color: var(--light-green);
+    color: var(--accent-1);
     cursor: pointer;
     span {
-        color: var(--light-green);
+        color: var(--accent-1);
     }
 }
 .deck-reminders-holder > h3 {
