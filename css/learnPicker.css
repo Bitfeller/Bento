@@ -49,8 +49,6 @@ h2 {
     border-radius: 5px;
 }
 .deck-box {
-    margin-left: 5%;
-    width: 90%;
     margin-top: 12px;
     background-color: var(--gray);
 }
@@ -117,10 +115,6 @@ h2 {
         float: none;
         /* margin-top: 3%;
         margin-right: 4.4%; */
-    }
-    .deck-box {
-        margin-left: 0%;
-        width: initial;
     }
     .deck-box > p {
         overflow: hidden;
