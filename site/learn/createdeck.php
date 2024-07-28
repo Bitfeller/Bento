@@ -32,9 +32,9 @@
             <p class="info-error" id="create-err"></p>
         </div>
         <div class="options-container">
-            <p>Import options</p>
+            <p>Import Options</p>
             <button id="quizlet-import-btn">Import from Quizlet</button>
-            <button id="bento-import-btn">Import a Bento deck</button><br>
+            <button id="bento-import-btn">Import a Bento Deck</button><br>
         </div>
     </div>
     <div class="importModal" id="quizlet-import-modal">
