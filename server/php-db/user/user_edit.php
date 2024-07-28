@@ -108,7 +108,7 @@
                 }
                 $safeVal = [];
                 foreach($val as $dkey => $deck) {
-                    $safeVal[$dkey] = [];
+                    $safeVal[$dkey] = (object) [];
                     foreach($deck as $prob => $data) {
                         $newProb = htmlspecialchars(strip_tags($prob));
                         $newItem = [];
