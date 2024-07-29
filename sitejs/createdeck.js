@@ -60,6 +60,7 @@ function initMc(newDiv, n) {
             </div>
             <button class='mc-add'>+</button>
             <button class='card-del'>Delete Card</button>
+            <div class='deck-divider'></div>
         </div>
     `;
     // Set up selector
@@ -147,6 +148,7 @@ function initTxt(newDiv, n) {
             Answer: <input type='input' class='txt-answer' placeholder='...'>
         </div>
         <button class='card-del'>Delete Card</button>
+        <div class='deck-divider'></div>
     `;
     // Set up selector
     newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
@@ -185,6 +187,7 @@ function initRanking(newDiv, n) {
             </div>
             <button class='rank-add'>+</button>
             <button class='card-del'>Delete Card</button>
+            <div class='deck-divider'></div>
         </div>
     `;
     // Set up selector

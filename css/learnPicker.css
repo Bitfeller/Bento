@@ -49,8 +49,12 @@ h2 {
     border-radius: 5px;
 }
 .deck-box {
+    display: flex;
     margin-top: 12px;
     background-color: var(--gray);
+}
+.deck-box > p {
+    max-width: calc(100% - 50px);
 }
 .setting-box {
     justify-content: left;
