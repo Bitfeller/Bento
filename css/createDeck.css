@@ -29,7 +29,8 @@ input {
     padding: 0;
 }
 button:hover {
-    transition-duration: 0.2s;
+    transition: 0.3s;
+    transition-timing-function: ease-in-out;
     /* box-shadow: 0px 1px 4px rgba(255, 255, 255, 0.3); */
 }
 .container {
@@ -186,7 +187,7 @@ button {
     right: 10px;
 }
 #picReset {
-    right: 55px;
+    right: 45px;
 }
 .deck-pic {
     border-radius: 10px;
@@ -208,9 +209,9 @@ button {
 #picAddBtn, #picReset {
     cursor: pointer;
     color: #5992e8;
-    height: 35px;
-    width: 35px;
+    font-size: 32px;
     transition: 0.3s;
+
 }
 #picAddBtn:hover, #picReset:hover {
     filter: brightness(85%);
@@ -227,22 +228,21 @@ textarea {
     width: calc(100% - 60px);
     height: max-content;
 }
+.deck-divider {
+    margin: 20px 5px;
+}
 @media only screen and (max-width: 1025px) {
+    .options-container {
+        margin: 10px 0px;
+    }
     .deck-pick-container, .deck-pic {
         height: calc(9vh*2.4);
         width: calc(16vh*2.4);
-    }
-    .options-container {
-        margin: 10px 0px;
-        width: calc(93%);
-
     }
     .container {
         width: 93%;
         flex-direction: column;
     }
-}
-@media only screen and (max-width: 700px) {
     #addcard, #create {
         width: 100%;
     }
@@ -257,5 +257,9 @@ textarea {
         width: calc(100% - 10px);
         padding: 5px;
     }
-
+}
+@media only screen and (max-width: 700px) {
+    .options-container {
+        width: calc(93%);
+    }
 }
