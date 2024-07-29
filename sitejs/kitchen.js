@@ -177,7 +177,7 @@ async function preview(_this, isAdded) {
         let contnt = deck.data.contnt;
         let keys = Object.keys(contnt);
         for(let i = 0; i < keys.length; i++) {
-            answer_list += `<p><b>Q: ${keys[i]}</b></p>${contnt[keys[i]].type == "mc" ? "<p>All Answers: " + contnt[keys[i]].op.join(", ") + "</p>" : ""}<p>A: ${typeof(contnt[keys[i]].ans) == "string" ? contnt[keys[i]].ans : contnt[keys[i]].ans.join(", ")}</p><div class='deck-divider' style='margin: 7px 3px; background-color: rgb(230, 230, 230); height: 2px;'></div>`;
+            answer_list += `<p><b>Q |  ${keys[i]}</b></p>${contnt[keys[i]].type == "mc" ? "<p>" + contnt[keys[i]].op.join(", ") + "</p>" : ""}<p>A |  ${typeof(contnt[keys[i]].ans) == "string" ? contnt[keys[i]].ans : contnt[keys[i]].ans.join(", ")}</p><div class='deck-divider' style='margin: 7px 3px; background-color: rgb(230, 230, 230); height: 2px;'></div>`;
         }
     }
     previewDialog.innerHTML = `
@@ -189,15 +189,13 @@ async function preview(_this, isAdded) {
             <div class='preview-container-part' id='overview'>
                 <h2>${deck.name}</h2>
                 <p>By: <span class='username'>${deck.owner}</span></p>
-                <p><span class='views'>${deck.viewdata.length}</span> view${deck.viewdata.length != 1 ? "s" : ""}</p>
-                ${user.username == deck.owner ? "<div class='deck-buttons'><button class='export-btn' style='padding: 3px;'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>download</span> Export</button> <button class='edit-btn' style='padding: 3px;'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>edit</span> Edit</button> <button class='delete-btn' style='padding: 3px;'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>delete</span> Delete</button></div>" : ""}
+                <div class="line-up-icons view-container"><span class='views'>${deck.viewdata.length ?? 0}</span> <span class="material-symbols-outlined views-icon">visibility</span></div>
+                ${user.username == deck.owner ? "<div class='deck-buttons'><button class='export-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>download</span> Export</div></button> <button class='edit-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>edit</span> Edit</div></button> <button class='delete-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>delete</span> Delete</div></button></div>" : ""}
             </div>
-            <div class='preview-container-part' id='description'>
-                <h3>Description:</h3>
+            ${deck.data.desc ? `<div class='preview-container-part' id='description'>
                 <p>${deck.data.desc}</p>
-            </div>
+            </div>` : ""}
             <div class='preview-container-part' id='cards'>
-                <h3>Cards</h3>
                 ${answer_list}
             </div>
         </div>
