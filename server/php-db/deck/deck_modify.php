@@ -64,12 +64,12 @@
                 success();
             case "data":
                 $val = json_decode($val, true);
-                if($val == null) {
+                if(!isset($val)) {
                     fail("exception: data isn't valid JSON.");
                 }
                 $safeVal = [];
                 $safeVal['desc'] = htmlspecialchars(strip_tags($val['desc']));
-                $safeVal['contnt'] = [];
+                $safeVal['contnt'] = (object) [];
                 // Check for duplicate questions
                 $problems = [];
                 foreach($val['contnt'] as $prob => $data) {
@@ -94,7 +94,7 @@
                     } else {
                         $newItem['ans'] = htmlspecialchars(strip_tags($data['ans']));
                     }
-                    $safeVal['contnt'][$newProb] = $newItem;
+                    $safeVal['contnt']->$newProb = $newItem;
                 }
                 $safeVal = json_encode($safeVal);
                 $sql = "UPDATE decks SET data = ? WHERE id = ?;";

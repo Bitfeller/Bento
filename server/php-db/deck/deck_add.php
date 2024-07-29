@@ -37,7 +37,7 @@
         }
         $newVal = [];
         $newVal['desc'] = htmlspecialchars(strip_tags($deckData['desc']));
-        $newVal['contnt'] = [];
+        $newVal['contnt'] = (object) [];
         // Check for duplicate questions
         $problems = [];
         foreach($deckData['contnt'] as $prob => $data) {
@@ -62,7 +62,7 @@
             } else {
                 $newItem['ans'] = htmlspecialchars(strip_tags($data['ans']));
             }
-            $newVal['contnt'][$newProb] = $newItem;
+            $newVal['contnt']->$newProb = $newItem;
         }
         $deckData = json_encode($newVal);
         // Check image limit
