@@ -299,9 +299,10 @@ async function main() {
     let m = parseFloat(paramList.get("m"));
     let r = parseFloat(paramList.get("r"));
     let sh = parseFloat(paramList.get("sh"));
+    console.log(sh);
     await Game.init(dsVal, {
         NTRonly: m == 1 ? true : false,
-        randomTerms: sh == 2 ? true : false,
+        randomTerms: sh == 1 ? true : false,
         deckSize: 8,
         cardRepeat: r == 1 ? 2 : 1,
         curr_p: 0.8,
