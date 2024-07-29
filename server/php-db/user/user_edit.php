@@ -106,16 +106,16 @@
                 if(!isset($val)) {
                     fail("exception: data isn't valid JSON.");
                 }
-                $safeVal = [];
+                $safeVal = (object) [];
                 foreach($val as $dkey => $deck) {
-                    $safeVal[$dkey] = (object) [];
+                    $safeVal->$dkey = (object) [];
                     foreach($deck as $prob => $data) {
                         $newProb = htmlspecialchars(strip_tags($prob));
                         $newItem = [];
                         $newItem['last'] = (int)$data['last'];
                         $newItem['box'] = (int)$data['box'];
                         $newItem['score'] = (int)$data['score'];
-                        $safeVal[$dkey]->$newProb = $newItem;
+                        $safeVal->$dkey->$newProb = $newItem;
                     }
                 }
                 $safeVal = json_encode($safeVal);
