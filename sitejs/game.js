@@ -296,12 +296,12 @@ async function main() {
     }
     let dsVal = paramList.get("ds").split(",");
     dsVal.forEach((val, idx) => {dsVal[idx] = parseInt(val);});
-    let m = parseFloat(paramList["m"]);
-    let r = parseFloat(paramList["r"]);
-    let sh = parseFloat(paramList["sh"]);
+    let m = parseFloat(paramList.get("m"));
+    let r = parseFloat(paramList.get("r"));
+    let sh = parseFloat(paramList.get("sh"));
     await Game.init(dsVal, {
         NTRonly: m == 1 ? true : false,
-        randomTerms: sh == 1 ? true : false,
+        randomTerms: sh == 2 ? true : false,
         deckSize: 8,
         cardRepeat: r == 1 ? 2 : 1,
         curr_p: 0.8,

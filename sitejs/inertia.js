@@ -145,7 +145,7 @@ class Asteroid {
         window.location.href = "/home";
         return;
     }
-    [success, deck] = await DeckGateway.get(1);
+    [success, deck] = await DeckGateway.get(parseInt(paramList.get("d")));
     if (!success) {console.log(deck); window.location.href = "/home"; return}
     
     deckData = deck.data.contnt;
