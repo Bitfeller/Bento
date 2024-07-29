@@ -92,22 +92,13 @@ function refresh() {
             input.type = "text";
             input.className = "op-input";
             input.placeholder = "Enter an answer here...";
+            input.autofocus = true;
             objs.push(input);
             cont_a.appendChild(input);
+            document.getElementsByClassName("op-input")[0].focus();
             input.addEventListener("keydown", (e) => {
                 if(e.key == "Enter") answerHandler();
             });
-            // On input event checks if answer is correct and if so, automatically submits otherwise does nothing
-            // input.addEventListener("input", ()=> {
-            //     if (input.value == "") return;
-            //     console.log(input.value);
-            //     let correct = Game.attemptProblem(objs[0].value.toLowerCase());
-            //     console.log(correct);
-            //     if(correct) {
-            //         contlabel();
-            //         refresh();
-            //     }
-            // });
         break;
         case "ranking":
             var list = document.createElement("div");

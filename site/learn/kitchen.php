@@ -59,7 +59,7 @@
             <dialog id="previewDialog">
                 <div class="title-bar">
                     <h2>Preview:</h2>
-                    <button class="closeBtns" id="previewDialog_leave">x</button>
+                    <button class="closeBtns" id="previewDialog_leave"><span class="material-symbols-outlined">close</span></button>
                 </div>
                 <div class="preview-container"></div>
             </dialog>
