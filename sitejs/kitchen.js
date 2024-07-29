@@ -155,7 +155,7 @@ async function preview(_this, isAdded) {
         previewDialog.innerHTML = `
             <div class='title-bar'>
                 <h2>Preview:</h2>
-                <button class="closeBtns" id="previewDialog_leave">x</button>
+                <button class="closeBtns" id="previewDialog_leave"><span class="material-symbols-outlined">close</span></button>
             </div>
             <div class='preview-container'>
                 <div class='preview-container-part' id='overview'>
@@ -183,14 +183,14 @@ async function preview(_this, isAdded) {
     previewDialog.innerHTML = `
         <div class='title-bar'>
             <h2>Preview:</h2>
-            <button class="closeBtns" id="previewDialog_leave">x</button>
+            <button class="closeBtns" id="previewDialog_leave"><span class="material-symbols-outlined">close</span></button>
         </div>
         <div class='preview-container'>
             <div class='preview-container-part' id='overview'>
                 <h2>${deck.name}</h2>
-                <p>by <span class='username'>${deck.owner}</span></p>
+                <p>By: <span class='username'>${deck.owner}</span></p>
                 <p><span class='views'>${deck.viewdata.length}</span> view${deck.viewdata.length != 1 ? "s" : ""}</p>
-                ${user.username == deck.owner ? "<button class='export-btn' style='padding: 3px;'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>download</span> Export</button> <button class='edit-btn' style='padding: 3px;'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>edit</span> Edit</button> <button class='delete-btn' style='padding: 3px;'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>delete</span> Delete</button>" : ""}
+                ${user.username == deck.owner ? "<div class='deck-buttons'><button class='export-btn' style='padding: 3px;'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>download</span> Export</button> <button class='edit-btn' style='padding: 3px;'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>edit</span> Edit</button> <button class='delete-btn' style='padding: 3px;'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>delete</span> Delete</button></div>" : ""}
             </div>
             <div class='preview-container-part' id='description'>
                 <h3>Description:</h3>

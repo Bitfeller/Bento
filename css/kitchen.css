@@ -63,11 +63,6 @@ body > h2 {
     background-color: var(--dark-gray);
     border-radius: 10px;
 }
-@media screen and (max-width: 768px) {
-    .ingredient-box {
-        width: calc(100% - 31px);
-    }
-}
 .username {
     text-decoration: underline;
     font-size: 18.5px;
@@ -148,8 +143,15 @@ span.views {
     padding: 0 1%;
 }
 #previewDialog_leave {
+    color: var(--light-text);
+    background-color: var(--danger-red);
     height: 30px;
     width: 30px;
+}
+#previewDialog_leave > span {
+    font-size: 15px;
+    margin: 7px 0;
+    padding: 0;
 }
 #cards, #overview, #description {
     border-radius: 10px;
@@ -161,4 +163,16 @@ span.views {
 }
 img {
     border-radius: 10px;
+}
+.deck-buttons {
+    display: flex;
+    gap: 6px;
+}
+.deck-buttons > button {
+    text-align: center;
+}
+@media screen and (max-width: 768px) {
+    .ingredient-box {
+        width: calc(100% - 31px);
+    }
 }
