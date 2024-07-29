@@ -14,6 +14,7 @@ var deckSize = 5;
 var cardRepeat = 2;
 var curr_p = 0.5, ls_p = 0.3, lls_p = 0.2;
 var currentSet = 0;
+var g_randomTerms = true;
 
 var randomSet = [];
 var rndSetData = {};
@@ -172,6 +173,17 @@ function newRandomDeck() {
             if(idx > -1) available.splice(idx, 1);
             if(wasWrong.indexOf(currWrong[p]) < 0) wasWrong.push(currWrong[p]);
             currWrong.splice(p, 1);
+        } else if(g_randomTerms == true) {
+            let next = available[0];
+            if(problems.indexOf(next) > -1) {
+                // literally an impossible situation, but in the rare cases where something happens, let's solve this
+                console.warn(`WARNING: game-library.js encountered an unexpected situation. If you're seeing this message, please report this info to the developers immediately.\n\nDump info:\n\tproblems: ${problems}\n\tavailable: ${available}\n\tnext: ${next}\n\tcurrentSet: ${currentSet}\n\td_ids: ${decks}\n\tlen: ${gameData.length}\n\tleft: ${len}\n\tISSUE: encountered PROBLEM found in problems[] when it wasn't expected; should not exist beforehand.`);
+                available.splice(0, 1);
+                continue;
+            }
+            problems.push(next);
+            rndSetData[""+next] += 1;
+            available.splice(0, 1);
         } else if(available.length > 0) {
             let p = random(0, available.length - 1);
             if(problems.indexOf(available[p]) > -1) continue;
@@ -385,7 +397,8 @@ async function init(_decks, info) {
         }
     }
     // Scramble terms if needed
-    if(info.randomTerms) {
+    if(info.randomTerms == true) {
+        g_randomTerms = false;
         let save = gameData;
         gameData = [];
         while(save.length > 0) {
