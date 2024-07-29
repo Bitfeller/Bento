@@ -103,7 +103,7 @@
             break;
             case 'reviews':
                 $val = json_decode($val, true);
-                if($val == null) {    
+                if(!isset($val)) {
                     fail("exception: data isn't valid JSON.");
                 }
                 $safeVal = [];
@@ -115,7 +115,7 @@
                         $newItem['last'] = (int)$data['last'];
                         $newItem['box'] = (int)$data['box'];
                         $newItem['score'] = (int)$data['score'];
-                        $safeVal[$dkey][$newProb] = $newItem;
+                        $safeVal[$dkey]->$newProb = $newItem;
                     }
                 }
                 $safeVal = json_encode($safeVal);
