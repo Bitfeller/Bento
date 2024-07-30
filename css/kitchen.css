@@ -169,10 +169,7 @@ img {
     color: var(--dark-text);
     gap: 5px;
 }
-#overview > h2, #description > p, .ingredient-box h2{
-    overflow: scroll;
-}
-#cards p {
+#overview > h2, #description > p, .ingredient-box h2, #cards p {
     overflow: hidden;
 }
 @media screen and (max-width: 768px) {
