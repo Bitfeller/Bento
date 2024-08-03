@@ -32,8 +32,9 @@ async function init() {
             body: JSON.stringify({
                 subscription: sub
             })
-        }).catch(err => {
+        }).catch(async err => {
             console.error("failed to subscribe to push notifs; reason:", err);
+            await regis.unregister();
         });
     })
 }
@@ -53,7 +54,7 @@ self.addEventListener("push", async e => {
                 body: JSON.stringify({
                     unsubscribe: true
                 })
-            }).catch(err => {
+            }).catch(async err => {
                 console.error("failed to unsubscribe to push notifs; reason:", err);
             });
             await regis.unregister();
@@ -91,7 +92,7 @@ self.addEventListener("push", async e => {
                     body: JSON.stringify({
                         unsubscribe: true
                     })
-                }).catch(err => {
+                }).catch(async err => {
                     console.error("failed to unsubscribe to push notifs; reason:", err);
                 });
                 await regis.unregister();

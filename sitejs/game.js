@@ -39,6 +39,13 @@ function computeCenter(el) {
 function refresh() {
     if(Game.isDead()) {
         problem.innerHTML = "You completed Bento's Learn!";
+        var progress = Game.getProgress();
+        left.style.marginLeft = "5px";
+        left.innerHTML = `
+        ${progress.remaining} Remain,
+        ${progress.seen} Seen,
+        ${progress.total} Total
+        `;
         answerbtn.innerHTML = "Go back home >>>";
         for(var i = 0; i < objs.length; i++) {
             objs[i].remove();
@@ -169,7 +176,9 @@ function refresh() {
     var progress = Game.getProgress();
     left.style.marginLeft = "5px";
     left.innerHTML = `
-    ${progress.remaining} Remain
+    ${progress.remaining} Remain,
+    ${progress.seen} Seen,
+    ${progress.total} Total
     `;
 }
 function answerHandler() {
@@ -272,7 +281,7 @@ window.addEventListener("dragover", function(e) {
     }
 });
 // Main
-async function main() {
+(async () => {
     let [success, data] = await UserGateway.getuser();
     if(!success) return;
     const paramList = new URLSearchParams(window.location.search);
@@ -301,8 +310,7 @@ async function main() {
         lls_p: 0.1
     });
     refresh();
-}
-main();
+})();
 let mc_keynum = "";
 let prob;
 window.addEventListener("keydown", (e) => {
