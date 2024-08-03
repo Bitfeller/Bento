@@ -1,4 +1,8 @@
 # TODO: 
+
+Priority:
+- Fix algorithm + optimize
+
 ### Feature Tasks:
 - Verification system for emails
 - Password reset system
