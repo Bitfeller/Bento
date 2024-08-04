@@ -161,7 +161,7 @@ class DeckGateway {
         return [success, data];
     }
     static async modify(id, setting, val) {
-        if(!id || !setting || !val || typeof(val) !== "string" || setting.length === 0) {
+        if(!id || !setting || val == undefined || typeof(val) !== "string" || setting.length === 0) {
             return [false, "invalid params"];
         }
         var success, reason;

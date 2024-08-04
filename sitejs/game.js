@@ -305,9 +305,10 @@ window.addEventListener("dragover", function(e) {
         randomTerms: sh == 1 ? true : false,
         deckSize: 8,
         cardRepeat: r == 1 ? 2 : 1,
-        curr_p: 0.8,
-        ls_p: 0.1,
-        lls_p: 0.1
+        // curr_p: 0.8,
+        // ls_p: 0.1,
+        // lls_p: 0.1,
+        deckdistr: [6, 1, 1]
     });
     refresh();
 })();
