@@ -1,3 +1,10 @@
+// [[ NOTICE ]]
+// Not stable for production purposes.
+
+
+// [!] Imports haven't been updated.
+
+
 import {UserGateway} from '../user_gateway.js';
 import {DeckGateway} from '../deck_gateway.js';
 var Game = (function() {
