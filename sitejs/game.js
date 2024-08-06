@@ -3,7 +3,8 @@ import { UserGateway } from "../server/client-gateway/user-gateway.js";
 var problem = document.getElementById("problem");
 var cont_a = document.getElementById("cont_a");
 var answerbtn = document.getElementById("answerbtn");
-var left = document.getElementById("left");
+var progressNumbers = document.getElementById("progressNumbers");
+let progressBar = document.getElementById("progressBar");
 var info = document.getElementById("answer_info");
 var ans_a = document.getElementById("ans_a");
 
@@ -39,13 +40,14 @@ function computeCenter(el) {
 function refresh() {
     if(Game.isDead()) {
         problem.innerHTML = "You completed Bento's Learn!";
+        progressBar.style.width = `100%`;
         var progress = Game.getProgress();
-        left.style.marginLeft = "5px";
-        left.innerHTML = `
-        ${progress.remaining} Remain,
-        ${progress.seen} Seen,
-        ${progress.total} Total
+        progressNumbers.style.marginLeft = "5px";
+        progressNumbers.innerHTML = `
+        <p>${progress.seen-1}</p> <span class="material-symbols-outlined">check</span> 
+        <p>${progress.remaining}</p> <span class="material-symbols-outlined">box</span> 
         `;
+        answerbtn.style.display = "block";
         answerbtn.innerHTML = "Go back home >>>";
         for(var i = 0; i < objs.length; i++) {
             objs[i].remove();
@@ -174,12 +176,14 @@ function refresh() {
         break;
     }
     var progress = Game.getProgress();
-    left.style.marginLeft = "5px";
-    left.innerHTML = `
-    ${progress.remaining} Remain,
-    ${progress.seen} Seen,
-    ${progress.total} Total
+    progressNumbers.innerHTML = `
+    <p>${progress.seen-1}</p> <span class="material-symbols-outlined">check</span> 
+    <p>${progress.remaining+1}</p> <span class="material-symbols-outlined">box</span> 
     `;
+    // <p>${progress.total}</p> Total
+    progressBar.style.width = `${(progress.seen-1) / (progress.remaining+progress.seen) * 100}%`;
+
+
 }
 function answerHandler() {
     if(Game.isDead()) window.location.href = "/home?l=lm&s=1";
@@ -287,7 +291,7 @@ window.addEventListener("dragover", function(e) {
     const paramList = new URLSearchParams(window.location.search);
     if(!paramList.get("ds")) {
         problem.innerHTML = "Looks like there's something wrong. Go back to Learn Picker and go from there.";
-        left.remove();
+        progressNumbers.remove();
         cont_a.remove();
         ans_a.remove();
         answerbtn.remove();
