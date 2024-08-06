@@ -10,7 +10,7 @@
 </head>
 <body data-uo="true">
     <?php require_once "../header.php"?>
-    <div id="left"></div>  
+    <div id="progressNumbers" class="line-up-icons"></div>  
     <div id="main">
         <h2 id="problem"></h2>
         <div>
@@ -23,5 +23,6 @@
         </div>
         <br>
     </div>
+    <div id="progressBar"></div>
 </body>
 </html>

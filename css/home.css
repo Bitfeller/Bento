@@ -47,7 +47,8 @@
 .home-side-div {
     background-color: var(--light-gray);
     border-radius: 5px;
-    width: 100%;
+    width: calc(100% - 10px);
+    padding: 5px;
     height: auto;
     margin: 10px 0px;
 }
@@ -76,7 +77,7 @@
     margin: 0;
 }
 #text {
-    padding-bottom: 7.5px;
+    text-align: center;
 }
 .notifications-holder > span:hover {
     color: var(--accent-1);
