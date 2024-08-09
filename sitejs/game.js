@@ -44,7 +44,7 @@ function refresh() {
         var progress = Game.getProgress();
         progressNumbers.style.marginLeft = "5px";
         progressNumbers.innerHTML = `
-        <p>${progress.seen-1}</p> <span class="material-symbols-outlined">check</span> 
+        <p>${progress.seen}</p> <span class="material-symbols-outlined">check</span> 
         <p>${progress.remaining}</p> <span class="material-symbols-outlined">box</span> 
         `;
         answerbtn.style.display = "block";

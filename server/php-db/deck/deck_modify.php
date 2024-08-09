@@ -52,7 +52,9 @@
                 success();
             break;
             case "deckpic":
-                $safeVal = htmlspecialchars(strip_tags($val));
+                $decodedVal = base64_decode($val);
+                $safeVal = htmlspecialchars(strip_tags($decodedVal));
+                $safeVal = base64_encode($safeVal);
                 if(strlen($safeVal) > 2 * 1000 * 1000) {
                     fail('size limit');
                 }
