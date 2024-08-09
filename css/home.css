@@ -17,6 +17,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 5;
 }
 .svg-button {
     filter: drop-shadow(0 0 1rem black);
@@ -147,8 +148,19 @@ dialog::backdrop {
     z-index: 100;
     background: rgba(0, 0, 0, .7);
 }
+#tutorial-box-holder {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 105;
+    background: transparent;
+}
 .lit-up {
-    z-index: 101;
+    z-index: 101 !important;
+    position: relative;
 }
 #tutorial {
     background-color: var(--dark-gray);
@@ -166,6 +178,30 @@ dialog::backdrop {
 }
 @keyframes sushi-shine {
     50% {filter: drop-shadow(0 0 2rem gold);}
+}
+@keyframes move-tutorial-box-up {
+    0% {
+        top: 70%;
+    }
+    100% {
+        top: 20%;
+    }
+}
+@keyframes move-tutorial-box-init {
+    0% {
+        top: 20%;
+    }
+    100% {
+        top: 50%;
+    }
+}
+@keyframes move-tutorial-box-down {
+    0% {
+        top: 50%;
+    }
+    100% {
+        top: 70%;
+    }
 }
 @media screen and (max-width: 800px) {
     svg {
