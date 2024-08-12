@@ -125,6 +125,19 @@
     padding: 5px;
     border-radius: 10px;
 }
+#answer_marker {
+    display: none;
+    cursor: pointer;
+    float: right;
+    color: var(--accent-1);
+}
+#answer_marker:hover{
+    filter: brightness(85%);
+}
+#answer_marker .material-symbols-outlined {
+    font-size: 15px;
+    text-align: right;
+}
 @media screen and (max-width: 1300px) {
     #main {
         width: 87.5%;
