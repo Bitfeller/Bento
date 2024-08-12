@@ -38,6 +38,8 @@ const totalWrong = {};
 const cardsSeen = {};
 let updateFunc;
 
+let lastCorrect = false;
+
 // -------------------------------------------------------- \\
 
 function random(a, b) {
@@ -450,23 +452,33 @@ function getProgress() {
         remaining: gameData.length * cardRepeat - seen
     };
 }
-function attemptProblem(answer) {
+function updateLastCorrect(bool) {
+    lastCorrect = bool;
+    return bool;
+}
+function isCorrect(answer) {
     if(!active) return {dead: true};
     let problem = gameData[randomSet[card]];
     switch(problem.type) {
         case "mc":
-            return problem.op[answer] == problem.ans ? correct() : incorrect();
+            return problem.op[answer] == problem.ans ? updateLastCorrect(true) : updateLastCorrect(false);
         case "txt":
-            return answer.toLowerCase() == problem.ans.toLowerCase() ? correct() : incorrect();
+            return answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans.toLowerCase().replaceAll(/\s/g, "") ? updateLastCorrect(true) : updateLastCorrect(false);
         case "ranking":
             let isCorrect = true;
             for(let i = 0; i < answer.length; i++) {
                 if(answer[i] !== problem.ans[i]) isCorrect = false;
             }
-            return isCorrect ? correct() : incorrect();
+            return isCorrect ? updateLastCorrect(true) : updateLastCorrect(false);
         case "matching":
             console.error("matching doesn't exist, idiot!");
     }
+}
+function markCorrect() {
+    lastCorrect = true;
+}
+function _continue() {
+    return lastCorrect ? correct() : incorrect();
 }
 function isDead() {
     return active == false;
@@ -516,7 +528,9 @@ const Game = {
     fetchCurrentDecks,
     fetchProblem,
     getProgress,
-    attemptProblem,
+    isCorrect,
+    markCorrect,
+    continue: _continue,
     isDead
 };
 export { Game };

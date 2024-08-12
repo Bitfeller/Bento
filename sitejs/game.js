@@ -78,7 +78,7 @@ function refresh() {
                 op_i.addEventListener("mousedown", function() {
                     if(selected) return;
                     selected = true;
-                    let correct = Game.attemptProblem(parseInt(this.getAttribute("i")));
+                    let correct = Game.isCorrect(parseInt(this.getAttribute("i")));
                     if(correct) {
                         this.innerHTML = `<p class="answer-symbol">✅</p> ` + this.innerHTML;
                         window.setTimeout(refresh, 1000);
@@ -189,6 +189,7 @@ function refresh() {
 function answerHandler() {
     if(Game.isDead()) window.location.href = "/home?l=lm&s=1";
     if(toProceed) {
+        Game.continue();
         answerbtn.innerHTML = "Answer";
         ans_a.innerHTML = "";
         ans_a.style.display = "none";
@@ -205,7 +206,7 @@ function answerHandler() {
                     noAnswer();
                     return;
                 }
-                correct = Game.attemptProblem(objs[0].value.toLowerCase());
+                correct = Game.isCorrect(objs[0].value.toLowerCase());
                 if(correct) {
                     contlabel();
                     refresh();
@@ -226,7 +227,7 @@ function answerHandler() {
                 for(var i = 0; i < dragElements.length; i++) {
                     answerList.push(dragElements[i].textContent);
                 }
-                correct = Game.attemptProblem(answerList);
+                correct = Game.isCorrect(answerList);
                 if(correct) {
                     contlabel();
                     refresh();
@@ -318,14 +319,18 @@ window.addEventListener("dragover", function(e) {
     });
     refresh();
 })();
-let mc_keynum = "";
-let prob;
 answerMarker.addEventListener("mousedown", () => {
-    
+    Game.markCorrect();
     answerMarker.style.display = "none";
+    answerbtn.innerHTML = "Answer";
+    ans_a.innerHTML = "";
+    ans_a.style.display = "none";
+    toProceed = false;
     contlabel();
     refresh();
 });
+let mc_keynum = "";
+let prob;
 window.addEventListener("keydown", (e) => {
     if(selected) return;
     let data = Game.fetchProblem();
@@ -352,7 +357,7 @@ window.addEventListener("keydown", (e) => {
         }
         mc_keynum = "";
         prob = undefined;
-        let correct = Game.attemptProblem(parseInt(num - 1));
+        let correct = Game.isCorrect(parseInt(num - 1));
         if(correct) {
             cont_a.children[num - 1].innerHTML = `<p class="answer-symbol">✅</p> ` + cont_a.children[num - 1].innerHTML;
             window.setTimeout(refresh, 1000);
