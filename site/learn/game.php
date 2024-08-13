@@ -19,7 +19,7 @@
                 <div id="ans_a"></div>
             </div>
             <button id="answerbtn">Answer</button>
-            <div id="answer_marker" class="line-up-icons">Mark Answer as Correct <span class="material-symbols-outlined">chevron_right</span></div>
+            <div id="answer_marker" class="line-up-icons">Mark Answer as Correct (Space) <span class="material-symbols-outlined">chevron_right</span></div>
             <div id="answer_info"></div>
         </div>
         <br>
