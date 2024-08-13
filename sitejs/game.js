@@ -81,15 +81,19 @@ function refresh() {
                     let correct = Game.isCorrect(parseInt(this.getAttribute("i")));
                     if(correct) {
                         this.innerHTML = `<p class="answer-symbol">✅</p> ` + this.innerHTML;
-                        window.setTimeout(refresh, 1000);
+                        window.setTimeout(() => {
+                            Game.continue();
+                            refresh();
+                        }, 1000);
                     } else {
                         for(let j = 0; j < cont_a.children.length; j++) {
                             let item = cont_a.children[j];
                             if(data.op[j] == data.ans) item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
                         }
                         this.innerHTML = `<p class="answer-symbol">❌</p> ` + this.innerHTML;
+                        answerMarker.style.display = "block";
                         answerbtn.style.display = "block";
-                        answerbtn.innerHTML = "Continue >>>";
+                        answerbtn.innerHTML = "Continue >>> (Enter)";
                         toProceed = true;
                     }
                 });
@@ -98,6 +102,7 @@ function refresh() {
             }
         break;
         case "txt":
+            selected = true
             var input = document.createElement("input");
             input.type = "text";
             input.className = "op-input";
@@ -183,13 +188,12 @@ function refresh() {
     `;
     // <p>${progress.total}</p> Total
     progressBar.style.width = `${(progress.seen-1) / (progress.remaining+progress.seen) * 100}%`;
-
-
 }
 function answerHandler() {
     if(Game.isDead()) window.location.href = "/home?l=lm&s=1";
     if(toProceed) {
         Game.continue();
+        answerMarker.style.display = "none";
         answerbtn.innerHTML = "Answer";
         ans_a.innerHTML = "";
         ans_a.style.display = "none";
@@ -202,6 +206,7 @@ function answerHandler() {
         let correct = false;
         switch(data.type) {
             case "txt":
+                selected = false;
                 if(objs[0].value === "") {
                     noAnswer();
                     return;
@@ -211,13 +216,14 @@ function answerHandler() {
                     contlabel();
                     refresh();
                 } else {
+                    objs[0].disabled = true;
                     ans_a.style.display = "flex";
                     ans_a.innerHTML = cont_a.innerHTML;
                     cont_a.children[0].style.backgroundColor = `rgba(255, 0, 0, 0.5)`;
                     ans_a.children[0].style.backgroundColor = `rgba(0, 255, 0, 0.5)`;
                     ans_a.children[0].value = data.ans;
                     ans_a.children[0].disabled = true;
-                    answerbtn.innerHTML = "Continue >>>";
+                    answerbtn.innerHTML = "Continue >>> (Enter)";
                     answerMarker.style.display = "block";
                     toProceed = true;
                 }
@@ -245,7 +251,8 @@ function answerHandler() {
                         el.innerHTML = item;
                         list.appendChild(el);
                     }
-                    answerbtn.innerHTML = "Continue >>>";
+                    answerbtn.innerHTML = "Continue >>> (Enter)";
+                    answerMarker.style.display = "block";
                     toProceed = true;
                 }
             break;
@@ -321,12 +328,12 @@ window.addEventListener("dragover", function(e) {
 })();
 answerMarker.addEventListener("mousedown", () => {
     Game.markCorrect();
+    Game.continue();
     answerMarker.style.display = "none";
     answerbtn.innerHTML = "Answer";
     ans_a.innerHTML = "";
     ans_a.style.display = "none";
     toProceed = false;
-    contlabel();
     refresh();
 });
 let mc_keynum = "";
@@ -360,16 +367,39 @@ window.addEventListener("keydown", (e) => {
         let correct = Game.isCorrect(parseInt(num - 1));
         if(correct) {
             cont_a.children[num - 1].innerHTML = `<p class="answer-symbol">✅</p> ` + cont_a.children[num - 1].innerHTML;
-            window.setTimeout(refresh, 1000);
+            window.setTimeout(() => {
+                Game.continue();
+                refresh();
+            }, 1000);
         } else {
             for(let i = 0; i < cont_a.children.length; i++) {
                 let item = cont_a.children[i];
                 if(data.op[i] == data.ans) item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
             }
             cont_a.children[num - 1].innerHTML = `<p class="answer-symbol">❌</p> ` + cont_a.children[num - 1].innerHTML;
+            answerMarker.style.display = "block";
             answerbtn.style.display = "block";
-            answerbtn.innerHTML = "Continue >>>";
+            answerbtn.innerHTML = "Continue >>> (Enter)";
             toProceed = true;
         }
+    }
+    if(e.key == "Enter" && e.target != objs[0]) {
+        Game.continue();
+        answerMarker.style.display = "none";
+        answerbtn.innerHTML = "Answer";
+        ans_a.innerHTML = "";
+        ans_a.style.display = "none";
+        toProceed = false;
+        refresh();
+    }
+    if(e.key == " ") { // Space
+        Game.markCorrect();
+        Game.continue();
+        answerMarker.style.display = "none";
+        answerbtn.innerHTML = "Answer";
+        ans_a.innerHTML = "";
+        ans_a.style.display = "none";
+        toProceed = false;
+        refresh();
     }
 });
