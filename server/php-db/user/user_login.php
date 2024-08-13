@@ -28,6 +28,7 @@
         $_SESSION['pfp'] = $result['pfp'];
         $_SESSION['email'] = $result['email'];
         $_SESSION['reviews'] = $result['reviews'];
+        $_SESSION['draftdecks'] = $result['draftdecks'];
         $_SESSION['verified'] = $result['verified'] === 0 ? false : true;
         $_SESSION['creation_date'] = $result['creation_date'];
         $_SESSION['notifsub'] = $result['notifsub'];

@@ -27,9 +27,10 @@
         }
         $stmt->close();
         // Create user
-        $sql = "INSERT INTO users (username, password, email, reviews, verified, verif, notifsub, creation_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+        $sql = "INSERT INTO users (username, password, email, reviews, draftdecks, verified, verif, notifsub, creation_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
         $stmt = $conn->prepare($sql);
         $reviews = '{}';
+        $draftdecks = '{}';
         $verified = 0;
         $notifsub = "0";
         $date = date("Y-m-d");
@@ -44,7 +45,7 @@
         $newPwd = password_hash($pwd, PASSWORD_DEFAULT);
         $hashVerif = password_hash($verifStr, PASSWORD_DEFAULT);
         // Bind new params
-        $stmt->bind_param("ssssisss", $username, $newPwd, $email, $reviews, $verified, $hashVerif, $notifsub, $date);
+        $stmt->bind_param("sssssisss", $username, $newPwd, $email, $reviews, $draftdecks, $verified, $hashVerif, $notifsub, $date);
         $stmt->execute();
         $stmt->close();
         // mail($email, "Welcome to Bento!", "Hey there! Welcome to Bento.\r\nWe'd like to make sure you get the best experience, so we'd like to\r\nmake sure we've got the right email. To verify your email, please visit:\r\nhttps://valleynas.uk", "From: coolstuff@bento.com");
