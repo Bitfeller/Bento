@@ -14,8 +14,10 @@ const editpic = document.getElementById("picAddBtn");
 const resetpic = document.getElementById("picReset");
 const fileselecttrigger = document.getElementById("fileselecttrigger");
 const picimg = document.getElementById("deckpic");
+const draftdecks_history = document.getElementById("draftdecks-history");
 let deckpic = "";
 let cards = [];
+let draftdecks_save;
 let dragging;
 const dragLine = document.createElement("div");
 dragLine.style = 'display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;';
@@ -521,6 +523,199 @@ addCard.addEventListener("mousedown", newCard);
     if(!success) return;
     user = data;
     newCard();
+    draftdecks_save = user.draftdecks;
+    let keys = Object.keys(user.draftdecks);
+    if(keys.length > 0) draftdecks_history.innerHTML = "";
+    for(let i = 0; i < keys.length; i++) {
+        let time = parseInt(keys[i]);
+        let diff = Date.now() - time;
+        let deck = user.draftdecks[keys[i]];
+        let div = document.createElement("div");
+        div.className = "draftdeck";
+        div.innerHTML = `
+            <p>${diff > 2 * 24 * 60 * 60 * 1000 ? "Older than yesterday" : (diff > 24 * 60 * 60 * 1000 ? "Yesterday" : (diff > 12 * 60 * 60 * 1000 ? "Within 24 hours" : (diff > 60 * 60 * 1000 ? "Within 12 hours" : "This hour")))}</p>
+            <button class='show'>S</button>
+            <button class='del'>D</button>`;
+        draftdecks_history.appendChild(div);
+        div.getElementsByClassName("show")[0].addEventListener("mousedown", () => {
+            cardContain.innerHTML = "";
+            cards = [];
+            appendToCards(deck.contnt);
+        });
+        div.getElementsByClassName("del")[0].addEventListener("mousedown", async () => {
+            div.remove();
+            delete user.draftdecks[keys[i]];
+            delete draftdecks_save[keys[i]];
+            let copy = structuredClone(draftdecks_save);
+            let data = {};
+            for(let i = 0; i < cards.length; i++) {
+                let card = cards[i];
+                let type = card.getElementsByClassName('selbtn-select')[0];
+                if(!type) {
+                    errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                    return;
+                }
+                let classNames = type.className.split(" ");
+                if(classNames.includes('mcbtn')) {
+                    let cardData = {
+                        type: 'mc',
+                        op: [],
+                        ans: ''
+                    };
+                    let question = card.getElementsByClassName('question')[0];
+                    if(!question) {
+                        errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                        return;
+                    }
+                    // cardData.question = question.value;
+                    let answers = card.getElementsByClassName('mc-option');
+                    if(answers.length < 2) {
+                        errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                        return;
+                    }
+                    for(let j = 0; j < answers.length; j++) {
+                        let answer = answers[j].getElementsByClassName('mc-option-input')[0];
+                        if(!answer) {
+                            errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                            return;
+                        }
+                        cardData.op.push(formatter(answer.value));
+                        let isCorrect = answers[j].getElementsByClassName('mc-option-sel');
+                        if(isCorrect.length > 0) {
+                            cardData.ans = formatter(answer.value);
+                        }
+                    }
+                    data[formatter(question.value)] = cardData;
+                } else if(classNames.includes('txtbtn')) {
+                    let cardData = {
+                        type: 'txt',
+                        ans: ''
+                    };
+                    let question = card.getElementsByClassName('question')[0];
+                    let answer = card.getElementsByClassName('txt-answer')[0];
+                    if(!question || !answer) {
+                        errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                        return;
+                    }
+                    cardData.ans = formatter(answer.value);
+                    data[formatter(question.value)] = cardData;
+                } else if(classNames.includes('rankbtn')) {
+                    let cardData = {
+                        type: 'ranking',
+                        ans: []
+                    };
+                    let question = card.getElementsByClassName('question')[0];
+                    if(!question) {
+                        errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                        return;
+                    }
+                    // cardData.question = question.value;
+                    let items = card.getElementsByClassName('ranking-item');
+                    for(let j = 0; j < items.length; j++) {
+                        let item = items[j];
+                        let txt = item.getElementsByClassName('ranking-item-txt')[0];
+                        if(!txt) {
+                            errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                            return;
+                        }
+                        cardData.ans.push(formatter(txt.value));
+                    }
+                    data[formatter(question.value)] = cardData;
+                }
+            }
+            data = {
+                desc: description.value,
+                contnt: data
+            };
+            copy[String(Date.now())] = data;
+            await UserGateway.editUser("draftdecks", copy);
+        });
+    }
+    window.setInterval(async () => {
+        let copy = structuredClone(draftdecks_save);
+        let data = {};
+        for(let i = 0; i < cards.length; i++) {
+            let card = cards[i];
+            let type = card.getElementsByClassName('selbtn-select')[0];
+            if(!type) {
+                errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                return;
+            }
+            let classNames = type.className.split(" ");
+            if(classNames.includes('mcbtn')) {
+                let cardData = {
+                    type: 'mc',
+                    op: [],
+                    ans: ''
+                };
+                let question = card.getElementsByClassName('question')[0];
+                if(!question) {
+                    errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                    return;
+                }
+                // cardData.question = question.value;
+                let answers = card.getElementsByClassName('mc-option');
+                if(answers.length < 2) {
+                    errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                    return;
+                }
+                for(let j = 0; j < answers.length; j++) {
+                    let answer = answers[j].getElementsByClassName('mc-option-input')[0];
+                    if(!answer) {
+                        errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                        return;
+                    }
+                    cardData.op.push(formatter(answer.value));
+                    let isCorrect = answers[j].getElementsByClassName('mc-option-sel');
+                    if(isCorrect.length > 0) {
+                        cardData.ans = formatter(answer.value);
+                    }
+                }
+                data[formatter(question.value)] = cardData;
+            } else if(classNames.includes('txtbtn')) {
+                let cardData = {
+                    type: 'txt',
+                    ans: ''
+                };
+                let question = card.getElementsByClassName('question')[0];
+                let answer = card.getElementsByClassName('txt-answer')[0];
+                if(!question || !answer) {
+                    errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                    return;
+                }
+                cardData.ans = formatter(answer.value);
+                data[formatter(question.value)] = cardData;
+            } else if(classNames.includes('rankbtn')) {
+                let cardData = {
+                    type: 'ranking',
+                    ans: []
+                };
+                let question = card.getElementsByClassName('question')[0];
+                if(!question) {
+                    errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                    return;
+                }
+                // cardData.question = question.value;
+                let items = card.getElementsByClassName('ranking-item');
+                for(let j = 0; j < items.length; j++) {
+                    let item = items[j];
+                    let txt = item.getElementsByClassName('ranking-item-txt')[0];
+                    if(!txt) {
+                        errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
+                        return;
+                    }
+                    cardData.ans.push(formatter(txt.value));
+                }
+                data[formatter(question.value)] = cardData;
+            }
+        }
+        data = {
+            desc: description.value,
+            contnt: data
+        };
+        copy[String(Date.now())] = data;
+        await UserGateway.editUser("draftdecks", copy);
+    }, 60_000);
 })();
 
 // Dragging event
@@ -730,50 +925,9 @@ q_createbtn.addEventListener("mousedown", () => {
     q_modal.style.display = "none";
 })
 
-
-// Importing from Quizlet functionality
-// const importModal = document.getElementById("importModal");
-// const importModalContent = document.getElementById("modal-content");
-// const importBtn = document.getElementById("importBtn");
-// const importCreateBtn = document.getElementById("importCreateBtn");
-
-
 window.addEventListener("mousedown", (e) => {
     if(e.target === b_modal || e.target == q_modal) {
         b_modal.style.display = "none";
         q_modal.style.display = "none";
     }
 });
-
-// importBtn.addEventListener("mousedown", function() {
-//     importModal.style.display = "block";
-// });
-
-// importCreateBtn.addEventListener("mousedown", async function() {
-//     const importPublicCheckbox = document.getElementById("importPublicCheckbox");
-//     const importName = document.getElementById("importName").value;
-//     const importDescription = document.getElementById("importDescription").value;
-//     const importText = document.getElementById("importText").value;
-
-//     class Deck {
-//         constructor(description, deckData) {
-//             this.description = description;
-//             this.deckData = deckData;
-//         }
-//     }
-
-//     let deckData = importText.split("^").map(card => {
-//         const [question, answer] = card.split(">");
-//         const type = "input";
-//         return { question, type, answer };
-//     });
-
-//     deckData.pop();
-
-//     const deck = new Deck(importDescription, deckData);
-//     console.log(deck);
-//     let res = await DeckGateway.add(importName, JSON.stringify(deck), importPublicCheckbox.checked);
-//     console.log(res);
-//     importModal.style.display = "none";
-// });
-
