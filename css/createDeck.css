@@ -231,6 +231,27 @@ textarea {
 .deck-divider {
     margin: 20px 5px;
 }
+#draftdeck button {
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    height: 31px;
+    width: 31px;
+    margin-right: 5px;
+}
+#draftdeck span {
+    margin: 0;
+    font-size: 22px;
+    height: 30px;
+    line-height: 30px;
+}
+#show > span {
+    color: var(--dark-text);
+}
+#del {
+    color: var(--light-text);
+    background-color: var(--danger-red);
+}
 @media only screen and (max-width: 1025px) {
     .options-container {
         margin: 10px 0px;
