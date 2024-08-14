@@ -2,11 +2,8 @@
 
 ### Feature Tasks:
 - Verification + password reset system via email
-- Scientific format/math format for answers/in cards
 
 - Add more interactive games?
-
-- Keyboard shortcuts for formatting/mark as correct
 
 - Allow cards to be shown both ways
 - Allow grouping; random selection for incorrect options
@@ -16,3 +13,14 @@
 
 ### Feature Improvement Tasks:
 - None
+
+
+
+
+- Scientific/math format for questions/answers
+- Allow cards to be shown both ways
+- Option so that input can be disabled
+- Fix inertia
+- Fix hidden sign up button on main page
+- Create feedback feature
+- Fix overflow of title when viewing deck

@@ -421,8 +421,8 @@ function getProgress() {
         }
     }
     // 5 / 8?
-    let S_l = Math.ceil((gameData.length - real_deckSize + realWrong) / curr) + C_gw;
-    let S_l_std = Math.ceil(gameData.length - real_deckSize / curr) + C_gw;
+    let S_l = Math.ceil(real_deckSize / curr) * (gameData.length / real_deckSize - 2) + Math.ceil((real_deckSize + realWrong) / curr) + C_gw;
+    let S_l_std = Math.ceil(real_deckSize / curr) * (gameData.length / real_deckSize - 1) + C_gw;
     if(S_l < 0) S_l = 0;
     if(S_l_std < 0) S_l_std = 0;
     if(S_l - S_l_std > 0) {
@@ -441,6 +441,9 @@ function getProgress() {
     }
 
     let left = get_pwsets();
+
+    console.log(gameData.length * cardRepeat, realWrong, S_l * prev, prev * left);
+    console.log(seen);
 
     let obj = {
         seen,
