@@ -27,7 +27,7 @@
         }
         $stmt->close();
         // Create user
-        $sql = "INSERT INTO users (username, password, email, reviews, draftdecks, verified, verif, notifsub, creation_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+        $sql = "INSERT INTO users (username, password, email, reviews, draftdecks, verified, verif, notifsub, creation_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
         $stmt = $conn->prepare($sql);
         $reviews = '{}';
         $draftdecks = '{}';
