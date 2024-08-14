@@ -631,6 +631,15 @@ addCard.addEventListener("mousedown", newCard);
             contnt: data
         };
         copy[String(Date.now())] = data;
+        if(Object.keys(copy) > 5) {
+            let keys = Object.keys(copy);
+            let newKeys = [];
+            keys.forEach((val) => {
+                newKeys.push(parseInt(val));
+            })
+            let min = Math.min(...newKeys);
+            delete copy[String(min)];
+        }
         copy = JSON.stringify(copy);
         await UserGateway.editUser("draftdecks", copy);
     }, 15_000);
