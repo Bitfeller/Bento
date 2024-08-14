@@ -216,7 +216,6 @@ function answerHandler() {
                     contlabel();
                     refresh();
                 } else {
-                    objs[0].disabled = true;
                     ans_a.style.display = "flex";
                     ans_a.innerHTML = cont_a.innerHTML;
                     cont_a.children[0].style.backgroundColor = `rgba(255, 0, 0, 0.5)`;
@@ -393,7 +392,7 @@ window.addEventListener("keydown", (e) => {
         toProceed = false;
         refresh();
     }
-    if(e.key == " ") { // Space
+    if(e.key == " " && e.target != objs[0]) { // Space
         Game.markCorrect();
         Game.continue();
         answerMarker.style.display = "none";
