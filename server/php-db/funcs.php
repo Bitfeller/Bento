@@ -76,6 +76,6 @@
         } else {
             $contents = file_get_contents('../../conf/config.jsonc');
         }
-        $contents = preg_replace('/\/\/.*?(\r?\n|$)/', '', $contents);
+        $contents = preg_replace('/(?<![a-zA-Z0-9\"\:])\/\/.*?(\r?\n|$)/', '', $contents);
         return json_decode($contents, true);
     }
