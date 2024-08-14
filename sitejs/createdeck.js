@@ -534,8 +534,8 @@ addCard.addEventListener("mousedown", newCard);
         div.className = "draftdeck";
         div.innerHTML = `
             <p>${diff > 2 * 24 * 60 * 60 * 1000 ? "Older than yesterday" : (diff > 24 * 60 * 60 * 1000 ? "Yesterday" : (diff > 12 * 60 * 60 * 1000 ? "Within 24 hours" : (diff > 60 * 60 * 1000 ? "Within 12 hours" : "This hour")))}</p>
-            <button id='show'><span class="material-symbols-outlined">save</span></button>
-            <button id='del'><span class="material-symbols-outlined">delete</span></button>`;
+            <button class='show'><span class="material-symbols-outlined">save</span></button>
+            <button class='del'><span class="material-symbols-outlined">delete</span></button>`;
         draftdecks_history.appendChild(div);
         div.getElementsByClassName("show")[0].addEventListener("mousedown", () => {
             cardContain.innerHTML = "";
@@ -546,88 +546,7 @@ addCard.addEventListener("mousedown", newCard);
             div.remove();
             delete user.draftdecks[keys[i]];
             delete draftdecks_save[keys[i]];
-            let copy = structuredClone(draftdecks_save);
-            let data = {};
-            for(let i = 0; i < cards.length; i++) {
-                let card = cards[i];
-                let type = card.getElementsByClassName('selbtn-select')[0];
-                if(!type) {
-                    errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
-                    return;
-                }
-                let classNames = type.className.split(" ");
-                if(classNames.includes('mcbtn')) {
-                    let cardData = {
-                        type: 'mc',
-                        op: [],
-                        ans: ''
-                    };
-                    let question = card.getElementsByClassName('question')[0];
-                    if(!question) {
-                        errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
-                        return;
-                    }
-                    // cardData.question = question.value;
-                    let answers = card.getElementsByClassName('mc-option');
-                    if(answers.length < 2) {
-                        errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
-                        return;
-                    }
-                    for(let j = 0; j < answers.length; j++) {
-                        let answer = answers[j].getElementsByClassName('mc-option-input')[0];
-                        if(!answer) {
-                            errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
-                            return;
-                        }
-                        cardData.op.push(formatter(answer.value));
-                        let isCorrect = answers[j].getElementsByClassName('mc-option-sel');
-                        if(isCorrect.length > 0) {
-                            cardData.ans = formatter(answer.value);
-                        }
-                    }
-                    data[formatter(question.value)] = cardData;
-                } else if(classNames.includes('txtbtn')) {
-                    let cardData = {
-                        type: 'txt',
-                        ans: ''
-                    };
-                    let question = card.getElementsByClassName('question')[0];
-                    let answer = card.getElementsByClassName('txt-answer')[0];
-                    if(!question || !answer) {
-                        errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
-                        return;
-                    }
-                    cardData.ans = formatter(answer.value);
-                    data[formatter(question.value)] = cardData;
-                } else if(classNames.includes('rankbtn')) {
-                    let cardData = {
-                        type: 'ranking',
-                        ans: []
-                    };
-                    let question = card.getElementsByClassName('question')[0];
-                    if(!question) {
-                        errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
-                        return;
-                    }
-                    // cardData.question = question.value;
-                    let items = card.getElementsByClassName('ranking-item');
-                    for(let j = 0; j < items.length; j++) {
-                        let item = items[j];
-                        let txt = item.getElementsByClassName('ranking-item-txt')[0];
-                        if(!txt) {
-                            errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
-                            return;
-                        }
-                        cardData.ans.push(formatter(txt.value));
-                    }
-                    data[formatter(question.value)] = cardData;
-                }
-            }
-            data = {
-                desc: description.value,
-                contnt: data
-            };
-            copy[String(Date.now())] = data;
+            let copy = JSON.stringify(draftdecks_save);
             await UserGateway.editUser("draftdecks", copy);
         });
     }
@@ -637,10 +556,7 @@ addCard.addEventListener("mousedown", newCard);
         for(let i = 0; i < cards.length; i++) {
             let card = cards[i];
             let type = card.getElementsByClassName('selbtn-select')[0];
-            if(!type) {
-                errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
-                return;
-            }
+            if(!type) continue;
             let classNames = type.className.split(" ");
             if(classNames.includes('mcbtn')) {
                 let cardData = {
@@ -649,22 +565,13 @@ addCard.addEventListener("mousedown", newCard);
                     ans: ''
                 };
                 let question = card.getElementsByClassName('question')[0];
-                if(!question) {
-                    errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
-                    return;
-                }
+                if(!question) continue;
                 // cardData.question = question.value;
                 let answers = card.getElementsByClassName('mc-option');
-                if(answers.length < 2) {
-                    errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
-                    return;
-                }
+                if(answers.length < 2) continue;
                 for(let j = 0; j < answers.length; j++) {
                     let answer = answers[j].getElementsByClassName('mc-option-input')[0];
-                    if(!answer) {
-                        errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
-                        return;
-                    }
+                    if(!answer) continue;
                     cardData.op.push(formatter(answer.value));
                     let isCorrect = answers[j].getElementsByClassName('mc-option-sel');
                     if(isCorrect.length > 0) {
@@ -679,10 +586,7 @@ addCard.addEventListener("mousedown", newCard);
                 };
                 let question = card.getElementsByClassName('question')[0];
                 let answer = card.getElementsByClassName('txt-answer')[0];
-                if(!question || !answer) {
-                    errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
-                    return;
-                }
+                if(!question || !answer) continue;
                 cardData.ans = formatter(answer.value);
                 data[formatter(question.value)] = cardData;
             } else if(classNames.includes('rankbtn')) {
@@ -691,31 +595,28 @@ addCard.addEventListener("mousedown", newCard);
                     ans: []
                 };
                 let question = card.getElementsByClassName('question')[0];
-                if(!question) {
-                    errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
-                    return;
-                }
+                if(!question) continue;
                 // cardData.question = question.value;
                 let items = card.getElementsByClassName('ranking-item');
                 for(let j = 0; j < items.length; j++) {
                     let item = items[j];
                     let txt = item.getElementsByClassName('ranking-item-txt')[0];
-                    if(!txt) {
-                        errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
-                        return;
-                    }
+                    if(!txt) continue;
                     cardData.ans.push(formatter(txt.value));
                 }
                 data[formatter(question.value)] = cardData;
             }
         }
+        if(Object.keys(data).length == 0) return;
         data = {
             desc: description.value,
             contnt: data
         };
+        console.log(data);
         copy[String(Date.now())] = data;
+        copy = JSON.stringify(copy);
         await UserGateway.editUser("draftdecks", copy);
-    }, 60_000);
+    }, 15_000);
 })();
 
 // Dragging event
@@ -776,7 +677,7 @@ function appendToCards(contnt) {
                     newOp.innerHTML = `
                         <input type='input' class='mc-option-input' placeholder='...' value='${backwards_formatter(card.op[i])}'>
                         <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                        <button class='mc-option-correct ${card.ans == card.op[i] ? 'mc-option-sel' : 'mc-option-nosel'}'>C</button>
+                        <button class='mc-option-correct ${card.ans == card.op[i] ? 'mc-option-sel' : 'mc-option-nosel'}'>${card.ans == card.op[i] ? '<span class="material-symbols-outlined">check</span>' : '<span class="material-symbols-outlined">check_indeterminate_small</span>'}</button>
                     `;
                     cardmc.appendChild(newOp);
                     let delBtn = newOp.getElementsByClassName("mc-option-del")[0];
