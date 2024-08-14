@@ -1,10 +1,8 @@
 // bento-service-worker; works passively and shows notifications to the user when it's time to review
 import { UserGateway } from "../../server/client-gateway/user-gateway.js";
-import { DeckGateway } from "../../server/client-gateway/deck-gateway.js";
 
-let user;
-let elapsedDays = 0;
 let sub;
+let rand_identifier;
 
 async function init() {
     const regis = self.registration;
@@ -13,7 +11,6 @@ async function init() {
         await regis.unregister();
         return;
     }
-    user = _user;
     // Check if the user has blocked notifications; if so, exit.
     if(Notification.permission != "granted") {
         await regis.unregister();
@@ -24,13 +21,15 @@ async function init() {
         applicationServerKey: 'BK2goia_RGT26Nq5Blmc9yrejx_Cq4GpuWUcwZ9sn5DsaT8HfFqyql6Ss1D5K3T1W9Tow2JIVzigsVI4g-UyQBE'
     }).then(_sub => {
         sub = _sub;
+        rand_identifier = Math.floor(Math.random() * 1000000 + 0.5);
         fetch("https://bentoapi.valleynas.uk:443/notify", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                subscription: sub
+                subscription: sub,
+                rand_identifier
             })
         }).catch(async err => {
             console.error("failed to subscribe to push notifs; reason:", err);
@@ -52,7 +51,9 @@ self.addEventListener("push", async e => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    unsubscribe: true
+                    unsubscribe: true,
+                    auth: sub.keys.auth,
+                    rand_identifier
                 })
             }).catch(async err => {
                 console.error("failed to unsubscribe to push notifs; reason:", err);

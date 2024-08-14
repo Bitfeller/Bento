@@ -10,7 +10,7 @@
     try {
         require_once '../dbh.php';
         // Check username
-        if(!preg_match("/^[A-Za-z0-9]*$/", $username)) {
+        if(!preg_match("/^[A-Za-z0-9\-]*$/", $username)) {
             fail("invalid username");
         }
         // Check email
