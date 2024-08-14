@@ -612,7 +612,6 @@ addCard.addEventListener("mousedown", newCard);
             desc: description.value,
             contnt: data
         };
-        console.log(data);
         copy[String(Date.now())] = data;
         copy = JSON.stringify(copy);
         await UserGateway.editUser("draftdecks", copy);
