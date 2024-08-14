@@ -133,6 +133,7 @@
                 <input type="text" id="signUpUsername">
                 <p>Password:</p>
                 <input type="password" id="signUpPassword">
+                <p style="font-size: 13px; font-family: kadwa;">Your password is safe with us. No one can see your password, not even us.</p>
                 <p>Email:</p>
                 <input type="email" id="signUpEmail">
                 <button class="submitBtn" id="signUpBtnM">Sign Up</button>
