@@ -316,7 +316,25 @@ function newCard() {
     newDiv.className = "card";
     cardContain.appendChild(newDiv);
     cards.push(newDiv);
-    initMc(newDiv, n);
+    if(cards.length < 2) {
+        initMc(newDiv, n);
+        return;
+    }
+    let type = cards[cards.length - 2].getElementsByClassName('selbtn-select')[0];
+    if(!type) {
+        initMc(newDiv, n);
+        return;
+    }
+    let classNames = type.className.split(" ");
+    if(classNames.includes('mcbtn')) {
+        initMc(newDiv, n);
+    } else if(classNames.includes('txtbtn')) {
+        initTxt(newDiv, n);
+    } else if(classNames.includes('rankbtn')) {
+        initRanking(newDiv, n);
+    } else {
+        initMc(newDiv, n);
+    }
 }
 
 editpic.addEventListener("mousedown", () => {
