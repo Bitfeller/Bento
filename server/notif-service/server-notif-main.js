@@ -10,7 +10,7 @@ const mysql = require('mysql');
 
 // Subsave + conf file
 const subsave = require('./sub-save.json');
-const conf = fs.existsSync("../conf/local-config.jsonc") ? require('../conf/local-config.jsonc') : require('../conf/config.jsonc');
+const conf = fs.existsSync("../conf/local-config.json") ? require('../conf/local-config.json') : require('../conf/config.json');
 
 // Init app + port conf + sess path
 const app = express();
