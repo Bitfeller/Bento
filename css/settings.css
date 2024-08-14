@@ -57,10 +57,6 @@ input[type="checkbox"] {
   align-items: center;
   gap: 10px;
 }
-::placeholder {
-  opacity: 0.4;
-  color: #CADDA0;
-}
 #settings-icon-nondescructive {
   position: absolute;
   height: 540px;

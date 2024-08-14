@@ -10,15 +10,19 @@ input {
     filter: brightness(115%);
 }
 .mc-option-sel, .selbtn-select {    
-    color: var(--light-text);
     background-color: var(--select-blue);
 }
 .mc-option-del, .ranking-item-del {
-    color: var(--light-text);
     background-color: var(--danger-red);
 }
 .mc-option-sel{
-    background-color: var(--select-green);
+    background-color: var(--accent-1);
+}
+.mc-option-sel span {
+    color: var(--dark-text);
+}
+.mc-option-sel span{
+    transition: 0.3s;
 }
 .mc-option-nosel {
     background-color: var(--light-gray);
@@ -73,10 +77,6 @@ button {
 .question, .mc-option-input {
     width: 70%;
 }
-.create-container > ::placeholder {
-    opacity: 0.4;
-    color: var(--accent-1)
-} 
 .create-container > .mcbtn {
     margin-left: 0px;
 }
