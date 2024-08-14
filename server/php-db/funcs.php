@@ -69,3 +69,13 @@
             }
         }
     }
+    function get_server_config() {
+        $contents = null;
+        if(file_exists('../../conf/local-config.jsonc')) {
+            $contents = file_get_contents("../../conf/local-config.jsonc");
+        } else {
+            $contents = file_get_contents('../../conf/config.jsonc');
+        }
+        $contents = preg_replace('/\/\/.*?(\r?\n|$)/', '', $contents);
+        return json_decode($contents, true);
+    }
