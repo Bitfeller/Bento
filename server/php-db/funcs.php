@@ -71,10 +71,10 @@
     }
     function get_server_config() {
         $contents = null;
-        if(file_exists('../../conf/local-config.jsonc')) {
-            $contents = file_get_contents("../../conf/local-config.jsonc");
+        if(file_exists('../../conf/local-config.json')) {
+            $contents = file_get_contents("../../conf/local-config.json");
         } else {
-            $contents = file_get_contents('../../conf/config.jsonc');
+            $contents = file_get_contents('../../conf/config.json');
         }
         $contents = preg_replace('/(?<![a-zA-Z0-9\"\:])\/\/.*?(\r?\n|$)/', '', $contents);
         return json_decode($contents, true);
