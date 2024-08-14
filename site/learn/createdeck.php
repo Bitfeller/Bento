@@ -38,11 +38,11 @@
             
             <p>Edit a Draft Deck</p>
             <div id="draftdecks-history">
-                    <div id='draftdeck'>
+                    <!-- <div id='draftdeck'>
                         <p>Yesterday</p>
                         <button id='show'><span class="material-symbols-outlined">save</span></button>
                         <button id='del'><span class="material-symbols-outlined">delete</span></button>
-                    </div>
+                    </div> -->
                 <p>None</p>
             </div>
         </div>

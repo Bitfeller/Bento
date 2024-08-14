@@ -1,7 +1,7 @@
 <?php
     require_once 'funcs.php';
-    $conn = mysqli_connect("localhost", "root", "", "bento");
-    # $conn = mysqli_connect("10.10.10.210", "remote", "*7ED54C88139248C900757D5540148B5AA2DBF4F2", "bento");
+    $conf = get_server_config();
+    $conn = mysqli_connect($conf['mysql']['host'], $conf['mysql']['user'], $conf['mysql']['password'], $conf['mysql']['db']);
     if(!$conn) {
         fail("conn: ". mysqli_connect_error());
     }

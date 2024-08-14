@@ -1,0 +1,21 @@
+// local-config.jsonc: takes priority over config.jsonc files
+// Meant to be utilized for local server testing purposes
+// All local-config.jsonc files are automatically ignored during git commiting, since they are not necessary files.
+{
+    "mysql": {
+        "host": "localhost",
+        "user": "remote",
+        "password": "",
+        "db": "bento"
+    },
+    "allowed_hosts": "*",
+    // The following parameters are not meant to be used during local server testing, and may only be defined in the server configuration file in the main server.
+    // Attempting to add values to these parameters, even ones that work, may cause specific scripts to work rather than throwing an error, which, in most scenarios,
+    // may break your local server, or set up connections you don't want.
+    "session_path": "",
+    "bento_notif_url": "",
+    "vapid_details": {
+        "public_key": "",
+        "private_key": ""
+    }
+}
