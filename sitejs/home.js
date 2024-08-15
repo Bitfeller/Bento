@@ -137,7 +137,7 @@ const rightSushi = document.getElementById("Right_Sushi");
                                                     document.getElementById("tutorial").style.top = "70%";
                                                     document.getElementById("tutorial").style.animation = "move-tutorial-box-down 1s ease";
                                                     next(`
-                                                            <p>Here, on your home screen, there are also three main buttons; on eof these leads to the <b>Kitchen</b>, the community space where you can find decks made by the community with content you can learn. You'll go there to add decks to your <b>reviews</b>, which are the decks you'd like to learn.</p>
+                                                            <p>Here, on your home screen, there are also three main buttons; one of these leads to the <b>Kitchen</b>, the community space where you can find decks made by the community with content you can learn. You'll go there to add decks to your <b>reviews</b>, which are the decks you'd like to learn.</p>
                                                             <p>There, you can also see the decks that are in your reviews and that you are actively learning, and <b>you can also see the decks that you made and be able to edit them.</b></p>
                                                             <button class='continuebtn'>continue...</button>
                                                         `, {
