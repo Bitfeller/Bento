@@ -631,7 +631,7 @@ addCard.addEventListener("mousedown", newCard);
             contnt: data
         };
         copy[String(Date.now())] = data;
-        if(Object.keys(copy) > 5) {
+        if(Object.keys(copy).length > 5) {
             let keys = Object.keys(copy);
             let newKeys = [];
             keys.forEach((val) => {
