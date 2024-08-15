@@ -156,18 +156,22 @@
                 }
             break;
             case 'pfp':
-                $decodedVal = base64_decode($val);
-                $safeVal = htmlspecialchars(strip_tags($decodedVal));
-                $safeVal = base64_encode($safeVal);
-                if(strlen($safeVal) > 2 * 1000 * 1000) {
+                $data = explode(",", $val, 2);
+                $data = $data[1];
+                $decodedVal = base64_decode($data);
+                $imageValid = imagecreatefromstring($decodedVal);
+                if($imageValid === false) {
+                    fail("exception: deckpic isn't a valid image. For security purposes, the server has denied the image.");
+                }
+                if(strlen($val) > 2 * 1000 * 1000) {
                     fail('size limit');
                 }
                 $sql = "UPDATE users SET pfp = ? WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("si", $safeVal, $_SESSION['uid']);
+                $stmt->bind_param("si", $val, $_SESSION['uid']);
                 $stmt->execute();
                 $stmt->close();
-                $_SESSION['pfp'] = $safeVal;
+                $_SESSION['pfp'] = $val;
             break;
             case 'notifsub':
                 $sql = "UPDATE users SET notifsub = ? WHERE id = ?;";
