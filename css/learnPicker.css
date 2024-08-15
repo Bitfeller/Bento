@@ -55,6 +55,7 @@ h2 {
 }
 .deck-box > p {
     max-width: calc(100% - 50px);
+    overflow: hidden;
 }
 .setting-box {
     justify-content: left;
@@ -119,8 +120,5 @@ h2 {
         float: none;
         /* margin-top: 3%;
         margin-right: 4.4%; */
-    }
-    .deck-box > p {
-        overflow: hidden;
     }
 }
