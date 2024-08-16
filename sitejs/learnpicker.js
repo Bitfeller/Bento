@@ -45,9 +45,10 @@ let user;
         `;
     }
     for(let i = 0; i < deckContainer.children.length; i++) {
-        let item = deckContainer.children[i];
-        let checkbox = item.getElementsByClassName('deckCheck')[0];
-        checkbox.addEventListener("change", () => {
+        let deckBox = deckContainer.children[i];
+        let checkbox = deckBox.getElementsByClassName('deckCheck')[0];
+        deckBox.addEventListener("mousedown", (e) => {
+            if (e.target != checkbox) checkbox.checked = !checkbox.checked;;
             let allSelected = true;
             let isSelected = false;
             for(let j = 0; j < deckContainer.children.length; j++) {
