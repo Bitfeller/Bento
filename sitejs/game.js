@@ -327,11 +327,13 @@ window.addEventListener("dragover", function(e) {
     let m = parseFloat(paramList.get("m"));
     let r = parseFloat(paramList.get("r"));
     let sh = parseFloat(paramList.get("sh"));
+    let i = parseFloat(paramList.get("i"));
     await Game.init(dsVal, {
         NTRonly: m == 1 ? true : false,
         randomTerms: sh == 1 ? true : false,
         deckSize: 8,
         cardRepeat: r == 1 ? 2 : 1,
+        infinite_mode: i == 1 ? true : false,
         // curr_p: 0.8,
         // ls_p: 0.1,
         // lls_p: 0.1,
@@ -380,11 +382,13 @@ window.addEventListener("keydown", (e) => {
         let correct = Game.isCorrect(parseInt(num - 1));
         if(correct) {
             cont_a.children[num - 1].innerHTML = `<p class="answer-symbol">✅</p> ` + cont_a.children[num - 1].innerHTML;
+            selected = true;
             window.setTimeout(() => {
                 Game.continue();
                 refresh();
             }, 1000);
         } else {
+            selected = true;
             for(let i = 0; i < cont_a.children.length; i++) {
                 let item = cont_a.children[i];
                 if(data.op[i] == data.ans) item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;

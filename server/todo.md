@@ -23,7 +23,7 @@
 - Create feedback feature
 - Error management for importing
 - Allow option to require correct answers before continuing
-- Verification + password reset system via email\
+- Verification + password reset system via email
 
 - Fix hidden sign up button on main page
 - Fix overflow of title when viewing deck

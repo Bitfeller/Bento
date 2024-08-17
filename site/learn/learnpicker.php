@@ -59,6 +59,15 @@
                     </div>
                 </div>
             </div>
+            <div class="big-box" id="settings-big-box">
+                <h2>Infinite Mode <i style='color: rgb(200, 0, 0); font-size: 25px;'>NEW</i></h2>
+                <div class="settings-container">
+                    <div class="setting-box">
+                        <input type="checkbox" name="infinite_mode" class="sb-radio infinite-mode">
+                        <p class="infinite_mode_text">| Infinite Mode</p>
+                    </div>
+                </div>
+            </div>
             <button id="reviewBtn"><h1>Review! →</h1></button>
             <p class="info-error" id="errmsg"></p>
         </div>
