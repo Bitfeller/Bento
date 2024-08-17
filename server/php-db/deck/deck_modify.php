@@ -53,20 +53,24 @@
             break;
             case "deckpic":
                 if($val !== "") {
-                    $data = explode(",", $val, 2);
-                    $data = $data[1];
-                    $decodedVal = base64_decode($data);
-                    $imageValid = imagecreatefromstring($decodedVal);
-                    if($imageValid === false) {
+                    try {
+                        $data = explode(",", $val, 2);
+                        $data = $data[1];
+                        $decodedVal = base64_decode($data);
+                        $imageValid = imagecreatefromstring($decodedVal);
+                        if($imageValid === false) {
+                            fail("exception: deckpic isn't a valid image. For security purposes, the server has denied the image.");
+                        }
+                    } catch(Throwable $e) {
                         fail("exception: deckpic isn't a valid image. For security purposes, the server has denied the image.");
                     }
                 }
-                if(strlen($safeVal) > 2 * 1000 * 1000) {
+                if(strlen($val) > 2 * 1000 * 1000) {
                     fail('size limit');
                 }
                 $sql = "UPDATE decks SET deckpic = ? WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("si", $safeVal, $id);
+                $stmt->bind_param("si", $val, $id);
                 $stmt->execute();
                 $stmt->close();
                 success();

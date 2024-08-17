@@ -16,6 +16,7 @@ let cardRepeat = 2;
 let curr = 3, ls = 1, lls = 1;
 let currentSet = 0;
 let g_norand = true;
+let infinite_mode = false;
 
 let randomSet = [];
 let rndSetData = {};
@@ -63,17 +64,27 @@ function iterateProblem() {
 }
 function newRandomDeck() {
     if(gameData.length - currentSet * deckSize <= 0) {
-        active = false;
-        currentSet--;
-        randomSet = [];
-        rndSetData = {};
-        card = 0;
-        E_s = 0;
-        C_lw = 0;
-        C_pwsets = 0;
-        seen--;
-        updateFunc();
-        return false;
+        // check if infinite mode is on
+        if(infinite_mode) {
+            currentSet = 0;
+            rndSetData = {};
+            card = 0;
+            E_s = 0;
+            C_lw = 0;
+            C_pwsets = 0;
+        } else {
+            active = false;
+            currentSet--;
+            randomSet = [];
+            rndSetData = {};
+            card = 0;
+            E_s = 0;
+            C_lw = 0;
+            C_pwsets = 0;
+            seen--;
+            updateFunc();
+            return false;
+        }
     }
     // calculate remaining cards, including this set
     let len = gameData.length - currentSet * deckSize;
@@ -305,6 +316,8 @@ async function init(_decks, info) {
     deckSize = info.deckSize < 5 ? 5 : info.deckSize;
     cardRepeat = info.cardRepeat < 1 ? 1 : info.cardRepeat;
     [curr, ls, lls] = info.deckdistr;
+    if(curr + ls + lls != deckSize) throw "curr + ls + lls is not deckSize!";
+    infinite_mode = info.infinite_mode ?? false;
     card = 0;
     seen = 1;
     newRandomDeck();
@@ -406,6 +419,15 @@ function get_pwsets() {
     return left;    
 }
 function getProgress() {
+    // check if infinite mode is on
+    if(infinite_mode) {
+        let obj = {
+            seen,
+            total: Infinity
+        };
+        obj.remaining = Infinity;
+        return obj;
+    }
     // Calculate new global/local caches for C_w
     let prev = ls + lls;
     let len = gameData.length - currentSet * deckSize;
