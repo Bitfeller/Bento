@@ -15,8 +15,21 @@
         echo "Invalid";
         exit();
     }
+    function is_host_allowed($origin, $allowed_origins) {
+        $origin = str_replace("/http[s]*:\/\//", "", $origin);
+        $origin = str_replace("/:[0-9]+/", "", $origin);
+        return array_search($origin, $allowed_origins) ? true : false;
+    }
     function validate_request() {
-        header("Access-Control-Allow-Origin: *");
+        $config = get_server_config();
+        if($config["allowed_hosts"] === "*") {
+            header("Access-Control-Allow-Origin: *");
+        } else {
+            $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : "";
+            if(is_host_allowed($origin, $config["allowed_hosts"])) {
+                header("Access-Control-Allow-Origin: $origin");
+            }
+        }
         if(!isset($_SERVER['CONTENT_TYPE'])) {
             access_fail();
         }
