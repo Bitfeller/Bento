@@ -21,15 +21,20 @@ var dragLine = document.createElement("div");
 dragLine.style = "display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;";
 function noAnswer() {
     info.style['background-color'] = "rgba(255, 0, 0, 0.4)";
-    info.style.display = "block";
     info.innerHTML = "Please specify an answer!";
-    window.setTimeout(() => info.style.display = "none", 1000);
+    console.log("no answer");
+    window.setTimeout(() => {
+        info.innerHTML = ""
+        info.style['background-color'] = "rgba(0, 255, 0, 0)";
+    }, 10000);
 }
 function contlabel() {
     info.style['background-color'] = "rgba(0, 255, 0, 0.4)";
-    info.style.display = "block";
     info.innerHTML = "Correct.";
-    window.setTimeout(() => info.style.display = "none", 1000);
+    window.setTimeout(() => {
+        info.innerHTML = ""
+        info.style['background-color'] = "rgba(0, 255, 0, 0)";
+    }, 1000);
 }
 function computeCenter(el) {
     var rect = el.getBoundingClientRect();
@@ -40,7 +45,7 @@ function computeCenter(el) {
 }
 function refresh() {
     if(Game.isDead()) {
-        problem.innerHTML = "You completed Bento's Learn!";
+        problem.innerHTML = "You completed Learn! Now go touch some <span>grass!</span>";
         progressBar.style.width = `100%`;
         var progress = Game.getProgress();
         progressNumbers.style.marginLeft = "5px";
@@ -53,6 +58,14 @@ function refresh() {
         for(var i = 0; i < objs.length; i++) {
             objs[i].remove();
         }
+        setTimeout(() => {
+            window.addEventListener("keydown", (e) => {
+                console.log(e.key);
+                if (e.key === "Enter") {
+                    answerHandler();
+                }
+            });
+        }, 500);
         return;
     }
     let data = Game.fetchProblem();
