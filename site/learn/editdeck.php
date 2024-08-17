@@ -16,7 +16,7 @@
             <input type="text" placeholder="Name" id="name">
             <input type="text" placeholder="Description" id="description">
             <p>Deck picture:</p>
-            <div>
+            <div class="deck-pick-container">
                 <img src="../../img/defaultdeckpic.png" class="deck-pic" id="deckpic">
                 <input class='file-selector' accept="image/png,image/jpeg" id="fileselecttrigger" type="file">
                 <span class="material-symbols-outlined" id="picAddBtn">add_a_photo</span>
