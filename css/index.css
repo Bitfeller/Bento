@@ -106,7 +106,7 @@ header > div {
 }
 #hero {
     background-image: url('/img/background.png');
-    mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 75%, rgba(0, 0, 0, 0) 100%);
+    mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 80%, rgba(0, 0, 0, 0) 100%);
     height: 100vh;
     background-position: center;
     background-repeat: no-repeat;
@@ -304,6 +304,12 @@ footer > hr {
 @keyframes animatetop {
     from {transform: translate(0, -15vh); opacity: 0}
     to {transform: translate(0, 0vh); opacity: 1}
+}
+@media only screen and (max-width: 1366px) {
+    #hero {
+        background-image: url('/img/background.png');
+        mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 90%, rgba(0, 0, 0, 0) 100%);
+    }
 }
 @media only screen and (max-width: 1000px) {
     hr {
