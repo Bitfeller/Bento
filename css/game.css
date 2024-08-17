@@ -1,9 +1,7 @@
-* {
-    overflow: hidden;
-}
 #progressNumbers {
-    display: absolute;
-    float: right;
+    position: absolute;
+    top: 70px;
+    right: 0;
 }
 #progressNumbers .material-symbols-outlined {
     font-size: 12pt;
@@ -19,14 +17,14 @@
     margin-top: 10px;
 }
 #main {
+    overflow: scroll;
+    margin: auto;
+    width: 75%;
+    height: 50vh;
+    margin-top: 5%;
     display: flex;
     flex-direction: column;
-    position: absolute;
     justify-content: space-between;
-    left: 25%;
-    top: 25%;
-    height: 50vh;
-    width: 50%;
     background-color: var(--dark-gray);
     border-radius: 10px;
     padding: 15px;
@@ -38,12 +36,13 @@
     justify-content: space-between;
 }
 #problem {
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-align: center;
 }
-#problem > p {
-    text-overflow: ellipsis;
-    width: 100%;
-    overflow: hidden;
+#problem span {
+    font-size: 24pt;
+    color: var(--accent-1);
 }
 .op-input {
     width: 99%;
@@ -77,6 +76,8 @@
     border-color: #6a6a6a;
 }
 .option p {
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: var(--light-text);
     font-size: 16pt;
     padding: 1%;
@@ -92,12 +93,12 @@
 #correct {
     border-color: var(--accent-1);
 }
-#ranking-list {
+#ranking-list, #ans-ranking-list {
     width: 100%;
     min-height: 4vh;
+    overflow: scroll;
 }
 .ranking-item {
-    width: calc(100% - (2% + 2px));
     margin-top: 10px;
     cursor: grab;
     padding: 1%;
@@ -115,7 +116,17 @@
     border-color: #6a6a6a;
 }
 .ranking-item p {
-    margin-left: 5px;
+    max-width: calc(100% - 2%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#ans-ranking-list {
+    margin-top: 15px;
+    border-radius: 5px;
+    padding: 5px 0px;
+}
+#ans-ranking-list .ranking-item {
+    background-color: var(--light-gray);
 }
 #correct-input {
     margin-top: 10px;
@@ -139,15 +150,10 @@
     text-align: right;
 }
 @media screen and (max-width: 1300px) {
-    #main {
-        width: 87.5%;
-        left: 2.5%;
-    }
     #cont_a {
         flex-direction: column;
     }
     .option {
         width: 100%;
-    }
-    
+    }    
 }
