@@ -296,6 +296,20 @@ dialog::backdrop{
 .line-up-icons span {
     margin-left: 5px;
 }
+#too-big-img {
+    display: none;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    z-index: 1000;
+}
+@media only screen and (min-width: 9999px) {
+    #too-big-img {
+        background-image: url(/img/menhera-sad.gif);
+        display: block;
+    }
+
+}
 @keyframes t_fadeout {
     0% {
         opacity: 100%;

@@ -72,5 +72,8 @@
             <p class="info-error" id="errmsg"></p>
         </div>
     </div>
+    <button id="intertiaBtn">
+        <img src="/img/space-ship.png" alt="Space Ship" onclick="location.href='/learn/inertia'">
+    </button>
 </body>
 </html>
