@@ -116,6 +116,9 @@ h2 {
     height: 50px;
 }
 @media only screen and (max-width: 1300px) {
+    #intertiaBtn {
+        display: none;
+    }
     /* #settings-big-box {
         max-height: 100vh;
         height: 75vh;
