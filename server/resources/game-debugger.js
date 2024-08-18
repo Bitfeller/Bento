@@ -1,3 +1,7 @@
+// DEBUGGER
+const failrate = 0.5;
+const wrongAnswer = "a";
+
 import { Game } from "./client-modules/game-library.js";
 import { UserGateway } from "../server/client-gateway/user-gateway.js";
 const problem = document.getElementById("problem");
@@ -126,16 +130,13 @@ function refresh() {
             input.addEventListener("keydown", (e) => {
                 if(e.key == "Enter") answerHandler();
             });
-            window.setTimeout(() => {
-                let isRight = Math.random() > 0.2 ? true : false;
-                if(Game.card() > Game.set().length - 3) isRight = true;
-                if(isRight) {
-                    input.value = data.ans;
-                } else {
-                    input.value = "a";
-                }
-                answerHandler();
-            }, 50);
+            let isRight = Math.random() > failrate ? true : false;
+            if(isRight) {
+                input.value = data.ans;
+            } else {
+                input.value = wrongAnswer;
+            }
+            answerHandler();
         break;
         case "ranking":
             var list = document.createElement("div");
@@ -256,7 +257,7 @@ function answerHandler() {
                         ans_a.style.display = "none";
                         toProceed = false;
                         refresh();
-                    }, 100);
+                    }, 500);
                 }
             break;
             case "ranking":
