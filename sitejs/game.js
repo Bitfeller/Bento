@@ -128,7 +128,6 @@ function refresh() {
             });
             window.setTimeout(() => {
                 let isRight = Math.random() > 0.2 ? true : false;
-                if(Game.card() > Game.set().length - 3) isRight = true;
                 if(isRight) {
                     input.value = data.ans;
                 } else {

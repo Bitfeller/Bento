@@ -417,21 +417,26 @@ function get_pwsets() {
     let s_curr = curr;
 
     if(currentSet < 1) s_curr = real_deckSize;
-    let S_ll = Math.ceil((real_deckSize * cardRepeat + realWrong * (curr_deckSize - s_curr)) / s_curr) + C_lw;
+    let S_ll = Math.ceil((Math.max(curr_deckSize - E_s * curr, 0) * cardRepeat + realWrong * Math.min(curr_deckSize - s_curr, 1)) / s_curr);
 
     // p functions: p_1 and p_2
     let p_1 = currentSet > 1 ? ls : ls + lls;
     let p_2 = currentSet > 1 ? lls : 0;
 
-    let ls_rfactor = (S_ll - E_s) * p_1; // ls wrong: resolve factor
-    let lls_rfactor = (S_ll - E_s) * p_2; // lls wrong: resolve factor
+    let ls_rfactor = S_ll * p_1; // ls wrong: resolve factor
+    let lls_rfactor = S_ll * p_2; // lls wrong: resolve factor
+
+    console.log(S_ll, ls_rfactor, lls_rfactor);
 
     let ls_left = Math.ceil((lsWrong.length - ls_rfactor) / p_1);
     let lls_left = p_2 > 0 ? Math.ceil((llsWrong.length - lls_rfactor) / p_2) : 0;
+    console.log(lsWrong.length, llsWrong.length, ls_left, lls_left);
 
     let left = Math.max(ls_left, lls_left);
     
     if(left < 0) left = 0;
+
+    console.log("left", left);
 
     return left;    
 }
@@ -466,8 +471,8 @@ function getProgress() {
     let s_curr = curr;
 
     if(currentSet < 1) s_curr = real_deckSize;
-    let S_ll = Math.ceil((real_deckSize * cardRepeat + realWrong * (curr_deckSize - s_curr)) / s_curr);
-    let S_ll_std = Math.ceil(real_deckSize * cardRepeat / s_curr) + C_lw;
+    let S_ll = Math.ceil((Math.max(curr_deckSize - E_s * curr, 0) * cardRepeat + realWrong * Math.min(curr_deckSize - s_curr, 1)) / s_curr);
+    let S_ll_std = Math.ceil(Math.max(curr_deckSize - E_s * curr, 0) * cardRepeat / s_curr) + C_lw;
     if(S_ll - S_ll_std > 0) {
         // diff greater than previous C_lw; add
         // S_ll greater than standard, meaning wrong count leads to a new set
@@ -476,9 +481,9 @@ function getProgress() {
 
     // Globally
     // 5 / 8?
-    let leftover = gameData.length - Math.floor(gameData.length / real_deckSize) * real_deckSize;
-    let S_l = Math.ceil(real_deckSize / curr) * Math.floor(gameData.length / real_deckSize - 1) + Math.ceil(leftover / curr) - Math.ceil(Math.max(curr_deckSize - E_s * curr, 0) / curr) + Math.ceil((Math.max(curr_deckSize - E_s * curr, 0) + realWrong * Math.min(real_deckSize - s_curr, 1)) / curr) + C_gw;
-    let S_l_std = Math.ceil(real_deckSize / curr) * Math.floor(gameData.length / real_deckSize - 1) + Math.ceil(leftover / curr) + C_gw + C_lw;
+    let leftover = gameData.length * cardRepeat - Math.floor(gameData.length * cardRepeat / real_deckSize) * real_deckSize;
+    let S_l = Math.ceil(real_deckSize / curr) * Math.floor(gameData.length * cardRepeat / real_deckSize - 1) + Math.ceil(leftover / curr) - Math.ceil(Math.max(curr_deckSize - E_s * curr, 0) / curr) + Math.ceil((Math.max(curr_deckSize - E_s * curr, 0) + realWrong * Math.min(real_deckSize - s_curr, 1)) / curr) + C_gw;
+    let S_l_std = Math.ceil(real_deckSize / curr) * Math.floor(gameData.length * cardRepeat / real_deckSize - 1) + Math.ceil(leftover / curr) + C_gw + C_lw;
     if(S_l < 0) S_l = 0;
     if(S_l_std < 0) S_l_std = 0;
     if(S_l - S_l_std > 0) {
@@ -491,12 +496,6 @@ function getProgress() {
     }
 
     let left = get_pwsets();
-
-    console.log("cgw, clw:", C_gw, C_lw);
-    console.log(Math.ceil(real_deckSize / curr) * Math.floor(gameData.length / real_deckSize - 1), Math.ceil(leftover / curr), -Math.ceil(curr_deckSize / curr), Math.ceil((curr_deckSize + realWrong) / curr), C_gw);
-    console.log(gameData.length * cardRepeat, realWrong, S_l * prev, prev * left);
-    console.log("modified curr_deckSize", (curr_deckSize - E_s * curr));
-    console.log(seen);
 
     let obj = {
         seen,
@@ -562,8 +561,7 @@ function incorrect() {
         if(left > C_pwsets) {
             let diff = left - C_pwsets;
             C_pwsets = left;
-            console.log("WOAH", (ls + lls) * diff);
-            seen -= (ls + lls) * diff;
+            seen -= (ls + lls) * C_pwsets;
         }
     } else {
         llsWrong.push(randomSet[card]);
@@ -571,8 +569,7 @@ function incorrect() {
         if(left > C_pwsets) {
             let diff = left - C_pwsets;
             C_pwsets = left;
-            console.log("WOAH", (ls + lls) * diff);
-            seen -= (ls + lls) * diff;
+            seen -= (ls + lls) * C_pwsets;
         }
     }
     if(totalWrong[randomSet[card]]) {
