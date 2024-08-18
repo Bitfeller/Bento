@@ -818,15 +818,16 @@
             </svg>
         </div>
         <div class="home-side-div-holder">
-            <div class="deck-reminders-holder home-side-div">
-                <h3>Reviews</h3>
-                <div class="deck-reminders" id="deck-reminders"></div>
-            </div>
-            <div class="notifications-holder home-side-div">
-                <span id="text" class="line-up-icons"><span class="material-symbols-outlined">notifications_off</span></span>
-            </div>
+        <div class="deck-reminders-holder home-side-div">
+            <h3>Reviews</h3>
+            <div class="deck-reminders" id="deck-reminders"></div>
+        </div>
+        <div class="notifications-holder home-side-div">
+            <span id="text" class="line-up-icons"><span class="material-symbols-outlined">notifications_off</span></span>
         </div>
     </div>
+    </div>
+
     <section>
         <div id="tutorial-background"></div>
         <div id="tutorial-box-holder">
