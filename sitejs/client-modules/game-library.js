@@ -6,6 +6,9 @@ import { DeckGateway } from "../../server/client-gateway/deck-gateway.js";
 
 // -------------------------------------------------------- \\
 
+var deckSaves = [];
+var deckData = [];
+
 let user;
 
 let decks = [];
@@ -62,7 +65,10 @@ function iterateProblem() {
     if(card >= randomSet.length) return newRandomDeck(); // finished set! next set + restart process
     return true;
 }
+let save = currentSet;
 function newRandomDeck() {
+    var wrong_save = [currWrong.slice(), lsWrong.slice(), llsWrong.slice(), wasWrong.slice()];
+    if(currentSet !== save) {wrong_save.push(currentSet); save = currentSet;}
     if(gameData.length - currentSet * deckSize <= 0) {
         // check if infinite mode is on
         if(infinite_mode) {
@@ -74,6 +80,11 @@ function newRandomDeck() {
             C_pwsets = 0;
         } else {
             active = false;
+            for(let i = 0; i < deckSaves.length; i++) {
+                console.log(deckData[i]);
+                deckSaves[i] = deckSaves[i].join(" ") + " => [" + deckData[i][0] + "][" + deckData[i][1] + "][" + deckData[i][2] + "][" + deckData[i][3] + "].." + (deckData[i][4] || "");
+            }
+            console.log(deckSaves.join("\n"));
             currentSet--;
             randomSet = [];
             rndSetData = {};
@@ -110,12 +121,15 @@ function newRandomDeck() {
     }
     if(available.length == 0 && currWrong.length == 0 && lsWrong.length == 0 && llsWrong.length == 0) {
         // finished set - move on to next set
+        console.log("CHANGING SET!");
+        console.log("cgw, clw:", C_gw, C_lw);
         currentSet++;
         C_gw += C_lw;
         E_s = 0;
         C_lw = 0;
         C_pwsets = 0;
         card = 0;
+        console.log("cgw, clw:", C_gw, C_lw);
         return newRandomDeck();
     }
     let k = 0;
@@ -221,6 +235,8 @@ function newRandomDeck() {
     E_s++;
     card = 0;
     console.log(randomSet);
+    deckSaves.push(randomSet);
+    deckData.push(wrong_save);
     return true;
 }
 
@@ -397,10 +413,11 @@ function get_pwsets() {
 
     let len = gameData.length - deckSize;
     let real_deckSize = (len < deckSize && currentSet == 0) ? len : deckSize;
+    let curr_deckSize = len < deckSize ? len : deckSize;
     let s_curr = curr;
 
     if(currentSet < 1) s_curr = real_deckSize;
-    let S_ll = Math.ceil((real_deckSize * cardRepeat + realWrong) / s_curr) + C_lw;
+    let S_ll = Math.ceil((real_deckSize * cardRepeat + realWrong * (curr_deckSize - s_curr)) / s_curr) + C_lw;
 
     // p functions: p_1 and p_2
     let p_1 = currentSet > 1 ? ls : ls + lls;
@@ -449,7 +466,7 @@ function getProgress() {
     let s_curr = curr;
 
     if(currentSet < 1) s_curr = real_deckSize;
-    let S_ll = Math.ceil((real_deckSize * cardRepeat + realWrong) / s_curr);
+    let S_ll = Math.ceil((real_deckSize * cardRepeat + realWrong * (curr_deckSize - s_curr)) / s_curr);
     let S_ll_std = Math.ceil(real_deckSize * cardRepeat / s_curr) + C_lw;
     if(S_ll - S_ll_std > 0) {
         // diff greater than previous C_lw; add
@@ -460,18 +477,25 @@ function getProgress() {
     // Globally
     // 5 / 8?
     let leftover = gameData.length - Math.floor(gameData.length / real_deckSize) * real_deckSize;
-    let S_l = Math.ceil(real_deckSize / curr) * Math.floor(gameData.length / real_deckSize - 1) + Math.ceil(leftover / curr) - Math.ceil(curr_deckSize / curr) + Math.ceil((curr_deckSize + realWrong) / curr) + C_gw;
+    let S_l = Math.ceil(real_deckSize / curr) * Math.floor(gameData.length / real_deckSize - 1) + Math.ceil(leftover / curr) - Math.ceil(Math.max(curr_deckSize - E_s * curr, 0) / curr) + Math.ceil((Math.max(curr_deckSize - E_s * curr, 0) + realWrong * Math.min(real_deckSize - s_curr, 1)) / curr) + C_gw;
     let S_l_std = Math.ceil(real_deckSize / curr) * Math.floor(gameData.length / real_deckSize - 1) + Math.ceil(leftover / curr) + C_gw + C_lw;
     if(S_l < 0) S_l = 0;
     if(S_l_std < 0) S_l_std = 0;
     if(S_l - S_l_std > 0) {
         // same logic, but globally
-        C_gw += S_l - S_l_std;
+        C_lw += S_l - S_l_std;
+    }
+    if(S_l_std - S_l > 0) {
+        C_gw += S_l_std - S_l;
+        C_lw -= S_l_std - S_l;
     }
 
     let left = get_pwsets();
 
+    console.log("cgw, clw:", C_gw, C_lw);
+    console.log(Math.ceil(real_deckSize / curr) * Math.floor(gameData.length / real_deckSize - 1), Math.ceil(leftover / curr), -Math.ceil(curr_deckSize / curr), Math.ceil((curr_deckSize + realWrong) / curr), C_gw);
     console.log(gameData.length * cardRepeat, realWrong, S_l * prev, prev * left);
+    console.log("modified curr_deckSize", (curr_deckSize - E_s * curr));
     console.log(seen);
 
     let obj = {
@@ -484,6 +508,7 @@ function getProgress() {
             + prev * left,                          // 2 * (ls_w - (ceil(8r / 6) + cl_w - e_s)(p(c_d)))  
     };
     obj.remaining = obj.total - obj.seen;
+    console.log("obj", obj.seen, obj.total, obj.remaining);
     return obj;
 }
 function updateLastCorrect(bool) {
@@ -535,15 +560,19 @@ function incorrect() {
         lsWrong.push(randomSet[card]);
         let left = get_pwsets();
         if(left > C_pwsets) {
+            let diff = left - C_pwsets;
             C_pwsets = left;
-            seen -= (ls + lls) * C_pwsets;
+            console.log("WOAH", (ls + lls) * diff);
+            seen -= (ls + lls) * diff;
         }
     } else {
         llsWrong.push(randomSet[card]);
         let left = get_pwsets();
         if(left > C_pwsets) {
+            let diff = left - C_pwsets;
             C_pwsets = left;
-            seen -= (ls + lls) * C_pwsets;
+            console.log("WOAH", (ls + lls) * diff);
+            seen -= (ls + lls) * diff;
         }
     }
     if(totalWrong[randomSet[card]]) {
@@ -565,6 +594,8 @@ const Game = {
     isCorrect,
     markCorrect,
     continue: _continue,
-    isDead
+    isDead,
+    set: () => randomSet,
+    card: () => card
 };
 export { Game };
