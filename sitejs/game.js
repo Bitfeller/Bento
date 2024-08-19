@@ -126,15 +126,6 @@ function refresh() {
             input.addEventListener("keydown", (e) => {
                 if(e.key == "Enter") answerHandler();
             });
-            window.setTimeout(() => {
-                let isRight = Math.random() > 0.2 ? true : false;
-                if(isRight) {
-                    input.value = data.ans;
-                } else {
-                    input.value = "a";
-                }
-                answerHandler();
-            }, 50);
         break;
         case "ranking":
             var list = document.createElement("div");
@@ -247,15 +238,6 @@ function answerHandler() {
                     answerbtn.innerHTML = "Continue >>> (Enter)";
                     answerMarker.style.display = "block";
                     toProceed = true;
-                    window.setTimeout(() => {
-                        Game.continue();
-                        answerMarker.style.display = "none";
-                        answerbtn.innerHTML = "Answer";
-                        ans_a.innerHTML = "";
-                        ans_a.style.display = "none";
-                        toProceed = false;
-                        refresh();
-                    }, 100);
                 }
             break;
             case "ranking":
