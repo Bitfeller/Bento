@@ -839,5 +839,6 @@
             </div>
         </div>
     </section>
+    <p id="versionNumber"></p>
 </body>
 </html>
