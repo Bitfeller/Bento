@@ -26,5 +26,4 @@
 - Verification + password reset system via email
 
 - Fix hidden sign up button on main page
-- Fix overflow of title when viewing deck
 - Fix inertia

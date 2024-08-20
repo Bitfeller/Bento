@@ -1,5 +1,5 @@
 <?php
-    require_once '../funcs.php';
+    require_once '../module.php';
     validate_request();
     $data = get_data('offset');
     require_types('na', 'offset', 'searchTerms');
@@ -11,7 +11,7 @@
         fail("no session");
     }
     try {
-        require_once '../dbh.php';
+        $conn = connect_to_db();
         // Fetch decks
         $sql = "SELECT * FROM decks WHERE (public = ? OR owner = ?)";
         if(!empty($searchTerms)) {
