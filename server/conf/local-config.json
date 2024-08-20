@@ -1,7 +1,7 @@
 {
     "mysql": {
         "host": "localhost",
-        "user": "remote",
+        "user": "root",
         "password": "",
         "db": "bento"
     },
