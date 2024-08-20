@@ -35,7 +35,7 @@
 }
 .home-side-div-holder {
     margin-left: 3%;
-    min-width: 300px;
+    width: 300px;
     background-color: transparent;
     height: auto;
     overflow: hidden;
@@ -217,5 +217,10 @@ dialog::backdrop {
     .home-side-div-holder {
         margin-left: 10px;
         width: calc(100% - 20px);
+    }
+}
+@media only screen and (max-width: 1366px) {
+    .home-side-div-holder {
+        width: calc(100px);
     }
 }
