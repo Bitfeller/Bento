@@ -1,5 +1,5 @@
 <?php
-    require_once '../funcs.php';
+    require_once '../module.php';
     validate_request();
     $data = get_data('id');
     require_types('n', 'id');
@@ -12,7 +12,7 @@
     $id = $data['id'];
     $owner = $_SESSION['username'];
     try {
-        require_once '../dbh.php';
+        $conn = connect_to_db();
         // Get deck
         $sql = "SELECT * FROM decks WHERE id = ? AND (public = ? OR owner = ?);";
         $stmt = $conn->prepare($sql);

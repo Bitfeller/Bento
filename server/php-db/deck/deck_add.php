@@ -1,5 +1,5 @@
 <?php
-    require_once '../funcs.php';
+    require_once '../module.php';
     validate_request();
     $data = get_data('name', 'deckpic', 'data', 'public');
     require_types('sssn', 'name', 'deckpic', 'data', 'public');
@@ -15,11 +15,9 @@
     $deckData = $data['data'];
     $public = $data['public'];
     try {
-        require_once '../dbh.php';
-        // Check if name is valid
-        if(!preg_match("/^[\-A-Za-z0-9\s]*$/", $name)) {
-            fail("invalid name");
-        }
+        $conn = connect_to_db();
+        // Sanitize namea
+        $name = htmlspecialchars(strip_tags($name));
         // Check for previous deck made from same user
         $sql = "SELECT * FROM decks WHERE name = ? AND owner = ?;";
         $stmt = $conn->prepare($sql);
@@ -39,40 +37,43 @@
                 fail("exception: deckpic isn't a valid image. For security purposes, the server has denied the image.");
             }
         }
-        $deckData = json_decode($deckData, true);
-        if($deckData == null) {
-            fail("exception: data isn't valid JSON.");
-        }
-        $newVal = [];
-        $newVal['desc'] = htmlspecialchars(strip_tags($deckData['desc']));
-        $newVal['contnt'] = (object) [];
-        // Check for duplicate questions
-        $problems = [];
-        foreach($deckData['contnt'] as $prob => $data) {
-            $newProb = htmlspecialchars(strip_tags($prob));
-            if(in_array($newProb, $problems)) {
-                fail('same problem');
-            }
-            $problems[] = $newProb;
-            $newItem = [];
-            $newItem['type'] = htmlspecialchars(strip_tags($data['type']));
-            if(isset($data['op'])) {
-                $newItem['op'] = [];
-                foreach($data['op'] as $op) {
-                    $newItem['op'][] = htmlspecialchars(strip_tags($op));
-                }
-            }
-            if(gettype($data['ans']) == 'array') {
-                $newItem['ans'] = [];
-                foreach($data['ans'] as $ans) {
-                    $newItem['ans'][] = htmlspecialchars(strip_tags($ans));
-                }
-            } else {
-                $newItem['ans'] = htmlspecialchars(strip_tags($data['ans']));
-            }
-            $newVal['contnt']->$newProb = $newItem;
-        }
-        $deckData = json_encode($newVal);
+        $deckData = json_decode($deckData, false);
+        $deckData = sanitize($deckData);
+        $deckData = json_encode($deckData);
+        // $deckData = json_decode($deckData, true);
+        // if($deckData == null) {
+        //     fail("exception: data isn't valid JSON.");
+        // }
+        // $newVal = [];
+        // $newVal['desc'] = htmlspecialchars(strip_tags($deckData['desc']));
+        // $newVal['contnt'] = (object) [];
+        // // Check for duplicate questions
+        // $problems = [];
+        // foreach($deckData['contnt'] as $prob => $data) {
+        //     $newProb = htmlspecialchars(strip_tags($prob));
+        //     if(in_array($newProb, $problems)) {
+        //         fail('same problem');
+        //     }
+        //     $problems[] = $newProb;
+        //     $newItem = [];
+        //     $newItem['type'] = htmlspecialchars(strip_tags($data['type']));
+        //     if(isset($data['op'])) {
+        //         $newItem['op'] = [];
+        //         foreach($data['op'] as $op) {
+        //             $newItem['op'][] = htmlspecialchars(strip_tags($op));
+        //         }
+        //     }
+        //     if(gettype($data['ans']) == 'array') {
+        //         $newItem['ans'] = [];
+        //         foreach($data['ans'] as $ans) {
+        //             $newItem['ans'][] = htmlspecialchars(strip_tags($ans));
+        //         }
+        //     } else {
+        //         $newItem['ans'] = htmlspecialchars(strip_tags($data['ans']));
+        //     }
+        //     $newVal['contnt']->$newProb = $newItem;
+        // }
+        // $deckData = json_encode($newVal);
         // Check image limit
         if(strlen($deckpic) > 2 * 1000 * 1000) {
             fail('size limit');

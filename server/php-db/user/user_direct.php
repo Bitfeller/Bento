@@ -1,5 +1,5 @@
 <?php
-    require_once '../funcs.php';
+    require_once '../module.php';
     validate_request();
     $data = get_data('mode', 'uid', 'verif');
     require_types('snss', 'mode', 'uid', 'verif', 'newPwd');
@@ -9,7 +9,7 @@
     $verif = $data['verif'];
     $newPwd = $data['newPwd'] or null;
     try {
-        require_once "../dbh.php";
+        $conn = connect_to_db();
         if($mode === "emailverif") {
             $sql = "SELECT * FROM users WHERE id = ?;";
             $stmt = $conn->prepare($sql);
