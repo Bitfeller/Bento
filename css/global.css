@@ -97,6 +97,11 @@ button {
 button:hover {
     filter: brightness(85%);
 }
+button:disabled {
+    cursor: initial;
+    filter: brightness(75%);
+    color: var(--dark-text);
+}
 input {
     border: none;
     border-radius: 5px;

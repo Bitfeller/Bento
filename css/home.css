@@ -156,7 +156,6 @@ dialog::backdrop {
 }
 .lit-up {
     z-index: 101 !important; 
-    /* ): */
     position: relative;
 }
 #tutorial {
@@ -169,8 +168,7 @@ dialog::backdrop {
     transform: translate(-50%, -50%);
     z-index: 102;
 }
-.continuebtn,
-.skipbtn {
+.continuebtn, .skipbtn {
     padding: 0px 5px;
     margin: 5px;
 }
@@ -215,5 +213,9 @@ dialog::backdrop {
     }
     .main-bento {
         flex-direction: column;
+    }
+    .home-side-div-holder {
+        margin-left: 10px;
+        width: calc(100% - 20px);
     }
 }
