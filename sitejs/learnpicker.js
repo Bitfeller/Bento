@@ -19,6 +19,7 @@ const settingsBoxs = document.getElementsByClassName("setting-box");
 let user;
 
 function updateDecks(decks) {
+    let reviews = user.reviews;
     if (o_mode[1].checked == true) {
         o_infinite_mode.disabled = false;
         o_infinite_mode.checked = o_infinite_mode.getAttribute("data-enabled") == "true" ? true : false;
@@ -64,10 +65,10 @@ function updateDecks(decks) {
             }
         }
     }
-    for (let i = 0; i < deckContainer.children.length; i++) {
-        let item = deckContainer.children[i];
-        let checkbox = item.getElementsByClassName("deckCheck")[0];
-        item.addEventListener("change", () => {
+    for(let i = 0; i < deckContainer.children.length; i++) {
+        let deckBox = deckContainer.children[i];
+        let checkbox = deckBox.getElementsByClassName("deckCheck")[0];
+        deckBox.addEventListener("mousedown", (e) => {
             if (e.target != checkbox) checkbox.checked = !checkbox.checked;
             let allSelected = true;
             let isSelected = false;
