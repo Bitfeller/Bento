@@ -57,6 +57,7 @@
             <p>#3 - copy the text and paste it here.</p>
             <textarea type="text" placeholder="Paste Quizlet Export Here" id="QI-importText"></textarea>
             <button id="QI-createBtn">Import</button> 
+            <p class="info-error" id="QI-err"></p>
         </div>
     </div>
     <div class="importModal" id="gimkit-import-modal">
@@ -66,7 +67,8 @@
             <p>#1 - While viewing the deck, click on "Export" on the left menu.</p>
             <p>#2 - Copy the text and paste it here. (Make sure to keep it in Question/Answer format)</p>
             <textarea type="text" placeholder="Paste Gimkit Export Here" id="GK-importText"></textarea>
-            <button id="GK-createBtn">Import</button> 
+            <button id="GK-createBtn">Import</button>
+            <p class="info-error" id="GK-err"></p>
         </div>
     </div>
     <div class="importModal" id="bento-import-modal">
@@ -82,6 +84,7 @@
             </label> | Use this imported deck's <b>description</b> in this deck<br>
             Import your deck: <input type="file" id="BI-file" accept="text/plain"><br>
             <button id="BI-createBtn">Import</button>
+            <p class="info-error" id="BI-err"></p>
         </div>
     </div>
 </body>

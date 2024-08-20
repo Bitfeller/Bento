@@ -779,15 +779,17 @@ const b_replacename = document.getElementById("BI-replace-name");
 const b_replacedesc = document.getElementById("BI-replace-desc");
 const b_file = document.getElementById("BI-file");
 const b_createbtn = document.getElementById("BI-createBtn");
+const b_err = document.getElementById("BI-err");
 
 const q_importbtn = document.getElementById("quizlet-import-btn");
 const q_txt = document.getElementById("QI-importText");
 const q_createbtn = document.getElementById("QI-createBtn");
+const q_err = document.getElementById("QI-err");
 
 const g_importbtn = document.getElementById("gimkit-import-btn");
 const g_txt = document.getElementById("GK-importText");
 const g_createbtn = document.getElementById("GK-createBtn");
-
+const g_err = document.getElementById("GK-err");
 b_importbtn.addEventListener("mousedown", () => b_modal.style.display = "block");
 q_importbtn.addEventListener("mousedown", () => q_modal.style.display = "block");
 g_importbtn.addEventListener("mousedown", () => g_modal.style.display = "block");
@@ -805,12 +807,21 @@ b_createbtn.addEventListener("mousedown", () => {
             let content = e.target.result;
             try {
                 let main = JSON.parse(content);
+                if(main.name == undefined || !main.desc == undefined || !main.contnt == undefined) {
+                    b_err.innerHTML = "This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.";
+                    return;
+                }
                 let val_name = main.name;
                 let val_desc = main.desc;
                 let val_contnt = main.contnt;
                 if(b_replacename.checked) name.value = val_name;
                 if(b_replacedesc.checked) description.value = val_desc;
-                appendToCards(val_contnt);
+                try {
+                    appendToCards(val_contnt);
+                } catch(e) {
+                    b_err.innerHTML = "This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.";
+                    return;
+                }
             } catch(e) {
                 console.log("failed; reason:", e);
             }
@@ -823,29 +834,59 @@ q_createbtn.addEventListener("mousedown", () => {
     let importText = q_txt.value;
     let format = importText.split("^");
     let contnt = {};
+    if(format.length == 1) {
+        q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.";
+        return;
+    }
     format.pop();
+    let isValid = true;
     format.forEach(card => {
+        if(!isValid) return;
         const [q, ans] = card.split(">");
+        if(ans == undefined) {
+            q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.";
+            isValid = false;
+            return;
+        }
         contnt[q] = {
             type: "txt",
             ans
         };
     });
-    appendToCards(contnt);
+    if(!isValid) return;
+    try {
+        appendToCards(val_contnt);
+    } catch(e) {
+        q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.";
+        return;
+    }
     q_modal.style.display = "none";
 });
 g_createbtn.addEventListener("mousedown", () => {
     let importText = g_txt.value;
     let format = importText.split("\n");
     let contnt = {};
+    let isValid = true;
     format.forEach(card => {
+        if(!isValid) return;
         const [q, ans] = card.split("\t");
+        if(ans == undefined) {
+            g_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.";
+            isValid = false;
+            return;
+        }
         contnt[q] = {
             type: "txt",
             ans
         };
     });
-    appendToCards(contnt);
+    if(!isValid) return;
+    try {
+        appendToCards(contnt);
+    } catch(e) {
+        g_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.";
+        return;
+    }
     g_modal.style.display = "none";
 });
 
