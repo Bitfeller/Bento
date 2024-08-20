@@ -134,7 +134,7 @@ function refresh() {
             cont_a.appendChild(input);
             document.getElementsByClassName("op-input")[0].focus();
             input.addEventListener("keydown", (e) => {
-                if (e.key == "Enter") answerHandler();
+                if (e.key == "Enter" && !toProceed) answerHandler();
             });
             break;
         case "ranking":
@@ -382,10 +382,10 @@ answerMarker.addEventListener("mousedown", () => {
 let mc_keynum = "";
 let prob;
 window.addEventListener("keydown", (e) => {
-    if (selected) return;
+    if(selected) return;
     let data = Game.fetchProblem();
     let nums = "0123456789";
-    if (data.type == "mc" && (nums.indexOf(e.key) > -1 || e.key == "Enter")) {
+    if(data.type == "mc" && (nums.indexOf(e.key) > -1 || e.key == "Enter")) {
         if (prob && data.q !== prob) mc_keynum = "";
         prob = data.q;
         if (nums.indexOf(e.key) > -1) {
@@ -435,20 +435,7 @@ window.addEventListener("keydown", (e) => {
             toProceed = true;
         }
     }
-    if (!toProceed) return;
-    if (Game.fetchProblem().type == "txt" && requireCorrect) {
-        let ans = Game.fetchProblem().ans;
-        if (objs[0].value == !ans) {
-            answerbtn.innerHTML = "Enter the correct answer before advancing.";
-            answerbtn.disabled = true;
-            return;
-        }
-        if (objs[0].value == ans) {
-            answerbtn.innerHTML = "Continue >>> (Enter)";
-            answerbtn.disabled = false;
-        }
-    }
-    if (e.key == "Enter" && e.target != objs[0]) {
+    if(e.key == "Enter" && (requireCorrect ? answerbtn.disabled == false : e.target != objs[0])) {
         Game.continue();
         answerMarker.style.display = "none";
         answerbtn.innerHTML = "Answer";
@@ -467,5 +454,20 @@ window.addEventListener("keydown", (e) => {
         ans_a.style.display = "none";
         toProceed = false;
         refresh();
+    }
+});
+window.addEventListener("keyup", () => {
+    if(selected) return;
+    if(!toProceed) return;
+    if(Game.fetchProblem().type == "txt" && requireCorrect) {
+        let ans = Game.fetchProblem().ans;
+        if (objs[0].value != ans) {
+            answerbtn.innerHTML = "Enter the correct answer before advancing.";
+            answerbtn.disabled = true;
+            return;
+        } else {
+            answerbtn.innerHTML = "Continue >>> (Enter)";
+            answerbtn.disabled = false;
+        }
     }
 });
