@@ -446,6 +446,7 @@ window.addEventListener("keydown", (e) => {
         refresh();
     }
     if (e.key == " " && e.target != objs[0]) {
+        e.preventDefault();
         // Space
         Game.markCorrect();
         Game.continue();
