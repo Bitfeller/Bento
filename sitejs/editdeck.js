@@ -27,22 +27,6 @@ function computeCenter(el) {
         y: (rect.top + rect.bottom) / 2 + scrollY
     }
 }
-function set_card_func(newDiv) {
-    newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
-        initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
-    });
-    newDiv.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
-        initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
-    });
-    newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
-        if(cards.length <= 1) return;
-        let idx = cards.indexOf(newDiv);
-        if(idx > -1) {
-            cards.splice(idx, 1);
-        }
-        newDiv.remove();
-    });
-}
 function initMc(newDiv, n, q) {
     newDiv.innerHTML = `
         <div class='card-sel'>
@@ -80,7 +64,20 @@ function initMc(newDiv, n, q) {
         </div>
     `;
     // Set up selector
-    set_card_func(newDiv);
+    newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
+        initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
+    });
+    newDiv.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
+        initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
+    });
+    newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
+        if(cards.length <= 1) return;
+        let idx = cards.indexOf(newDiv);
+        if(idx > -1) {
+            cards.splice(idx, 1);
+        }
+        newDiv.remove();
+    });
     // Set up multiple choice card functionality
     let cardmc = newDiv.getElementsByClassName('card-mc')[0];
     let addBtn = newDiv.getElementsByClassName('mc-add')[0];
@@ -154,7 +151,20 @@ function initTxt(newDiv, n, q) {
         <div class='deck-divider'></div>
     `;
     // Set up selector
-    set_card_func(newDiv);
+    newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
+        initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
+    });
+    newDiv.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
+        initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
+    });
+    newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
+        if(cards.length <= 1) return;
+        let idx = cards.indexOf(newDiv);
+        if(idx > -1) {
+            cards.splice(idx, 1);
+        }
+        newDiv.remove();
+    });
 }
 function initRanking(newDiv, n, q) {
     newDiv.innerHTML = `
@@ -181,7 +191,20 @@ function initRanking(newDiv, n, q) {
         </div>
     `;
     // Set up selector
-    set_card_func(newDiv);
+    newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
+        initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
+    });
+    newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
+        initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].value);
+    });
+    newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
+        if(cards.length <= 1) return;
+        let idx = cards.indexOf(newDiv);
+        if(idx > -1) {
+            cards.splice(idx, 1);
+        }
+        newDiv.remove();
+    });
     // Set up ranking card functionality
     let rankingList = newDiv.getElementsByClassName('ranking-list')[0];
     let addBtn = newDiv.getElementsByClassName('rank-add')[0];
