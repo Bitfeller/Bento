@@ -119,6 +119,7 @@ function updateDecks(decks) {
     o_infinite_mode.checked = false;
     infinite_mode_text.innerHTML =
         "You can't use Infinite Mode when learning decks to review.";
+    o_mode[0].checked = true;
     let r_keys = Object.keys(reviews);
     for (let i = 0; i < r_keys.length; i++) {
         let id = parseInt(r_keys[i]);
