@@ -308,6 +308,9 @@ dialog::backdrop{
     position: fixed;
     z-index: 1000;
 }
+textarea {
+    resize: none;
+}
 @media only screen and (min-width: 9999px) {
     #too-big-img {
         background-image: url(/img/menhera-sad.gif);
