@@ -100,6 +100,15 @@ pfp.addEventListener("mousedown", () => {
     window.location.href = "/user/profile";
 });
 feedback.addEventListener("mousedown", () => {
-    // TO BE IMPLEMENTED
-    
+    feedback_dialog.showModal();
 });
+feedback_submit.addEventListener("mousedown", async () => {
+    let content = feedback_content.value;
+    await UserGateway.giveFeedback(content);
+    feedback_dialog.close();
+});
+window.onclick = (e) => {
+    if(e.target == feedback_dialog) {
+        feedback_dialog.close();
+    }
+}
