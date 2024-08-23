@@ -11,5 +11,6 @@
     "vapid_details": {
         "public_key": "",
         "private_key": ""
-    }
+    },
+    "admins": [1]
 }
