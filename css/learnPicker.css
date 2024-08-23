@@ -55,6 +55,9 @@ h2 {
     display: flex;
 }
 .setting-box > p {
+    max-height: 32px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     margin-left: 5px;
 }
 .setting-box:hover {

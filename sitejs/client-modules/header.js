@@ -47,6 +47,8 @@ function tip_changer(newtext) {
     if(!success && data == "no session") {
         logout.remove();
         pfp.remove();
+        feedback.remove();
+        feedback_dialog.remove();
         if(uo == "true") {
             window.location.href = "/login?s=" + window.location.pathname.slice(1);
             return;
