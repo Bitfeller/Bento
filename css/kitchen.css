@@ -12,11 +12,10 @@ body > h2 {
 .search-bar {
     padding: 3px 7px;
     width: 350px;
-    height: 20px;
+    height: 30px;
     font: inherit;
     color: var(--light-text);
     text-align: center;
-    padding: 0.5%;
 }
 #searchText, #addedText, .ingredients-container {
     display: flex;
@@ -120,7 +119,6 @@ section {
 }
 dialog {
     max-height: 85%;
-    width: 30%;
     margin: auto;
     padding: 15px;
     border: none;
@@ -192,4 +190,9 @@ img {
     overflow: hidden;
 }
 @media screen and (max-width: 768px) {
+    dialog {
+        max-height: 75%;
+        width: 95%;
+        padding: 10px;
+    }
 }

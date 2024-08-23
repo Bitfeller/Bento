@@ -116,6 +116,15 @@ input:hover {
     opacity: 0.4;
     color: var(--accent-1);
 }
+textarea {
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: var(--gray);
+    color: var(--light-text);
+    width: calc(100% - 60px);
+    height: max-content;
+}
 .loader {
     margin: 0;
     padding: 0;
@@ -188,8 +197,8 @@ input:hover {
     padding: 8px 5px;
 }
 .pfp {
-    height: 44px;
-    width: 44px;
+    height: 41px;
+    width: 41px;
     border-radius: 50%;
     padding-top: 0px;
     padding-bottom: 0px;
@@ -216,16 +225,6 @@ input:hover {
 }
 .right-header {
     float: right;
-}
-@media only screen and (max-width: 366px) {
-    .header span, .pfp {
-        font-size: 30px;
-    }
-}
-@keyframes spin {
-    100% {
-        transform: rotate(360deg);
-    }
 }
 .info-blank {
     color: rgb(150, 150, 150);
@@ -301,15 +300,31 @@ dialog::backdrop{
 .line-up-icons span {
     margin-left: 5px;
 }
+.feedback-dialog {
+    border: none;
+    margin: 45px auto;
+    padding: 15px;
+    border-radius: 10px;
+    min-width: 50%;
+    background-color: var(--dark-gray);
+    & textarea {
+        margin-top: 5px;
+    }
+    & button {
+        margin: 0px;
+        margin-top: 10px;
+        border-radius: 5px;
+        padding: 0px 5px;
+        min-width: 62px;
+        min-height: 38px;
+    }
+}
 #too-big-img {
     display: none;
     height: 100vh;
     width: 100vw;
     position: fixed;
     z-index: 1000;
-}
-textarea {
-    resize: none;
 }
 @media only screen and (min-width: 9999px) {
     #too-big-img {
@@ -336,5 +351,10 @@ textarea {
     100% {
         opacity: 100%;
         transform: translateY(0);
+    }
+}
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
     }
 }
