@@ -31,7 +31,7 @@ window.onresize();
 let paused = false;
 let ended = false;
 let deck;
-let deckData;
+let deckData = [];
 let asteroids = [];
 
 let frameCount = 0;
@@ -43,13 +43,11 @@ let level = 1;
 render.textAlign = "center";
 
 function createAsteroid() {
-    let d_keys = Object.keys(deckData);
-    let q = round(random(0, d_keys.length - 1));
-    while(deckData[d_keys[q]].type == "ranking") {
-        q = round(random(0, d_keys.length - 1));
+    let q = round(random(0, deckData.length - 1));
+    while(deckData[q].type == "ranking") {
+        q = round(random(0, deckData.length - 1));
     }
-    let card = deckData[d_keys[q]];
-    card.q = d_keys[q];
+    let card = deckData[q];
     return new Asteroid(card);
 }
 
@@ -85,7 +83,7 @@ function gameStart () {
         frameCount++;
         if(paused) return;
         if(ended) return;
-        if(frameCount % (15 - level < 1 ? 1 : 15 - level) == 0) {
+        if(frameCount % (15 - level < 1 ? 1 : (15 - level) * 3) == 0) {
             asteroids.push(createAsteroid());
         }
         if(frameCount % 100 == 0) {
@@ -140,9 +138,9 @@ function frame() {
 
 class Asteroid {
     constructor(card) {
-        this.x = random(20, width - 220);
+        this.x = random(0, width - 520);
         this.y = -550;
-        this.speed = random(1, 2) * level;
+        this.speed = random(1, 1.5) * (level / 2);
         this.q = card.q;
         this.answer = card.type != "ranking" ? card.ans : "";
         this.wrappedText = wrapText(this.q, 100);
@@ -171,18 +169,87 @@ class Asteroid {
 }
 
 (async () => {
-    let [success, data] = await UserGateway.getuser();
+    let [success, user] = await UserGateway.getuser();
     if (!success) return;
     const paramList = new URLSearchParams(window.location.search);
-    if(!paramList.get("d")) {
+    if(!paramList.get("ds")) {
         window.location.href = "/home";
         return;
     }
+    
+    let decks = paramList.get("ds").split(",");
+    decks.forEach((val, idx) => {
+        decks[idx] = parseInt(val);
+    });
+    let ntronly = parseFloat(paramList.get("m")) == 1 ? true : false;
+    let randomTerms = parseFloat(paramList.get("sh")) == 1 ? true : false;
 
-    [success, deck] = await DeckGateway.get(parseInt(paramList.get("d")));
-    if (!success) {console.log(deck); window.location.href = "/home"; return}
-
-    deckData = deck.data.contnt;
+    let deckContnt = [];
+    let updateReviews = false;
+    for(let i = 0; i < decks.length; i++) {
+        let [success, data] = await DeckGateway.get(decks[i]);
+        if(!success) {
+            console.log(data);
+            window.location.href = "/home";
+            return;
+        }
+        let userReview = user.reviews[deck];
+        if(!userReview) {
+            // Doesn't exist in our reviews? interesting... regardless, might as well add it if for some reason specified...?
+            userReview = {};
+            user.reviews[deck] = userReview;
+            let json = JSON.stringify(user.reviews);
+            await UserGateway.editUser("reviews", json);
+        }
+        let updateIdx = false;
+        let r_keys = Object.keys(userReview);
+        for(let i = 0; i < r_keys.length; i++) {
+            let userCard = userReview[r_keys[i]];
+            let q = r_keys[i];
+            let last = userCard.last;
+            let box = userCard.box;
+            let deckCard = data.data.contnt[q];
+            if(ntronly && deckCard) {
+                let ntr = UserGateway.calculateNTR(box, last);
+                if(!ntr) delete data.data.contnt[q];
+            }
+            if(!deckCard) {
+                delete userReview[r_keys[i]];
+                updateReviews = true;
+                updateIdx = true;
+            }
+        }
+        if(updateIdx) user.reviews[deck] = userReview;
+        let d_keys = Object.keys(data.data.contnt);
+        let datalist = [];
+        for(let i = 0; i < d_keys.length; i++) {
+            data.data.contnt[d_keys[i]].q = d_keys[i];
+            data.data.contnt[d_keys[i]].d_id = decks[i];
+            datalist.push(data.data.contnt[d_keys[i]]);
+        }
+        deckContnt.push(datalist);
+    }
+    if(updateReviews) {
+        let json = JSON.stringify(user.reviews);
+        await UserGateway.editUser("reviews", json);
+    }
+    // Add terms to deckContnt
+    for(let i = 0; i < deckContnt.length; i++) {
+        for(let j = 0; j < deckContnt[i].length; j++) {
+            deckData.push(deckContnt[i][j]);
+        }
+    }
+    // Scramble terms if needed
+    if(randomTerms == true) {
+        let save = deckData;
+        deckData = [];
+        while(save.length > 0) {
+            let idx = random(0, save.length - 1);
+            deckData.push(save[idx]);
+            save.splice(idx, 1);
+        }
+    }
+    
     gameStart();
     input.addEventListener("keyup", () => {
         asteroids.forEach((asteroid, idx) => {
