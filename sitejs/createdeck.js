@@ -37,31 +37,33 @@ function initMc(newDiv, n, q) {
             <button class='rankbtn selbtn selbtn-noselect'>Ranking</button>
         </div>
         <div class='card-main'>
-            Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div><br>
+            <div class="card-question-container">
+                Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div>
+            </div>
             <div class='card-mc'>
                 <div class='mc-option'>
                     <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
-                    <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                    <button class='mc-option-correct mc-option-sel'><span class='material-symbols-outlined'>check</span></button>
+                    <button class='mc-option-del' tabindex="-1"><span class='material-symbols-outlined'>close</span></button>
+                    <button class='mc-option-correct mc-option-sel' tabindex="-1"><span class='material-symbols-outlined'>check</span></button>
                 </div>
                 <div class='mc-option'>
                     <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
-                    <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                    <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
+                    <button class='mc-option-del' tabindex="-1"><span class='material-symbols-outlined'>close</span></button>
+                    <button class='mc-option-correct mc-option-nosel' tabindex="-1"><span class="material-symbols-outlined">check_indeterminate_small</span></button>
                 </div>
                 <div class='mc-option'>
                     <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
-                    <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                    <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
+                    <button class='mc-option-del' tabindex="-1"><span class='material-symbols-outlined'>close</span></button>
+                    <button class='mc-option-correct mc-option-nosel' tabindex="-1"><span class="material-symbols-outlined">check_indeterminate_small</span></button>
                 </div>
                 <div class='mc-option'>
                     <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
-                    <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                    <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
+                    <button class='mc-option-del' tabindex="-1"><span class='material-symbols-outlined'>close</span></button>
+                    <button class='mc-option-correct mc-option-nosel' tabindex="-1"><span class="material-symbols-outlined">check_indeterminate_small</span></button>
                 </div>
             </div>
-            <button class='mc-add'>+</button>
-            <button class='card-del'>Delete Card</button>
+            <button class='mc-add' tabindex="-1">+</button>
+            <button class='card-del' tabindex="-1">Delete Card</button>
             <div class='deck-divider'></div>
         </div>
     `;
@@ -146,7 +148,9 @@ function initTxt(newDiv, n, q) {
             <button class='rankbtn selbtn selbtn-noselect'>Ranking</button>
         </div>
         <div class='card-main'>
-            Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div><br>
+            <div class="card-question-container">
+                Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div>
+            </div>
             Answer: <div contenteditable="true" type='input' class='txt-answer' placeholder='...'></div>
         </div>
         <button class='card-del'>Delete Card</button>
@@ -176,7 +180,9 @@ function initRanking(newDiv, n, q) {
             <button class='rankbtn selbtn selbtn-select'>Ranking</button>
         </div>
         <div class='card-main'>
-            Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div><br>
+            <div class="card-question-container">
+                Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div>
+            </div>
             <div class='card-rank ranking-list'>
                 <div draggable='true' class='ranking-item'>
                     <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'></div>
@@ -918,5 +924,13 @@ window.addEventListener("mousedown", (e) => {
         b_modal.style.display = "none";
         q_modal.style.display = "none";
         g_modal.style.display = "none";
+    }
+});
+window.addEventListener("keydown", (e) => {
+    if(e.target === addCard && (e.key === "Enter" || e.key === " ")) {
+        newCard();
+        document.querySelector(".card:last-child").scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const mcbtns = document.querySelectorAll(".mcbtn");
+        mcbtns[mcbtns.length - 1].focus();
     }
 });
