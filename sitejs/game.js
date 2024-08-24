@@ -125,7 +125,8 @@ function refresh() {
             }
             break;
         case "txt":
-            var input = document.createElement("input");
+            var input = document.createElement("div");
+            input.contentEditable = true;
             input.type = "text";
             input.className = "op-input";
             input.placeholder = "Enter an answer here...";
@@ -219,7 +220,7 @@ function answerHandler() {
     if (toProceed) {
         if (Game.fetchProblem().type == "txt" && requireCorrect) {
             let ans = Game.fetchProblem().ans;
-            if (objs[0].value == !ans) return;
+            if (objs[0].textContent == !ans) return;
         }
         Game.continue();
         answerMarker.style.display = "none";
@@ -236,29 +237,29 @@ function answerHandler() {
         switch (data.type) {
             case "txt":
                 selected = false;
-                if (objs[0].value === "") {
+                if (objs[0].textContent === "") {
                     noAnswer();
                     return;
                 }
-                correct = Game.isCorrect(objs[0].value.toLowerCase());
+                correct = Game.isCorrect(objs[0].textContent.toLowerCase());
                 if (correct) {
                     Game.continue();
                     contlabel();
                     refresh();
                 } else {
-                    if (!requireCorrect) objs[0].disabled = true;
+                    if (!requireCorrect) objs[0].contentEditable = false;
                     ans_a.style.display = "flex";
                     ans_a.innerHTML = cont_a.innerHTML;
                     cont_a.children[0].style.backgroundColor = `rgba(255, 0, 0, 0.5)`;
                     ans_a.children[0].style.backgroundColor = `rgba(0, 255, 0, 0.5)`;
-                    ans_a.children[0].value = data.ans;
+                    ans_a.children[0].innerHTML = data.ans;
                     ans_a.children[0].disabled = true;
                     answerbtn.innerHTML = "Continue >>> (Enter)";
                     if (requireCorrect) {
                         answerbtn.innerHTML =
                             "Enter the correct answer before advancing.";
                         answerbtn.disabled = true;
-                        objs[0].value = "";
+                        objs[0].textContent = "";
                     }
                     answerMarker.style.display = "block";
                     toProceed = true;
@@ -437,6 +438,7 @@ window.addEventListener("keydown", (e) => {
         }
     }
     if(!toProceed) return;
+    if(e.key == "Enter") e.preventDefault();
     if(e.key == "Enter" && (requireCorrect ? answerbtn.disabled == false : e.target != objs[0])) {
         Game.continue();
         answerMarker.style.display = "none";
@@ -464,7 +466,7 @@ window.addEventListener("keyup", () => {
     if(!toProceed) return;
     if(Game.fetchProblem().type == "txt" && requireCorrect) {
         let ans = Game.fetchProblem().ans;
-        if (objs[0].value.toLowerCase().replaceAll(/\s/g, "") != ans.toLowerCase().replaceAll(/\s/g, "")) {
+        if (objs[0].textContent.toLowerCase().replaceAll(/\s/g, "") != ans.toLowerCase().replaceAll(/\s/g, "")) {
             answerbtn.innerHTML = "Enter the correct answer before advancing.";
             answerbtn.disabled = true;
             return;

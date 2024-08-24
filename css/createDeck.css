@@ -1,4 +1,4 @@
-input {
+input, div[contenteditable="true"] {
     background-color: var(--light-gray);
 }
 .mc-option-del, .mc-option-input, .mc-option-nosel, .mc-option-sel, .ranking-item-del {
@@ -74,6 +74,8 @@ button {
 }
 .question, .mc-option-input {
     width: 70%;
+    display: inline-block;
+    height: 30px;
 }
 .create-container > .mcbtn {
     margin-left: 0px;
