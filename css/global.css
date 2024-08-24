@@ -102,14 +102,14 @@ button:disabled {
     filter: brightness(75%);
     color: var(--dark-text);
 }
-input {
+input, div[contenteditable="true"] {
     border: none;
     border-radius: 5px;
     color: #EEEEEE;
     background-color: var(--lighter-gray);
     transition: 0.3s;
 }
-input:hover {
+input:hover, div[contenteditable="true"]:hover {
     filter: brightness(115%);
 }
 ::placeholder {
