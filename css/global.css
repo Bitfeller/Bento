@@ -114,7 +114,8 @@ input:hover, div[contenteditable="true"]:hover {
 }
 div[contenteditable="true"][placeholder]:empty:before {
     content: attr(placeholder);
-    color: #555;
+    opacity: 0.4;
+    color: var(--accent-1);
 }
 ::placeholder {
     opacity: 0.4;
