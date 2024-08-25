@@ -29,6 +29,99 @@ function computeCenter(el) {
         y: (rect.top + rect.bottom) / 2 + scrollY
     }
 }
+function set_selector(newDiv, n) {
+    newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
+        if(newDiv.getElementsByClassName('card-mc').length > 0) return;
+        initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
+    });
+    newDiv.getElementsByClassName('mcbtn')[0].addEventListener("keydown", function(e) {
+        if(newDiv.getElementsByClassName('card-mc').length > 0) return;
+        if(e.key == "Enter" || e.key == " ") initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
+    });
+    newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
+        if(newDiv.getElementsByClassName('txt-answer').length > 0) return;
+        initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
+    });
+    newDiv.getElementsByClassName('txtbtn')[0].addEventListener("keydown", function(e) {
+        if(newDiv.getElementsByClassName('txt-answer').length > 0) return;
+        if(e.key == "Enter" || e.key == " ") initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
+    });
+    newDiv.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
+        if(newDiv.getElementsByClassName('card-rank').length > 0) return;
+        initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
+    });
+    newDiv.getElementsByClassName('rankbtn')[0].addEventListener("keydown", function(e) {
+        if(newDiv.getElementsByClassName('card-rank').length > 0) return;
+        if(e.key == "Enter" || e.key == " ") initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
+    });
+    newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
+        if(cards.length <= 1) return;
+        let idx = cards.indexOf(newDiv);
+        if(idx > -1) {
+            cards.splice(idx, 1);
+        }
+        newDiv.remove();
+    });
+}
+function set_formatter(div) {
+    div.addEventListener('keydown', (e) => {
+        const sel = window.getSelection();
+        const range = sel.getRangeAt(0);
+        let [currNode, currOffset] = [range.endContainer, range.endOffset];
+        let parentNode = currNode.nodeType == Node.TEXT_NODE ? currNode.parentNode : currNode;
+        if(e.ctrlKey) {
+            switch(e.key) {
+                case '.':
+                    e.preventDefault();
+                    if(parentNode.tagName == 'SUB') {
+                        let content = parentNode.innerHTML.slice(currOffset);
+                        if(content.length == 0) content = "\u200B";
+                        console.log(content);
+                        parentNode.innerHTML = parentNode.innerHTML.slice(0, currOffset);
+                        parentNode.after(content);
+                        let content_idx = Array(...div.childNodes).indexOf(parentNode) + 1;
+                        range.setStart(div, content_idx + (content == "\u200B" ? 1 : 0));
+                        range.collapse(true);
+                        return;
+                    }
+                    let sub = document.createElement('sub');
+                    if(range.toString().length > 0) {
+                        range.surroundContents(sub);
+                        range.setStart(sub, 0);
+                        range.collapse(true);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    } else {
+                        sub.innerHTML = "\u200B";
+                        currNode.after(sub);
+                        range.setEnd(div, div.childNodes.length);
+                        range.setStart(div, div.childNodes.length);
+                    }
+                break;
+                case '^':
+
+                break;
+            }
+        }
+        if(e.key == "ArrowRight") {
+            const sel = window.getSelection();
+            const range = sel.getRangeAt(0);
+            if(parentNode.tagName == "SUB" && currOffset == currNode.textContent.length) {
+                e.preventDefault();
+                if(parentNode.nextSibling) {
+                    range.setStart(parentNode.nextSibling, 0);
+                    range.collapse(true);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                } else {
+                    div.innerHTML += "\u200B";
+                    range.setStart(div, div.childNodes.length);
+                    range.collapse(true);
+                }
+            }
+        }
+    })
+}
 function initMc(newDiv, n, q) {
     newDiv.innerHTML = `
         <div class='card-sel'>
@@ -68,21 +161,10 @@ function initMc(newDiv, n, q) {
         </div>
     `;
     // Set up selector
-    newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
-        initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
-    });
-    newDiv.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
-        initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
-    });
-    newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
-        if(cards.length <= 1) return;
-        let idx = cards.indexOf(newDiv);
-        if(idx > -1) {
-            cards.splice(idx, 1);
-        }
-        newDiv.remove();
-    });
+    set_selector(newDiv, n);
     // Set up multiple choice card functionality
+    let question = newDiv.getElementsByClassName('question')[0];
+    set_formatter(question);
     let cardmc = newDiv.getElementsByClassName('card-mc')[0];
     let addBtn = newDiv.getElementsByClassName('mc-add')[0];
     addBtn.addEventListener("mousedown", function() {
@@ -90,12 +172,23 @@ function initMc(newDiv, n, q) {
         newOp.className = "mc-option";
         newOp.innerHTML = `
             <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
-            <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-            <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
+            <button class='mc-option-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
+            <button class='mc-option-correct mc-option-nosel' tabindex='-1'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
         `;
         cardmc.appendChild(newOp);
+        let input = newOp.getElementsByClassName('mc-option-input')[0];
         let delBtn = newOp.getElementsByClassName("mc-option-del")[0];
         let correctBtn = newOp.getElementsByClassName("mc-option-correct")[0];
+        input.addEventListener('keydown', (e) => {
+            if(e.key !== "Tab" || e.shiftKey) return;
+            if(cards.indexOf(newDiv) < cards.length - 1) return;
+            let ans = Array(...cardmc.getElementsByClassName("mc-option"));
+            let idx = ans.indexOf(newOp);
+            if(idx < ans.length - 1) return;
+            e.preventDefault();
+            newCard();
+            cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+        })
         delBtn.addEventListener("mousedown", function() {
             if(cardmc.getElementsByClassName('mc-option').length <= 2) {
                 return;
@@ -118,8 +211,19 @@ function initMc(newDiv, n, q) {
     let ops = cardmc.getElementsByClassName("mc-option");
     for(let i = 0; i < ops.length; i++) {
         let div = ops[i];
+        let input = div.getElementsByClassName('mc-option-input')[0];
         let delBtn = div.getElementsByClassName("mc-option-del")[0];
         let correctBtn = div.getElementsByClassName("mc-option-correct")[0];
+        input.addEventListener('keydown', (e) => {
+            if(e.key !== "Tab" || e.shiftKey) return;
+            if(cards.indexOf(newDiv) < cards.length - 1) return;
+            let ans = Array(...cardmc.getElementsByClassName("mc-option"));
+            let idx = ans.indexOf(newOp);
+            if(idx < ans.length - 1) return;
+            e.preventDefault();
+            newCard();
+            cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+        });
         delBtn.addEventListener("mousedown", function() {
             if(cardmc.getElementsByClassName('mc-option').length <= 2) {
                 return;
@@ -153,24 +257,20 @@ function initTxt(newDiv, n, q) {
             </div>
             Answer: <div contenteditable="true" type='input' class='txt-answer' placeholder='...'></div>
         </div>
-        <button class='card-del'>Delete Card</button>
+        <button class='card-del' tabindex='-1'>Delete Card</button>
         <div class='deck-divider'></div>
     `;
     // Set up selector
-    newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
-        initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
-    });
-    newDiv.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
-        initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
-    });
-    newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
-        if(cards.length <= 1) return;
-        let idx = cards.indexOf(newDiv);
-        if(idx > -1) {
-            cards.splice(idx, 1);
-        }
-        newDiv.remove();
-    });
+    set_selector(newDiv, n);
+    // Configure tabbing
+    let txtAns = newDiv.getElementsByClassName('txt-answer')[0];
+    txtAns.addEventListener('keydown', (e) => {
+        if(e.key !== "Tab" || e.shiftKey) return;
+        if(cards.indexOf(newDiv) < cards.length - 1) return;
+        e.preventDefault();
+        newCard();
+        cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+    })
 }
 function initRanking(newDiv, n, q) {
     newDiv.innerHTML = `
@@ -186,33 +286,20 @@ function initRanking(newDiv, n, q) {
             <div class='card-rank ranking-list'>
                 <div draggable='true' class='ranking-item'>
                     <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'></div>
-                    <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
+                    <button class='ranking-item-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
                 </div>
                 <div draggable='true' class='ranking-item'>
                     <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'></div>
-                    <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
+                    <button class='ranking-item-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
                 </div>
             </div>
-            <button class='rank-add'>+</button>
-            <button class='card-del'>Delete Card</button>
+            <button class='rank-add' tabindex='-1'>+</button>
+            <button class='card-del' tabindex='-1'>Delete Card</button>
             <div class='deck-divider'></div>
         </div>
     `;
     // Set up selector
-    newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
-        initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
-    });
-    newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
-        initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
-    });
-    newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
-        if(cards.length <= 1) return;
-        let idx = cards.indexOf(newDiv);
-        if(idx > -1) {
-            cards.splice(idx, 1);
-        }
-        newDiv.remove();
-    });
+    set_selector(newDiv, n);
     // Set up ranking card functionality
     let rankingList = newDiv.getElementsByClassName('ranking-list')[0];
     let addBtn = newDiv.getElementsByClassName('rank-add')[0];
@@ -222,7 +309,7 @@ function initRanking(newDiv, n, q) {
         item.setAttribute("draggable", true);
         item.innerHTML = `
             <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'></div>
-            <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
+            <button class='ranking-item-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
         `;
         rankingList.appendChild(item);
         item.addEventListener("dragstart", function() {
@@ -260,7 +347,18 @@ function initRanking(newDiv, n, q) {
             }
             dragging = undefined;
         });
+        let input = item.getElementsByClassName('ranking-item-txt')[0];
         let del = item.getElementsByClassName('ranking-item-del')[0];
+        input.addEventListener('keydown', (e) => {
+            if(e.key !== "Tab" || e.shiftKey) return;
+            if(cards.indexOf(newDiv) < cards.length - 1) return;
+            let ans = Array(...rankingList.getElementsByClassName("ranking-item"));
+            let idx = ans.indexOf(item);
+            if(idx < ans.length - 1) return;
+            e.preventDefault();
+            newCard();
+            cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+        });
         del.addEventListener("mousedown", function() {
             if(rankingList.getElementsByClassName('ranking-item').length <= 2) {
                 return;
@@ -306,7 +404,18 @@ function initRanking(newDiv, n, q) {
             }
             dragging = undefined;
         });
+        let input = obj.getElementsByClassName('ranking-item-txt')[0];
         let del = obj.getElementsByClassName('ranking-item-del')[0];
+        input.addEventListener('keydown', (e) => {
+            if(e.key !== "Tab" || e.shiftKey) return;
+            if(cards.indexOf(newDiv) < cards.length - 1) return;
+            let ans = Array(...rankingList.getElementsByClassName("ranking-item"));
+            let idx = ans.indexOf(obj);
+            if(idx < ans.length - 1) return;
+            e.preventDefault();
+            newCard();
+            cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+        });
         del.addEventListener("mousedown", function() {
             if(rankingList.getElementsByClassName('ranking-item').length <= 2) {
                 return;
@@ -519,7 +628,7 @@ createBtn.addEventListener("mousedown", async function() {
                 errmsg.innerHTML = "Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)";
             break;
             case "invalid name":
-                errmsg.innerHTML = "That name has invalid characters. (Valid characters include dashes, a-z, A-Z, and 0-9)";
+                errmsg.innerHTML = "That name has invalid characters or is empty. (Valid characters include dashes, a-z, A-Z, and 0-9)";
             break;
             case "name exists":
                 errmsg.innerHTML = "You've already created another deck with that name";
@@ -813,6 +922,7 @@ const b_err = document.getElementById("BI-err");
 const q_importbtn = document.getElementById("quizlet-import-btn");
 const q_txt = document.getElementById("QI-importText");
 const q_createbtn = document.getElementById("QI-createBtn");
+const q_reverse = document.getElementById("QI-reverse");
 const q_err = document.getElementById("QI-err");
 
 const g_importbtn = document.getElementById("gimkit-import-btn");
@@ -877,10 +987,7 @@ q_createbtn.addEventListener("mousedown", () => {
             isValid = false;
             return;
         }
-        contnt[q] = {
-            type: "txt",
-            ans
-        };
+        if(q_reverse.checked) contnt[ans] = {type: "txt", ans: q}; else contnt[q] = {type: "txt", ans};
     });
     if(!isValid) return;
     try {

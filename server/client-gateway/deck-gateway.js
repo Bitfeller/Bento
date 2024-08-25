@@ -92,7 +92,7 @@ class DeckGateway {
         return [success, data];
     }
     static async add(name, deckpic, data, isPublic) {
-        if(!name || !data || typeof(deckpic) !== "string" || isPublic === undefined || isPublic === null || name.length === 0) {
+        if(typeof(name) !== "string" || typeof(data) !== "string" || typeof(deckpic) !== "string" || typeof(isPublic) !== "boolean" || data.length == 0) {
             return [false, "invalid params"];
         }
         var success, reason;

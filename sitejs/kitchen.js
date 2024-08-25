@@ -17,6 +17,8 @@ const loadBtn = document.getElementById("loadBtn");
 // Search
 const search = document.getElementById("search");
 const searchText = document.getElementById("searchText");
+// HTML Decoder
+const decoder = document.createElement('textarea');
 
 function box(idx, inReviews = false, deckName, deckpic, author, ofAddedDecks = false) {
     let a = document.createElement("div");
@@ -34,6 +36,20 @@ function box(idx, inReviews = false, deckName, deckpic, author, ofAddedDecks = f
     a.getElementsByClassName("previewBtns")[0].addEventListener("mousedown", (e) => {preview(e.currentTarget, ofAddedDecks);});
     a.getElementsByClassName("userReviewsUpdateBtns")[0].addEventListener("mousedown", (e) => {reviews_update(e.currentTarget, ofAddedDecks);});
     return a;
+}
+function decodeHTML(val) {
+    decoder.innerHTML = val;
+    return decoder.value;
+}
+function decodeHTMLEncVal(obj) {
+    if(typeof obj == 'string')
+        return decodeHTML(obj);
+    else if(Array.isArray(obj))
+        return obj.map(decodeHTMLEncVal);
+    else if(typeof obj == 'object' && obj !== null)
+        return Object.fromEntries(
+            Object.entries(obj).map(([key, value]) => [decodeHTMLEncVal(key), decodeHTMLEncVal(value)])
+        );
 }
 
 async function update() {
@@ -204,7 +220,7 @@ async function preview(_this, isAdded) {
             const data = {
                 name: deck.name,
                 desc: deck.data.desc,
-                contnt: deck.data.contnt
+                contnt: decodeHTMLEncVal(deck.data.contnt)
             };
             const json = JSON.stringify(data);
             const file = new File([json], deck.name+'.txt', {type: "text/plain"});
