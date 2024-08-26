@@ -45,6 +45,10 @@ function computeCenter(el) {
         y: (rect.top + rect.bottom) / 2 + scrollY,
     };
 }
+function typeset(node) {
+    MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([node])).catch((err) => console.warn('math formatting failed; reason:', err.message));
+    return MathJax.startup.promise;
+}
 function refresh() {
     if (Game.isDead()) {
         problem.innerHTML =
@@ -73,6 +77,7 @@ function refresh() {
     }
     let data = Game.fetchProblem();
     problem.innerHTML = data.q;
+    typeset(problem);
     for (var i = 0; i < objs.length; i++) {
         objs[i].remove();
     }

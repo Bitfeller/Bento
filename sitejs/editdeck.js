@@ -27,48 +27,30 @@ function computeCenter(el) {
         y: (rect.top + rect.bottom) / 2 + scrollY
     }
 }
-function initMc(newDiv, n, q) {
-    newDiv.innerHTML = `
-        <div class='card-sel'>
-            <button class='mcbtn selbtn selbtn-select'>Multiple Choice</button>
-            <button class='txtbtn selbtn selbtn-noselect'>Text</button>
-            <button class='rankbtn selbtn selbtn-noselect'>Ranking</button>
-        </div>
-        <div class='card-main'>
-            Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div><br>
-            <div class='card-mc'>
-                <div class='mc-option'>
-                    <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
-                    <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                    <button class='mc-option-correct mc-option-sel'><span class='material-symbols-outlined'>check</span></button>
-                </div>
-                <div class='mc-option'>
-                    <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
-                    <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                    <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
-                </div>
-                <div class='mc-option'>
-                    <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
-                    <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                    <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
-                </div>
-                <div class='mc-option'>
-                    <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
-                    <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                    <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
-                </div>
-            </div>
-            <button class='mc-add'>+</button>
-            <button class='card-del'>Delete Card</button>
-            <div class='deck-divider'></div>
-        </div>
-    `;
-    // Set up selector
+function set_selector(newDiv, n) {
+    newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
+        if(newDiv.getElementsByClassName('card-mc').length > 0) return;
+        initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
+    });
+    newDiv.getElementsByClassName('mcbtn')[0].addEventListener("keydown", function(e) {
+        if(newDiv.getElementsByClassName('card-mc').length > 0) return;
+        if(e.key == "Enter" || e.key == " ") initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
+    });
     newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
+        if(newDiv.getElementsByClassName('txt-answer').length > 0) return;
         initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
     });
+    newDiv.getElementsByClassName('txtbtn')[0].addEventListener("keydown", function(e) {
+        if(newDiv.getElementsByClassName('txt-answer').length > 0) return;
+        if(e.key == "Enter" || e.key == " ") initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
+    });
     newDiv.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
+        if(newDiv.getElementsByClassName('card-rank').length > 0) return;
         initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
+    });
+    newDiv.getElementsByClassName('rankbtn')[0].addEventListener("keydown", function(e) {
+        if(newDiv.getElementsByClassName('card-rank').length > 0) return;
+        if(e.key == "Enter" || e.key == " ") initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
     });
     newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
         if(cards.length <= 1) return;
@@ -78,6 +60,88 @@ function initMc(newDiv, n, q) {
         }
         newDiv.remove();
     });
+}
+function typeset(node) {
+    MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([node])).catch((err) => console.warn('math formatting failed; reason:', err.message));
+    return MathJax.startup.promise;
+}
+function init_div(div) {
+    div.setAttribute('data-html', div.innerHTML);
+    div.addEventListener('focusout', (e) => {
+        div.setAttribute('data-html', div.innerHTML);
+        div.innerHTML = div.innerHTML.replaceAll(/\$\$[^$]*\$\$/g, "<b style='color: rgb(255, 100, 100);'>[paragraph equation rendering is disabled]<b>");
+        typeset(div);
+    });
+    div.addEventListener('focus', (e) => {
+        div.innerHTML = div.dataset.html;
+    });
+    div.addEventListener('keydown', (e) => {
+        if(e.key == 'Enter') return e.preventDefault();
+        div.setAttribute('data-html', div.innerHTML);
+    });
+    div.addEventListener('paste', (e) => {
+        e.preventDefault();
+        let data = (e.clipboardData || window.clipboardData).getData('text');
+        let sanitized = data.replace(/\s+/g, "");
+        let sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+            let range = sel.getRangeAt(0);
+            let node = document.createTextNode(sanitized);
+            range.deleteContents();
+            range.insertNode(node);
+            range.setStartAfter(node);
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+    });
+}
+function initMc(newDiv, n, q) {
+    newDiv.innerHTML = `
+        <div class='card-sel'>
+            <button class='mcbtn selbtn selbtn-select'>Multiple Choice</button>
+            <button class='txtbtn selbtn selbtn-noselect'>Text</button>
+            <button class='rankbtn selbtn selbtn-noselect'>Ranking</button>
+        </div>
+        <div class='card-main'>
+            <div class="card-question-container">
+                Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div>
+            </div>
+            <div class='card-mc'>
+                <div class='mc-option'>
+                    <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
+                    <button class='mc-option-del' tabindex="-1"><span class='material-symbols-outlined'>close</span></button>
+                    <button class='mc-option-correct mc-option-sel' tabindex="-1"><span class='material-symbols-outlined'>check</span></button>
+                </div>
+                <div class='mc-option'>
+                    <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
+                    <button class='mc-option-del' tabindex="-1"><span class='material-symbols-outlined'>close</span></button>
+                    <button class='mc-option-correct mc-option-nosel' tabindex="-1"><span class="material-symbols-outlined">check_indeterminate_small</span></button>
+                </div>
+                <div class='mc-option'>
+                    <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
+                    <button class='mc-option-del' tabindex="-1"><span class='material-symbols-outlined'>close</span></button>
+                    <button class='mc-option-correct mc-option-nosel' tabindex="-1"><span class="material-symbols-outlined">check_indeterminate_small</span></button>
+                </div>
+                <div class='mc-option'>
+                    <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
+                    <button class='mc-option-del' tabindex="-1"><span class='material-symbols-outlined'>close</span></button>
+                    <button class='mc-option-correct mc-option-nosel' tabindex="-1"><span class="material-symbols-outlined">check_indeterminate_small</span></button>
+                </div>
+            </div>
+            <button class='mc-add' tabindex="-1">+</button>
+            <button class='card-del' tabindex="-1">Delete Card</button>
+            <div class='deck-divider'></div>
+        </div>
+    `;
+    // Set up selector
+    set_selector(newDiv, n);
+    let problem = newDiv.getElementsByClassName('question')[0];
+    init_div(problem); // question
+    if(q) {
+        problem.setAttribute('data-html', q);
+        typeset(problem);
+    }
     // Set up multiple choice card functionality
     let cardmc = newDiv.getElementsByClassName('card-mc')[0];
     let addBtn = newDiv.getElementsByClassName('mc-add')[0];
@@ -86,12 +150,24 @@ function initMc(newDiv, n, q) {
         newOp.className = "mc-option";
         newOp.innerHTML = `
             <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'></div>
-            <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-            <button class='mc-option-correct mc-option-nosel'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
+            <button class='mc-option-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
+            <button class='mc-option-correct mc-option-nosel' tabindex='-1'><span class="material-symbols-outlined">check_indeterminate_small</span></button>
         `;
         cardmc.appendChild(newOp);
+        let input = newOp.getElementsByClassName('mc-option-input')[0];
         let delBtn = newOp.getElementsByClassName("mc-option-del")[0];
         let correctBtn = newOp.getElementsByClassName("mc-option-correct")[0];
+        init_div(input);
+        input.addEventListener('keydown', (e) => {
+            if(e.key !== "Tab" || e.shiftKey) return;
+            if(cards.indexOf(newDiv) < cards.length - 1) return;
+            let ans = Array(...cardmc.getElementsByClassName("mc-option"));
+            let idx = ans.indexOf(newOp);
+            if(idx < ans.length - 1) return;
+            e.preventDefault();
+            newCard();
+            cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+        })
         delBtn.addEventListener("mousedown", function() {
             if(cardmc.getElementsByClassName('mc-option').length <= 2) {
                 return;
@@ -114,8 +190,20 @@ function initMc(newDiv, n, q) {
     let ops = cardmc.getElementsByClassName("mc-option");
     for(let i = 0; i < ops.length; i++) {
         let div = ops[i];
+        let input = div.getElementsByClassName('mc-option-input')[0];
         let delBtn = div.getElementsByClassName("mc-option-del")[0];
         let correctBtn = div.getElementsByClassName("mc-option-correct")[0];
+        init_div(input);
+        input.addEventListener('keydown', (e) => {
+            if(e.key !== "Tab" || e.shiftKey) return;
+            if(cards.indexOf(newDiv) < cards.length - 1) return;
+            let ans = Array(...cardmc.getElementsByClassName("mc-option"));
+            let idx = ans.indexOf(input);
+            if(idx < ans.length - 1) return;
+            e.preventDefault();
+            newCard();
+            cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+        });
         delBtn.addEventListener("mousedown", function() {
             if(cardmc.getElementsByClassName('mc-option').length <= 2) {
                 return;
@@ -144,27 +232,32 @@ function initTxt(newDiv, n, q) {
             <button class='rankbtn selbtn selbtn-noselect'>Ranking</button>
         </div>
         <div class='card-main'>
-            Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div><br>
+            <div class="card-question-container">
+                Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div>
+            </div>
             Answer: <div contenteditable="true" type='input' class='txt-answer' placeholder='...'></div>
         </div>
-        <button class='card-del'>Delete Card</button>
+        <button class='card-del' tabindex='-1'>Delete Card</button>
         <div class='deck-divider'></div>
     `;
     // Set up selector
-    newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
-        initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
-    });
-    newDiv.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
-        initRanking(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
-    });
-    newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
-        if(cards.length <= 1) return;
-        let idx = cards.indexOf(newDiv);
-        if(idx > -1) {
-            cards.splice(idx, 1);
-        }
-        newDiv.remove();
-    });
+    set_selector(newDiv, n);
+    let problem = newDiv.getElementsByClassName('question')[0];
+    init_div(problem); // question
+    if(q) {
+        problem.setAttribute('data-html', q);
+        typeset(problem);
+    }
+    // Configure tabbing
+    let txtAns = newDiv.getElementsByClassName('txt-answer')[0];
+    init_div(txtAns);
+    txtAns.addEventListener('keydown', (e) => {
+        if(e.key !== "Tab" || e.shiftKey) return;
+        if(cards.indexOf(newDiv) < cards.length - 1) return;
+        e.preventDefault();
+        newCard();
+        cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+    })
 }
 function initRanking(newDiv, n, q) {
     newDiv.innerHTML = `
@@ -174,37 +267,32 @@ function initRanking(newDiv, n, q) {
             <button class='rankbtn selbtn selbtn-select'>Ranking</button>
         </div>
         <div class='card-main'>
-            Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div><br>
+            <div class="card-question-container">
+                Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div>
+            </div>
             <div class='card-rank ranking-list'>
                 <div draggable='true' class='ranking-item'>
                     <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'></div>
-                    <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
+                    <button class='ranking-item-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
                 </div>
                 <div draggable='true' class='ranking-item'>
                     <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'></div>
-                    <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
+                    <button class='ranking-item-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
                 </div>
             </div>
-            <button class='rank-add'>+</button>
-            <button class='card-del'>Delete Card</button>
+            <button class='rank-add' tabindex='-1'>+</button>
+            <button class='card-del' tabindex='-1'>Delete Card</button>
             <div class='deck-divider'></div>
         </div>
     `;
     // Set up selector
-    newDiv.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
-        initMc(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
-    });
-    newDiv.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
-        initTxt(newDiv, n, newDiv.getElementsByClassName("question")[0].innerHTML);
-    });
-    newDiv.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
-        if(cards.length <= 1) return;
-        let idx = cards.indexOf(newDiv);
-        if(idx > -1) {
-            cards.splice(idx, 1);
-        }
-        newDiv.remove();
-    });
+    set_selector(newDiv, n);
+    let problem = newDiv.getElementsByClassName('question')[0];
+    init_div(problem); // question
+    if(q) {
+        problem.setAttribute('data-html', q);
+        typeset(problem);
+    }
     // Set up ranking card functionality
     let rankingList = newDiv.getElementsByClassName('ranking-list')[0];
     let addBtn = newDiv.getElementsByClassName('rank-add')[0];
@@ -214,7 +302,7 @@ function initRanking(newDiv, n, q) {
         item.setAttribute("draggable", true);
         item.innerHTML = `
             <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'></div>
-            <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
+            <button class='ranking-item-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
         `;
         rankingList.appendChild(item);
         item.addEventListener("dragstart", function() {
@@ -252,7 +340,19 @@ function initRanking(newDiv, n, q) {
             }
             dragging = undefined;
         });
+        let input = item.getElementsByClassName('ranking-item-txt')[0];
         let del = item.getElementsByClassName('ranking-item-del')[0];
+        init_div(input);
+        input.addEventListener('keydown', (e) => {
+            if(e.key !== "Tab" || e.shiftKey) return;
+            if(cards.indexOf(newDiv) < cards.length - 1) return;
+            let ans = Array(...rankingList.getElementsByClassName("ranking-item"));
+            let idx = ans.indexOf(item);
+            if(idx < ans.length - 1) return;
+            e.preventDefault();
+            newCard();
+            cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+        });
         del.addEventListener("mousedown", function() {
             if(rankingList.getElementsByClassName('ranking-item').length <= 2) {
                 return;
@@ -298,7 +398,19 @@ function initRanking(newDiv, n, q) {
             }
             dragging = undefined;
         });
+        let input = obj.getElementsByClassName('ranking-item-txt')[0];
         let del = obj.getElementsByClassName('ranking-item-del')[0];
+        init_div(input);
+        input.addEventListener('keydown', (e) => {
+            if(e.key !== "Tab" || e.shiftKey) return;
+            if(cards.indexOf(newDiv) < cards.length - 1) return;
+            let ans = Array(...rankingList.getElementsByClassName("ranking-item"));
+            let idx = ans.indexOf(obj);
+            if(idx < ans.length - 1) return;
+            e.preventDefault();
+            newCard();
+            cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+        });
         del.addEventListener("mousedown", function() {
             if(rankingList.getElementsByClassName('ranking-item').length <= 2) {
                 return;
@@ -434,13 +546,13 @@ createBtn.addEventListener("mousedown", async function() {
                     errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                     return;
                 }
-                cardData.op.push(formatter(answer.innerHTML));
+                cardData.op.push(answer.dataset.html);
                 let isCorrect = answers[j].getElementsByClassName('mc-option-sel');
                 if(isCorrect.length > 0) {
-                    cardData.ans = formatter(answer.innerHTML);
+                    cardData.ans = answer.dataset.html;
                 }
             }
-            data[formatter(question.innerHTML)] = cardData;
+            data[question.dataset.html] = cardData;
         } else if(classNames.includes('txtbtn')) {
             let cardData = {
                 type: 'txt',
@@ -452,8 +564,8 @@ createBtn.addEventListener("mousedown", async function() {
                 errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                 return;
             }
-            cardData.ans = formatter(answer.innerHTML);
-            data[formatter(question.innerHTML)] = cardData;
+            cardData.ans = answer.dataset.html;
+            data[question.dataset.html] = cardData;
         } else if(classNames.includes('rankbtn')) {
             let cardData = {
                 type: 'ranking',
@@ -473,9 +585,9 @@ createBtn.addEventListener("mousedown", async function() {
                     errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                     return;
                 }
-                cardData.ans.push(formatter(txt.innerHTML));
+                cardData.ans.push(txt.dataset.html);
             }
-            data[formatter(question.innerHTML)] = cardData;
+            data[question.dataset.html] = cardData;
         }
     }
     data = {
@@ -578,20 +690,36 @@ addCard.addEventListener("mousedown", newCard);
         switch(card.type) {
             case "mc":
                 initMc(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].innerHTML = backwards_formatter(q);
+                newDiv.getElementsByClassName('question')[0].setAttribute('data-html', q);
+                newDiv.getElementsByClassName('question')[0].innerHTML = q;
+                typeset(newDiv.getElementsByClassName('question')[0]);
                 let cardmc = newDiv.getElementsByClassName('card-mc')[0];
                 cardmc.innerHTML = "";
                 for(let i = 0; i < card.op.length; i++) {
                     let newOp = document.createElement("div");
                     newOp.className = "mc-option";
                     newOp.innerHTML = `
-                        <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'>${backwards_formatter(card.op[i])}</div>
+                        <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'>${card.op[i]}</div>
                         <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
                         <button class='mc-option-correct ${card.ans == card.op[i] ? 'mc-option-sel' : 'mc-option-nosel'}'>${card.ans == card.op[i] ? '<span class="material-symbols-outlined">check</span>' : '<span class="material-symbols-outlined">check_indeterminate_small</span>'}</button>
                     `;
                     cardmc.appendChild(newOp);
+                    let input = newOp.getElementsByClassName('mc-option-input')[0];
                     let delBtn = newOp.getElementsByClassName("mc-option-del")[0];
                     let correctBtn = newOp.getElementsByClassName("mc-option-correct")[0];
+                    init_div(input);
+                    input.setAttribute('data-html', input.innerHTML);
+                    typeset(input);
+                    input.addEventListener('keydown', (e) => {
+                        if(e.key !== "Tab" || e.shiftKey) return;
+                        if(cards.indexOf(newDiv) < cards.length - 1) return;
+                        let ans = Array(...cardmc.getElementsByClassName("mc-option"));
+                        let idx = ans.indexOf(newOp);
+                        if(idx < ans.length - 1) return;
+                        e.preventDefault();
+                        newCard();
+                        cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+                    })
                     delBtn.addEventListener("mousedown", function() {
                         if(cardmc.getElementsByClassName('mc-option').length <= 2) {
                             return;
@@ -612,12 +740,27 @@ addCard.addEventListener("mousedown", newCard);
             break;
             case "txt":
                 initTxt(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].innerHTML = backwards_formatter(q);
-                newDiv.getElementsByClassName('txt-answer')[0].innerHTML = backwards_formatter(card.ans);
+                newDiv.getElementsByClassName('question')[0].setAttribute('data-html', q);
+                newDiv.getElementsByClassName('question')[0].innerHTML = q;
+                typeset(newDiv.getElementsByClassName('question')[0]);
+                let txtAns = newDiv.getElementsByClassName('txt-answer')[0];
+                init_div(txtAns);
+                txtAns.setAttribute('data-html', card.ans);
+                txtAns.innerHTML = card.ans;
+                typeset(txtAns);
+                txtAns.addEventListener('keydown', (e) => {
+                    if(e.key !== "Tab" || e.shiftKey) return;
+                    if(cards.indexOf(newDiv) < cards.length - 1) return;
+                    e.preventDefault();
+                    newCard();
+                    cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+                });
             break;
             case "ranking":
                 initRanking(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].innerHTML = backwards_formatter(q);
+                newDiv.getElementsByClassName('question')[0].setAttribute('data-html', q);
+                newDiv.getElementsByClassName('question')[0].innerHTML = q;
+                typeset(newDiv.getElementsByClassName('question')[0]);
                 let rankingList = newDiv.getElementsByClassName("ranking-list")[0];
                 rankingList.innerHTML = '';
                 for(let i = 0; i < card.ans.length; i++) {
@@ -625,7 +768,7 @@ addCard.addEventListener("mousedown", newCard);
                     item.className = 'ranking-item';
                     item.setAttribute("draggable", true);
                     item.innerHTML = `
-                        <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'>${backwards_formatter(card.ans[i])}</div>
+                        <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'>${card.ans[i]}</div>
                         <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
                     `;
                     rankingList.appendChild(item);
@@ -664,7 +807,21 @@ addCard.addEventListener("mousedown", newCard);
                         }
                         dragging = undefined;
                     });
+                    let input = item.getElementsByClassName('ranking-item-txt')[0];
                     let del = item.getElementsByClassName('ranking-item-del')[0];
+                    init_div(input);
+                    input.setAttribute('data-html', input.innerHTML);
+                    typeset(input);
+                    input.addEventListener('keydown', (e) => {
+                        if(e.key !== "Tab" || e.shiftKey) return;
+                        if(cards.indexOf(newDiv) < cards.length - 1) return;
+                        let ans = Array(...rankingList.getElementsByClassName("ranking-item"));
+                        let idx = ans.indexOf(item);
+                        if(idx < ans.length - 1) return;
+                        e.preventDefault();
+                        newCard();
+                        cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+                    });
                     del.addEventListener("mousedown", function() {
                         if(rankingList.getElementsByClassName('ranking-item').length <= 2) {
                             return;
