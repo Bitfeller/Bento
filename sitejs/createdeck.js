@@ -63,64 +63,40 @@ function set_selector(newDiv, n) {
         newDiv.remove();
     });
 }
-function set_formatter(div) {
+function typeset(node) {
+    MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([node])).catch((err) => console.warn('math formatting failed; reason:', err.message));
+    return MathJax.startup.promise;
+}
+function init_div(div) {
+    div.setAttribute('data-html', div.innerHTML);
+    div.addEventListener('focusout', (e) => {
+        div.setAttribute('data-html', div.innerHTML);
+        div.innerHTML = div.innerHTML.replaceAll(/\$\$[^$]*\$\$/g, "<b style='color: rgb(255, 100, 100);'>[paragraph equation rendering is disabled]<b>");
+        typeset(div);
+    });
+    div.addEventListener('focus', (e) => {
+        div.innerHTML = div.dataset.html;
+    });
     div.addEventListener('keydown', (e) => {
-        const sel = window.getSelection();
-        const range = sel.getRangeAt(0);
-        let [currNode, currOffset] = [range.endContainer, range.endOffset];
-        let parentNode = currNode.nodeType == Node.TEXT_NODE ? currNode.parentNode : currNode;
-        if(e.ctrlKey) {
-            switch(e.key) {
-                case '.':
-                    e.preventDefault();
-                    if(parentNode.tagName == 'SUB') {
-                        let content = parentNode.innerHTML.slice(currOffset);
-                        if(content.length == 0) content = "\u200B";
-                        console.log(content);
-                        parentNode.innerHTML = parentNode.innerHTML.slice(0, currOffset);
-                        parentNode.after(content);
-                        let content_idx = Array(...div.childNodes).indexOf(parentNode) + 1;
-                        range.setStart(div, content_idx + (content == "\u200B" ? 1 : 0));
-                        range.collapse(true);
-                        return;
-                    }
-                    let sub = document.createElement('sub');
-                    if(range.toString().length > 0) {
-                        range.surroundContents(sub);
-                        range.setStart(sub, 0);
-                        range.collapse(true);
-                        sel.removeAllRanges();
-                        sel.addRange(range);
-                    } else {
-                        sub.innerHTML = "\u200B";
-                        currNode.after(sub);
-                        range.setEnd(div, div.childNodes.length);
-                        range.setStart(div, div.childNodes.length);
-                    }
-                break;
-                case '^':
-
-                break;
-            }
+        if(e.key == 'Enter') return e.preventDefault();
+        div.setAttribute('data-html', div.innerHTML);
+    });
+    div.addEventListener('paste', (e) => {
+        e.preventDefault();
+        let data = (e.clipboardData || window.clipboardData).getData('text');
+        let sanitized = data.replace(/\s+/g, "");
+        let sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+            let range = sel.getRangeAt(0);
+            let node = document.createTextNode(sanitized);
+            range.deleteContents();
+            range.insertNode(node);
+            range.setStartAfter(node);
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
         }
-        if(e.key == "ArrowRight") {
-            const sel = window.getSelection();
-            const range = sel.getRangeAt(0);
-            if(parentNode.tagName == "SUB" && currOffset == currNode.textContent.length) {
-                e.preventDefault();
-                if(parentNode.nextSibling) {
-                    range.setStart(parentNode.nextSibling, 0);
-                    range.collapse(true);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                } else {
-                    div.innerHTML += "\u200B";
-                    range.setStart(div, div.childNodes.length);
-                    range.collapse(true);
-                }
-            }
-        }
-    })
+    });
 }
 function initMc(newDiv, n, q) {
     newDiv.innerHTML = `
@@ -163,8 +139,7 @@ function initMc(newDiv, n, q) {
     // Set up selector
     set_selector(newDiv, n);
     // Set up multiple choice card functionality
-    let question = newDiv.getElementsByClassName('question')[0];
-    set_formatter(question);
+    init_div(newDiv.getElementsByClassName('question')[0]); // question
     let cardmc = newDiv.getElementsByClassName('card-mc')[0];
     let addBtn = newDiv.getElementsByClassName('mc-add')[0];
     addBtn.addEventListener("mousedown", function() {
@@ -179,6 +154,7 @@ function initMc(newDiv, n, q) {
         let input = newOp.getElementsByClassName('mc-option-input')[0];
         let delBtn = newOp.getElementsByClassName("mc-option-del")[0];
         let correctBtn = newOp.getElementsByClassName("mc-option-correct")[0];
+        init_div(input);
         input.addEventListener('keydown', (e) => {
             if(e.key !== "Tab" || e.shiftKey) return;
             if(cards.indexOf(newDiv) < cards.length - 1) return;
@@ -214,11 +190,12 @@ function initMc(newDiv, n, q) {
         let input = div.getElementsByClassName('mc-option-input')[0];
         let delBtn = div.getElementsByClassName("mc-option-del")[0];
         let correctBtn = div.getElementsByClassName("mc-option-correct")[0];
+        init_div(input);
         input.addEventListener('keydown', (e) => {
             if(e.key !== "Tab" || e.shiftKey) return;
             if(cards.indexOf(newDiv) < cards.length - 1) return;
             let ans = Array(...cardmc.getElementsByClassName("mc-option"));
-            let idx = ans.indexOf(newOp);
+            let idx = ans.indexOf(input);
             if(idx < ans.length - 1) return;
             e.preventDefault();
             newCard();
@@ -263,7 +240,9 @@ function initTxt(newDiv, n, q) {
     // Set up selector
     set_selector(newDiv, n);
     // Configure tabbing
+    init_div(newDiv.getElementsByClassName('question')[0]);
     let txtAns = newDiv.getElementsByClassName('txt-answer')[0];
+    init_div(txtAns);
     txtAns.addEventListener('keydown', (e) => {
         if(e.key !== "Tab" || e.shiftKey) return;
         if(cards.indexOf(newDiv) < cards.length - 1) return;
@@ -301,6 +280,7 @@ function initRanking(newDiv, n, q) {
     // Set up selector
     set_selector(newDiv, n);
     // Set up ranking card functionality
+    init_div(newDiv.getElementsByClassName('question')[0]);
     let rankingList = newDiv.getElementsByClassName('ranking-list')[0];
     let addBtn = newDiv.getElementsByClassName('rank-add')[0];
     addBtn.addEventListener("mousedown", function() {
@@ -349,6 +329,7 @@ function initRanking(newDiv, n, q) {
         });
         let input = item.getElementsByClassName('ranking-item-txt')[0];
         let del = item.getElementsByClassName('ranking-item-del')[0];
+        init_div(input);
         input.addEventListener('keydown', (e) => {
             if(e.key !== "Tab" || e.shiftKey) return;
             if(cards.indexOf(newDiv) < cards.length - 1) return;
@@ -406,6 +387,7 @@ function initRanking(newDiv, n, q) {
         });
         let input = obj.getElementsByClassName('ranking-item-txt')[0];
         let del = obj.getElementsByClassName('ranking-item-del')[0];
+        init_div(input);
         input.addEventListener('keydown', (e) => {
             if(e.key !== "Tab" || e.shiftKey) return;
             if(cards.indexOf(newDiv) < cards.length - 1) return;
@@ -573,13 +555,13 @@ createBtn.addEventListener("mousedown", async function() {
                     errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                     return;
                 }
-                cardData.op.push(formatter(answer.innerHTML));
+                cardData.op.push(answer.dataset.html);
                 let isCorrect = answers[j].getElementsByClassName('mc-option-sel');
                 if(isCorrect.length > 0) {
-                    cardData.ans = formatter(answer.innerHTML);
+                    cardData.ans = answer.dataset.html;
                 }
             }
-            data[formatter(question.innerHTML)] = cardData;
+            data[question.dataset.html] = cardData;
         } else if(classNames.includes('txtbtn')) {
             let cardData = {
                 type: 'txt',
@@ -591,8 +573,8 @@ createBtn.addEventListener("mousedown", async function() {
                 errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                 return;
             }
-            cardData.ans = formatter(answer.innerHTML);
-            data[formatter(question.innerHTML)] = cardData;
+            cardData.ans = answer.dataset.html;
+            data[question.dataset.html] = cardData;
         } else if(classNames.includes('rankbtn')) {
             let cardData = {
                 type: 'ranking',
@@ -612,9 +594,9 @@ createBtn.addEventListener("mousedown", async function() {
                     errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                     return;
                 }
-                cardData.ans.push(formatter(txt.innerHTML));
+                cardData.ans.push(txt.dataset.html);
             }
-            data[formatter(question.innerHTML)] = cardData;
+            data[question.dataset.html] = cardData;
         }
     }
     data = {
@@ -705,13 +687,13 @@ addCard.addEventListener("mousedown", newCard);
                 for(let j = 0; j < answers.length; j++) {
                     let answer = answers[j].getElementsByClassName('mc-option-input')[0];
                     if(!answer) continue;
-                    cardData.op.push(formatter(answer.innerHTML));
+                    cardData.op.push(answer.dataset.html);
                     let isCorrect = answers[j].getElementsByClassName('mc-option-sel');
                     if(isCorrect.length > 0) {
-                        cardData.ans = formatter(answer.innerHTML);
+                        cardData.ans = answer.dataset.html;
                     }
                 }
-                data[formatter(question.innerHTML)] = cardData;
+                data[question.dataset.html] = cardData;
             } else if(classNames.includes('txtbtn')) {
                 let cardData = {
                     type: 'txt',
@@ -720,8 +702,8 @@ addCard.addEventListener("mousedown", newCard);
                 let question = card.getElementsByClassName('question')[0];
                 let answer = card.getElementsByClassName('txt-answer')[0];
                 if(!question || !answer) continue;
-                cardData.ans = formatter(answer.innerHTML);
-                data[formatter(question.innerHTML)] = cardData;
+                cardData.ans = answer.dataset.html;
+                data[question.dataset.html] = cardData;
             } else if(classNames.includes('rankbtn')) {
                 let cardData = {
                     type: 'ranking',
@@ -735,9 +717,9 @@ addCard.addEventListener("mousedown", newCard);
                     let item = items[j];
                     let txt = item.getElementsByClassName('ranking-item-txt')[0];
                     if(!txt) continue;
-                    cardData.ans.push(formatter(txt.innerHTML));
+                    cardData.ans.push(txt.dataset.html);
                 }
-                data[formatter(question.innerHTML)] = cardData;
+                data[question.dataset.html] = cardData;
             }
         }
         if(Object.keys(data).length == 0) return;
@@ -809,20 +791,36 @@ function appendToCards(contnt) {
         switch(card.type) {
             case "mc":
                 initMc(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].innerHTML = backwards_formatter(q);
+                newDiv.getElementsByClassName('question')[0].setAttribute('data-html', q);
+                newDiv.getElementsByClassName('question')[0].innerHTML = q;
+                typeset(newDiv.getElementsByClassName('question')[0]);
                 let cardmc = newDiv.getElementsByClassName('card-mc')[0];
                 cardmc.innerHTML = "";
                 for(let i = 0; i < card.op.length; i++) {
                     let newOp = document.createElement("div");
                     newOp.className = "mc-option";
                     newOp.innerHTML = `
-                        <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'>${backwards_formatter(card.op[i])}</div>
+                        <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'>${card.op[i]}</div>
                         <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
                         <button class='mc-option-correct ${card.ans == card.op[i] ? 'mc-option-sel' : 'mc-option-nosel'}'>${card.ans == card.op[i] ? '<span class="material-symbols-outlined">check</span>' : '<span class="material-symbols-outlined">check_indeterminate_small</span>'}</button>
                     `;
                     cardmc.appendChild(newOp);
+                    let input = newOp.getElementsByClassName('mc-option-input')[0];
                     let delBtn = newOp.getElementsByClassName("mc-option-del")[0];
                     let correctBtn = newOp.getElementsByClassName("mc-option-correct")[0];
+                    init_div(input);
+                    input.setAttribute('data-html', input.innerHTML);
+                    typeset(input);
+                    input.addEventListener('keydown', (e) => {
+                        if(e.key !== "Tab" || e.shiftKey) return;
+                        if(cards.indexOf(newDiv) < cards.length - 1) return;
+                        let ans = Array(...cardmc.getElementsByClassName("mc-option"));
+                        let idx = ans.indexOf(newOp);
+                        if(idx < ans.length - 1) return;
+                        e.preventDefault();
+                        newCard();
+                        cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+                    })
                     delBtn.addEventListener("mousedown", function() {
                         if(cardmc.getElementsByClassName('mc-option').length <= 2) {
                             return;
@@ -843,12 +841,27 @@ function appendToCards(contnt) {
             break;
             case "txt":
                 initTxt(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].innerHTML = backwards_formatter(q);
-                newDiv.getElementsByClassName('txt-answer')[0].innerHTML = backwards_formatter(card.ans);
+                newDiv.getElementsByClassName('question')[0].setAttribute('data-html', q);
+                newDiv.getElementsByClassName('question')[0].innerHTML = q;
+                typeset(newDiv.getElementsByClassName('question')[0]);
+                let txtAns = newDiv.getElementsByClassName('txt-answer')[0];
+                init_div(txtAns);
+                txtAns.setAttribute('data-html', card.ans);
+                txtAns.innerHTML = card.ans;
+                typeset(txtAns);
+                txtAns.addEventListener('keydown', (e) => {
+                    if(e.key !== "Tab" || e.shiftKey) return;
+                    if(cards.indexOf(newDiv) < cards.length - 1) return;
+                    e.preventDefault();
+                    newCard();
+                    cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+                });
             break;
             case "ranking":
                 initRanking(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].innerHTML = backwards_formatter(q);
+                newDiv.getElementsByClassName('question')[0].setAttribute('data-html', q);
+                newDiv.getElementsByClassName('question')[0].innerHTML = q;
+                typeset(newDiv.getElementsByClassName('question')[0]);
                 let rankingList = newDiv.getElementsByClassName("ranking-list")[0];
                 rankingList.innerHTML = '';
                 for(let i = 0; i < card.ans.length; i++) {
@@ -856,7 +869,7 @@ function appendToCards(contnt) {
                     item.className = 'ranking-item';
                     item.setAttribute("draggable", true);
                     item.innerHTML = `
-                        <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'>${backwards_formatter(card.ans[i])}</div>
+                        <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'>${card.ans[i]}</div>
                         <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
                     `;
                     rankingList.appendChild(item);
@@ -895,7 +908,21 @@ function appendToCards(contnt) {
                         }
                         dragging = undefined;
                     });
+                    let input = item.getElementsByClassName('ranking-item-txt')[0];
                     let del = item.getElementsByClassName('ranking-item-del')[0];
+                    init_div(input);
+                    input.setAttribute('data-html', input.innerHTML);
+                    typeset(input);
+                    input.addEventListener('keydown', (e) => {
+                        if(e.key !== "Tab" || e.shiftKey) return;
+                        if(cards.indexOf(newDiv) < cards.length - 1) return;
+                        let ans = Array(...rankingList.getElementsByClassName("ranking-item"));
+                        let idx = ans.indexOf(item);
+                        if(idx < ans.length - 1) return;
+                        e.preventDefault();
+                        newCard();
+                        cards[cards.length - 1].getElementsByClassName('question')[0].focus();
+                    });
                     del.addEventListener("mousedown", function() {
                         if(rankingList.getElementsByClassName('ranking-item').length <= 2) {
                             return;
