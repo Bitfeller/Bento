@@ -200,7 +200,7 @@ function initMc(newDiv, n, q) {
             if(e.key !== "Tab" || e.shiftKey) return;
             if(cards.indexOf(newDiv) < cards.length - 1) return;
             let ans = Array(...cardmc.getElementsByClassName("mc-option"));
-            let idx = ans.indexOf(input);
+            let idx = ans.indexOf(div);
             if(idx < ans.length - 1) return;
             e.preventDefault();
             newCard();
@@ -765,16 +765,14 @@ function appendToCards(contnt) {
                     newOp.className = "mc-option";
                     newOp.innerHTML = `
                         <div contenteditable="true" type='input' class='mc-option-input' placeholder='...'>${card.op[i]}</div>
-                        <button class='mc-option-del'><span class='material-symbols-outlined'>close</span></button>
-                        <button class='mc-option-correct ${card.ans == card.op[i] ? 'mc-option-sel' : 'mc-option-nosel'}'>${card.ans == card.op[i] ? '<span class="material-symbols-outlined">check</span>' : '<span class="material-symbols-outlined">check_indeterminate_small</span>'}</button>
+                        <button class='mc-option-del' tabindex="-1"><span class='material-symbols-outlined'>close</span></button>
+                        <button class='mc-option-correct ${card.ans == card.op[i] && (card.ans == "" ? (i == 0) : true) ? 'mc-option-sel' : 'mc-option-nosel'}' tabindex="-1">${card.ans == card.op[i] && (card.ans == "" ? (i == 0) : true) ? '<span class="material-symbols-outlined">check</span>' : '<span class="material-symbols-outlined">check_indeterminate_small</span>'}</button>
                     `;
                     cardmc.appendChild(newOp);
                     let input = newOp.getElementsByClassName('mc-option-input')[0];
                     let delBtn = newOp.getElementsByClassName("mc-option-del")[0];
                     let correctBtn = newOp.getElementsByClassName("mc-option-correct")[0];
                     init_div(input);
-                    input.setAttribute('data-html', input.innerHTML);
-                    typeset(input);
                     input.addEventListener('keydown', (e) => {
                         if(e.key !== "Tab" || e.shiftKey) return;
                         if(cards.indexOf(newDiv) < cards.length - 1) return;
@@ -799,7 +797,9 @@ function appendToCards(contnt) {
                     correctBtn.addEventListener("mousedown", function() {
                         let current = cardmc.getElementsByClassName("mc-option-sel")[0];
                         current.className = "mc-option-correct mc-option-nosel";
+                        current.innerHTML = `<span class="material-symbols-outlined">check_indeterminate_small</span>`;
                         correctBtn.className = "mc-option-correct mc-option-sel";
+                        correctBtn.innerHTML = "<span class='material-symbols-outlined'>check</span>";
                     });
                 }
             break;
@@ -834,7 +834,7 @@ function appendToCards(contnt) {
                     item.setAttribute("draggable", true);
                     item.innerHTML = `
                         <div contenteditable="true" type='text' class='ranking-item-txt' placeholder='...'>${card.ans[i]}</div>
-                        <button class='ranking-item-del'><span class='material-symbols-outlined'>close</span></button>
+                        <button class='ranking-item-del' tabindex="-1"><span class='material-symbols-outlined'>close</span></button>
                     `;
                     rankingList.appendChild(item);
                     item.addEventListener("dragstart", function() {

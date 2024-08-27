@@ -146,6 +146,9 @@ function updateDecks(decks) {
             `;
         }
     }
+    if (deckContainer.innerHTML == "")
+        deckContainer.innerHTML =
+            "<p class='info-blank'>You don't have any decks to review.<br>If you're trying to find all the decks in your reviews, click on \"Review select decks\" above.</p>";
     // Settings box input box click event
     for(let i = 0; i < settingsBoxs.length; i++) {
         let box = settingsBoxs[i];

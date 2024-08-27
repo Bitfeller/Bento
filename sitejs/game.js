@@ -19,16 +19,28 @@ var dragElements = [];
 var centroids = [];
 var dragging;
 var dragLine = document.createElement("div");
+// Rendering testing
+let r_temp = document.createElement('div');
+r_temp.style.visibility = 'hidden';
+document.body.appendChild(r_temp);
+
 dragLine.style =
     "display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;";
 function noAnswer() {
     info.style["background-color"] = "rgba(255, 0, 0, 0.4)";
     info.innerHTML = "Please specify an answer!";
-    console.log("no answer");
     window.setTimeout(() => {
         info.innerHTML = "";
         info.style["background-color"] = "rgba(0, 255, 0, 0)";
     }, 10000);
+}
+function showDisplay(val) {
+    info.style["background-color"] = "rgba(255, 255, 0, 0.4)";
+    info.innerHTML = "Preview: ";
+    let node = document.createElement('span');
+    info.appendChild(node);
+    node.innerHTML = val;
+    typeset(node);
 }
 function contlabel() {
     info.style["background-color"] = "rgba(0, 255, 0, 0.4)";
@@ -48,6 +60,18 @@ function computeCenter(el) {
 function typeset(node) {
     MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([node])).catch((err) => console.warn('math formatting failed; reason:', err.message));
     return MathJax.startup.promise;
+}
+async function renderable(input) {
+    r_temp.innerHTML = input;
+    let renderable = false;
+    try {
+        MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([r_temp])).catch((err) => console.warn('math formatting failed; reason:', err.message));
+        await MathJax.startup.promise;
+        renderable = r_temp.innerHTML.trim() !== '';
+    } catch(e) {
+        renderable = false;
+    }
+    return renderable;
 }
 function refresh() {
     if (Game.isDead()) {
@@ -94,6 +118,7 @@ function refresh() {
                 let op_i = document.createElement("button");
                 op_i.className = "option";
                 op_i.innerHTML = `<p class="answer-symbol">&#${9312 + i}</p> <p>${data.op[i]}</p>`;
+                typeset(op_i);
                 op_i.id = "not-select";
                 op_i.setAttribute("i", i);
                 op_i.addEventListener("mousedown", function () {
@@ -142,6 +167,11 @@ function refresh() {
             input.addEventListener("keydown", (e) => {
                 if (e.key == "Enter" && !toProceed) answerHandler();
             });
+            input.addEventListener('keyup', async (e) => {
+                if((await renderable(input.innerHTML)) && input.innerHTML.match(/\$[^$]*\$/g)) {
+                    showDisplay(input.innerHTML);
+                }
+            });
             break;
         case "ranking":
             var list = document.createElement("div");
@@ -160,6 +190,7 @@ function refresh() {
                 el.id = "item" + i;
                 el.setAttribute("draggable", "true");
                 el.innerHTML = `<p>${item}</p>`;
+                typeset(el);
                 answerList.splice(idx, 1);
                 list.appendChild(el);
                 el.addEventListener("dragstart", function (e) {
