@@ -32,7 +32,7 @@ function noAnswer() {
     window.setTimeout(() => {
         info.innerHTML = "";
         info.style["background-color"] = "rgba(0, 255, 0, 0)";
-    }, 10000);
+    }, 1000);
 }
 function showDisplay(val) {
     info.style["background-color"] = "rgba(255, 255, 0, 0.4)";
@@ -41,6 +41,12 @@ function showDisplay(val) {
     info.appendChild(node);
     node.innerHTML = val;
     typeset(node);
+}
+function hideDisplay() {
+    if(info.style["background-color"] == "rgba(255, 255, 0, 0.4)") {
+        info.style["background-color"] = "rgb(0, 255, 0, 0)";
+        info.innerHTML = "";
+    }
 }
 function contlabel() {
     info.style["background-color"] = "rgba(0, 255, 0, 0.4)";
@@ -74,6 +80,7 @@ async function renderable(input) {
     return renderable;
 }
 function refresh() {
+    hideDisplay();
     if (Game.isDead()) {
         problem.innerHTML =
             "You completed Learn! Now go touch some <span>grass!</span>";
@@ -168,9 +175,7 @@ function refresh() {
                 if (e.key == "Enter" && !toProceed) answerHandler();
             });
             input.addEventListener('keyup', async (e) => {
-                if((await renderable(input.innerHTML)) && input.innerHTML.match(/\$[^$]*\$/g)) {
-                    showDisplay(input.innerHTML);
-                }
+                if((await renderable(input.innerHTML)) && input.innerHTML.match(/\$[^$]*\$/g)) showDisplay(input.innerHTML); else hideDisplay();
             });
             break;
         case "ranking":
@@ -252,6 +257,7 @@ function refresh() {
     progressBar.style.width = `${((progress.seen - 1) / (progress.remaining + progress.seen)) * 100}%`;
 }
 function answerHandler() {
+    hideDisplay();
     if (Game.isDead()) window.location.href = "/home?l=lm&s=1";
     if (toProceed) {
         if (Game.fetchProblem().type == "txt" && requireCorrect) {
