@@ -27,8 +27,7 @@
         $_SESSION['username'] = $result['username'];
         $_SESSION['pfp'] = $result['pfp'];
         $_SESSION['email'] = $result['email'];
-        $_SESSION['reviews'] = $result['reviews'];
-        $_SESSION['draftdecks'] = $result['draftdecks'];
+        $_SESSION['userdata'] = $result['userdata'];
         $_SESSION['verified'] = $result['verified'] === 0 ? false : true;
         $_SESSION['creation_date'] = $result['creation_date'];
         $_SESSION['notifsub'] = $result['notifsub'];

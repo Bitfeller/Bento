@@ -128,7 +128,7 @@ function refresh() {
                 typeset(op_i);
                 op_i.id = "not-select";
                 op_i.setAttribute("i", i);
-                op_i.addEventListener("mousedown", function () {
+                op_i.addEventListener("mousedown", () => {
                     if (selected) return;
                     selected = true;
                     let correct = Game.isCorrect(
@@ -144,7 +144,7 @@ function refresh() {
                     } else {
                         for (let j = 0; j < cont_a.children.length; j++) {
                             let item = cont_a.children[j];
-                            if (data.op[j] == data.ans)
+                            if (data.ans.indexOf(j) > -1)
                                 item.innerHTML =
                                     `<p class="answer-symbol">✅</p> ` +
                                     item.innerHTML;
@@ -466,7 +466,7 @@ window.addEventListener("keydown", (e) => {
             selected = true;
             for (let i = 0; i < cont_a.children.length; i++) {
                 let item = cont_a.children[i];
-                if (data.op[i] == data.ans)
+                if (data.ans.indexOf(i) > -1)
                     item.innerHTML =
                         `<p class="answer-symbol">✅</p> ` + item.innerHTML;
             }

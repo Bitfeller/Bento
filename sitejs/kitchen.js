@@ -59,7 +59,7 @@ async function update() {
     }
     // Update decks in the user's review list
     if(reviewDecks.length == 0) {
-        let keys = Object.keys(user.reviews);
+        let keys = Object.keys(user.userdata.reviews);
         if(keys.length > 0) addedDecksContainer.innerHTML = "";
         for(let i = 0; i < keys.length; i++) {
             let deckid = parseInt(keys[i]);
@@ -73,7 +73,7 @@ async function update() {
     // Update marketplace
     for(let i = loaded + 1; i < decks.length; i++) {
         // In reviews?
-        let inReviews = user.reviews[decks[i].id] ? true : false;
+        let inReviews = user.userdata.reviews[decks[i].id] ? true : false;
         // Create new container item and display deck
         let newBox = box(decks[i].id, inReviews, decks[i].name, decks[i].deckpic, decks[i].owner, false);
         marketplace.appendChild(newBox);
@@ -128,7 +128,7 @@ async function update() {
         searchedDecksContainer.innerHTML = "";
         for(let i = 0; i < data.length; i++) {
             let deck = data[i];
-            let inReviews = user.reviews[deck.id] ? true : false;
+            let inReviews = user.userdata.reviews[deck.id] ? true : false;
             let newBox = box(deck.id, inReviews, deck.name, deck.deckpic, deck.owner, false);
             searchedDecksContainer.appendChild(newBox);
         }
@@ -146,7 +146,7 @@ async function update() {
             }
             for(let i = 0; i < data.length; i++) {
                 let deck = data[i];
-                let inReviews = user.reviews[deck.id] ? true : false;
+                let inReviews = user.userdata.reviews[deck.id] ? true : false;
                 let newBox = box(deck.id, inReviews, deck.name, deck.deckpic, deck.owner, false);
                 searchedDecksContainer.appendChild(newBox);
             }
@@ -189,7 +189,7 @@ async function preview(_this, isAdded) {
         let contnt = deck.data.contnt;
         let keys = Object.keys(contnt);
         for(let i = 0; i < keys.length; i++) {
-            answer_list += `<p><b>Q |  ${keys[i]}</b></p>${contnt[keys[i]].type == "mc" ? "<p>" + contnt[keys[i]].op.join(", ") + "</p>" : ""}<p>A |  ${typeof(contnt[keys[i]].ans) == "string" ? contnt[keys[i]].ans : contnt[keys[i]].ans.join(", ")}</p><div class='deck-divider' style='margin: 7px 3px; background-color: rgb(230, 230, 230); height: 2px;'></div>`;
+            answer_list += `<p><b>Q |  ${keys[i]}</b></p>${contnt[keys[i]].type == "mc" ? "<p>" + contnt[keys[i]].op.join(", ") + "</p>" : ""}<p>A |  ${contnt[keys[i]].ans.join(", ")}</p><div class='deck-divider' style='margin: 7px 3px; background-color: rgb(230, 230, 230); height: 2px;'></div>`;
         }
     }
     previewDialog.innerHTML = `
@@ -258,8 +258,8 @@ async function reviews_update(_this, isAdded) {
             deck = target[i];
         }
     }
-    if(user.reviews[deck.id]) {
-        delete user.reviews[deck.id];
+    if(user.userdata.reviews[deck.id]) {
+        delete user.userdata.reviews[deck.id];
         // find in list of reviewDecks
         for(let j = 0; j < reviewDecks.length; j++) {
             if(reviewDecks[j].id == deck.id) {
@@ -284,7 +284,7 @@ async function reviews_update(_this, isAdded) {
             }
         }
     } else {
-        user.reviews[deck.id] = {};
+        user.userdata.reviews[deck.id] = {};
         // Add to list of reviewDecks
         reviewDecks.push(deck);
         let newBox = box(deck.id, true, deck.name, deck.deckpic, deck.owner, true);
@@ -292,8 +292,8 @@ async function reviews_update(_this, isAdded) {
         addedDecksContainer.appendChild(newBox);
         _this.innerHTML = "<div class='material-symbols-outlined'>remove</div>";
     }
-    let json = JSON.stringify(user.reviews);
-    await UserGateway.editUser("reviews", json);
+    let json = JSON.stringify(user.userdata);
+    await UserGateway.editUser("userdata", json);
 }
 
 // Close dialogs when user presses outside dialog

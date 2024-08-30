@@ -149,10 +149,10 @@ const job = schedule.scheduleJob("0 0 12 * * *", () => {
             if(err) throw err;
             if(res.length > 1) console.warn("Found more than one user for a specific ID; dump:\n\n" + res);
             let user = res[0];
-            user.reviews = JSON.parse(user.reviews);
+            user.userdata = JSON.parse(user.userdata);
 
             let deckcount = 0;
-            let reviews = user.reviews;
+            let reviews = user.userdata.reviews;
             let r_keys = Object.keys(reviews);
             for(let i = 0; i < r_keys.length; i++) {
                 let deck = await getDeck(parseInt(r_keys[i]));
