@@ -54,12 +54,11 @@ const usernameEl = document.getElementById("username");
             let reader = new FileReader();
             reader.onload = async (e) => {
                 let content = e.target.result;
-                if(content.byteLength > 2 * 1000 * 100) {
+                if(content.byteLength > 3 * 1000 * 100) {
                     console.log("Failed! Past size limit of 2 MB.");
                     return;
                 }
                 await UserGateway.editUser("pfp", content);
-                window.location.reload();
             }
             reader.readAsDataURL(file);
         }
@@ -104,14 +103,14 @@ const usernameEl = document.getElementById("username");
     resetacc.addEventListener("mousedown", () => {
         warningDialog.showModal();
         wd_main.innerHTML = `
-            <p>Once you reset your account, all of your reviews will be deleted.</p><br><br>
+            <p>Once you reset your account, all of your user data and preferences (reviews, draft decks, theme preferences, etc.) will be deleted.</p><br><br>
             <button class='confirm'>Reset Account</button> or 
             <button class='go_back'>Go Back</button>
         `;
         const confirm = wd_main.getElementsByClassName('confirm')[0];
         const goBack = wd_main.getElementsByClassName('go_back')[0];
         confirm.addEventListener("mousedown", async () => {
-            await UserGateway.editUser("reviews", "[]");
+            await UserGateway.editUser("userdata", '{"reviews":{},"draftdecks":{},"theme":0}');
             warningDialog.close();
             window.location.reload();
         });

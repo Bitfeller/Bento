@@ -8,7 +8,6 @@
     <?php require_once "../globalreqs.php"?>
 </head>
 <body>
-    <?php require_once "../header.php"?>
     <p>this is a testing software for making, logging into, fetching, and signing out of acc</p>
     <p>perfectly functional</p>
     <p>do not doubt</p>

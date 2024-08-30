@@ -101,7 +101,7 @@
                 $stmt->execute();
                 $stmt->close();
             break;
-            case 'reviews':
+            case 'userdata':
                 $val = json_decode($val, false);
                 $safeVal = sanitize($val);
                 $safeVal = json_encode($safeVal);
@@ -122,12 +122,12 @@
                 //     }
                 // }
                 // $safeVal = json_encode($safeVal);
-                $sql = "UPDATE users SET reviews = ? WHERE id = ?;";
+                $sql = "UPDATE users SET userdata = ? WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("si", $safeVal, $_SESSION['uid']);
                 $stmt->execute();
                 $stmt->close();
-                $_SESSION['reviews'] = $safeVal;
+                $_SESSION['userdata'] = $safeVal;
             break;
             case 'view':
                 $sql = "SELECT * FROM decks WHERE id = ?;";
@@ -168,7 +168,7 @@
                         fail("exception: deckpic isn't a valid image. For security purposes, the server has denied the image.");
                     }
                 }
-                if(strlen($val) > 2 * 1000 * 1000) {
+                if(strlen($val) > 3 * 1000 * 1000) {
                     fail('size limit');
                 }
                 $sql = "UPDATE users SET pfp = ? WHERE id = ?;";
@@ -198,52 +198,6 @@
                 $stmt->close();
                 session_unset();
                 session_destroy();
-            break;
-            case 'draftdecks':
-                $val = json_decode($val, true);
-                if(!isset($val)) {
-                    fail("exception: data isn't valid JSON.");
-                }
-                $newVal = (object) [];
-                foreach($val as $time => $content) {
-                    $key = htmlspecialchars(strip_tags($time));
-                    $newVal->$key = (object) [];
-                    $newVal->$key->desc = htmlspecialchars(strip_tags($val[$time]['desc']));
-                    $newVal->$key->contnt = (object) [];
-                    // Check for duplicate questions
-                    $problems = [];
-                    foreach($val[$time]['contnt'] as $prob => $data) {
-                        $newProb = htmlspecialchars(strip_tags($prob));
-                        if(in_array($newProb, $problems)) {
-                            fail('same problem');
-                        }
-                        $problems[] = $newProb;
-                        $newItem = [];
-                        $newItem['type'] = htmlspecialchars(strip_tags($data['type']));
-                        if(isset($data['op'])) {
-                            $newItem['op'] = [];
-                            foreach($data['op'] as $op) {
-                                $newItem['op'][] = htmlspecialchars(strip_tags($op));
-                            }
-                        }
-                        if(gettype($data['ans']) == 'array') {
-                            $newItem['ans'] = [];
-                            foreach($data['ans'] as $ans) {
-                                $newItem['ans'][] = htmlspecialchars(strip_tags($ans));
-                            }
-                        } else {
-                            $newItem['ans'] = htmlspecialchars(strip_tags($data['ans']));
-                        }
-                        $newVal->$key->contnt->$newProb = $newItem;
-                    }
-                }
-                $safeVal = json_encode($newVal);
-                $sql = "UPDATE users SET draftdecks = ? WHERE id = ?;";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("si", $safeVal, $_SESSION['uid']);
-                $stmt->execute();
-                $stmt->close();
-                $_SESSION['draftdecks'] = $safeVal;
             break;
         }
         success();

@@ -193,13 +193,13 @@ class Asteroid {
             window.location.href = "/home";
             return;
         }
-        let userReview = user.reviews[deck];
+        let userReview = user.userdata.reviews[deck];
         if(!userReview) {
             // Doesn't exist in our reviews? interesting... regardless, might as well add it if for some reason specified...?
             userReview = {};
-            user.reviews[deck] = userReview;
-            let json = JSON.stringify(user.reviews);
-            await UserGateway.editUser("reviews", json);
+            user.userdata.reviews[deck] = userReview;
+            let json = JSON.stringify(user.userdata);
+            await UserGateway.editUser("userdata", json);
         }
         let updateIdx = false;
         let r_keys = Object.keys(userReview);
@@ -219,7 +219,7 @@ class Asteroid {
                 updateIdx = true;
             }
         }
-        if(updateIdx) user.reviews[deck] = userReview;
+        if(updateIdx) user.userdata.reviews[deck] = userReview;
         let d_keys = Object.keys(data.data.contnt);
         let datalist = [];
         for(let i = 0; i < d_keys.length; i++) {
@@ -230,8 +230,8 @@ class Asteroid {
         deckContnt.push(datalist);
     }
     if(updateReviews) {
-        let json = JSON.stringify(user.reviews);
-        await UserGateway.editUser("reviews", json);
+        let json = JSON.stringify(user.userdata);
+        await UserGateway.editUser("userdata", json);
     }
     // Add terms to deckContnt
     for(let i = 0; i < deckContnt.length; i++) {
