@@ -1,6 +1,5 @@
 <div id="too-big-img"></div>
-<header class=header>
-  <script type="module" src="../sitejs/client-modules/header.js"></script>
+<header class=header id=header>
   <img alt="Bento! Logo" class=logo height=40px onclick='location.href="/home"' src="/img/bento logo white.svg" title="Bento! home">
   <div class=right-header>
     <img class="pfp right-header-ico" src="/img/defaultpfp.png" id="header:pfp" title="Your Profile">
