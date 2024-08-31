@@ -16,7 +16,7 @@ for(let i = 0; i < keys.length; i++) {
     let newItem = {};
     switch(item.type) {
         case "mc": newItem.ans = [item.op.indexOf(item.ans)]; break;
-        case "input": newItem.ans = [item.ans]; break;
+        case "txt": newItem.ans = [item.ans]; break;
         default: newItem.ans = item.ans; break;
     }
     newItem.type = item.type;
