@@ -239,7 +239,6 @@ function initTxt(newDiv, n, q) {
             <div class="card-question-container">
                 Question: <div contenteditable="true" type='input' class='question' placeholder='The question...'>${q ?? ""}</div>
             </div>
-            All answers:
             <div class='card-txt'>
                 <div class='txt-ans-cont'>
                     <div contenteditable="true" type='input' class='txt-answer' placeholder='...'></div>
@@ -247,6 +246,7 @@ function initTxt(newDiv, n, q) {
             </div>
             <button class='txt-add' tabindex='-1'>+</button>
             <button class='card-del' tabindex='-1'>Delete Card</button>
+            <input type='checkbox' class='show-both-ways' tabindex="-1"><span> | Show both ways</span>
         </div>
         <div class='deck-divider'></div>
     `;
@@ -548,6 +548,7 @@ createBtn.addEventListener("mousedown", async function() {
             };
             let question = card.getElementsByClassName('question')[0];
             let answers = card.getElementsByClassName('txt-ans-cont');
+            let showBothWays = card.getElementsByClassName('show-both-ways')[0];
             if(answers.length < 1) {
                 errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                 return;
@@ -560,6 +561,7 @@ createBtn.addEventListener("mousedown", async function() {
                 }
                 cardData.ans.push(answer.dataset.html);
             }
+            if(showBothWays.checked) cardData.dual = true;
             data[question.dataset.html] = cardData;
         } else if(classNames.includes('rankbtn')) {
             let cardData = {
@@ -773,6 +775,8 @@ addCard.addEventListener("mousedown", newCard);
                     });
                     delBtn.addEventListener('mousedown', () => newAns.remove());
                 }
+                let showBothWays = card.getElementsByClassName('show-both-ways')[0];
+                if(card.dual) showBothWays.checked = true;
             break;
             case "ranking":
                 initRanking(newDiv, n);
