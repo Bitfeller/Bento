@@ -1,0 +1,15 @@
+:root {
+    --light-text: oklch(95.43% 0.007 295.45);
+    --dark-text: #0c0e0f;
+
+    --select-blue: oklch(40.33% 0.039 356.43);
+    --danger-red: oklch(61.77% 0.039 39.91);
+    --background: oklch(16.79% 0.013 292.64);
+
+    --dark-gray: oklch(14.85% 0.011 294.20);
+    --gray: oklch(20.12% 0.018 289.78);
+    --light-gray: oklch(29.63% 0.033 291.93);
+    --lighter-gray: oklch(38.32% 0.046 290.87);
+
+    --accent-1: oklch(77.06% 0.031 293.99);
+}

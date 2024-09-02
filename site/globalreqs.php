@@ -4,3 +4,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Kadwa:wght@400;700&family=Karla:wght@200..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/global.css"/>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+<?php 
+    $theme = 'nord';
+    if ($theme === 'nord') {
+        return;
+    } elseif ($theme === 'coffee-midnight') {
+        echo '<link rel="stylesheet" href="/css/themes/coffee-midnight.css">';
+    } else if ($theme === 'catppuccin') {
+        echo '<link rel="stylesheet" href="/css/themes/catppuccin.css">';
+    } else if ($theme === 'classic') {
+        echo '<link rel="stylesheet" href="/css/themes/classic.css">';
+    }
