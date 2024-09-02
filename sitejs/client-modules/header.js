@@ -4,7 +4,6 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
 (async () => {
     if(document.getElementById('header') == null) return;
 
-    const icons = document.getElementsByClassName("right-header-ico");
     const logout = document.getElementById("header:logout");
     const pfp = document.getElementById("header:pfp");
     const feedback = document.getElementById("header:feedback");
@@ -12,8 +11,6 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     const feedback_content = document.getElementById("header:feedback_content");
     const feedback_submit = document.getElementById("header:feedback_submit");
     const uo = document.body.dataset.uo;
-    /*const hover = document.createElement("div");
-    hover.style = "background-color: rgb(150, 150, 150); position: absolute; width: auto; padding: 7px; height: auto;";*/
 
     const loader = document.getElementsByClassName("loader")[0];
     const tips = document.getElementsByClassName("tips")[0];
@@ -61,7 +58,25 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
             pfp.src = data.pfp;
         }
     }
-    // loader.remove();
+    // Load theme
+    let theme = data.userdata.theme;
+    // Reference:
+    // 0 = Nord
+    // 1 = Coffee-Midnight
+    // 2 - Catppuccin
+    // 3 - Classic
+    // We don't check for Nord as it's already loaded in global.css; we simply load overrides if we need to for other themes
+    switch(theme) {
+        case 1:
+            document.head.innerHTML += `<link rel='stylesheet' href='../css/themes/coffee-midnight.css'>`;
+        break;
+        case 2:
+            document.head.innerHTML += `<link rel='stylesheet' href='../css/themes/catppuccin.css'>`;
+        break;
+        case 3:
+            document.head.innerHTML += `<link rel='stylesheet' href='../css/themes/classic.css'>`;
+        break;
+    }
     // Initialize service-worker for notifications if allowed
     if(Notification.permission == "granted" && data.notifsub != "0") {
         try {
@@ -85,15 +100,6 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
             loader.remove();
         })
     }
-
-
-    /*for(let i = 0; i < icons.length; i++) {
-        icons[i].addEventListener("mouseover", () => {
-            let ico = icons[i];
-            let rect = ico.getBoundingClientRect();
-            let [x, y] = [(rect.left + rect.right) / 2 + scrollX, (rect.top + rect.bottom) / 2 + scrollY];
-        });
-    }*/
 
     logout.addEventListener("mousedown", async () => {
         await UserGateway.signout();
