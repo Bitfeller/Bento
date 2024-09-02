@@ -4,6 +4,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Kadwa:wght@400;700&family=Karla:wght@200..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/global.css"/>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+<script type="module" src="../sitejs/client-modules/header.js"></script>
 <?php 
     $theme = 'nord';
     if ($theme === 'nord') {
