@@ -20,6 +20,14 @@
                 <span class="material-symbols-outlined" id="pfpReset">refresh</span>
             </div>
             <h1 id="username">Username</h1>
+            <div class="setting-box">
+                <h2>Theme:</h2>
+                <select id="theme-select">
+                    <option value="nord">Nord</option>
+                    <option value="coffee-midnight">Coffee Midnight</option>
+                    <option value="catppuccin">Catppuccin Mocha-ish</option>
+                </select>
+            </div>
         </div>
         <div id="right-div">
             <div class="setting-box">

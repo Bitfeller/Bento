@@ -1,41 +1,8 @@
-/* Classic */
-/* :root {
-    --light-text: #EEEEEE;
-    --dark-text: #292E32;
-
-    --select-blue: #236BD6;
-    --danger-red: #E01F15;
-
-    --background: #111A23;
-
-    --dark-gray: #1E1E1E;
-    --gray: #212121;
-    --light-gray: #292E32;
-    --lighter-gray: #383838;
-    --accent-1: #CADDA0;
-} */
-/* Nearly Catppuccin */
-/* :root {
-    --light-text: #cdd6f4;
-    --dark-text: #0c0e0f;
-
-    --select-blue: #89b4fa;
-    --danger-red: #f38ba8;
-    --background: #11111b;
-
-    --dark-gray: #13131e;
-    --gray: #181825;
-    --light-gray: #272836;
-    --lighter-gray: #45475a;
-    --accent-1: #74c7ec;
-} */
-/* Nord */
 :root { 
     --light-text: #EEEEEE;
     --dark-text: #0c0e0f;
 
     --select-blue: #2a72dc;
-    --select-green: #198819;
     --danger-red: #e01f15;
     --background: #070a0e;
 
@@ -132,6 +99,14 @@ textarea {
     color: var(--light-text);
     width: calc(100% - 60px);
     height: max-content;
+}
+select {
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: var(--lighter-gray);
+    color: var(--light-text);
+    width: 200px;
 }
 .loader {
     margin: 0;
