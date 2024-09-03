@@ -1,21 +1,21 @@
 <?php
     require_once '../module.php';
     validate_request();
-    $data = get_data('username');
-    require_types('s', 'username');
+    $data = get_data('email');
+    require_types('s', 'email');
     // Make sure there isn't a session, otherwise resetting the password is useless.
     session_start();
     if(isset($_SESSION['uid'])) {
         fail("in session");
     }
     // Get body values
-    $username = $data['username'];
+    $email = $data['email'];
     try {
         $conn = connect_to_db();
         // Get user
-        $sql = "SELECT * FROM users WHERE username = ? OR email = ?;";
+        $sql = "SELECT * FROM users WHERE email = ?;";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ss", $_SESSION['username'], $_SESSION['email']);
+        $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = mysqli_fetch_assoc($stmt->get_result());
         if(!$result) {

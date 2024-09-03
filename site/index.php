@@ -133,7 +133,7 @@
                 <input type="text" id="signUpUsername">
                 <p>Password:</p>
                 <input type="password" id="signUpPassword">
-                <p style="font-size: 13px; font-family: kadwa;">Your password is safe with us. No one can see your password, not even us.</p>
+                <p style="font-size: 13px; font-family: kadwa;">Your password is always secure. No one can see your password, not even us.</p>
                 <p>Email:</p>
                 <input type="email" id="signUpEmail">
                 <button class="submitBtn" id="signUpBtnM">Sign Up</button>
@@ -148,6 +148,7 @@
                 <p>Password:</p>
                 <input type="password" id="signInPassword">
                 <button class="submitBtn" id="signInBtnM">Login</button>
+                <p class='reset-pwd' onclick="location.href='/user/resetpwd'">I forgot my password >></p>
                 <p class="info-error" id="login-err"></p>
             </div>
         </dialog>

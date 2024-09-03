@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bento! - Reset Password</title>
+    <?php require_once '../globalreqs.php'?>
+    <style>
+        section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 90vh;
+        }
+        button {
+            font-size: 24pt;
+            margin-top: 1%;
+            padding: 0.5%;
+            border-radius: 10px;
+            background-color: #cadda0;
+            color:#1e1e1e;
+        }
+    </style>
+</head>
+<body>
+    <?php require_once 'header.php'?>
+    <section>
+        <h1>Let's reset your password.</h1>
+        <p>Enter in the email you use for your account:</p>
+        <input type="text" id="email">
+        <button id="resetpwd">Send an email to reset my password</button>
+        <p class="info-success"></p>
+    </section>
+    <script type="module">
+        import { UserGateway } from '../../server/client-gateway/user-gateway.js';
+        let email = document.getElementById('email');
+        let success = document.getElementsByClassName('info-success')[0];
+        document.getElementById('resetpwd').addEventListener('mousedown', async () => {
+            if(email.value == '') return;
+            await UserGateway.resetPwd(email.value);
+            success.innerHTML = "If this user exists, we sent an email.";
+        });
+    </script>
+</body>
+</html>
