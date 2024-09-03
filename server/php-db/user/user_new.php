@@ -71,6 +71,13 @@
         $_SESSION['creation_date'] = $date;
         $_SESSION['notifsub'] = "0";
         $stmt->close();
+        $uid = $result["id"];
+        send_mail(
+            $email,
+            "Email Verification", 
+            "Hey there!<br><br>Verify your new email address for $username <a href='https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=0&user=$uid'>here</a>.<br><br>If this isn't your account, you can safely ignore this email.<br><br>Bento<br><span style='font-size: 10px; color: rgb(200, 200, 200)'>You can reply to this email to contact us.<br>You're receiving this email because your email was associated with this account.<br>You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.</span>", 
+            "Hey there!\n\nVerify your new email address for $username at https://bento.valleynas.uk/user/userdir?hash=$hashVerif&v=0&user=$uid. If this isn't your account, you can safely ignore this email.\n\nBento\n(You can reply to this email to contact us. You're receiving this email because your email was associated with this account.)\n(You can safely ignore this email if this account isn't yours, and your email will no longer be associated with this account in a few days if you don't verify this account.)"
+        );
         success();
     } catch(Exception $e) {
         fail("exception: " . $e->getMessage());
