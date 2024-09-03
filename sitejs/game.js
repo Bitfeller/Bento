@@ -63,11 +63,17 @@ function computeCenter(el) {
         y: (rect.top + rect.bottom) / 2 + scrollY,
     };
 }
-function typeset(node) {
+async function typeset(node) {
+    if(Object.keys(MathJax.startup) == 0) await new Promise((res, _) => {
+        MathJax.startup.ready = () => res();
+    });
     MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([node])).catch((err) => console.warn('math formatting failed; reason:', err.message));
     return MathJax.startup.promise;
 }
 async function renderable(input) {
+    if(Object.keys(MathJax.startup) == 0) await new Promise((res, _) => {
+        MathJax.startup.ready = () => res();
+    });
     r_temp.innerHTML = input;
     let renderable = false;
     try {
@@ -132,11 +138,11 @@ function refresh() {
                     if (selected) return;
                     selected = true;
                     let correct = Game.isCorrect(
-                        parseInt(this.getAttribute("i")),
+                        parseInt(op_i.getAttribute("i")),
                     );
                     if (correct) {
-                        this.innerHTML =
-                            `<p class="answer-symbol">✅</p> ` + this.innerHTML;
+                        op_i.innerHTML =
+                            `<p class="answer-symbol">✅</p> ` + op_i.innerHTML;
                         window.setTimeout(() => {
                             Game.continue();
                             refresh();
@@ -149,8 +155,8 @@ function refresh() {
                                     `<p class="answer-symbol">✅</p> ` +
                                     item.innerHTML;
                         }
-                        this.innerHTML =
-                            `<p class="answer-symbol">❌</p> ` + this.innerHTML;
+                        op_i.innerHTML =
+                            `<p class="answer-symbol">❌</p> ` + op_i.innerHTML;
                         answerMarker.style.display = "block";
                         answerbtn.style.display = "block";
                         answerbtn.innerHTML = "Continue >>> (Enter)";
@@ -199,14 +205,14 @@ function refresh() {
                 answerList.splice(idx, 1);
                 list.appendChild(el);
                 el.addEventListener("dragstart", function (e) {
-                    dragging = this;
+                    dragging = el;
                     list.prepend(dragLine);
                 });
                 el.addEventListener("dragend", function (e) {
-                    if (dragging !== this) {
+                    if (dragging !== el) {
                         return;
                     }
-                    this.style["background-color"] = "";
+                    el.style["background-color"] = "";
                     dragLine.remove();
                     var top;
                     var bottom;
@@ -217,18 +223,18 @@ function refresh() {
                         } else if (i - 1 >= 0) {
                             top = dragElements[i - 1];
                             bottom = dragElements[i];
-                            list.insertBefore(this, bottom);
+                            list.insertBefore(el, bottom);
                             break;
                         } else {
                             top = dragElements[i];
-                            this.remove();
-                            list.prepend(this);
+                            el.remove();
+                            list.prepend(el);
                             break;
                         }
                     }
                     if (!top) {
-                        this.remove();
-                        list.appendChild(this);
+                        el.remove();
+                        list.appendChild(el);
                     }
                     dragging = undefined;
                     dragElements.sort((a, b) => {
@@ -412,6 +418,7 @@ window.addEventListener("dragover", function (e) {
     });
     if (rc == 1) requireCorrect = true;
     refresh();
+    window.LOADED();
 })();
 answerMarker.addEventListener("mousedown", () => {
     Game.markCorrect();

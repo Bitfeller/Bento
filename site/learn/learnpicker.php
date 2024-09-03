@@ -6,7 +6,7 @@
     <title>Learn Picker</title>
     <?php require_once "../globalreqs.php"; ?>
     <link rel="stylesheet" href="../../css/learnPicker.css"/>
-    <script type="module" src="../../sitejs/learnpicker.js"> </script>
+    <script type="module" src="../../sitejs/learnpicker.js" data-loading="true"></script>
 </head>
 <body data-uo="true">
     <?php require_once "../header.php"; ?>

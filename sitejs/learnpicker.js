@@ -282,5 +282,6 @@ function updateDecks(decks) {
             }
         }
         window.location.href = '/learn/inertia?ds=' + selectedDecks.join(",") + '&m=' + (o_mode[0].checked ? 1 : 0) + '&s=' + shuffle;
-    })
+    });
+    window.LOADED();
 })();

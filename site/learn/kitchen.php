@@ -6,7 +6,7 @@
     <title>Kitchen</title>
     <?php require_once "../globalreqs.php"?>
     <link rel="stylesheet" href="../../css/kitchen.css"/>
-    <script src="../../sitejs/kitchen.js" type="module"></script>
+    <script src="../../sitejs/kitchen.js" type="module" data-loading="true"></script>
 </head>
 <body data-uo="true">
     <?php require_once "../header.php"?>

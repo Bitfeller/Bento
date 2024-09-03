@@ -12,5 +12,9 @@
         "public_key": "",
         "private_key": ""
     },
-    "admins": [1]
+    "admins": [1],
+    "mail_smtp_server": "",
+    "mail_username": "",
+    "mail_password": "",
+    "mail_name": ""
 }
