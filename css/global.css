@@ -221,6 +221,11 @@ select {
     color: rgb(255, 100, 100);
     font-family: karla;
 }
+.info-success {
+    margin-top: 5px;
+    color: rgb(100, 200, 100);
+    font-family: karla;
+}
 .switch {
     position: relative;
     display: inline-block;
@@ -301,6 +306,14 @@ dialog::backdrop{
         min-width: 62px;
         min-height: 38px;
     }
+}
+.reset-pwd {
+    float: right;
+    color: var(--accent-1);
+}
+.reset-pwd:hover {
+    filter: brightness(85%);
+    cursor: pointer;
 }
 #too-big-img {
     display: none;
