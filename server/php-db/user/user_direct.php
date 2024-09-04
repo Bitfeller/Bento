@@ -7,7 +7,7 @@
     $mode = $data['mode'];
     $uid = $data['uid'];
     $verif = $data['verif'];
-    $newPwd = $data['newPwd'] or null;
+    $newPwd = $data['newPwd'] or "";
     try {
         $conn = connect_to_db();
         if($mode === "emailverif") {
@@ -20,16 +20,17 @@
                 fail("no user");
             }
             $userVerif = $res['verif'];
-            $valid = password_verify($verif, $userVerif);
+            $valid = $verif == $userVerif;
             if(!$valid) {
                 fail("invalid verif");
             }
-            $sql = "UPDATE users SET verified = ? AND verif = ? WHERE id = ?;";
+            $sql = "UPDATE users SET verified = ?, verif = ? WHERE id = ?;";
             $stmt = $conn->prepare($sql);
             $verified = 1;
             $verif = "";
             $stmt->bind_param("isi", $verified, $verif, $uid);
             $stmt->execute();
+            $stmt->close();
             success();
         } else if($mode === "pwdrecover") {
             session_start();
@@ -51,7 +52,7 @@
                 fail("not verified");
             }
             $userVerif = $res['verif'];
-            $valid = password_verify($verif, $userVerif);
+            $valid = $verif == $userVerif;
             if(!$valid) {
                 fail("invalid verif");
             }
@@ -73,7 +74,7 @@
             if(!isset($newPwd)) {
                 fail("no pwd");
             }
-            $sql = "UPDATE users SET password = ? AND verif = ? WHERE id = ?;";
+            $sql = "UPDATE users SET password = ?, verif = ? WHERE id = ?;";
             $stmt = $conn->prepare($sql);
             $hashPwd = password_hash($newPwd, PASSWORD_DEFAULT);
             $verif = "";
@@ -85,4 +86,6 @@
             unset($_SESSION['pwd_timestamp']);
             success();
         }
+    } catch(Exception $e) {
+        fail('exception: ' . $e->getMessage());
     }

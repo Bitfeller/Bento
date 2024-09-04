@@ -207,7 +207,7 @@ class UserGateway {
                 mode,
                 uid,
                 verif,
-                newPwd
+                newPwd: newPwd ?? ""
             })
         }).then(function(res) {
             if(!res.ok) {
