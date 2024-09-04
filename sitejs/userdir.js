@@ -51,4 +51,5 @@ const error = document.getElementsByClassName('info-error')[0];
             handled = true;
         }
     });
+    window.LOADED();
 })();

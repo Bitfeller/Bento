@@ -123,6 +123,7 @@
                 $stmt->bind_param("si", $newPwd, $_SESSION['uid']);
                 $stmt->execute();
                 $stmt->close();
+                $username = $result['username'];
                 send_mail(
                     $result['email'], 
                     "Changed Password", 
