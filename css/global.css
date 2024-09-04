@@ -310,6 +310,7 @@ dialog::backdrop{
 .reset-pwd {
     float: right;
     color: var(--accent-1);
+    transition: 0.3s;
 }
 .reset-pwd:hover {
     filter: brightness(85%);
