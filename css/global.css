@@ -210,7 +210,7 @@ select {
     float: right;
 }
 .info-blank {
-    color: rgb(150, 150, 150);
+    color: color-mix(in srgb, var(--light-text) 90%, black 10%);
     font-style: italic;
     font-family: karla;
     text-align: center;
@@ -218,12 +218,12 @@ select {
 }
 .info-error {
     margin-top: 5px;
-    color: rgb(255, 100, 100);
+    color: var(--danger-red);
     font-family: karla;
 }
 .info-success {
     margin-top: 5px;
-    color: rgb(100, 200, 100);
+    color: var(--select-blue);
     font-family: karla;
 }
 .switch {

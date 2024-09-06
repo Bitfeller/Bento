@@ -130,7 +130,7 @@
             <div class="modal-content">
                 <p><u>Sign Up</u></p>
                 <p>Username:</p>
-                <input type="text" id="signUpUsername">
+                <input type="email" id="signUpUsername">
                 <p>Password:</p>
                 <input type="password" id="signUpPassword">
                 <p style="font-size: 13px; font-family: kadwa;">Your password is always secure. No one can see your password, not even us.</p>
@@ -144,7 +144,7 @@
             <div class="modal-content">
                 <p><u>Login</u></p>
                 <p>Username:</p>
-                <input type="text" id="signInUsername">
+                <input type="email" id="signInUsername">
                 <p>Password:</p>
                 <input type="password" id="signInPassword">
                 <button class="submitBtn" id="signInBtnM">Login</button>
