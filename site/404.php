@@ -8,10 +8,14 @@
     <style>
         section {
             display: flex;
+            position: absolute;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 90vh;
+            width: 100vw;
+            left: 0;
+            top: 30px;
         }
         a {
             font-size: 24pt;
