@@ -323,6 +323,11 @@ dialog::backdrop{
     position: fixed;
     z-index: 1000;
 }
+#verify-email-alert {
+    color: rgba(255, 0, 0, 0.5);
+    position: absolute;
+    margin-left: 45vw;
+}
 @media only screen and (min-width: 9999px) {
     #too-big-img {
         background-image: url(/img/menhera-sad.gif);
