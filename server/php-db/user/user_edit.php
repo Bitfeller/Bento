@@ -229,7 +229,10 @@
                 session_unset();
                 session_destroy();
             break;
-            case 'sendverifemail':
+            case 'resend-verif-email':
+                if($result['verified'] == 0) {
+                    fail('verified');
+                }
                 $uid = $result['id'];
                 $username = $result['username'];
                 $email = $result['email'];

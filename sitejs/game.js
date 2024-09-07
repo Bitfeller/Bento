@@ -172,7 +172,7 @@ function refresh() {
             input.contentEditable = true;
             input.type = "text";
             input.className = "op-input";
-            input.setAttribute("placeholder", "Enter an answer here...");
+            input.setAttribute("placeholder", "Enter an answer here... [math formatting happens between two $]");
             input.autofocus = true;
             objs.push(input);
             cont_a.appendChild(input);
