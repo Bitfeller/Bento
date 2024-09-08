@@ -104,6 +104,7 @@ button {
     border: none;
     color: var(--light-text);
     background-color: var(--danger-red);
+    margin-right: 5px;
 }
 #addcard, #create {
     background-color: var(--light-text);
