@@ -1,3 +1,6 @@
+body {
+    min-height: 100vh
+}
 .main-bento {
     margin-top: 15px;
     display: flex;
@@ -143,6 +146,29 @@ dialog button {
     transform: translate(-50%, -50%);
     z-index: 102;
 }
+div.version {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    margin: 3px 5px;
+    width: auto;
+    font-family: kadwa;
+    bottom: 0;
+    right: 0;
+}
+div.version:hover {
+    cursor: pointer;
+}
+.new-version {
+    position: relative;
+    display: flex;
+    width: 5px;
+    height: 5px;
+    justify-content: center;
+    align-content: center;
+    background-color: red;
+    border-radius: 50%;
+}
 .continuebtn, .skipbtn {
     padding: 0px 5px;
     margin: 5px;
@@ -196,8 +222,4 @@ dialog button {
         margin: 0 2.5%;
         width: 95%;
     }
-}
-@media only screen and (max-width: 1366px) {
-
-
 }

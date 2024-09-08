@@ -325,29 +325,6 @@ dialog::backdrop{
         min-height: 38px;
     }
 }
-div.version {
-    position: absolute;
-    display: flex;
-    flex-direction: row;
-    right: 0;
-    bottom: 0;
-    margin: 3px 5px;
-    width: auto;
-    font-family: kadwa !important;
-}
-div.version:hover {
-    cursor: pointer;
-}
-.new-version {
-    position: relative;
-    display: flex;
-    width: 5px;
-    height: 5px;
-    justify-content: center;
-    align-content: center;
-    background-color: red;
-    border-radius: 30px;
-}
 .reset-pwd {
     float: right;
     color: var(--accent-1);

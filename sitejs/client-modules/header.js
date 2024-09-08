@@ -156,20 +156,10 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         await UserGateway.giveFeedback(content);
         feedback_dialog.close();
     });
-    version.addEventListener('mousedown', () => {
-        version_info.showModal();
-    });
     resend_email.addEventListener('mousedown', async () => {
         resend_success.innerHTML = "";
         let [success, data] = await UserGateway.editUser('resend-verif-email', '');
         if(success) resend_success.innerHTML = "We sent you another verification email.";
         if(data == 'verified') location.reload();
-    });
-    window.addEventListener('mousedown', (e) => {
-        if(e.target == feedback_dialog || e.target == version_info || e.target == verify_dialog) {
-            feedback_dialog.close();
-            version_info.close();
-            verify_dialog.close();
-        }
     });
 })();
