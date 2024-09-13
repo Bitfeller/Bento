@@ -10,8 +10,6 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     const feedback_dialog = document.getElementById("header:feedback_dialog");
     const feedback_content = document.getElementById("header:feedback_content");
     const feedback_submit = document.getElementById("header:feedback_submit");
-    const version = document.getElementById('header:version');
-    const version_info = document.getElementById('header:version_info');
     const verify_email = document.getElementById('header:verify-email-alert');
     const verify_dialog = document.getElementById('header:verify_email');
     const resend_email = document.getElementById('header:resend_verif_email');
@@ -161,5 +159,10 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         let [success, data] = await UserGateway.editUser('resend-verif-email', '');
         if(success) resend_success.innerHTML = "We sent you another verification email.";
         if(data == 'verified') location.reload();
+    });
+    window.addEventListener('mousedown', (e) => {
+        if(e.target == verify_dialog) {
+            verify_dialog.close();
+        }
     });
 })();

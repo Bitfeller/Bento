@@ -16,7 +16,6 @@ const rightSushi = document.getElementById("Right_Sushi");
 const version = document.getElementById('header:version');
 const version_info = document.getElementById('header:version_info');
 const feedback_dialog = document.getElementById("header:feedback_dialog");
-const verify_dialog = document.getElementById('header:verify_email');
 
 (async () => {
     let [success, data] = await UserGateway.getuser();
@@ -221,9 +220,8 @@ version.addEventListener('mousedown', () => {
     version_info.showModal();
 });
 window.addEventListener('mousedown', (e) => {
-    if(e.target == feedback_dialog || e.target == version_info || e.target == verify_dialog) {
+    if(e.target == feedback_dialog || e.target == version_info) {
         feedback_dialog.close();
         version_info.close();
-        verify_dialog.close();
     }
 });
