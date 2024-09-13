@@ -1,5 +1,6 @@
 body {
-    min-height: 100vh
+    height: 100vh;
+    max-height: 100vh;
 }
 .main-bento {
     margin-top: 15px;
@@ -203,6 +204,9 @@ div.version:hover {
     }
 }
 @media screen and (max-width: 800px) {
+    body {
+        max-height: none;
+    }
     .main-bento {
         margin-top: 5px;
         width: 100vw;
