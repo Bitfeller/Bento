@@ -83,7 +83,7 @@ function gameStart () {
         frameCount++;
         if(paused) return;
         if(ended) return;
-        if(frameCount % (15 - level < 1 ? 1 : (15 - level) * 3) == 0) {
+        if(frameCount % (30 - level < 1 ? 1 : (30 - level) * 3) == 0) {
             asteroids.push(createAsteroid());
         }
         if(frameCount % 100 == 0) {
