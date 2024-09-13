@@ -222,6 +222,11 @@ function updateDecks(decks) {
                 repeat = i + 1;
             }
         }
+        for (let i = 0; i < o_shuffle.length; i++) {
+            if (o_shuffle[i].checked == true) {
+                shuffle = i + 1;
+            }
+        }
         window.location.href =
             "/learn/game?ds=" +
             selectedDecks.join(",") +
