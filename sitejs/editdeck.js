@@ -66,18 +66,18 @@ function typeset(node) {
     return MathJax.startup.promise;
 }
 function init_div(div) {
-    div.setAttribute('data-html', div.innerHTML);
+    div.setAttribute('data-cnt', div.textContent);
     div.addEventListener('focusout', (e) => {
-        div.setAttribute('data-html', div.innerHTML);
+        div.setAttribute('data-cnt', div.textContent);
         div.innerHTML = div.innerHTML.replaceAll(/\$\$[^$]*\$\$/g, "<b style='color: rgb(255, 100, 100);'>[paragraph equation rendering is disabled]<b>");
         typeset(div);
     });
     div.addEventListener('focus', (e) => {
-        div.innerHTML = div.dataset.html;
+        div.textContent = div.dataset.cnt;
     });
     div.addEventListener('keydown', (e) => {
         if(e.key == 'Enter') return e.preventDefault();
-        div.setAttribute('data-html', div.innerHTML);
+        div.setAttribute('data-cnt', div.textContent);
     });
     div.addEventListener('paste', (e) => {
         e.preventDefault();
@@ -139,7 +139,7 @@ function initMc(newDiv, n, q) {
     let problem = newDiv.getElementsByClassName('question')[0];
     init_div(problem); // question
     if(q) {
-        problem.setAttribute('data-html', q);
+        problem.setAttribute('data-cnt', q);
         typeset(problem);
     }
     // Set up multiple choice card functionality
@@ -255,7 +255,7 @@ function initTxt(newDiv, n, q) {
     let problem = newDiv.getElementsByClassName('question')[0];
     init_div(problem); // question
     if(q) {
-        problem.setAttribute('data-html', q);
+        problem.setAttribute('data-cnt', q);
         typeset(problem);
     }
     // Configure text card
@@ -329,7 +329,7 @@ function initRanking(newDiv, n, q) {
     let problem = newDiv.getElementsByClassName('question')[0];
     init_div(problem); // question
     if(q) {
-        problem.setAttribute('data-html', q);
+        problem.setAttribute('data-cnt', q);
         typeset(problem);
     }
     // Set up ranking card functionality
@@ -465,7 +465,14 @@ function newCard() {
     newDiv.className = "card";
     cardContain.appendChild(newDiv);
     cards.push(newDiv);
-    initMc(newDiv, n);
+    if(cards.length < 2) return initMc(newDiv, n);
+    let type = cards[cards.length - 2].getElementsByClassName('selbtn-select')[0];
+    if(!type) return initMc(newDiv, n);
+    let classNames = type.className.split(" ");
+    if(classNames.includes('mcbtn')) initMc(newDiv, n);
+        else if(classNames.includes('txtbtn')) initTxt(newDiv, n);
+        else if(classNames.includes('rankbtn')) initRanking(newDiv, n);
+        else initMc(newDiv, n);
 }
 
 editpic.addEventListener("mousedown", () => {
@@ -534,13 +541,13 @@ createBtn.addEventListener("mousedown", async function() {
                     errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                     return;
                 }
-                cardData.op.push(answer.dataset.html);
+                cardData.op.push(answer.dataset.cnt);
                 let isCorrect = answers[j].getElementsByClassName('mc-option-sel');
                 if(isCorrect.length > 0) {
                     cardData.ans.push(j);
                 }
             }
-            data[question.dataset.html] = cardData;
+            data[question.dataset.cnt] = cardData;
         } else if(classNames.includes('txtbtn')) {
             let cardData = {
                 type: 'txt',
@@ -559,10 +566,10 @@ createBtn.addEventListener("mousedown", async function() {
                     errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                     return;
                 }
-                cardData.ans.push(answer.dataset.html);
+                cardData.ans.push(answer.dataset.cnt);
             }
             if(showBothWays.checked) cardData.dual = true;
-            data[question.dataset.html] = cardData;
+            data[question.dataset.cnt] = cardData;
         } else if(classNames.includes('rankbtn')) {
             let cardData = {
                 type: 'ranking',
@@ -582,9 +589,9 @@ createBtn.addEventListener("mousedown", async function() {
                     errmsg.innerHTML = "The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.";
                     return;
                 }
-                cardData.ans.push(txt.dataset.html);
+                cardData.ans.push(txt.dataset.cnt);
             }
-            data[question.dataset.html] = cardData;
+            data[question.dataset.cnt] = cardData;
         }
     }
     data = {
@@ -687,7 +694,7 @@ addCard.addEventListener("mousedown", newCard);
         switch(card.type) {
             case "mc":
                 initMc(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].setAttribute('data-html', q);
+                newDiv.getElementsByClassName('question')[0].setAttribute('data-cnt', q);
                 newDiv.getElementsByClassName('question')[0].innerHTML = q;
                 typeset(newDiv.getElementsByClassName('question')[0]);
                 let cardmc = newDiv.getElementsByClassName('card-mc')[0];
@@ -705,7 +712,7 @@ addCard.addEventListener("mousedown", newCard);
                     let delBtn = newOp.getElementsByClassName("mc-option-del")[0];
                     let correctBtn = newOp.getElementsByClassName("mc-option-correct")[0];
                     init_div(input);
-                    input.setAttribute('data-html', input.innerHTML);
+                    input.setAttribute('data-cnt', input.innerHTML);
                     typeset(input);
                     input.addEventListener('keydown', (e) => {
                         if(e.key !== "Tab" || e.shiftKey) return;
@@ -741,12 +748,13 @@ addCard.addEventListener("mousedown", newCard);
             break;
             case "txt":
                 initTxt(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].setAttribute('data-html', q);
+                newDiv.getElementsByClassName('question')[0].setAttribute('data-cnt', q);
                 newDiv.getElementsByClassName('question')[0].innerHTML = q;
                 typeset(newDiv.getElementsByClassName('question')[0]);
-                let ansList = newDiv.getElementsByClassName('card-txt');
+                let ansList = newDiv.getElementsByClassName('card-txt')[0];
                 if(card.ans.length == 0) continue;
-                let firstAns = ansList.getElementsByClassName('txt-ans-cont')[0];
+                let firstAns = ansList.getElementsByClassName('txt-answer')[0];
+                firstAns.setAttribute('data-cnt', card.ans[0]);
                 firstAns.innerHTML = card.ans[0];
                 typeset(firstAns);
                 for(let i = 1; i < card.ans.length; i++) {
@@ -760,8 +768,8 @@ addCard.addEventListener("mousedown", newCard);
                     let input = newAns.getElementsByClassName('txt-answer')[0];
                     let delBtn = newAns.getElementsByClassName('txt-op-del')[0];
                     init_div(input);
-                    input.setAttribute('data-html', card.ans);
-                    input.innerHTML = card.ans;
+                    input.setAttribute('data-cnt', card.ans[i]);
+                    input.innerHTML = card.ans[i];
                     typeset(input);
                     input.addEventListener('keydown', (e) => {
                         if(e.key !== "Tab" || e.shiftKey) return;
@@ -775,12 +783,12 @@ addCard.addEventListener("mousedown", newCard);
                     });
                     delBtn.addEventListener('mousedown', () => newAns.remove());
                 }
-                let showBothWays = card.getElementsByClassName('show-both-ways')[0];
+                let showBothWays = newDiv.getElementsByClassName('show-both-ways')[0];
                 if(card.dual) showBothWays.checked = true;
             break;
             case "ranking":
                 initRanking(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].setAttribute('data-html', q);
+                newDiv.getElementsByClassName('question')[0].setAttribute('data-cnt', q);
                 newDiv.getElementsByClassName('question')[0].innerHTML = q;
                 typeset(newDiv.getElementsByClassName('question')[0]);
                 let rankingList = newDiv.getElementsByClassName("ranking-list")[0];
@@ -832,7 +840,7 @@ addCard.addEventListener("mousedown", newCard);
                     let input = item.getElementsByClassName('ranking-item-txt')[0];
                     let del = item.getElementsByClassName('ranking-item-del')[0];
                     init_div(input);
-                    input.setAttribute('data-html', input.innerHTML);
+                    input.setAttribute('data-cnt', input.innerHTML);
                     typeset(input);
                     input.addEventListener('keydown', (e) => {
                         if(e.key !== "Tab" || e.shiftKey) return;
