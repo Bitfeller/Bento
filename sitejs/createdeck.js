@@ -799,8 +799,8 @@ function appendToCards(contnt) {
         switch(card.type) {
             case "mc":
                 initMc(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].setAttribute('data-cnt', q);
                 newDiv.getElementsByClassName('question')[0].innerHTML = q;
+                newDiv.getElementsByClassName('question')[0].setAttribute('data-cnt', newDiv.getElementsByClassName('question')[0].textContent);
                 typeset(newDiv.getElementsByClassName('question')[0]);
                 let cardmc = newDiv.getElementsByClassName('card-mc')[0];
                 cardmc.innerHTML = "";
@@ -817,7 +817,7 @@ function appendToCards(contnt) {
                     let delBtn = newOp.getElementsByClassName("mc-option-del")[0];
                     let correctBtn = newOp.getElementsByClassName("mc-option-correct")[0];
                     init_div(input);
-                    input.setAttribute('data-cnt', input.innerHTML);
+                    input.setAttribute('data-cnt', input.textContent);
                     typeset(input);
                     input.addEventListener('keydown', (e) => {
                         if(e.key !== "Tab" || e.shiftKey) return;
@@ -853,13 +853,14 @@ function appendToCards(contnt) {
             break;
             case "txt":
                 initTxt(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].setAttribute('data-cnt', q);
                 newDiv.getElementsByClassName('question')[0].innerHTML = q;
+                newDiv.getElementsByClassName('question')[0].setAttribute('data-cnt', newDiv.getElementsByClassName('question')[0].textContent);
                 typeset(newDiv.getElementsByClassName('question')[0]);
                 let ansList = newDiv.getElementsByClassName('card-txt');
                 if(card.ans.length == 0) continue;
                 let firstAns = ansList.getElementsByClassName('txt-ans-cont')[0];
                 firstAns.innerHTML = card.ans[0];
+                firstAns.setAttribute('data-cnt', firstAns.textContent);
                 typeset(firstAns);
                 for(let i = 1; i < card.ans.length; i++) {
                     let newAns = document.createElement('div');
@@ -872,8 +873,8 @@ function appendToCards(contnt) {
                     let input = newAns.getElementsByClassName('txt-answer')[0];
                     let delBtn = newAns.getElementsByClassName('txt-op-del')[0];
                     init_div(input);
-                    input.setAttribute('data-cnt', card.ans);
-                    input.innerHTML = card.ans;
+                    input.innerHTML = card.ans[i];
+                    input.setAttribute('data-cnt', input.textContent);
                     typeset(input);
                     input.addEventListener('keydown', (e) => {
                         if(e.key !== "Tab" || e.shiftKey) return;
@@ -892,8 +893,8 @@ function appendToCards(contnt) {
             break;
             case "ranking":
                 initRanking(newDiv, n);
-                newDiv.getElementsByClassName('question')[0].setAttribute('data-cnt', q);
                 newDiv.getElementsByClassName('question')[0].innerHTML = q;
+                newDiv.getElementsByClassName('question')[0].setAttribute('data-cnt', newDiv.getElementsByClassName('question')[0].textContent);
                 typeset(newDiv.getElementsByClassName('question')[0]);
                 let rankingList = newDiv.getElementsByClassName("ranking-list")[0];
                 rankingList.innerHTML = '';
@@ -944,7 +945,7 @@ function appendToCards(contnt) {
                     let input = item.getElementsByClassName('ranking-item-txt')[0];
                     let del = item.getElementsByClassName('ranking-item-del')[0];
                     init_div(input);
-                    input.setAttribute('data-cnt', input.innerHTML);
+                    input.setAttribute('data-cnt', input.textContent);
                     typeset(input);
                     input.addEventListener('keydown', (e) => {
                         if(e.key !== "Tab" || e.shiftKey) return;
