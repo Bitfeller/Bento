@@ -84,7 +84,7 @@ function init_div(div) {
     div.addEventListener('paste', (e) => {
         e.preventDefault();
         let data = (e.clipboardData || window.clipboardData).getData('text');
-        let sanitized = data.replace(/\s+/g, "");
+        let sanitized = data.replace(/\n+/g, "");
         let sel = window.getSelection();
         if (sel.rangeCount > 0) {
             let range = sel.getRangeAt(0);
