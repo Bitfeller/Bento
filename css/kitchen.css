@@ -185,6 +185,7 @@ img {
 .deck-buttons div {
     color: var(--dark-text);
     gap: 5px;
+    margin-right: 5px;
 }
 #oveview > h2, #description > p, .ingredient-box h2, #cards p {
     overflow: hidden;

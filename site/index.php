@@ -122,7 +122,8 @@
 
     <footer>
         <hr>
-        <p>Created By: Bitfeller and Valley</p>
+        <p>Created By: Bitfeller and Valley | <i>Intertia Graphics By: Jbr33zy</i></p>
+        <p></p>
     </footer>
 
     <section id="modals">
