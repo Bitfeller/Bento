@@ -12,7 +12,7 @@
   <div class="load-rot"></div>
   <p class="tips"></p>
 </div>
-<section>
+<section id="global-headers-section">
   <dialog id='header:feedback_dialog' class="header-dialog">
     <h1>Give Feedback...</h1>
     <p>You can report a bug or give suggestions here. We check regularly, so we'll be able to see your feedback almost immediately.</p>

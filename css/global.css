@@ -272,7 +272,7 @@ input:checked + .slider:before {
     -ms-transform: translateX(24px);
     transform: translateX(24px);
 }
-dialog {
+#global-headers-section dialog {
     margin: auto;
     padding: 30px;
     border: none;
