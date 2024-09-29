@@ -69,24 +69,25 @@ function typeset(node) {
 }
 function init_div(div) {
     div.setAttribute('data-cnt', div.textContent);
+    // data-cnt updating
     div.addEventListener('focusout', (e) => {
         div.setAttribute('data-cnt', div.textContent);
-        div.innerHTML = div.innerHTML.replaceAll(/\$\$[^$]*\$\$/g, "<b style='color: rgb(255, 100, 100);'>[paragraph equation rendering is disabled]<b>");
         typeset(div);
     });
-    div.addEventListener('focus', (e) => {
+    div.addEventListener('focus', () => {
         div.textContent = div.dataset.cnt;
     });
+    div.addEventListener('input', () => div.setAttribute('data-cnt', div.textContent));
+    // Prevent new lines
     div.addEventListener('keydown', (e) => {
-        if(e.key == 'Enter') return e.preventDefault();
-        div.setAttribute('data-cnt', div.textContent);
+        if(e.key == "Enter") e.preventDefault();
     });
     div.addEventListener('paste', (e) => {
         e.preventDefault();
-        let data = (e.clipboardData || window.clipboardData).getData('text');
-        let sanitized = data.replace(/\n+/g, "");
+        let data = e.clipboardData.getData('text/plain');
+        let sanitized = data.replace(/\n+/g, '');
         let sel = window.getSelection();
-        if (sel.rangeCount > 0) {
+        if(sel.rangeCount > 0) {
             let range = sel.getRangeAt(0);
             let node = document.createTextNode(sanitized);
             range.deleteContents();
