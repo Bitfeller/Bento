@@ -134,8 +134,7 @@ dialog {
 }
 #loadBtn {
     padding: 0px 5px;
-    margin-top: 30px;
-    margin-left: 15px;
+    margin: 30px 0px 10px 15px;
 }
 div.preview-container-part {
     background-color: rgba(50, 50, 50, 0.6);
@@ -195,5 +194,10 @@ img {
         max-height: 75%;
         width: 95%;
         padding: 10px;
+    }
+}
+@media screen and (max-width: 400px) {
+    #added_decks {
+        margin-left: 2.5%;
     }
 }

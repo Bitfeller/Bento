@@ -272,12 +272,12 @@ input:checked + .slider:before {
     -ms-transform: translateX(24px);
     transform: translateX(24px);
 }
-#global-headers-section dialog {
+.global-headers dialog {
     margin: auto;
     padding: 30px;
     border: none;
     border-radius: 15px;
-    min-width: 450px;
+    width: clamp(80px, 450px, 450px);
     background-color: var(--dark-gray);
     h2 {
         display: inline;
@@ -345,6 +345,10 @@ dialog::backdrop{
     display: none;
     color: rgba(200, 100, 100);
     margin: 0px 10px 0px 0px;
+}
+.feedback-submit-button {
+    margin-top: 10px !important;
+    margin-left: 0px !important;
 }
 @media only screen and (min-width: 9999px) {
     #too-big-img {

@@ -13,3 +13,11 @@
 
     --accent-1: oklch(77.06% 0.031 293.99);
 }
+.mc-option-del {
+    span {
+        color: var(--dark-text);
+    }
+}
+.card-del {
+    color: var(--dark-text);
+}
