@@ -9,7 +9,7 @@ const passwordInputs = document.getElementsByClassName('password-inputs')[0];
 (async () => {
     const params = new URLSearchParams(window.location.search);
     if(!params.get("hash") || !params.get("v") || !params.get("user")) {
-        window.LOAD_ERROR("Looks like that URL is invalid. Did you come here from an email?");
+        location.href = "/home";
         return;
     }
     let hash = params.get("hash");

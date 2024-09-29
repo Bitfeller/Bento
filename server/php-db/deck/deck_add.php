@@ -19,7 +19,7 @@
     }
     try {
         $conn = connect_to_db();
-        // Sanitize namea
+        // Sanitize name
         $name = htmlspecialchars(strip_tags($name));
         // Check for previous deck made from same user
         $sql = "SELECT * FROM decks WHERE name = ? AND owner = ?;";
