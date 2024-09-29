@@ -192,6 +192,16 @@ select {
     font-size: 38px;
     font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 200, "opsz" 48;
 }
+.header > span.info {
+    position: fixed;
+    left: 157px;
+    top: 18px;
+    font-family: karla;
+    font-size: 15px;
+}
+.header > span.info:hover {
+    color: white;
+}
 .header span {
     transition: 0.3s;
     transition-timing-function: ease-in-out;
@@ -272,7 +282,7 @@ input:checked + .slider:before {
     -ms-transform: translateX(24px);
     transform: translateX(24px);
 }
-.global-headers dialog {
+.global-headers dialog, .header-dialog {
     margin: auto;
     padding: 30px;
     border: none;

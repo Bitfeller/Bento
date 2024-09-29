@@ -39,6 +39,8 @@ const totalWrong = {};
 const cardsSeen = {};
 let updateFunc;
 
+let dump = "";
+
 let lastCorrect = false;
 
 // -------------------------------------------------------- \\
@@ -82,8 +84,13 @@ function iterateProblem() {
     return true;
 }
 function newRandomSet() {
+    let s = currWrong.length;
+    console.log("-----------------------------------");
+    getProgress();
+    console.log(currentSet, currentSet * deckSize, gameData.length);
     if(gameData.length - currentSet * deckSize <= 0) {
         // default functionality
+        console.log(dump);
         E_s = 0;
         C_lw = 0;
         C_pwsets = 0;
@@ -125,6 +132,7 @@ function newRandomSet() {
         if(!rndSetData[i]) rndSetData[i] = 0;
         if(rndSetData[i] < cardRepeat) available.push(i);
     }
+    console.log(currWrong.length, lsWrong.length, llsWrong.length);
     if(available.length == 0 && currWrong.length == 0 && lsWrong.length == 0 && llsWrong.length == 0) {
         // finished set - move on to next set
         currentSet++;
@@ -135,15 +143,19 @@ function newRandomSet() {
         return newRandomSet();
     }
     let k = 0;
+    let i = 0;
     while(k < s_curr) {
+        i++;
+        if(i > 10000) throw new Error("Exceeded max iteration. (1)");
         if(currWrong.length > 0) {
+            console.log("iterating");
             let p = random(0, currWrong.length - 1);
             if(problems.indexOf(currWrong[p]) > -1) continue;
             problems.push(currWrong[p]);
-            rndSetData[currWrong[p]]++;
+            // rndSetData[currWrong[p]]++;
             let idx = available.indexOf(currWrong[p]);
             if(idx > -1) available.splice(idx, 1);
-            if(wasWrong.indexOf(currWrong[p]) < 0) wasWrong.push(currWrong[p]);
+            // if(wasWrong.indexOf(currWrong[p]) < 0) wasWrong.push(currWrong[p]);
             currWrong.splice(p, 1);
         } else if(available.length > 0) {
             let p;
@@ -164,6 +176,8 @@ function newRandomSet() {
     if(s_ls > 0) {
         k = 0;
         while(k < s_ls) {
+            i++;
+            if(i > 10000) throw new Error("Exceeded max iteration. (2)");
             // Combat repetition of one/some particular terms constantly and distribute percentages of being shown across terms
             if(lsShown.length == 0) {
                 for(let i = 0; i < deckSize; i++) {lsShown.push((currentSet - 1) * deckSize + i);}
@@ -171,9 +185,11 @@ function newRandomSet() {
             let idx = random(0, lsShown.length - 1);
             let p = lsShown[idx];
             if(lsWrong.length > 0) {
+                console.log('try');
                 idx = random(0, lsWrong.length - 1);
                 p = lsWrong[idx];
             } else if(wasWrong.length > 0) {
+                console.log('try2');
                 for(let i = 0; i < wasWrong.length; i++) {
                     if(wasWrong[i] < currentSet * deckSize && wasWrong[i] >= (currentSet - 1) * deckSize) {
                         idx = i;
@@ -200,6 +216,8 @@ function newRandomSet() {
     if(s_lls > 0) {
         k = 0;
         while(k < s_lls) {
+            i++;
+            if(i > 10000) throw new Error("Exceeded max iteration. (3)");
             // Combat repetition of one/some particular terms constantly and distribute percentages of being shown across terms
             if(llsShown.length == 0) {
                 for(let i = 0; i < (currentSet - 1) * deckSize - 1; i++) {llsShown.push(i);}
@@ -237,6 +255,7 @@ function newRandomSet() {
     E_s++;
     card = 0;
     console.log(randomSet);
+    dump += randomSet + "..." + s + "\n";
     return true;
 }
 
@@ -435,7 +454,9 @@ function get_pwsets() {
     
     if(left < 0) left = 0;
 
-    return left;    
+    return 0;
+
+    // return left;    
 }
 function getProgress() {
     // check if infinite mode is on
@@ -496,6 +517,8 @@ function getProgress() {
     }
 
     let left = get_pwsets();
+
+    console.log(gameData.length * cardRepeat, realWrong, S_l * prev, "seen", seen, "real", seen - 1, "=>", seen, "S,", (gameData.length * cardRepeat + realWrong + S_l * prev - seen));
 
     let obj = {
         seen,
@@ -589,19 +612,23 @@ function incorrect() {
         seen--; // normally remove
         if(cardRepeat > 1 && rndSetData[randomSet[card]] < cardRepeat) seen++; // remove the reduction to normalize
     } else if(randomSet[card] >= (currentSet - 1) * deckSize) {
-        lsWrong.push(randomSet[card]);
+        currWrong.push(randomSet[card]);
         let left = get_pwsets();
         if(left > C_pwsets) {
+            throw new Error("WHAT IN THE WORLD HAPPENED HERE!?!? a");
             seen -= (ls + lls) * (left - C_pwsets);
             C_pwsets = left;
         }
+        seen--;
     } else {
-        llsWrong.push(randomSet[card]);
+        currWrong.push(randomSet[card]);
         let left = get_pwsets();
         if(left > C_pwsets) {
+            throw new Error("WHAT IN THE WORLD HAPPENED HERE!?!? b");
             seen -= (ls + lls) * (left - C_pwsets);
             C_pwsets = left;
         }
+        seen--;
     }
     if(totalWrong[randomSet[card]]) totalWrong[randomSet[card]]++; else totalWrong[randomSet[card]] = 1;
     correct();
