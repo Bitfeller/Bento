@@ -173,7 +173,6 @@ async function preview(_this, isAdded) {
     if(!data) {
         let [success, deck] = await DeckGateway.get(id, true, false);
         if(!success) {
-            previewDialog.showModal();
             previewDialog.innerHTML = `
                 <div class='title-bar'>
                     <h2>Hmm.</h2>
@@ -189,8 +188,8 @@ async function preview(_this, isAdded) {
             previewDialog.getElementsByClassName("closeBtns")[0].addEventListener("mousedown", () => previewDialog.close());
             return;
         }
-        data = deck;
-        cache_decks[id] = deck;
+        data = deck.data;
+        cache_decks[id] = data;
     }
     let deck;
     let target = isAdded ? reviewDecks : decks;
