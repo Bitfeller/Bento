@@ -124,7 +124,7 @@ function updateDecks(decks) {
     let r_keys = Object.keys(reviews);
     for (let i = 0; i < r_keys.length; i++) {
         let id = parseInt(r_keys[i]);
-        let [success, deck] = await DeckGateway.get(id);
+        let [success, deck] = await DeckGateway.get(id, true, false);
         if (!success) {
             decks.push(0);
             continue;

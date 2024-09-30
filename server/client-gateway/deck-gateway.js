@@ -124,7 +124,7 @@ class DeckGateway {
         });
         return [success, reason];
     }
-    static async get(id) {
+    static async get(id, load_data, load_pic) {
         if(!id) {
             return [false, "invalid params"];
         }
@@ -135,7 +135,9 @@ class DeckGateway {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                id: id
+                id: id,
+                load_pic: load_pic || false,
+                load_data: load_data || true
             })
         }).then(function(res) {
             if(!res.ok) {

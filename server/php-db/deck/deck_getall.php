@@ -40,6 +40,7 @@
         $decks = [];
         while($row = mysqli_fetch_assoc($raw_res)) {
             if($row['owner'] !== $_SESSION['username']) {
+                unset($row['data']);
                 unset($row['public']);
             }
             $decks[] = $row;

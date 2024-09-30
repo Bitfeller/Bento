@@ -672,7 +672,7 @@ addCard.addEventListener("mousedown", newCard);
     }
     let dVal = parseInt(paramList.get('d'));
     deck = dVal;
-    [success, contnt] = await DeckGateway.get(deck);
+    [success, contnt] = await DeckGateway.get(deck, true, true);
     if(!success) window.location.href = "/home";
     if(contnt.owner !== data.username) window.location.href = "/home";
     name.value = contnt.name;

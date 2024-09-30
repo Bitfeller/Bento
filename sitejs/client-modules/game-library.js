@@ -275,7 +275,7 @@ async function init(_decks, info) {
     for(let i = 0; i < _decks.length; i++) {
         let deck = _decks[i];
         // Get deck
-        let [success, data] = await DeckGateway.get(deck);
+        let [success, data] = await DeckGateway.get(deck, true, false);
         if(!success) {
             // Run window.LOAD_ERROR to let the header/loader know loading failed
             window.LOAD_ERROR("Looks like this deck doesn't exist, or there's an issue on our side.");
