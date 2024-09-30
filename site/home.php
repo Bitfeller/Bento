@@ -846,6 +846,7 @@
             <ul>
                 <li>Fixed several bugs with formatting, deck creationg/editing, and with learn mode.</li>
                 <li>Improved learn mode system.</li>
+                <li>Added performance fixes that reduced loading times by 5% to 70%.</li>
             </ul>
             <br><hr><br>
             <h2>v0.3.0 - What's new</h2>
