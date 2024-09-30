@@ -192,7 +192,7 @@ class Asteroid {
     let deckContnt = [];
     let updateReviews = false;
     for(let i = 0; i < decks.length; i++) {
-        let [success, data] = await DeckGateway.get(decks[i]);
+        let [success, data] = await DeckGateway.get(decks[i], true, false);
         if(!success) {
             console.log(data);
             window.location.href = "/home";
