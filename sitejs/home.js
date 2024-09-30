@@ -24,7 +24,7 @@ const feedback_dialog = document.getElementById("header:feedback_dialog");
     let reviews = data.userdata.reviews;
     let r_keys = Object.keys(reviews);
     for(let i = 0; i < r_keys.length; i++) {
-        let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), false, false);
+        let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), false, false, true);
         if(!success) continue;
         let count = 0;
         let c_keys = Object.keys(reviews[r_keys[i]]);
@@ -32,7 +32,7 @@ const feedback_dialog = document.getElementById("header:feedback_dialog");
             let term = reviews[r_keys[i]][c_keys[j]];
             if(UserGateway.calculateNTR(term.box, term.last)) count++;
         }
-        count += Object.keys(deck.data.contnt).length - c_keys.length;
+        count += deck.contnt_len - c_keys.length;
         if(count > 0) {
             deckReminders.innerHTML += `
                 <div class="dr-deck">
@@ -47,30 +47,30 @@ const feedback_dialog = document.getElementById("header:feedback_dialog");
         curr = 0;
         if(data.notifsub != "0") await UserGateway.editUser("notifsub", "0");
         notifText.innerHTML = `<span class='material-symbols-outlined'>notifications_off</span>You've turned off notifications. Bento can't show you notifications unless you agree to them.</span>`;
-        return;
-    }
-    notifText.innerHTML = `<span class='material-symbols-outlined'>${data.notifsub == "0" ? "notifications_off" : "notifications_active"}</span>${data.notifsub == "0" ? "<p>Don't notify me to review.</p>" : (data.notifsub == "1" ? "<p>Remind me everyday when I have to review.</p>" : (data.notifsub == "2" ? "<p>Remind me every 3 days when I have to review.</p>" : "<p>Remind me every week when I have to review.</p>"))}</span>`;
-    notifText.addEventListener("mousedown", async () => {
-        curr++;
-        if(curr > 3) curr = 0;
-        if(curr > 0 && Notification.permission !== "granted") {
-            await Notification.requestPermission();
-            try {
-                navigator.serviceWorker.register(location.origin + "/sitejs/client-modules/service-worker.js", {
-                    type: "module"
-                });
-            } catch (e) {
-                console.log("serviceworker_err:", e);
+    } else {
+        notifText.innerHTML = `<span class='material-symbols-outlined'>${data.notifsub == "0" ? "notifications_off" : "notifications_active"}</span>${data.notifsub == "0" ? "<p>Don't notify me to review.</p>" : (data.notifsub == "1" ? "<p>Remind me everyday when I have to review.</p>" : (data.notifsub == "2" ? "<p>Remind me every 3 days when I have to review.</p>" : "<p>Remind me every week when I have to review.</p>"))}</span>`;
+        notifText.addEventListener("mousedown", async () => {
+            curr++;
+            if(curr > 3) curr = 0;
+            if(curr > 0 && Notification.permission !== "granted") {
+                await Notification.requestPermission();
+                try {
+                    navigator.serviceWorker.register(location.origin + "/sitejs/client-modules/service-worker.js", {
+                        type: "module"
+                    });
+                } catch (e) {
+                    console.log("serviceworker_err:", e);
+                }
             }
-        }
-        if(curr > 0 && Notification.permission == "denied") {
-            curr = 0;
-            notifText.innerHTML = `<span class='material-symbols-outlined'>notifications_off</span>You've turned off notifications. Bento can't show you notifications unless you agree to them.</span>`;
-            return;
-        }
-        await UserGateway.editUser("notifsub", String(curr));
-        notifText.innerHTML = `<span class='material-symbols-outlined'>${curr == "0" ? "notifications_off" : "notifications_active"}</span>${curr == "0" ? "Don't notify me to review." : (curr == "1" ? "Remind me everyday when I have to review." : (curr == "2" ? "Remind me every 3 days when I have to review." : "Remind me every week when I have to review."))}</span>`;
-    });
+            if(curr > 0 && Notification.permission == "denied") {
+                curr = 0;
+                notifText.innerHTML = `<span class='material-symbols-outlined'>notifications_off</span>You've turned off notifications. Bento can't show you notifications unless you agree to them.</span>`;
+                return;
+            }
+            await UserGateway.editUser("notifsub", String(curr));
+            notifText.innerHTML = `<span class='material-symbols-outlined'>${curr == "0" ? "notifications_off" : "notifications_active"}</span>${curr == "0" ? "Don't notify me to review." : (curr == "1" ? "Remind me everyday when I have to review." : (curr == "2" ? "Remind me every 3 days when I have to review." : "Remind me every week when I have to review."))}</span>`;
+        });
+    }
     window.LOADED();
     const paramList = new URLSearchParams(window.location.search);
     if(paramList.get("new") == "1") {

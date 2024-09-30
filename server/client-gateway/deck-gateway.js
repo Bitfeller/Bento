@@ -124,7 +124,7 @@ class DeckGateway {
         });
         return [success, reason];
     }
-    static async get(id, load_data, load_pic) {
+    static async get(id, load_data, load_pic, load_contnt_len) {
         if(!id) {
             return [false, "invalid params"];
         }
@@ -136,8 +136,9 @@ class DeckGateway {
             },
             body: JSON.stringify({
                 id: id,
-                load_pic: load_pic || false,
-                load_data: load_data || true
+                load_pic: load_pic ?? false,
+                load_data: load_data ?? true,
+                load_contnt_len: load_contnt_len ?? false
             })
         }).then(function(res) {
             if(!res.ok) {
@@ -153,7 +154,7 @@ class DeckGateway {
                 data = res.reason;
             } else {
                 data = JSON.parse(res.data);
-                data.data = JSON.parse(data.data);
+                if(data.data) data.data = JSON.parse(data.data);
                 data.viewdata = JSON.parse(data.viewdata);
             }
         }).catch(function(err) {
