@@ -147,11 +147,14 @@ dialog button {
     transform: translate(-50%, -50%);
     z-index: 102;
 }
+.version {
+    position: sticky;
+}
 div.version {
     z-index: 9;
-    position: absolute;
+    position: sticky;
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
     margin: 3px 5px;
     width: auto;
     font-family: kadwa;
