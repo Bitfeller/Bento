@@ -232,12 +232,12 @@ async function preview(_this, isAdded) {
     });
     if(user.username == deck.owner) {    
         previewDialog.getElementsByClassName("export-btn")[0].addEventListener("mousedown", () => {
-            const data = {
+            const d = {
                 name: deck.name,
                 desc: data.desc,
                 contnt: decodeHTMLEncVal(data.contnt)
             };
-            const json = JSON.stringify(data);
+            const json = JSON.stringify(d);
             const file = new File([json], deck.name+'.txt', {type: "text/plain"});
             const link = document.createElement("a");
             const url = URL.createObjectURL(file);
