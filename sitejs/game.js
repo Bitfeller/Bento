@@ -320,7 +320,7 @@ function answerHandler() {
                     ans_a.innerHTML = cont_a.innerHTML;
                     cont_a.children[0].style.backgroundColor = `rgba(255, 0, 0, 0.5)`;
                     ans_a.children[0].style.backgroundColor = `rgba(0, 255, 0, 0.5)`;
-                    ans_a.children[0].innerHTML = data.ans;
+                    ans_a.children[0].innerHTML = data.ans.join("<i>or</i>");
                     ans_a.children[0].disabled = true;
                     answerbtn.innerHTML = "Continue >>> (Enter)";
                     if (requireCorrect) {
