@@ -857,9 +857,9 @@ function appendToCards(contnt) {
                 newDiv.getElementsByClassName('question')[0].innerHTML = q;
                 newDiv.getElementsByClassName('question')[0].setAttribute('data-cnt', newDiv.getElementsByClassName('question')[0].textContent);
                 typeset(newDiv.getElementsByClassName('question')[0]);
-                let ansList = newDiv.getElementsByClassName('card-txt');
+                let ansList = newDiv.getElementsByClassName('card-txt')[0];
                 if(card.ans.length == 0) continue;
-                let firstAns = ansList.getElementsByClassName('txt-ans-cont')[0];
+                let firstAns = ansList.getElementsByClassName('txt-ans-cont')[0].children[0];
                 firstAns.innerHTML = card.ans[0];
                 firstAns.setAttribute('data-cnt', firstAns.textContent);
                 typeset(firstAns);
@@ -889,7 +889,7 @@ function appendToCards(contnt) {
                     });
                     delBtn.addEventListener('mousedown', () => newAns.remove());
                 }
-                let showBothWays = card.getElementsByClassName('show-both-ways')[0];
+                let showBothWays = newDiv.getElementsByClassName('show-both-ways')[0];
                 if(card.dual) showBothWays.checked = true;
             break;
             case "ranking":
@@ -1019,6 +1019,7 @@ b_createbtn.addEventListener("mousedown", () => {
                 if(b_replacedesc.checked) description.value = val_desc;
                 try {
                     appendToCards(val_contnt);
+                    b_modal.style.display = "none";
                 } catch(e) {
                     b_err.innerHTML = "This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.";
                     return;
@@ -1029,7 +1030,6 @@ b_createbtn.addEventListener("mousedown", () => {
         }
         reader.readAsText(file);
     }
-    b_modal.style.display = "none";
 });
 q_createbtn.addEventListener("mousedown", () => {
     let importText = q_txt.value;
