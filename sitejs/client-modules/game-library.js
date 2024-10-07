@@ -46,25 +46,6 @@ let lastCorrect = false;
 function random(a, b) {
     return Math.floor(Math.random() * (b - a) + a + 0.5);
 }
-function strdist(s1, s2) {
-    let n = s1.length, m = s2.length;
-    if(m == n) return 0;
-    if(!m || !n) return m + n;
-
-    const mx = [];
-    for(let i = 0; i <= m; i++) {
-        mx[i] = [i];
-        for(let j = 1; j <= n; j++) {
-            mx[i][j] = i == 0 ? j : Math.min(
-                mx[i - 1][j] + 1,
-                mx[i][j - 1] + 1,
-                mx[i - 1][j - 1] + (s1[j - 1] == s2[j - 1] ? 0 : 1)
-            );
-        }
-    }
-
-    return mx[m][n];
-}
 
 // -------------------------------------------------------- \\
 
@@ -538,9 +519,7 @@ function check(answer) {
             // return problem.op[answer] == problem.ans ? updateLastCorrect(true) : updateLastCorrect(false);
         case "txt":
             for(let i = 0; i < problem.ans.length; i++) {
-                let diff = strdist(answer.toLowerCase().replaceAll(/\s/g, ""), problem.ans[i].toLowerCase().replaceAll(/\s/g, ""));
-                console.log(diff);
-                if(problem.ans[i].toLowerCase().replaceAll(/\s/g, "").length < 4 && diff > 0) continue; else if(diff < 2) return true;
+                if(problem.ans[i].toLowerCase().replaceAll(/\s/g, "") == answer.toLowerCase().replaceAll(/\s/g, "")) return true;
                 //if(answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans[i].toLowerCase().replaceAll(/\s/g, "")) return true;
             }
             return false;
@@ -563,9 +542,7 @@ function isCorrect(answer) {
             // return problem.op[answer] == problem.ans ? updateLastCorrect(true) : updateLastCorrect(false);
         case "txt":
             for(let i = 0; i < problem.ans.length; i++) {
-                let diff = strdist(answer.toLowerCase().replaceAll(/\s/g, ""), problem.ans[i].toLowerCase().replaceAll(/\s/g, ""));
-                console.log(diff);
-                if(problem.ans[i].toLowerCase().replaceAll(/\s/g, "").length < 4 && diff > 0) continue; else if(diff < 2) return updateLastCorrect(true);
+                if(problem.ans[i].toLowerCase().replaceAll(/\s/g, "") == answer.toLowerCase().replaceAll(/\s/g, "")) return updateLastCorrect(true);
                 //if(answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans[i].toLowerCase().replaceAll(/\s/g, "")) return updateLastCorrect(true);
             }
             return updateLastCorrect(false);
