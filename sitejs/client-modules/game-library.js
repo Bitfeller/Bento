@@ -39,8 +39,6 @@ const totalWrong = {};
 const cardsSeen = {};
 let updateFunc;
 
-let dump = "";
-
 let lastCorrect = false;
 
 // -------------------------------------------------------- \\
@@ -84,13 +82,9 @@ function iterateProblem() {
     return true;
 }
 function newRandomSet() {
-    let s = currWrong.length;
-    console.log("-----------------------------------");
     getProgress();
-    console.log(currentSet, currentSet * deckSize, gameData.length);
     if(gameData.length - currentSet * deckSize <= 0) {
         // default functionality
-        console.log(dump);
         E_s = 0;
         C_lw = 0;
         C_pwsets = 0;
@@ -255,7 +249,6 @@ function newRandomSet() {
     E_s++;
     card = 0;
     console.log(randomSet);
-    dump += randomSet + "..." + s + "\n";
     return true;
 }
 
@@ -399,7 +392,7 @@ async function init(_decks, info) {
                 user.userdata.reviews[holder][card.q] = newcard;
             }
         }
-        let json = JSON.stringify(user.reviews);
+        let json = JSON.stringify(user.userdata);
         await UserGateway.editUser("userdata", json);
     };
     updateFunc = update;
