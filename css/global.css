@@ -37,6 +37,10 @@ h2 {
 h2 > * {
     font-family: karla;
 }
+h3 {
+    font-family: "Kadwa";
+    font-weight: normal;
+}
 p,
 span {
     font-size: 12pt;
