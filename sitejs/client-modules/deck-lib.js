@@ -1,0 +1,713 @@
+import { UserGateway } from "../../server/client-gateway/user-gateway.js";
+
+const name = document.getElementById("name");
+const isPublic = document.getElementById("isPublic");
+const description = document.getElementById("description");
+const cardContain = document.getElementById("cardcontain");
+const addCard = document.getElementById("addcard");
+const editpic = document.getElementById("picAddBtn");
+const resetpic = document.getElementById("picReset");
+const fileselecttrigger = document.getElementById("fileselecttrigger");
+const picimg = document.getElementById("deckpic");
+let cards = [];
+let user, drag, deckpic = '';
+const dragline = document.createElement('div');
+dragline.style = 'display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;';
+
+
+// --------------------------------------------------- \\
+
+
+// Essential functions to set up div + ranking functionality
+function computeCenter(el) {
+    let rect = el.getBoundingClientRect();
+    return {
+        x: (rect.left + rect.right) / 2 + scrollX,
+        y: (rect.top + rect.bottom) / 2 + scrollY
+    }
+}
+function init_card(card, n) {
+    card.getElementsByClassName('mcbtn')[0].addEventListener("mousedown", function() {
+        if(card.getElementsByClassName('card-mc').length > 0) return;
+        init_mc(card, n, card.getElementsByClassName("q")[0].innerHTML);
+    });
+    card.getElementsByClassName('mcbtn')[0].addEventListener("keydown", function(e) {
+        if(card.getElementsByClassName('card-mc').length > 0) return;
+        if(e.key == "Enter" || e.key == " ") init_mc(card, n, card.getElementsByClassName("q")[0].innerHTML);
+    });
+    card.getElementsByClassName('txtbtn')[0].addEventListener("mousedown", function() {
+        if(card.getElementsByClassName('txt-answer').length > 0) return;
+        init_txt(card, n, card.getElementsByClassName("q")[0].innerHTML);
+    });
+    card.getElementsByClassName('txtbtn')[0].addEventListener("keydown", function(e) {
+        if(card.getElementsByClassName('txt-answer').length > 0) return;
+        if(e.key == "Enter" || e.key == " ") init_txt(card, n, card.getElementsByClassName("q")[0].innerHTML);
+    });
+    card.getElementsByClassName('rankbtn')[0].addEventListener("mousedown", function() {
+        if(card.getElementsByClassName('card-rank').length > 0) return;
+        init_ranking(card, n, card.getElementsByClassName("q")[0].innerHTML);
+    });
+    card.getElementsByClassName('rankbtn')[0].addEventListener("keydown", function(e) {
+        if(card.getElementsByClassName('card-rank').length > 0) return;
+        if(e.key == "Enter" || e.key == " ") init_ranking(card, n, card.getElementsByClassName("q")[0].innerHTML);
+    });
+    card.getElementsByClassName('card-del')[0].addEventListener("mousedown", function() {
+        if(cards.length <= 1) return;
+        let idx = cards.indexOf(card);
+        if(idx > -1) {
+            cards.splice(idx, 1);
+        }
+        card.remove();
+    });
+}
+async function typeset(node) {
+    if(Object.keys(MathJax.startup) == 0) await new Promise((res, _) => {
+        MathJax.startup.ready = () => res();
+    });
+    MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([node])).catch((err) => console.warn('math formatting failed; reason:', err.message));
+    return MathJax.startup.promise;
+}
+async function renderable(input) {
+    if(Object.keys(MathJax.startup) == 0) await new Promise((res, _) => {
+        MathJax.startup.ready = () => res();
+    });
+    r_temp.innerHTML = input;
+    let renderable = false;
+    try {
+        MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([r_temp])).catch((err) => console.warn('math formatting failed; reason:', err.message));
+        await MathJax.startup.promise;
+        renderable = r_temp.innerHTML.trim() !== '';
+    } catch(e) {
+        renderable = false;
+    }
+    return renderable;
+}
+function init_div(div) {
+    div.setAttribute('data-cnt', div.textContent);
+    // data-cnt updating
+    div.addEventListener('focusout', (e) => {
+        div.setAttribute('data-cnt', div.textContent);
+        typeset(div);
+    });
+    div.addEventListener('focus', () => {
+        div.textContent = div.dataset.cnt;
+    });
+    div.addEventListener('input', () => div.setAttribute('data-cnt', div.textContent));
+    // Prevent new lines
+    div.addEventListener('keydown', (e) => {
+        if(e.key == "Enter") e.preventDefault();
+        if(e.altKey && e.key == "w") {
+            if(cards.length <= 1) return;
+            let parent = div.closest('.card');
+            if(!parent) return;
+            let idx = cards.indexOf(parent);
+            let next = parent.nextElementSibling || parent.parentNode.children[parent.parentNode.children.length - 2];
+            if(idx > -1) {
+                cards.splice(idx, 1);
+            }
+            parent.remove();
+            next.getElementsByClassName('q')[0].focus();
+        }
+    });
+    div.addEventListener('paste', (e) => {
+        e.preventDefault();
+        let data = e.clipboardData.getData('text/plain');
+        let sanitized = data.replace(/\n+/g, '');
+        let sel = window.getSelection();
+        if(sel.rangeCount > 0) {
+            let range = sel.getRangeAt(0);
+            let node = document.createTextNode(sanitized);
+            range.deleteContents();
+            range.insertNode(node);
+            range.setStartAfter(node);
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+    });
+    div.set_val = (val) => {
+        div.innerHTML = val;
+        div.setAttribute('data-cnt', div.textContent);
+        typeset(div);
+    }
+}
+function toNew() {
+    newCard();
+    document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
+    cards[cards.length - 1].getElementsByClassName('q')[0].focus();
+}
+
+
+// --------------------------------------------------- \\
+
+
+// Generators
+function generator_mc(cardmc, card, allcorr, t, txt) {
+    let newop = document.createElement('div');
+    newop.className = "mcop";
+    newop.innerHTML = `
+        <div contenteditable="true" type='input' class='mcop-val' placeholder='...'></div>
+        <button class='mcop-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
+        <button class='mcop-corr mcop-${t ? 'sel' : 'nosel'}' tabindex="-1"><span class="material-symbols-outlined">${t ? 'check' : 'check_indeterminate_small'}</span></button>
+    `;
+    cardmc.appendChild(newop);
+    let input = newop.getElementsByClassName('mcop-val')[0];
+    let delbtn = newop.getElementsByClassName('mcop-del')[0];
+    let corrbtn = newop.getElementsByClassName('mcop-corr')[0];
+    init_div(input);
+    if(txt) input.set_val(txt);
+    input.addEventListener('keydown', (e) => {
+        if(e.key != "Tab" || e.shiftKey) return;
+        if(cards.indexOf(card) < cards.length - 1) return;
+        let ans = Array(...cardmc.getElementsByClassName('mcop'));
+        let idx = ans.indexOf(newop);
+        if(idx < ans.length - 1) return;
+        e.preventDefault();
+        toNew();
+    });
+    delbtn.addEventListener('mousedown', () => {
+        if(cardmc.children.length <= 2) return;
+        if(cardmc.getElementsByClassName('mcop-sel') == 1 && newop.getElementsByClassName('mcop-sel') == 1) {
+            let newcorr = cardmc.getElementsByClassName('mcop-nosel')[0];
+            newcorr.className = 'mcop-corr mcop-sel';
+            newcorr.innerHTML = "<span class='material-symbols-outlined'>check</span>";
+        }
+        newop.remove();
+    });
+    corrbtn.addEventListener('mousedown', () => {
+        if(corrbtn.className.includes('mcop-sel')) {
+            if(cardmc.getElementsByClassName('mcop-sel').length == 1) return;
+            corrbtn.className = 'mcop-corr mcop-nosel';
+            corrbtn.innerHTML = "<span class='material-symbols-outlined'>check_indeterminate_small</span>";
+        } else {
+            corrbtn.className = 'mcop-corr mcop-sel';
+            corrbtn.innerHTML = "<span class='material-symbols-outlined'>check</span>";
+        }
+        if(cardmc.getElementsByClassName('mcop-sel').length == 1) {
+            allcorr.style.display = "none";
+            allcorr.className = "mc-allcorr inactive";
+            allcorr.innerHTML = "<span class='material-symbols-outlined small-ico'>close</span> Require all correct answers";
+        } else allcorr.style.display = "inline-block";
+    });
+}
+function generator_txt(card, i_anslist, r, p, txt) {
+    let newans = document.createElement('div');
+    newans.className = "txt-ans-cont" + (p == i_anslist ? "-inv" : "");
+    newans.innerHTML = `
+        <div contenteditable="true" type='input' class='txtans ansdiv' placeholder='...'></div>
+        ${r ? `<button class='txtans-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>` : ``}
+    `;
+    p.appendChild(newans);
+    let input = newans.getElementsByClassName('txtans')[0];
+    let delbtn = newans.getElementsByClassName('txtans-del')[0];
+    init_div(input);
+    if(txt) input.set_val(txt);
+    input.addEventListener('keydown', (e) => {
+        if(e.key != "Tab" || e.shiftKey) return;
+        if(cards.indexOf(card) < cards.length - 1) return;
+        let ans = Array(...p.getElementsByClassName('txt-ans-cont'));
+        let idx = ans.indexOf(newans);
+        if(idx < ans.length - 1) return;
+        e.preventDefault();
+        toNew();
+    });
+    if(r) delbtn.addEventListener('mousedown', () => newans.remove());
+}
+function generator_rank(card, ranklist, txt) {
+    let item = document.createElement('div');
+    item.className = 'ranking-item';
+    item.setAttribute('draggable', true);
+    item.innerHTML = `
+        <div contenteditable="true" type='input' class='rank-item-txt ansdiv' placeholder='...'></div>
+        <button class='rank-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
+    `;
+    ranklist.appendChild(item);
+    item.addEventListener('dragstart', (e) => {
+        drag = item;
+        item.style.backgroundColor = 'rgb(150, 200, 255)';
+        ranklist.append(dragline);
+    });
+    item.addEventListener('dragend', (e) => {
+        if(drag != item) return;
+        item.style.backgroundColor = '';
+        dragline.remove();
+        let top;
+        let bottom;
+        let y = e.pageY;
+        const objects = ranklist.children;
+        for(let i = 0; i < objects.length; i++) {
+            let centroid = computeCenter(objects[i]);
+            if(centroid.y < y) continue;
+            else if((i - 1) >= 0) {
+                top = objects[i - 1];
+                bottom = objects[i];
+                ranklist.insertBefore(item, bottom);
+                break;
+            } else {
+                top = objects[i];
+                item.remove();
+                ranklist.prepend(item);
+                break;
+            }
+        }
+        if(!top) {
+            item.remove();
+            ranklist.appendChild(item);
+        }
+        drag = null;
+    });
+    let input = item.getElementsByClassName('rank-item-txt')[0];
+    let delbtn = item.getElementsByClassName('rank-del')[0];
+    init_div(input);
+    if(txt) input.set_val(txt);
+    input.addEventListener('keydown', (e) => {
+        if(e.key != "Tab" || e.shiftKey) return;
+        if(cards.indexOf(card) < cards.length - 1) return;
+        let ans = Array(...ranklist.getElementsByClassName('ranking-item'));
+        let idx = ans.indexOf(item);
+        if(idx < ans.length - 1) return;
+        e.preventDefault();
+        toNew();
+    });
+    delbtn.addEventListener('mousedown', () => {
+        if(ranklist.children.length <= 2) return;
+        item.remove();
+    });
+}
+function init_mc(card, n, q) {
+    card.innerHTML = `
+        <div class='cardsel'>
+            <button class='mcbtn selbtn selbtn-sel'>Multiple Choice</button>
+            <button class='txtbtn selbtn selbtn-nosel'>Text</button>
+            <button class='rankbtn selbtn selbtn-nosel'>Ranking</button>
+        </div>
+        <div class='cardmain'>
+            <div class='card-q-cont'>
+                Question: <div contenteditable="true" type='input' class='q' placeholder='Question'>${q ?? ""}</div>
+            </div>
+            <div class='card-vals-cont card-mc'></div>
+        </div>
+        <button class='mc-add' tabindex="-1"><span class='material-symbols-outlined small-ico'>add</span> Add option</button>
+        <button class='card-del' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Delete Card</button>
+        <button class='mc-allcorr inactive' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Require all correct answers</button>
+        <div class='deck-divider'></div>
+    `;
+    init_card(card, n);
+    let problem = card.getElementsByClassName('q')[0];
+    init_div(problem);
+    if(q) problem.set_val(q);
+    // Set up multiple choice card functionality
+    let cardmc = card.getElementsByClassName('card-mc')[0];
+    let addbtn = card.getElementsByClassName('mc-add')[0];
+    let allcorr = card.getElementsByClassName('mc-allcorr')[0];
+    allcorr.style.display = "none";
+    // Local generator
+    let generator = (t) => generator_mc(cardmc, card, allcorr, t);
+    addbtn.addEventListener('mousedown', () => generator(false));
+    allcorr.addEventListener('mousedown', () => {
+        if(allcorr.className.indexOf('inactive') > -1) {
+            allcorr.className = "mc-allcorr active";
+            allcorr.innerHTML = "<span class='material-symbols-outlined small-ico'>check</span> Require all correct answers";
+        } else {
+            allcorr.className = "mc-allcorr inactive";
+            allcorr.innerHTML = "<span class='material-symbols-outlined small-ico'>close</span> Require all correct answers";
+        }
+    });
+    for(let i = 0; i < 4; i++) generator(i == 0);
+}
+function init_txt(card, n, q) {
+    card.innerHTML = `
+        <div class='cardsel'>
+            <button class='mcbtn selbtn selbtn-nosel'>Multiple Choice</button>
+            <button class='txtbtn selbtn selbtn-sel'>Text</button>
+            <button class='rankbtn selbtn selbtn-nosel'>Ranking</button>
+        </div>
+        <div class='cardmain'>
+            <div class='card-q-cont'>
+                Question: <div contenteditable="true" type='input' class='q' placeholder='Question'>${q ?? ""}</div>
+            </div>
+            <div class='card-vals-cont card-txt'></div>
+            <button class='txt-add' tabindex="-1"><span class='material-symbols-outlined small-ico'>add</span> Add alt answer</button>
+            <button class='txt-inver quick-action' tabindex="-1">Build inverse <span class='material-symbols-outlined small-ico'>arrow_forward_ios</span></button>
+            <button class='txt-rinver inactive' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Remove inverse</button>
+            <button class='card-del' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Delete Card</button>
+        </div>
+        <div class='inverse'>
+            >> Inverse <<
+            <div class='cardmain'>
+                Question: <div contenteditable="true" type='input' class='q' placeholder='Question'></div>
+                <div class='card-vals-cont card-txt'></div>
+                <button class='txt-i-add txt-add' tabindex="-1"><span class='material-symbols-outlined small-ico'>add</span> Add alt answer</button>
+                <button class='txt-i-back quick-action' tabindex="-1">Exit inverse mode <span class='material-symbols-outlined small-ico'>arrow_forward_ios</span></button>
+            </div>
+        </div>
+        <div class='deck-divider'></div>
+    `;
+    init_card(card, n);
+    let problem = card.getElementsByClassName('q')[0];
+    init_div(problem);
+    if(q) problem.set_val(q);
+    // Set up text card functionality
+    let anslist = card.getElementsByClassName('card-txt')[0];
+    let addbtn = card.getElementsByClassName('txt-add')[0];
+    let confinver = card.getElementsByClassName('txt-inver')[0];
+    let r_inver = card.getElementsByClassName('txt-rinver')[0];
+    let i_addbtn = card.getElementsByClassName('txt-i-add')[0];
+    let i_back = card.getElementsByClassName('txt-i-back')[0];
+    r_inver.style.display = "none";
+
+    let cardsel = card.getElementsByClassName('cardsel')[0];
+    let cardmain = card.getElementsByClassName('cardmain')[0];
+    let inverse = card.getElementsByClassName('inverse')[0];
+    let i_anslist = inverse.getElementsByClassName('card-txt')[0];
+    inverse.style.display = "none";
+
+    init_div(inverse.getElementsByClassName('q')[0])
+    
+    // Generator
+    let generator = (r, p, t) => generator_txt(card, i_anslist, r, p, t);
+    let inverse_ch = (t) => {
+        cardsel.style.display = cardmain.style.display = t ? "none" : "block";
+        inverse.style.display = t ? "block" : "none";
+    };
+    addbtn.addEventListener('mousedown', () => generator(true, anslist));
+    confinver.addEventListener('mousedown', () => {
+        if(r_inver.style.display == "none") {
+            confinver.innerHTML = "Configure inverse <span class='material-symbols-outlined small-ico'>arrow_forward_ios</span>";
+            r_inver.style.display = "inline-block";
+            generator(false, i_anslist, problem.textContent);
+            let i_q = inverse.getElementsByClassName('q')[0];
+            i_q.set_val(anslist.getElementsByClassName('txt-ans-cont')[0].getElementsByClassName('txtans')[0].textContent);
+            i_q.focus();
+        }
+        inverse_ch(true);
+    });
+    i_addbtn.addEventListener('mousedown', () => generator(true, i_anslist));
+    i_back.addEventListener('mousedown', () => inverse_ch(false));
+    r_inver.addEventListener('mousedown', () => {
+        if(r_inver.style.display == "none") return;
+        confinver.innerHTML = "Build inverse <span class='material-symbols-outlined small-ico'>arrow_forward_ios</span>";
+        r_inver.style.display = "none";
+        i_anslist.innerHTML = "";
+    });
+    generator(false, anslist);
+}
+function init_ranking(card, n, q) {
+    card.innerHTML = `
+        <div class='cardsel'>
+            <button class='mcbtn selbtn selbtn-nosel'>Multiple Choice</button>
+            <button class='txtbtn selbtn selbtn-nosel'>Text</button>
+            <button class='rankbtn selbtn selbtn-sel'>Ranking</button>
+        </div>
+        <div class='cardmain'>
+            <div class='card-q-cont'>
+                Question: <div contenteditable="true" type='input' class='q' placeholder='Question'>${q ?? ""}</div>
+            </div>
+            <div class='card-vals-cont card-rank ranking-list'></div>
+            <button class='rank-add' tabindex="-1"><span class='material-symbols-outlined small-ico'>add</span> Add item</button>
+            <button class='card-del' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Delete Card</button>
+            <div class='deck-divider'></div>
+        </div>
+    `;
+    init_card(card, n);
+    let problem = card.getElementsByClassName('q')[0];
+    init_div(problem);
+    if(q) problem.set_val(q);
+    // Set up ranking card functionality
+    let ranklist = card.getElementsByClassName('ranking-list')[0];
+    let addbtn = card.getElementsByClassName('rank-add')[0];
+    // Local generator
+    let generator = () => generator_rank(card, ranklist);
+    addbtn.addEventListener('mousedown', generator);
+    for(let i = 0; i < 2; i++) generator();
+}
+function newCard() {
+    let card = document.createElement('div');
+    let n = cards.length + 1;
+    card.id = "c" + n;
+    card.className = "card";
+    cardContain.appendChild(card);
+    cards.push(card);
+    if(cards.length < 2) return init_mc(card, n);
+    let type = cards[cards.length - 2].getElementsByClassName('selbtn-sel')[0].getElementsByClassName('selbtn-sel')[0];
+    if(!type) return init_mc(card, n);
+    let cn = type.className.split(" ");
+    if(cn.includes('mcbtn')) init_mc(card, n);
+        else if(cn.includes('txtbtn')) init_txt(card, n);
+        else if(cn.includes('rankbtn')) init_ranking(card, n);
+        else initMc(card, n);
+}
+
+
+// --------------------------------------------------- \\
+
+
+fileselecttrigger.addEventListener('click', () => {
+    let files = fileselecttrigger.files;
+    if(files && files[0]) {
+        let file = files[0];
+        if(!file.type.startsWith('image/')) return console.log('failed - file type; ' + file.type);
+        let reader = new FileReader();
+        reader.onload = (e) => {
+            let content = e.target.result;
+            if(content.byteLength > 2 * 1000 * 1000) return console.log("Failed! Past size limit of 2 MB.");
+            deckpic = content;
+            picimg.src = content;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+editpic.addEventListener('mousedown', () => fileselecttrigger.click());
+resetpic.addEventListener('mousedown', () => {
+    deckpic = '';
+    picimg.src = '../../img/defaultdeckpic.png';
+});
+
+
+// --------------------------------------------------- \\
+
+
+function toDeck(err_assigner, is_draft = false, bypass = false) {
+    if(!user) return void err_assigner("Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)");
+    if(name.value == '' && !is_draft) return void err_assigner("You haven't named your deck yet.");
+    let data = {};
+    for(let i = 0; i < cards.length; i++) {
+        let card = cards[i];
+        let type = card.getElementsByClassName('selbtn-sel')[0];
+        if(!type) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
+        let cn = type.className.split(" ");
+        if(cn.includes('mcbtn')) {
+            let cdata = {
+                type: 'mc',
+                op: [],
+                ans: [],
+                req: 0
+            };
+            let q = card.getElementsByClassName('q')[0];
+            if(!q) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
+            let answers = card.getElementsByClassName('mcop');
+            if(answers.length < 2) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
+            if(q.dataset.cnt.length == 0) continue;
+            for(let j = 0; j < answers.length; j++) {
+                let ans = answers[j].getElementsByClassName('mcop-val')[0];
+                if(!ans) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
+                if(ans.dataset.cnt.length > 0) cdata.op.push(ans.dataset.cnt);
+                let iscorr = answers[j].getElementsByClassName('mcop-sel');
+                if(iscorr.length > 0) cdata.ans.push(j);
+            }
+            if(card.getElementsByClassName('active').length > 0) cdata.req = 1;
+            if(data[q.dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            data[q.dataset.cnt] = cdata;
+        } else if(cn.includes('txtbtn')) {
+            let cdata = {
+                type: 'txt',
+                ans: []
+            };
+            let q = card.getElementsByClassName('q')[0];
+            let answers = card.getElementsByClassName('txt-ans-cont');
+            if(answers.length < 1 || !q) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
+            if(q.dataset.cnt.length == 0) continue;
+            for(let j = 0; j < answers.length; j++) {
+                let ans = answers[j].getElementsByClassName('txtans')[0];
+                if(!ans) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
+                if(ans.dataset.cnt.length > 0) cdata.ans.push(ans.dataset.cnt);
+            }
+            let i_cdata = {
+                type: 'txt',
+                ans: [],
+                invfrom: q.dataset.cnt
+            }
+            let inv = card.getElementsByClassName('inverse')[0];
+            let ans = inv.getElementsByClassName('txt-ans-cont-inv')
+            if(inv.style.display == "block" && (!bypass || is_draft)) return void err_assigner("Looks like there's a text card still in inverse mode; we can't configure it yet. (Or, try again to bypass this warning and force-configure the card.)");
+            if(ans.length > 0) {
+                i_cdata.ans = [];
+                for(let j = 0; j < ans.length; j++) {
+                    let a = ans[j].getElementsByClassName('txtans')[0];
+                    if(!a) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
+                    if(a.dataset.cnt.length > 0) i_cdata.ans.push(a.dataset.cnt);
+                }
+                if(data[inv.getElementsByClassName('q')[0].dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+                data[inv.getElementsByClassName('q')[0].dataset.cnt] = i_cdata;
+            }
+            if(data[q.dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            data[q.dataset.cnt] = cdata;
+        } else if(cn.includes('rankbtn')) {
+            let cdata = {
+                type: 'ranking',
+                ans: []
+            };
+            let q = card.getElementsByClassName('q')[0];
+            if(!q) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
+            if(q.dataset.cnt.length == 0) continue;
+            let items = card.getElementsByClassName('ranking-item');
+            for(let j = 0; j < items.length; j++) {
+                let txt = items[j].getElementsByClassName('rank-item-txt')[0];
+                if(!txt) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
+                if(txt.dataset.cnt.length > 0) cdata.ans.push(txt.dataset.cnt);
+            }
+            if(data[q.dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            data[q.dataset.cnt] = cdata;
+        }
+    }
+    data = {
+        desc: description.value,
+        contnt: data
+    };
+    return [name.value, deckpic, data, isPublic.checked];
+}
+function appendToCards(contnt) {
+    let d_keys = Object.keys(contnt);
+    for(let i = 0; i < d_keys.length; i++)
+        if(contnt[d_keys[i]].invfrom) {
+            contnt[contnt[d_keys[i]].invfrom].inv = contnt[d_keys[i]];
+            contnt[contnt[d_keys[i]].invfrom].inv.q = d_keys[i];
+            delete contnt[d_keys[i]];
+            d_keys.splice(i, 1);
+        }
+    for(let i = 0; i < d_keys.length; i++) {
+        let card = contnt[d_keys[i]];
+        let q = d_keys[i];
+        let carddiv = document.createElement("div");
+        let n = cards.length + 1;
+        carddiv.id = "c" + n;
+        carddiv.className = "card";
+        cardContain.appendChild(carddiv);
+        cards.push(carddiv);
+        switch(card.type) {
+            case "mc":
+                init_mc(carddiv, n);
+                carddiv.getElementsByClassName('q')[0].set_val(q);
+                let cardmc = carddiv.getElementsByClassName('card-mc')[0];
+                let allcorr = carddiv.getElementsByClassName('mc-allcorr')[0];
+                cardmc.innerHTML = "";
+                for(let i = 0; i < card.op.length; i++) generator_mc(cardmc, carddiv, allcorr, card.ans.indexOf(i) > -1, card.op[i]);
+            break;
+            case "txt":
+                init_txt(carddiv, n);
+                carddiv.getElementsByClassName('q')[0].set_val(q);
+                let anslist = carddiv.getElementsByClassName('card-txt')[0];
+                let inv = carddiv.getElementsByClassName('inverse')[0];
+                let i_anslist = inv.getElementsByClassName('card-txt-i')[0];
+                if(card.ans.length == 0) continue;
+                anslist.getElementsByClassName('txt-ans-cont')[0].children[0].set_val(card.ans[0]);
+                for(let i = 1; i < card.ans.length; i++) generator_txt(carddiv, i_anslist, true, anslist, card.ans[i]);
+                if(card.inv) {
+                    let confinver = carddiv.getElementsByClassName('txt-inver')[0];
+                    let r_inver = carddiv.getElementsByClassName('txt-rinver')[0];
+                    let inv = carddiv.getElementsByClassName('inverse')[0];
+                    let i_anslist = inv.getElementsByClassName('card-txt')[0];
+                    confinver.innerHTML = "Configure inverse <span class='material-symbols-outlined small-ico'>arrow_forward_ios</span>";
+                    r_inver.style.display = "inline-block";
+                    let generator = (r, p, a) => generator_txt(carddiv, i_anslist, r, p, a);
+                    generator(false, i_anslist, card.inv.ans[0]);
+                    for(let i = 1; i < card.inv.ans.length; i++) generator(true, i_anslist, card.inv.ans[i]);
+                    inv.getElementsByClassName('q')[0].set_val(card.inv.q);
+                }
+            break;
+            case "ranking":
+                init_ranking(carddiv, n);
+                carddiv.getElementsByClassName('q')[0].set_val(q);
+                let rankinglist = carddiv.getElementsByClassName("ranking-list")[0];
+                rankinglist.innerHTML = '';
+                for(let i = 0; i < card.ans.length; i++) generator_rank(carddiv, rankinglist, card.ans[i]);
+            break;
+        }
+    }
+}
+
+
+// --------------------------------------------------- \\
+
+
+window.addEventListener('dragover', (e) => {
+    if(!drag) return;
+    let list = drag.parentNode;
+    if(dragline.parentNode != list) list.prepend(dragline);
+    let top, bottom, y = e.pageY;
+    const objects = list.children;
+    for(let i = 0; i < objects.length; i++) {
+        let centroid = computeCenter(objects[i]);
+        if(centroid.y < y) continue;
+        else if((i - 1) >= 0) {
+            top = objects[i - 1];
+            bottom = objects[i];
+            list.insertBefore(dragline, bottom);
+            break;
+        } else {
+            top = objects[i];
+            dragline.remove();
+            list.prepend(dragline);
+            break;
+        }
+    }
+    if(!top) {
+        dragline.remove();
+        list.appendChild(dragline);
+    }
+});
+window.addEventListener("keydown", (e) => {
+    if(e.target === addCard && (e.key === "Enter" || e.key === " ")) {
+        newCard();
+        document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const mcbtns = document.querySelectorAll(".mcbtn");
+        mcbtns[mcbtns.length - 1].focus();
+    }
+});
+
+
+// --------------------------------------------------- \\
+
+
+async function init() {
+    let [success, data] = await UserGateway.getuser();
+    if(!success) return;
+    user = data;
+    newCard();
+    cards[cards.length - 1].getElementsByClassName('q')[0].focus();
+    addCard.addEventListener('mousedown', newCard);
+    fileselecttrigger.addEventListener('click', () => {
+        let files = fileselecttrigger.files;
+        if(files && files[0]) {
+            let file = files[0];
+            if(!file.type.startsWith('image/')) return console.log('failed - file type; ' + file.type);
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                let content = e.target.result;
+                if(content.byteLength > 2 * 1000 * 1000) return console.log("Failed! Past size limit of 2 MB.");
+                deckpic = content;
+                picimg.src = content;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    editpic.addEventListener('mousedown', () => fileselecttrigger.click());
+    resetpic.addEventListener('mousedown', () => {
+        deckpic = '';
+        picimg.src = '../../img/defaultdeckpic.png';
+    });
+}
+function active() {
+    return user != null;
+}
+
+const DeckBind = {
+    init,
+    active,
+    user: () => user,
+    cards: () => cards,
+    computeCenter,
+    init_card,
+    typeset,
+    renderable,
+    init_div,
+    toNew,
+    init_mc,
+    init_txt,
+    init_ranking,
+    newCard,
+    toDeck,
+    appendToCards
+};
+
+export { DeckBind };

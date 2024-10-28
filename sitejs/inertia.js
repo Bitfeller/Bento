@@ -1,12 +1,8 @@
 import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 import { UserGateway } from "../server/client-gateway/user-gateway.js";
 
-function random(a, b) {
-    return Math.floor(Math.random() * (b - a) + a + 0.5);
-}
-function round(a) {
-    return Math.floor(a + 0.5);
-}
+let random = (a, b) => Math.floor(Math.random() * (b - a) + a + 0.5);
+let round = (a) => Math.floor(a + 0.5);
 
 const input = document.getElementById("input");
 const pause = document.getElementById("pause");
@@ -14,10 +10,8 @@ const restart = document.getElementById("restart");
 const asteroidImg = document.getElementById("asteroidImg");
 const canvas = document.getElementById("game");
 const render = canvas.getContext("2d");
-
 const scoreEl = document.getElementById("score");
 const levelEl = document.getElementById("level");
-
 let width, height;
 
 window.onresize = () => {
@@ -25,7 +19,7 @@ window.onresize = () => {
     height = (window.innerHeight - 63) * devicePixelRatio;
     canvas.width = width;
     canvas.height = height;
-}; 
+};
 window.onresize();
 
 let paused = false;
@@ -33,7 +27,6 @@ let ended = false;
 let deck;
 let deckData = [];
 let asteroids = [];
-
 let frameCount = 0;
 let mainfn;
 let score = 0;
@@ -44,19 +37,13 @@ render.textAlign = "center";
 
 function createAsteroid() {
     let q = round(random(0, deckData.length - 1));
-    while(deckData[q].type == "ranking") {
-        q = round(random(0, deckData.length - 1));
-    }
-    let card = deckData[q];
-    return new Asteroid(card);
+    return new Asteroid(deckData[q]);
 }
-
-function updateDisplay () {
+function updateDisplay() {
     scoreEl.innerHTML = score;
     levelEl.innerHTML = level;
 }
-
-function endGame () {
+function endGame() {
     asteroids = [];
     ended = true;
     window.clearInterval(mainfn);
@@ -67,25 +54,18 @@ function endGame () {
     updateDisplay();
 }
 
-function pauseGame () {
+function pauseGame() {
     if(ended) return;
-    if(!paused) {
-        paused = true;
-        asteroids.forEach((ast) => ast.render());
-    } else {
-        paused = false;
-        requestAnimationFrame(frame);
-    }
+    paused = !paused;
+    if(paused) asteroids.forEach((ast) => ast.render());
+    else requestAnimationFrame(frame);
 }
-
-function gameStart () {
+function gameStart() {
     mainfn = window.setInterval(() => {
         frameCount++;
         if(paused) return;
         if(ended) return;
-        if(frameCount % (30 - level < 1 ? 1 : (30 - level) * 3) == 0) {
-            asteroids.push(createAsteroid());
-        }
+        if(frameCount % (30 - level < 1 ? 1 : (30 - level) * 3) == 0) asteroids.push(createAsteroid());
         if(frameCount % 100 == 0) {
             level++;
             updateDisplay();
@@ -114,24 +94,6 @@ function frame() {
     if(paused || ended) return;
     render.clearRect(0, 0, width, height);
     asteroids.forEach((ast) => ast.render());
-    // if(paused) return;
-    // if(ended) return;
-    // asteroids.forEach((asteroid) => {
-    //     if(ended) return;
-    //     asteroid.y += (asteroid.speed) + level;
-    //     render.drawImage(asteroidImg, asteroid.x, asteroid.y, 500, 500);
-    //     render.fillStyle = "rgb(255, 255, 255)";
-    //     render.rect(asteroid.x, asteroid.y, 500, 500);
-    //     render.font = "10px Kadwa";
-    //     render.fillStyle = "black";
-    //     let text = wrapText(asteroid.text + " btw this is some extra text that is right here", 100);
-    //     for(let i = 0; i < text.length; i++) {
-    //         render.fillText(text[i], asteroid.x + 250, asteroid.y + 400 + i * 15);
-    //     }
-    //     if(asteroid.y + 200 > height) {
-    //         endGame();
-    //     }
-    // });
     if(ended) return;
     requestAnimationFrame(frame);
 }
@@ -144,9 +106,7 @@ class Asteroid {
         this.q = card.q;
         this.answer = card.type == "txt" ? card.ans : [];
         if(card.type == "mc") {
-            for(let i = 0; i < card.ans.length; i++) {
-                this.answer.push(card.op[card.ans[i]]);
-            }
+            for(let i = 0; i < card.ans.length; i++) this.answer.push(card.op[card.ans[i]]);
         }
         this.wrappedText = wrapText(this.q, 100);
     }
@@ -166,9 +126,7 @@ class Asteroid {
         render.rect(this.x, this.y, 500, 500);
         render.font = "10px Kadwa";
         render.fillStyle = "black";
-        for(let i = 0; i < this.wrappedText.length; i++) {
-            render.fillText(this.wrappedText[i], this.x + 250, this.y + 430 + i * 15);
-        }
+        for(let i = 0; i < this.wrappedText.length; i++) render.fillText(this.wrappedText[i], this.x + 250, this.y + 430 + i * 15);
         if(this.y + 200 > height) endGame();
     }
 }
@@ -177,17 +135,12 @@ class Asteroid {
     let [success, user] = await UserGateway.getuser();
     if (!success) return;
     const paramList = new URLSearchParams(window.location.search);
-    if(!paramList.get("ds")) {
-        window.location.href = "/home";
-        return;
-    }
+    if(!paramList.get("ds")) return void (window.location.href = "/home");
     
     let decks = paramList.get("ds").split(",");
-    decks.forEach((val, idx) => {
-        decks[idx] = parseInt(val);
-    });
-    let ntronly = parseFloat(paramList.get("m")) == 1 ? true : false;
-    let randomTerms = parseFloat(paramList.get("sh")) == 1 ? true : false;
+    decks.forEach((val, idx) => decks[idx] = parseInt(val));
+    let ntronly = parseFloat(paramList.get("m")) == 1;
+    let randomTerms = parseFloat(paramList.get("sh")) == 1;
 
     let deckContnt = [];
     let updateReviews = false;
@@ -241,7 +194,7 @@ class Asteroid {
     // Add terms to deckContnt
     for(let i = 0; i < deckContnt.length; i++) {
         for(let j = 0; j < deckContnt[i].length; j++) {
-            deckData.push(deckContnt[i][j]);
+            if(deckContnt[i][j].type != "ranking") deckData.push(deckContnt[i][j]);
         }
     }
     // Scramble terms if needed
@@ -268,11 +221,7 @@ class Asteroid {
         })
     });
     pause.addEventListener("mousedown", pauseGame);
-    restart.addEventListener("mousedown", () => {
-        window.location.reload();
-    });
-
+    restart.addEventListener("mousedown", () => window.location.reload());
     window.LOADED();
-    
     gameStart();
 })();
