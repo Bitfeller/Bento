@@ -25,7 +25,10 @@
             </svg>
         </div>
         <div class="bento-box review-schedule" id="deck-reminders">
-            <h3>Upcoming Reviews:</h3>
+            <input type='text' id='search-reviews' placeholder='Search...'>
+            <div class="bento-box container">
+
+            </div>
             <!-- Test Data -->
             <!-- <div class="review-container">
                 <span>Test Deck Here</span>
