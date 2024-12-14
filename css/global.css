@@ -13,6 +13,30 @@
 
     --accent-1: #cadda0;
 }
+@font-face {
+    font-family: "Kadwa";
+    src: url(/css/fonts/Kadwa/Kadwa-Regular.ttf);
+}
+@font-face {
+    font-family: "Karla";
+    src: url(/css/fonts/Karla/Karla-VariableFont_wght.ttf);
+}
+/* @font-face {
+    font-family: 'Material Symbols Outlined';
+    src: url(/css/fonts/MaterialSymbolsOutlined.woff2);
+}
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-size: 24px;
+    display: block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+} */
 * {
     color: var(--light-text);
     font-family: "Kadwa", "Karla", sans-serif;
@@ -57,7 +81,6 @@ body,
 .container {
     overflow-x: hidden;
     overflow-y: visible;
-    scrollbar-width: thin;
 }
 button {
     border-radius: 5px;
