@@ -27,7 +27,7 @@
             </div>
             <div class="big-box" id="deck-big-box">
                 <h2>Deck Picker</h2>
-                <span class="material-symbols-outlined" id="deckSelectAll">indeterminate_check_box</span>
+                <span class="material-symbols-outlined" id="deckSelectAll">check_box_outline_blank</span>
                 <div class="deck-container">
                 </div>
             </div>

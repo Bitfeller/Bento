@@ -24,6 +24,7 @@ const cardsSeen = {};
 let updateFn;
 
 let lastCorrect = false;
+let reshow_correct = undefined;
 
 // -------------------------------------------------------- \\
 
@@ -203,7 +204,6 @@ function fetchCurrentDecks() {
 }
 function fetchProblem() {
     if(!active) return {dead: true};
-    console.log(currSet);
     return gameData[currSet[card]];
 }
 function getProgress() {
@@ -240,8 +240,9 @@ function check(answer) {
                 if(answer[i] !== problem.ans[i]) return false;
             }
             return true;
-        case "matching":
-            console.error("matching doesn't exist, idiot!");
+        case "mtch":
+            // Note that game.js already handles mtch, so we don't need to
+            console.error("can't check mtch; use game.js");
     }
 }
 function isCorrect(answer) {
@@ -266,8 +267,9 @@ function isCorrect(answer) {
                 if(answer[i] !== problem.ans[i]) return updateLastCorrect(false)
             }
             return updateLastCorrect(true);
-        case "matching":
-            console.error("matching doesn't exist, idiot!");
+        case "mtch":
+            // Note that game.js already handles mtch, so we don't need to
+            console.error("cannot check mtch; use game.js");
     }
 }
 function getLastCorrect() {
@@ -277,7 +279,13 @@ function markCorrect() {
     lastCorrect = true;
 }
 function _continue() {
-    return lastCorrect ? correct() : incorrect();
+    return (reshow_correct == undefined ? lastCorrect : reshow_correct) ? correct() : incorrect();
+}
+function reshow() {
+    if(reshow_correct == undefined) reshow_correct = lastCorrect;
+    if(!lastCorrect && totalWrong[currSet[card]]) totalWrong[currSet[card]]++; else if(!lastCorrect) totalWrong[currSet[card]] = 1;
+    lastCorrect = false;
+    return true;
 }
 function isDead() {
     return active == false;
@@ -285,6 +293,7 @@ function isDead() {
 // -- Local functions
 function correct() {
     lastCorrect = false;
+    reshow_correct = undefined;
     let success = iterateCard();
     if(!success) active = false;
     return true;
@@ -309,6 +318,7 @@ const Game = {
     getLastCorrect,
     check,
     continue: _continue,
+    reshow,
     isDead,
 };
 export { Game };
