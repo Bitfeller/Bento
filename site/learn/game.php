@@ -35,7 +35,7 @@
             </div>
             <button id="answerbtn">Answer</button>
             <div id="answer_marker" class="line-up-icons">Mark Answer as Correct (Space) <span class="material-symbols-outlined">chevron_right</span></div>
-            <div id="reshow_q" class="line-up-icons">Reshow Question (R) <span class="material-symbols-outlined">chevron_right</span></div>
+            <div id="reshow_marker" class="line-up-icons">Reshow Question (R) <span class="material-symbols-outlined">chevron_right</span></div>
         </div>
         <div id="answer_info"></div>
     </div>
