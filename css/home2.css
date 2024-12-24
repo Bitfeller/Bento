@@ -1,7 +1,12 @@
 .home-grid {
     display: grid;
+    position: relative;
     grid-template-columns: 1fr 0.5fr 0.5fr 0.5fr;
     grid-template-rows: 0.75fr 0.75fr 1fr;
+    grid-template-areas:
+    "modal modal modal content"
+    "modal modal modal content"
+    "modal modal modal content";
     grid-gap: 15px;
     width: calc(100% - 20px);
     margin: 20px auto;
@@ -74,7 +79,20 @@
     overflow: hidden;
     width: auto;
     white-space: nowrap;
+}
+.review-name:has(> span) {
     text-overflow: ellipsis;
+
+}
+.review-name:has(> span):hover {
+    text-decoration: underline;
+}
+.review-container:has( span.material-symbols-outlined) {
+    cursor: pointer;
+    transition: 0.3s;
+}
+.review-container:has( span.material-symbols-outlined):hover {
+    background-color: var(--lighter-gray);
 }
 .review-schedule span.material-symbols-outlined {
     font-size: 13px;
@@ -104,6 +122,21 @@
     animation-name: sushi-shine;
     animation-duration: 5s;
     animation-iteration-count: infinite;
+}
+#bento-modal {
+    position: absolute;
+    grid-area: modal;
+    height: calc(100% - 26px);
+    width: calc(100% - 26px);
+    z-index: 10;
+    display: flex;
+    border: var(--gray) 3px solid; 
+    border-radius: 5px;
+    background-color: var(--dark-gray); 
+    padding: 10px;
+}
+#search-reviews {
+    font-size: 12pt;
 }
 @keyframes sushi-shine {
     50% {
