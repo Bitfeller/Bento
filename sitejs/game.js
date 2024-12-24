@@ -6,6 +6,7 @@ const answerbtn = document.getElementById("answerbtn");
 const progressNumbers = document.getElementById("progressNumbers");
 const progressBar = document.getElementById("progressBar");
 const answerMarker = document.getElementById("answer_marker");
+const reshowMarker = document.getElementById("reshow_marker");
 const info = document.getElementById("answer_info");
 const ans_a = document.getElementById("ans_a");
 
@@ -19,6 +20,8 @@ let requireCorrect = false;
 let dragElements = [];
 let centroids = [];
 let dragging;
+let termSelect, defSelect;
+let incorrectMatch = 0;
 let dragLine = document.createElement("div");
 // Rendering testing
 let r_temp = document.createElement('div');
@@ -159,6 +162,7 @@ function refresh() {
                         }
                         op_i.innerHTML = `<p class="answer-symbol">❌</p> ` + op_i.innerHTML;
                         answerMarker.style.display = "block";
+                        reshowMarker.style.display = "block";
                         answerbtn.style.display = "block";
                         answerbtn.innerHTML = "Continue >>> (Enter)";
                         toProceed = true;
@@ -266,7 +270,94 @@ function refresh() {
                 dragElements.push(el);
             }
         break;
-        case "matching":
+        case "mtch":
+            selected = false;
+            incorrectMatch = 0;
+            let terms = document.createElement("div");
+            terms.className = "matching-terms";
+            terms.id = "matching-terms";
+            cont_a.appendChild(terms);
+            let defs = document.createElement("div");
+            defs.className = "matching-defs";
+            defs.id = "matching-defs";
+            cont_a.appendChild(defs);
+            objs.push(terms);
+            objs.push(defs);
+            let termList = data.ans.slice();
+            let defsList = data.ans.slice();
+            // if you found this, go touch some grass.
+            for(let i = 0; i < data.ans.length; i++) {
+                let t_idx = Math.floor(
+                    Math.random() * (termList.length - 1) + 0.5,
+                );
+                let d_idx = Math.floor(
+                    Math.random() * (defsList.length - 1) + 0.5,
+                );
+                let t_item = termList[t_idx][0];
+                let d_item = defsList[d_idx][1];
+                let t_el = document.createElement("div");
+                t_el.className = "matching-item";
+                t_el.id = "item-" + data.ans.indexOf(termList[t_idx]);
+                t_el.innerHTML = `<p>${t_item}</p>`;
+                typeset(t_el);
+                termList.splice(t_idx, 1);
+                terms.appendChild(t_el);
+                let d_el = document.createElement("div");
+                d_el.className = "matching-item";
+                d_el.id = "item-" + data.ans.indexOf(defsList[d_idx]);
+                d_el.innerHTML = `<p>${d_item}</p>`;
+                typeset(d_el);
+                defsList.splice(d_idx, 1);
+                defs.appendChild(d_el);
+                t_el.addEventListener("mousedown", () => {
+                    if(termSelect) return;
+                    termSelect = t_el;
+                    termSelect.style["background-color"] = "rgba(0, 255, 0, 0.5)";
+                    if(defSelect) {
+                        if(termSelect.id == defSelect.id) {
+                            termSelect.remove();
+                            defSelect.remove();
+                        } else {
+                            incorrectMatch++;
+                        }
+                        let [lt, ld] = [termSelect, defSelect];
+                        termSelect.style["background-color"] = "rgba(255, 0, 0, 0.5)";
+                        defSelect.style["background-color"] = "rgba(255, 0, 0, 0.5)";
+                        window.setTimeout(() => {
+                            lt.style["background-color"] = "rgba(0, 0, 0, 0)";
+                            ld.style["background-color"] = "rgba(0, 0, 0, 0)";
+                        }, 500);
+                        termSelect = undefined;
+                        defSelect = undefined;
+                        if(terms.children.length == 0) answerHandler();
+                    }
+                });
+                d_el.addEventListener("mousedown", () => {
+                    if(defSelect) return;
+                    defSelect = d_el;
+                    defSelect.style["background-color"] = "rgba(0, 255, 0, 0.5)";
+                    if(termSelect) {
+                        if(termSelect.id == defSelect.id) {
+                            termSelect.remove();
+                            defSelect.remove();
+                        } else {
+                            incorrectMatch++;
+                        }
+                        let [lt, ld] = [termSelect, defSelect];
+                        termSelect.style["background-color"] = "rgba(255, 0, 0, 0.5)";
+                        defSelect.style["background-color"] = "rgba(255, 0, 0, 0.5)";
+                        window.setTimeout(() => {
+                            lt.style["background-color"] = "rgba(0, 0, 0, 0)";
+                            ld.style["background-color"] = "rgba(0, 0, 0, 0)";
+                        }, 500);
+                        termSelect = undefined;
+                        defSelect = undefined;
+                        if(defs.children.length == 0) answerHandler();
+                    }
+                });
+            }
+            answerbtn.innerHTML = "Skip >>> (Backspace)";
+            answerbtn.style.display = "block";
         break;
     }
     var progress = Game.getProgress();
@@ -283,6 +374,7 @@ function answerHandler() {
         if (Game.fetchProblem().type == "txt" && requireCorrect && !Game.getLastCorrect()) return;
         Game.continue();
         answerMarker.style.display = "none";
+        reshowMarker.style.display = "none";
         answerbtn.innerHTML = "Answer";
         ans_a.innerHTML = "";
         ans_a.style.display = "none";
@@ -316,6 +408,7 @@ function answerHandler() {
                             if(data.ans.indexOf(j) > -1 && mc_sel.indexOf(j) < 0) item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
                         }
                         answerMarker.style.display = "block";
+                        reshowMarker.style.display = "block";
                         answerbtn.style.display = "block";
                         answerbtn.innerHTML = "Continue >>> (Enter)";
                         toProceed = true;
@@ -345,6 +438,7 @@ function answerHandler() {
                         objs[0].textContent = "";
                     }
                     answerMarker.style.display = "block";
+                    reshowMarker.style.display = "block";
                     toProceed = true;
                 }
                 break;
@@ -373,11 +467,52 @@ function answerHandler() {
                     answerbtn.innerHTML = "Continue >>> (Enter)";
                     answerbtn.focus();
                     answerMarker.style.display = "block";
+                    reshowMarker.style.display = "block";
                     toProceed = true;
                 }
                 break;
-            case "matching":
-                console.error("matching doesn't exist :/");
+            case "mtch":
+                selected = false;
+                if(objs[0].children.length > 0 || incorrectMatch >= data.ans.length / 3) {
+                    // skipped or too many wrong
+                    ans_a.style.display = "block";
+                    let termList = document.createElement("div");
+                    termList.className = "matching-terms";
+                    termList.id = "ans-matching-terms";
+                    ans_a.appendChild(termList);
+                    let defsList = document.createElement("div");
+                    defsList.className = "matching-defs";
+                    defsList.id = "ans-matching-defs";
+                    ans_a.appendChild(defsList);
+                    for(let i = 0; i < data.ans.length; i++) {
+                        let item = data.ans[i];
+                        let t_el = document.createElement("div");
+                        t_el.className = "matching-item";
+                        t_el.id = "item-" + i;
+                        t_el.style["background-color"] = `var(--matching-${i % 3 + 1})`;
+                        t_el.innerHTML = `<p>${item[0]}</p>`;
+                        typeset(t_el);
+                        termList.appendChild(t_el);
+                        let d_el = document.createElement("div");
+                        d_el.className = "matching-item";
+                        d_el.id = "item-" + i;
+                        d_el.style["background-color"] = `var(--matching-${i % 3 + 1})`;
+                        d_el.innerHTML = `<p>${item[1]}</p>`;
+                        typeset(d_el);
+                        defsList.appendChild(d_el);
+                    }
+                    
+                    answerMarker.style.display = "block";
+                    reshowMarker.style.display = "block";
+                    answerbtn.style.display = "block";
+                    answerbtn.innerHTML = "Continue >>> (Enter)";
+                    toProceed = true;
+                } else {
+                    Game.markCorrect(); // Mark as correct since we already checked
+                    Game.continue();
+                    contlabel();
+                    refresh();
+                }
                 break;
         }
     }
@@ -451,19 +586,29 @@ answerMarker.addEventListener("mousedown", () => {
     Game.markCorrect();
     Game.continue();
     answerMarker.style.display = "none";
+    reshowMarker.style.display = "none";
     answerbtn.innerHTML = "Answer";
     ans_a.innerHTML = "";
     ans_a.style.display = "none";
     toProceed = false;
     refresh();
 });
+reshowMarker.addEventListener("mousedown", () => {
+    Game.reshow();
+    answerMarker.style.display = "none";
+    reshowMarker.style.display = "none";
+    answerbtn.innerHTML = "Answer";
+    ans_a.innerHTML = "";
+    ans_a.style.display = "none";
+    toProceed = false;
+    refresh();
+})
 let mc_keynum = "";
 let prob;
 window.addEventListener("keydown", (e) => {
-    if(selected) return;
     let data = Game.fetchProblem();
     let nums = "0123456789";
-    if(data.type == "mc" && (nums.indexOf(e.key) > -1 || e.key == "Enter")) {
+    if(data.type == "mc" && (nums.indexOf(e.key) > -1 || e.key == "Enter") && !toProceed && !selected) {
         if (prob && data.q != prob) {
             mc_keynum = "";
             mc_sel = [];
@@ -506,18 +651,20 @@ window.addEventListener("keydown", (e) => {
                 cont_a.children[mc_sel[i] - 1].innerHTML = `<p class="answer-symbol">❌</p> ` + cont_a.children[mc_sel[i] - 1].innerHTML;
             }
             answerMarker.style.display = "block";
+            reshowMarker.style.display = "block";
             answerbtn.style.display = "block";
             answerbtn.innerHTML = "Continue >>> (Enter)";
             toProceed = true;
         }
         mc_sel = [];
     }
+    if(data.type == "mtch" && e.key == "Backspace") answerHandler();
     if(!toProceed) return;
     if(e.key == "Enter") e.preventDefault();
     if(e.key == "Enter" && (requireCorrect ? answerbtn.disabled == false : e.target != objs[0])) {
-        e.preventDefault();
         Game.continue();
         answerMarker.style.display = "none";
+        reshowMarker.style.display = "none";
         answerbtn.innerHTML = "Answer";
         ans_a.innerHTML = "";
         ans_a.style.display = "none";
@@ -530,6 +677,19 @@ window.addEventListener("keydown", (e) => {
         Game.markCorrect();
         Game.continue();
         answerMarker.style.display = "none";
+        reshowMarker.style.display = "none";
+        answerbtn.innerHTML = "Answer";
+        ans_a.innerHTML = "";
+        ans_a.style.display = "none";
+        toProceed = false;
+        refresh();
+    }
+    if(e.key == "r" && !e.ctrlKey && e.target != objs[0]) {
+        e.preventDefault();
+        // Reshow
+        Game.reshow();
+        answerMarker.style.display = "none";
+        reshowMarker.style.display = "none";
         answerbtn.innerHTML = "Answer";
         ans_a.innerHTML = "";
         ans_a.style.display = "none";
@@ -551,4 +711,11 @@ window.addEventListener("input", () => {
             answerbtn.disabled = false;
         }
     }
+});
+window.addEventListener("beforeunload", (e) => {
+    let progress = Game.getProgress();
+    if(progress.seen == 0 || progress.remaining == 0) return;
+    let confirm = "Are you sure you want to leave learn mode and stop reviewing?";
+    (e || window.event).returnValue = confirm;
+    return confirm;
 });
