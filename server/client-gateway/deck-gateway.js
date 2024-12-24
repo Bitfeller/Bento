@@ -50,10 +50,6 @@ class DeckGateway {
                 data = res.reason;
             } else {
                 data = JSON.parse(res.data);
-                for(var i = 0; i < data.length; i++) {
-                    data[i].data = JSON.parse(data[i].data);
-                    data[i].viewdata = JSON.parse(data[i].viewdata);
-                }
                 // Sort results
                 if(searchTerms) {
                     let scores = new Array(data.length).fill(0);
@@ -74,15 +70,11 @@ class DeckGateway {
                         }
                         return Math.min(n_t, o_t);
                     });
-                    for(let i = 0; i < data.length; i++) {
-                        console.log(data[i], scores[i]);
-                    }
                     data = data.sort((a, b) => {
                         let aIdx = data.indexOf(a);
                         let bIdx = data.indexOf(b);
                         return scores[aIdx] - scores[bIdx];
                     });
-                    console.log(data);
                 }
             }
         }).catch(function(err) {
@@ -96,7 +88,7 @@ class DeckGateway {
             return [false, "invalid params"];
         }
         var success, reason;
-        await fetch(spath + "/php-db/deck/deck_add.php", {
+        await fetch(spath + "/php-db/deck/deck_new.php", {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
@@ -129,7 +121,7 @@ class DeckGateway {
             return [false, "invalid params"];
         }
         var success, data;
-        await fetch(spath + "/php-db/deck/deck_open.php", {
+        await fetch(spath + "/php-db/deck/deck_get.php", {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
@@ -155,7 +147,7 @@ class DeckGateway {
             } else {
                 data = JSON.parse(res.data);
                 if(data.data) data.data = JSON.parse(data.data);
-                data.viewdata = JSON.parse(data.viewdata);
+                if(data.deckpic) data.deckpic = JSON.parse(data.deckpic);
             }
         }).catch(function(err) {
             if(err == "none") {return;}
@@ -168,7 +160,7 @@ class DeckGateway {
             return [false, "invalid params"];
         }
         var success, reason;
-        await fetch(spath + "/php-db/deck/deck_modify.php", {
+        await fetch(spath + "/php-db/deck/deck_edit.php", {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
@@ -194,6 +186,10 @@ class DeckGateway {
             console.log("backend: " + err);
         })
         return [success, reason];
+    }
+    constructor() {
+        console.log("backend: invalid call of class.");
+        throw new Error("backend");
     }
 }
 

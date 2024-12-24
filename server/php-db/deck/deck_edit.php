@@ -14,6 +14,7 @@
     $setting = $data['setting'];
     $val = $data['val'];
     try {
+        $conf = get_server_config();
         $conn = connect_to_db();
         // Fetch deck
         $sql = "SELECT * FROM decks WHERE id = ? AND owner = ?;";
@@ -50,7 +51,7 @@
                 success();
             break;
             case "deckpic":
-                if($val !== "") {
+                if($val !== "" && $conf['check_image'] == true) {
                     try {
                         $data = explode(",", $val, 2);
                         $data = $data[1];
@@ -66,50 +67,13 @@
                 if(strlen($val) > 2 * 1000 * 1000) {
                     fail('size limit');
                 }
-                $sql = "UPDATE decks SET deckpic = ? WHERE id = ?;";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("si", $val, $id);
-                $stmt->execute();
-                $stmt->close();
+                $path = $conf['file_db'] . 'decks/primary/' . $id . '.pic';
+                file_put_contents($path, data: $val);
                 success();
             case "data":
                 $val = json_decode($val, false);
                 $safeVal = sanitize($val);
                 $safeVal = json_encode($safeVal);
-                // $val = json_decode($val, true);
-                // if(!isset($val)) {
-                //     fail("exception: data isn't valid JSON.");
-                // }
-                // $safeVal = [];
-                // $safeVal['desc'] = htmlspecialchars(strip_tags($val['desc']));
-                // $safeVal['contnt'] = (object) [];
-                // // Check for duplicate questions
-                // $problems = [];
-                // foreach($val['contnt'] as $prob => $data) {
-                //     $newProb = htmlspecialchars(strip_tags($prob));
-                //     if(in_array($newProb, $problems)) {
-                //         fail('same problem');
-                //     }
-                //     $problems[] = $newProb;
-                //     $newItem = [];
-                //     $newItem['type'] = htmlspecialchars(strip_tags($data['type']));
-                //     if(isset($data['op'])) {
-                //         $newItem['op'] = [];
-                //         foreach($data['op'] as $op) {
-                //             $newItem['op'][] = htmlspecialchars(strip_tags($op));
-                //         }
-                //     }
-                //     if(gettype($data['ans']) == 'array') {
-                //         $newItem['ans'] = [];
-                //         foreach($data['ans'] as $ans) {
-                //             $newItem['ans'][] = htmlspecialchars(strip_tags($ans));
-                //         }
-                //     } else {
-                //         $newItem['ans'] = htmlspecialchars(strip_tags($data['ans']));
-                //     }
-                //     $safeVal['contnt']->$newProb = $newItem;
-                // }
-                // $safeVal = json_encode($safeVal);
                 $sql = "UPDATE decks SET data = ? WHERE id = ?;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("si", $safeVal, $id);

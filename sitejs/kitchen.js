@@ -7,7 +7,6 @@ let cache_decks = {};
 let reviewDecks = [];
 let loaded = -1;
 // Containers
-const mainContainer = document.getElementsByClassName("container")[0];
 const searchedDecksContainer = document.getElementById("searched_decks");
 const addedDecksContainer = document.getElementById("added_decks");
 const marketplace = document.getElementById("marketplace");
@@ -53,36 +52,73 @@ function decodeHTMLEncVal(obj) {
         );
 }
 
+function end_phony_loading(deck) {
+    for(let i = 0; i < addedDecksContainer.children.length; i++) {
+        if(addedDecksContainer.children[i].dataset.idx == deck.id) {
+            addedDecksContainer.children[i].style.backgroundImage = `url(${deck.deckpic && deck.deckpic.length > 0 ? deck.deckpic : "../../img/defaultdeckpic.png"})`;
+            reviewDecks[i].deckpic = deck.deckpic;
+            break;
+        }
+    }
+}
 async function update() {
     if(loaded >= decks.length - 1) return void (loaded = decks.length - 1);
 
-    // Update decks in the user's review list
+    // Update user's reviews
     if(reviewDecks.length == 0) {
+        // Update decks in the user's review list
         let keys = Object.keys(user.userdata.reviews);
+        let update = false;
         if(keys.length > 0) addedDecksContainer.innerHTML = "";
         for(let i = 0; i < keys.length; i++) {
             let deckid = parseInt(keys[i]);
             let success = true, deck;
             for(let i = 0; i < decks.length; i++) if(decks[i].id == deckid) deck = decks[i];
-            if(!deck) [success, deck] = await DeckGateway.get(deckid);
-            if(!success) continue;
+            let awaitLoad = true;
+            if(!deck) {
+                awaitLoad = false;
+                [success, deck] = await DeckGateway.get(deckid, false, true, false);
+            }
+            if(!success) {
+                // Check if the deck doesn't exist. If it doesn't, remove it from the user's reviews and require update.
+                if(deck == "no deck") {
+                    delete user.userdata.reviews[deckid];
+                    update = true;
+                }
+                continue; // Ignore other causes like failed to load.
+            }
             reviewDecks.push(deck);
-            let newBox = box(deck.id, true, deck.name, deck.deckpic, deck.owner, true);
+            // Add phony loader
+            let newBox = box(deck.id, true, deck.name, awaitLoad ? "../../img/loading.png" : deck.deckpic, deck.owner, true);
             addedDecksContainer.appendChild(newBox);
         }
+        if(update) {
+            let json = JSON.stringify(user.userdata.reviews);
+            await UserGateway.editUser("reviews", json);
+        }
     }
+
     // Update marketplace
     for(let i = loaded + 1; i < decks.length; i++) {
         // In reviews?
         let inReviews = user.userdata.reviews[decks[i].id] ? true : false;
-        // Create new container item and display deck
-        let newBox = box(decks[i].id, inReviews, decks[i].name, decks[i].deckpic, decks[i].owner, false);
-        marketplace.appendChild(newBox);
+        // Load deckpic
+        (async () => {
+            let newBox = box(decks[i].id, inReviews, decks[i].name, "../../img/loading.png", decks[i].owner, false);
+            // Create new container item and display deck
+            marketplace.appendChild(newBox);
+            let [success, img] = await DeckGateway.get(decks[i].id, false, true, false);
+            if(!success) return;
+            newBox.style.backgroundImage = `url(${img.deckpic && img.deckpic.length > 0 ? img.deckpic : "../../img/defaultdeckpic.png"})`;
+            decks[i].deckpic = img.deckpic;
+            end_phony_loading(decks[i]);
+        })();
     }
+
     loaded = decks.length - 1;
 }
 (async () => {
-    let [success, data] = await UserGateway.getuser();
+    let [success, data] = await UserGateway.getuser(false, true, true, false);
     if(!success && data == "no session") return window.LOAD_ERROR("You must be signed in to view decks!");
     user = data;
     // For deck fetching, the system lazy loads primary deck info and actually fetches the deck when accessed/viewed
@@ -196,7 +232,7 @@ async function preview(_this, isAdded) {
             <div class='preview-container-part' id='overview'>
                 <h2>${deck.name}</h2>
                 <p>By: <span class='username'>${deck.owner}</span></p>
-                <div class="line-up-icons view-container"><span class='views'>${deck.viewdata.length ?? 0}</span> <span class="material-symbols-outlined views-icon">visibility</span></div>
+                <div class="line-up-icons view-container"><span class='views'>${deck.views ?? 0}</span> <span class="material-symbols-outlined views-icon">visibility</span></div>
                 ${user.username == deck.owner ? "<div class='deck-buttons'><button class='export-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>download</span> Export</div></button> <button class='edit-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>edit</span> Edit</div></button> <button class='delete-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>delete</span> Delete</div></button></div>" : ""}
             </div>
             ${data.desc ? `<div class='preview-container-part' id='description'>
@@ -322,8 +358,8 @@ async function reviews_update(_this, isAdded) {
         addedDecksContainer.appendChild(newBox);
         _this.innerHTML = "<div class='material-symbols-outlined'>remove</div>";
     }
-    let json = JSON.stringify(user.userdata);
-    await UserGateway.editUser("userdata", json);
+    let json = JSON.stringify(user.userdata.reviews);
+    await UserGateway.editUser("reviews", json);
 }
 
 // Close dialogs when user presses outside dialog

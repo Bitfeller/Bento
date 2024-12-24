@@ -23,6 +23,6 @@ modify.addEventListener("mousedown", async function() {
     console.log('modify:', success, reason);
 });
 open.addEventListener("mousedown", async function() {
-    var [success, data] = await DeckGateway.get(parseInt(idVal.value));
+    var [success, data] = await DeckGateway.get(parseInt(idVal.value), true, true, true);
     console.log("open:", success, data);
 });

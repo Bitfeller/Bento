@@ -3,7 +3,7 @@ import { UserGateway } from "../server/client-gateway/user-gateway.js";
 // Check if user is signed in
 
 (async () => {
-    let [success, _] = await UserGateway.getuser();
+    let [success, _] = await UserGateway.getuser(false, false, false, false);
     if(success) window.location.href = "/home";
 })();
 
@@ -51,6 +51,7 @@ const l_user = document.getElementById("signInUsername");
 const l_pass = document.getElementById("signInPassword");
 const s_user = document.getElementById("signUpUsername");
 const s_pass = document.getElementById("signUpPassword");
+const s_pass2 = document.getElementById("signUpPassword2");
 const s_email = document.getElementById("signUpEmail");
 const l_btn = document.getElementById("signInBtnM");
 const s_btn = document.getElementById("signUpBtnM");
@@ -74,6 +75,10 @@ l_btn.addEventListener("mousedown", async () => {
     window.location.href = "/home";
 });
 s_btn.addEventListener("mousedown", async () => {
+    if(s_pass.value != s_pass2.value) {
+        s_err.innerHTML = "Passwords don't match!";
+        return;
+    }
     let [success, reason] = await UserGateway.signup(s_user.value, s_pass.value, s_email.value);
     if(!success) {
         switch(reason) {

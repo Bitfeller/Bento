@@ -6,7 +6,7 @@ let rand_identifier;
 
 async function init() {
     const regis = self.registration;
-    let [success, _user] = await UserGateway.getuser();
+    let [success, _user] = await UserGateway.getuser(false, false, false, false);
     if(!success && _user == "no session") {
         await regis.unregister();
         return;

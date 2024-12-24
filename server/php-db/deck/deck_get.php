@@ -15,6 +15,7 @@
     $load_contnt_len = $data['load_contnt_len'] ? 1 : 0;
     $owner = $_SESSION['username'];
     try {
+        $conf = get_server_config();
         $conn = connect_to_db();
         // Get deck
         $sql = "SELECT * FROM decks WHERE id = ? AND (public = ? OR owner = ?);";
@@ -24,8 +25,15 @@
         $stmt->execute();
         $result = mysqli_fetch_assoc($stmt->get_result());
         if($result) {
-            if($load_pic == 0) {
-                unset($result['deckpic']);
+            if($load_pic == 1) {
+                $path = $conf['file_db'] . 'decks/primary/' . $result['id'] . '.pic';
+                $pfp = @file_get_contents($path);
+                if($pfp === false) {
+                    $pfp = "";
+                    $result['deckpic'] = "";
+                } else {
+                    $result['deckpic'] = json_encode($pfp);
+                }
             }
             if($load_contnt_len == 1) {
                 $data = json_decode($result['data'], true);
@@ -34,6 +42,10 @@
             if($load_data == 0) {
                 unset($result['data']);
             }
+            // Unload viewdata and only get views
+            $views = sizeof(json_decode($result['viewdata'], true));
+            $result['views'] = $views;
+            unset($result['viewdata']);
             success(json_encode($result));
         } else {
             fail("no deck");

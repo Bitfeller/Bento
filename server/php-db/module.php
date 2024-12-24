@@ -63,6 +63,7 @@
     }
     function require_types($types, ...$params) {
         $data = get_data();
+        if($data == null) return;
         if(!is_string($types) or !is_array($params)) {
             return;
         }

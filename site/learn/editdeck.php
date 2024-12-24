@@ -48,6 +48,66 @@
             <button id="create">Update Deck!</button>
             <p class="info-error" id="edit-err"></p>
         </div>
+        <div class="options-container">
+            <p>Import Options</p>
+            <button id="quizlet-import-btn">Import from Quizlet</button>
+            <button id="gimkit-import-btn">Import from Gimkit</button>
+            <button id="bento-import-btn">Import a Bento Deck</button>
+            <p class="info-blank">Note importing <i>appends</i> to the list of cards, not replaces.</p><br><br>
+
+            <p>Edit a Draft Deck</p>
+            <div id="draftdecks-history">
+                    <!-- <div id='draftdeck'>
+                        <p>Yesterday</p>
+                        <button id='show'><span class="material-symbols-outlined">save</span></button>
+                        <button id='del'><span class="material-symbols-outlined">delete</span></button>
+                    </div> -->
+                <p class='info-blank'>-- You don't have any draft decks. You'll see one if you start making a deck but don't finish. --</p>
+            </div>
+        </div>
+    </div>
+    <div class="import-modal" id="quizlet-import-modal">
+        <div class="modal-content">
+            <h1>Import from Quizlet</h1>
+            <h3>To Export from Quizlet:</h3>
+            <p>#1 - go to a Quizlet deck you own and click on Export.</p>
+            <p>#2 - for the characters between the term and definition, choose <b>Custom</b> and use <code>></code>; between rows, use the custom character <code>^</code>.</p>
+            <p>#3 - copy the text and paste it here.</p>
+            <textarea type="text" placeholder="Paste Quizlet Export Here" id="QI-importText"></textarea>
+            <label class="switch">
+                <input type="checkbox" id="QI-reverse">
+                <span class="slider"></span>
+            </label> | Reverse terms and definitions<br>
+            <button id="QI-createBtn">Import</button> 
+            <p class="info-error" id="QI-err"></p>
+        </div>
+    </div>
+    <div class="import-modal" id="gimkit-import-modal">
+        <div class="modal-content">
+            <h1>Import from Gimkit</h1>
+            <h3>To Export from Gimkit:</h3>
+            <p>#1 - While viewing the deck, click on "Export" on the left menu.</p>
+            <p>#2 - Copy the text and paste it here. (Make sure to keep it in Question/Answer format)</p>
+            <textarea type="text" placeholder="Paste Gimkit Export Here" id="GK-importText"></textarea>
+            <button id="GK-createBtn">Import</button>
+            <p class="info-error" id="GK-err"></p>
+        </div>
+    </div>
+    <div class="import-modal" id="bento-import-modal">
+        <div class="modal-content">
+            <h1>Import from Bento</h1>
+            <label class="switch">
+                <input type="checkbox" id="BI-replace-name">
+                <span class="slider"></span>
+            </label> | Use this imported deck's <b>name</b> in this deck<br>
+            <label class="switch">
+                <input type="checkbox" id="BI-replace-desc">
+                <span class="slider"></span>
+            </label> | Use this imported deck's <b>description</b> in this deck<br>
+            Import your deck: <input type="file" id="BI-file" accept="text/plain"><br>
+            <button id="BI-createBtn">Import</button>
+            <p class="info-error" id="BI-err"></p>
+        </div>
     </div>
 </body>
 </html>
