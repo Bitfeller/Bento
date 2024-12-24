@@ -11,6 +11,7 @@
         fail("no session");
     }
     try {
+        $conf = get_server_config();
         $conn = connect_to_db();
         // Fetch decks
         $sql = "SELECT * FROM decks WHERE (public = ? OR owner = ?)";
@@ -25,7 +26,8 @@
         if(!empty($searchTerms)) {
             $sql .= ") ";
         }
-        $sql .= "ORDER BY id DESC LIMIT 60 OFFSET ?;";
+        $limit = $conf['deckload_limit'];
+        $sql .= "ORDER BY id DESC LIMIT $limit OFFSET ?;";
         $sql = (string) $sql;
         $stmt = $conn->prepare($sql);
         $public = 1;
@@ -39,10 +41,10 @@
         $raw_res = $stmt->get_result();
         $decks = [];
         while($row = mysqli_fetch_assoc($raw_res)) {
-            if($row['owner'] !== $_SESSION['username']) {
-                unset($row['data']);
-                unset($row['public']);
-            }
+            unset($row['data']);
+            $total = sizeof(json_decode($row['viewdata'], true));
+            unset($row['viewdata']);
+            $row['views'] = $total;
             $decks[] = $row;
         }
         $stmt->close();

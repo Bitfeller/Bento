@@ -89,7 +89,7 @@ function updateDecks(decks) {
 }
 
 (async () => {
-    let [success, data] = await UserGateway.getuser();
+    let [success, data] = await UserGateway.getuser(false, true, true, false);
     if (!success && data == "no session") return window.LOAD_ERROR("You're not logged in!");
     deckContainer.innerHTML = "";
     user = data;

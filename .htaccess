@@ -26,7 +26,7 @@ RewriteRule ^(.*)$ /site/404.php [L]
 ErrorDocument 404 /site/404.php
 
 # Block all test folders
-RewriteRule ^.*\/test.*$ - [F]
+# RewriteRule ^.*\/test.*$ - [F]
 
 # Block server-related folders
 RewriteRule ^.*\/conf.*$ - [F]

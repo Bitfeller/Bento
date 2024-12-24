@@ -13,8 +13,11 @@
         "private_key": ""
     },
     "admins": [1],
+    "check_image": false,
     "mail_smtp_server": "",
     "mail_username": "",
     "mail_password": "",
-    "mail_name": ""
+    "mail_name": "",
+    "file_db": "../../../file_db/",
+    "deckload_limit": 30
 }

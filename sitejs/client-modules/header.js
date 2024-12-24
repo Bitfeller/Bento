@@ -79,7 +79,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     let tip_fn = async () => await tip_changer(tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)]);
     let tipper = setInterval(tip_fn, 3000);
 
-    let [success, data] = await UserGateway.getuser();
+    let [success, data] = await UserGateway.getuser(true, false, false, false);
     if(!success && data == "no session") {
         logout.remove();
         pfp.remove();

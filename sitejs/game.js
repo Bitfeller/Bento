@@ -413,7 +413,7 @@ window.addEventListener("dragover", (e) => {
 });
 // Main
 (async () => {
-    let [success, _] = await UserGateway.getuser();
+    let [success, _] = await UserGateway.getuser(false, false, false, false);
     if (!success) return;
     const paramList = new URLSearchParams(window.location.search);
     if (!paramList.get("ds")) {

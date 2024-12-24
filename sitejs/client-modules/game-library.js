@@ -70,7 +70,7 @@ function newSet() {
 
 async function init(_decks, info) {
     // Get user
-    let [success, userData] = await UserGateway.getuser();
+    let [success, userData] = await UserGateway.getuser(false, true, true, false);
     if(!success) return void console.warn("Encountered while attempting to fetch user data:", userData) ?? false;
     user = userData;
 
@@ -88,8 +88,8 @@ async function init(_decks, info) {
         if(!userReview) {
             userReview = {};
             user.userdata.reviews[deck] = userReview;
-            let json = JSON.stringify(user.reviews);
-            await UserGateway.editUser("userdata", json);
+            let json = JSON.stringify(user.userdata.reviews);
+            await UserGateway.editUser("reviews", json);
         }
         let r_keys = Object.keys(userReview);
         for(let i = 0; i < r_keys.length; i++) {
@@ -120,8 +120,8 @@ async function init(_decks, info) {
         decks.push(data.name);
     }
     if(updateReviews) {
-        let json = JSON.stringify(user.reviews);
-        await UserGateway.editUser("userdata", json);
+        let json = JSON.stringify(user.userdata.reviews);
+        await UserGateway.editUser("reviews", json);
     }
     // Add terms to deckInfo
     for(let i = 0; i < deckInfo.length; i++) {
@@ -188,8 +188,8 @@ async function init(_decks, info) {
                 user.userdata.reviews[holder][card.q] = newcard;
             }
         }
-        let json = JSON.stringify(user.userdata);
-        await UserGateway.editUser("userdata", json);
+        let json = JSON.stringify(user.userdata.reviews);
+        await UserGateway.editUser("reviews", json);
     };
     updateFn = update;
     const updater = window.setInterval(() => {
