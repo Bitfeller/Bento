@@ -5,9 +5,7 @@
     require_types('s', 'feedback'); // professional code right here
     // wouldn't you agree?
     session_start();
-    if(!isset($_SESSION['uid'])) {
-        fail('no session');
-    }
+    if(!isset($_SESSION['uid'])) fail('no session');
     $id = $_SESSION['uid'];
     $username = $_SESSION['username'];
     $feedback = $data['feedback'];
