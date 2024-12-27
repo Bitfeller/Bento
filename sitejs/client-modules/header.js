@@ -57,7 +57,6 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
                 if(color) tips.getElementsByClassName('new-tip')[0].style.color = color;
                 window.setTimeout(() => {
                     tips.innerHTML = newtext;
-                    if(color) {}
                     res();
                 }, 500);
             }, 500);
@@ -85,15 +84,10 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         pfp.remove();
         feedback.remove();
         feedback_dialog.remove();
-        if(uo == "true") {
-            window.location.href = "/login?s=" + window.location.pathname.slice(1);
-            return;
-        }
+        if(uo == "true") return void (window.location.href = "/login?s=" + window.location.pathname.slice(1));
     } else {
         // update pfp
-        if(data.pfp && data.pfp.length > 0) {
-            pfp.src = data.pfp;
-        }
+        if(data.pfp && data.pfp.length > 0) pfp.src = data.pfp;
         // update verify_email_alert
         if(data.verified == 0) {
             verify_email.style.display = "inline-block";
@@ -106,7 +100,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
             navigator.serviceWorker.register(location.origin + "/sitejs/client-modules/service-worker.js", {
                 type: "module"
             });
-        } catch (e) {
+        } catch(e) {
             console.log("serviceworker_err:", e);
         }
     }

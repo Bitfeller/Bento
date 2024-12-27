@@ -54,16 +54,6 @@
             <button id="gimkit-import-btn">Import from Gimkit</button>
             <button id="bento-import-btn">Import a Bento Deck</button>
             <p class="info-blank">Note importing <i>appends</i> to the list of cards, not replaces.</p><br><br>
-
-            <p>Edit a Draft Deck</p>
-            <div id="draftdecks-history">
-                    <!-- <div id='draftdeck'>
-                        <p>Yesterday</p>
-                        <button id='show'><span class="material-symbols-outlined">save</span></button>
-                        <button id='del'><span class="material-symbols-outlined">delete</span></button>
-                    </div> -->
-                <p class='info-blank'>-- You don't have any draft decks. You'll see one if you start making a deck but don't finish. --</p>
-            </div>
         </div>
     </div>
     <div class="import-modal" id="quizlet-import-modal">
