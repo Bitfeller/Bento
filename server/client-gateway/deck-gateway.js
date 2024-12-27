@@ -75,7 +75,7 @@ let DeckGateway = {
         return [success, data];
     },
     add: async (name, deckpic, data, isPublic) => {
-        if(!types("SsSb", name, data, deckpic, isPublic)) return [false, "invalid params"];
+        if(!types("SsSb", name, deckpic, data, isPublic)) return [false, "invalid params"];
         let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/deck/deck_new.php", {
             method: 'post',
@@ -86,7 +86,7 @@ let DeckGateway = {
                 name,
                 deckpic,
                 data,
-                public: false ? 0 : 1
+                public: isPublic ? 1 : 0
             })
         }).then(res => {
             if(!res.ok) throw "couldn't fetch! (bad response)";

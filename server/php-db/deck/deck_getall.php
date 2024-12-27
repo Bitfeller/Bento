@@ -36,7 +36,6 @@
         while($row = $raw_res->fetch_assoc()) {
             unset($row['data']);
             unset($row['viewdata']);
-            unset($row['public']);
             $decks[] = $row;
         }
         $stmt->close();
