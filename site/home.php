@@ -11,9 +11,9 @@
 <body data-uo="true">
     <?php require_once "header.php"?>
     <div class="home-grid">
-    <!-- <div id="bento-modal">
-        Apple
-    </div> -->
+        <div id="bento-modal">
+            Apple
+        </div>
         <div class="bento-box review-box">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 499.27 335.48">
                 <defs><clipPath id="uuid-cff80f89-a668-4b5a-b04a-a0844a493cac"><rect x="36.13" y="60.43" width="134.93" height="158.88" transform="translate(-70.3 147.41) rotate(-55.96)" style="fill:none;"/></clipPath><clipPath id="uuid-53af47ae-dd43-446e-8d0a-5193c18205b7"><rect x="36.13" y="60.43" width="134.93" height="158.88" transform="translate(-70.3 147.41) rotate(-55.96)" style="fill:none;"/></clipPath><clipPath id="uuid-4ab7a74c-7666-41cc-b37d-c70db5d1d61e"><rect x="36.13" y="60.43" width="134.93" height="158.88" transform="translate(-70.3 147.41) rotate(-55.96)" style="fill:none;"/></clipPath><clipPath id="uuid-48848a52-0a7f-46a5-bbe0-2439bec08e37"><rect x="36.18" y="60.44" width="134.82" height="158.81" transform="translate(-70.28 147.39) rotate(-55.96)" style="fill:none;"/></clipPath><clipPath id="uuid-b9abfd1a-96ab-4c80-a7e4-b69093e89b8c"><rect x="62.63" y="108.8" width="83.26" height="123.25" transform="translate(-95.32 161.41) rotate(-55.96)" style="fill:none;"/></clipPath><clipPath id="uuid-b9b86e13-07e0-4653-a35c-24d323899030"><rect x="31.08" y="96.87" width="51.71" height="48.76" transform="translate(-75.41 100.56) rotate(-55.96)" style="fill:none;"/></clipPath><clipPath id="uuid-f0e67c14-e1cb-434b-8b97-645ef146a21d"><rect x="137.54" y="103.79" width="36.23" height="50.76" transform="translate(-38.51 185.84) rotate(-55.96)" style="fill:none;"/></clipPath></defs><g style="isolation:isolate;"><g id="uuid-1d7c3ab4-3c35-452c-9ab2-924153bf2823"><g id="uuid-137c4fca-f9ec-49d9-959d-c73c868c9f75">
@@ -94,6 +94,6 @@
         <span class="new-version"></span>
         <span class="version-number">v0.3.0</span>
     </div>
-    <div class="deck-viewer" id="viewer">woah</div>
+    <!-- <div class="deck-viewer" id="viewer">woah</div> -->
 </body>
 </html>
