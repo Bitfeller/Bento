@@ -2,7 +2,7 @@ import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 import { UserGateway } from "../server/client-gateway/user-gateway.js";
 
 let random = (a, b) => Math.floor(Math.random() * (b - a) + a + 0.5);
-let round = (a) => Math.floor(a + 0.5);
+let round = a => Math.floor(a + 0.5);
 
 const input = document.getElementById("input");
 const pause = document.getElementById("pause");
@@ -22,15 +22,12 @@ window.onresize = () => {
 };
 window.onresize();
 
-let paused = false;
-let ended = false;
+let paused = false, ended = false, frameCount = 0;
 let deck;
 let deckData = [];
 let asteroids = [];
-let frameCount = 0;
 let mainfn;
-let score = 0;
-let level = 1;
+let score = 0, level = 1;
 
 // Preset values
 render.textAlign = "center";
@@ -57,8 +54,8 @@ function endGame() {
 function pauseGame() {
     if(ended) return;
     paused = !paused;
-    if(paused) asteroids.forEach((ast) => ast.render());
-    else requestAnimationFrame(frame);
+    if(paused) asteroids.forEach(ast => ast.render());
+        else requestAnimationFrame(frame);
 }
 function gameStart() {
     mainfn = window.setInterval(() => {
@@ -105,9 +102,8 @@ class Asteroid {
         this.speed = random(1, 1.5) * (level / 2);
         this.q = card.q;
         this.answer = card.type == "txt" ? card.ans : [];
-        if(card.type == "mc") {
+        if(card.type == "mc")
             for(let i = 0; i < card.ans.length; i++) this.answer.push(card.op[card.ans[i]]);
-        }
         this.wrappedText = wrapText(this.q, 100);
     }
     render() {
@@ -192,11 +188,9 @@ class Asteroid {
         await UserGateway.editUser("reviews", json);
     }
     // Add terms to deckContnt
-    for(let i = 0; i < deckContnt.length; i++) {
-        for(let j = 0; j < deckContnt[i].length; j++) {
+    for(let i = 0; i < deckContnt.length; i++)
+        for(let j = 0; j < deckContnt[i].length; j++)
             if(deckContnt[i][j].type != "ranking") deckData.push(deckContnt[i][j]);
-        }
-    }
     // Scramble terms if needed
     if(randomTerms == true) {
         let save = deckData;

@@ -1,6 +1,5 @@
 // These are the archives that hold some of the most random or deprecated segments of code.
-// I was lazy, so I made this.
-// Don't expect anything here to make sense. :)
+// (basically, I was lazy)
 // - Bitfeller
 
 function set_formatter(div) {

@@ -76,15 +76,12 @@ createBtn.addEventListener('mousedown', async () => {
     let data = DeckBind.user();
     const paramList = new URLSearchParams(window.location.search);
     if(!paramList.get("d")) return errmsg.innerHTML = "Looks like there was an error. Go back to where you came from, and try again. (If you continue to experience errors, please inform us.)";
-    let dVal = parseInt(paramList.get('d'));
-    deck = dVal;
+    deck = parseInt(paramList.get('d'));
     let [success, contnt] = await DeckGateway.get(deck, true, true);
     if(!success) window.location.href = "/home";
-    if(contnt.owner !== data.username) window.location.href = "/home";
+    if(contnt.owner != data.username) window.location.href = "/home";
     name.value = contnt.name;
-    if(contnt.deckpic && contnt.deckpic.length > 0) {
-        picimg.src = contnt.deckpic;
-    }
+    if(contnt.deckpic && contnt.deckpic.length > 0) picimg.src = contnt.deckpic;
     isPublic.checked = contnt.public;
     description.value = contnt.data.desc;
     cardContain.innerHTML = "";

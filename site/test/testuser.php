@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>user test</title>
-    <script type="module" src="../sitejs/test_user.js" type="text/javascript"></script>
+    <script type="module" src="../sitejs/test-scripts/test_user.js" type="text/javascript"></script>
     <?php require_once "../globalreqs.php"?>
 </head>
 <body>
