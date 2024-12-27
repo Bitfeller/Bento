@@ -2,9 +2,7 @@ import { UserGateway } from "../server/client-gateway/user-gateway.js";
 import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 // User + decks
 let user;
-let decks = [];
-let cache_decks = {};
-let reviewDecks = [];
+let decks = [], cache_decks = {}, reviewDecks = [];
 let loaded = -1;
 // Containers
 const searchedDecksContainer = document.getElementById("searched_decks");
@@ -124,9 +122,7 @@ async function update() {
     // For deck fetching, the system lazy loads primary deck info and actually fetches the deck when accessed/viewed
     [success, data] = await DeckGateway.getall(0);
     if(!success) return;
-    // no decks...?
-    // do something here ig
-    if(data.length == 0) return;
+    if(data.length == 0) return window.LOAD_ERROR("There aren't any decks...? Odd.");
     decks.push(...data);
     await update();
     window.LOADED();
@@ -212,9 +208,8 @@ async function preview(_this, isAdded) {
     }
     let deck;
     let target = isAdded ? reviewDecks : decks;
-    for(let i = 0; i < target.length; i++) {
+    for(let i = 0; i < target.length; i++)
         if(target[i].id == _this.dataset.idx) deck = target[i];
-    }
     await UserGateway.editUser("view", String(deck.id));
     let answer_list = "";
     if(!data.contnt) answer_list = "[This deck appears to be corrupt...]";
@@ -223,6 +218,7 @@ async function preview(_this, isAdded) {
         let keys = Object.keys(contnt);
         for(let i = 0; i < keys.length; i++) answer_list += `<p><b>Q |  ${keys[i]}</b></p>${contnt[keys[i]].type == "mc" ? "<p>" + contnt[keys[i]].op.join(", ") + "</p>" : ""}<p>A |  ${(contnt[keys[i]].type == "mc" ? contnt[keys[i]].ans.map(x => contnt[keys[i]][x]) : contnt[keys[i]].ans).join(", ")}</p><div class='deck-divider' style='margin: 7px 3px; background-color: rgb(230, 230, 230); height: 2px;'></div>`;
     }
+    console.log(deck);
     previewDialog.innerHTML = `
         <div class='title-bar'>
             <h2>Preview:</h2>
@@ -231,7 +227,7 @@ async function preview(_this, isAdded) {
         <div class='preview-container'>
             <div class='preview-container-part' id='overview'>
                 <h2>${deck.name}</h2>
-                <p>By: <span class='username'>${deck.owner}</span></p>
+                <p>By: <span class='username'>${deck.owner}</span>${deck.public == 0 ? "<span class='private-deck'>Private</span>" : ""}</p>
                 <div class="line-up-icons view-container"><span class='views'>${deck.views ?? 0}</span> <span class="material-symbols-outlined views-icon">visibility</span></div>
                 ${user.username == deck.owner ? "<div class='deck-buttons'><button class='export-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>download</span> Export</div></button> <button class='edit-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>edit</span> Edit</div></button> <button class='delete-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>delete</span> Delete</div></button></div>" : ""}
             </div>
@@ -267,21 +263,19 @@ async function preview(_this, isAdded) {
             await DeckGateway.modify(deck.id, "delete", "");
             previewDialog.close();
             // find div in added decks container
-            for(let j = 0; j < addedDecksContainer.children.length; j++) {
+            for(let j = 0; j < addedDecksContainer.children.length; j++)
                 if(addedDecksContainer.children[j].dataset.idx == deck.id) {
                     addedDecksContainer.children[j].remove();
                     if(addedDecksContainer.innerHTML.length == 0) addedDecksContainer.innerHTML = "<p class=\"info-blank\">You haven't added any decks to your reviews yet.</p>";
                     break;
                 }
-            }
             // update div in marketplace
             let divs = document.getElementsByClassName("ingredient-box");
-            for(let j = 0; j < divs.length; j++) {
+            for(let j = 0; j < divs.length; j++)
                 if(divs[j].dataset.idx == deck.id) {
                     divs[j].remove();
                     break;
                 }
-            }
         });
     }
 }
@@ -292,28 +286,25 @@ async function reviews_update(_this, isAdded) {
     if(user.userdata.reviews[deck.id]) {
         delete user.userdata.reviews[deck.id];
         // find in list of reviewDecks
-        for(let j = 0; j < reviewDecks.length; j++) {
+        for(let j = 0; j < reviewDecks.length; j++)
             if(reviewDecks[j].id == deck.id) {
                 reviewDecks.splice(j, 1);
                 break;
             }
-        }
         // find div in added decks container
-        for(let j = 0; j < addedDecksContainer.children.length; j++) {
+        for(let j = 0; j < addedDecksContainer.children.length; j++)
             if(addedDecksContainer.children[j].dataset.idx == deck.id) {
                 addedDecksContainer.children[j].remove();
                 if(addedDecksContainer.innerHTML.length == 0) addedDecksContainer.innerHTML = "<p class=\"info-blank\">You haven't added any decks to your reviews yet.</p>";
                 break;
             }
-        }
         // update div in marketplace
         let divs = document.getElementsByClassName("ingredient-box");
-        for(let j = 0; j < divs.length; j++) {
+        for(let j = 0; j < divs.length; j++)
             if(divs[j].dataset.idx == deck.id) {
                 divs[j].getElementsByClassName("userReviewsUpdateBtns")[0].innerHTML = "<div class='material-symbols-outlined'>add</div>";
                 break;
             }
-        }
     } else {
         user.userdata.reviews[deck.id] = {};
         // Make sure deck still exists
@@ -334,21 +325,19 @@ async function reviews_update(_this, isAdded) {
             `;
             previewDialog.getElementsByClassName("closeBtns")[0].addEventListener("mousedown", () => previewDialog.close());
             // find div in added decks container
-            for(let j = 0; j < addedDecksContainer.children.length; j++) {
+            for(let j = 0; j < addedDecksContainer.children.length; j++)
                 if(addedDecksContainer.children[j].dataset.idx == deck.id) {
                     addedDecksContainer.children[j].remove();
                     if(addedDecksContainer.innerHTML.length == 0) addedDecksContainer.innerHTML = "<p class=\"info-blank\">You haven't added any decks to your reviews yet.</p>";
                     break;
                 }
-            }
             // update div in marketplace
             let divs = document.getElementsByClassName("ingredient-box");
-            for(let j = 0; j < divs.length; j++) {
+            for(let j = 0; j < divs.length; j++)
                 if(divs[j].dataset.idx == deck.id) {
                     divs[j].remove();
                     break;
                 }
-            }
             return;
         }
         // Add to list of reviewDecks
@@ -363,6 +352,6 @@ async function reviews_update(_this, isAdded) {
 }
 
 // Close dialogs when user presses outside dialog
-window.addEventListener("mousedown", (e) => {
+window.addEventListener("mousedown", e => {
     if(e.target === previewDialog) previewDialog.close();
 });

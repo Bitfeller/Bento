@@ -33,9 +33,7 @@ const themeSelect = document.getElementById("theme-select");
     if(!success) console.error(data);
     user = data;
     usernameEl.innerHTML = user.username;
-    if(user.pfp && user.pfp.length > 0) {
-        pfp.src = user.pfp;
-    }
+    if(user.pfp && user.pfp.length > 0) pfp.src = user.pfp;
     editpfp.addEventListener("mousedown", () => fileSelectTrigger.click()); // show file upload option
     pfpReset.addEventListener("mousedown", async () => {
         pfp.src = "../../img/defaultpfp.png";
@@ -116,6 +114,6 @@ const themeSelect = document.getElementById("theme-select");
     });
 })();
 
-window.onclick = (e) => {
+window.onclick = e => {
     if(e.target == warningDialog) warningDialog.close();
 }

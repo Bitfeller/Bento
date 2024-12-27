@@ -2,7 +2,7 @@ import { UserGateway } from "../server/client-gateway/user-gateway.js";
 import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 import { DeckBind } from "./client-modules/deck-lib.js";
 
-let userdata_save;
+let drafts_save;
 
 const title = document.getElementById("name");
 const desc = document.getElementById("description");
@@ -16,7 +16,7 @@ const draftdecks_history = document.getElementById("draftdecks-history");
 let last = 0;
 
 createBtn.addEventListener('mousedown', async () => {
-    let res = DeckBind.toDeck((v) => errmsg.innerHTML = v, false, (Date.now() - last) < 5000);
+    let res = DeckBind.toDeck(v => errmsg.innerHTML = v, false, Date.now() - last < 5000);
     last = Date.now();
     if(!res) return;
     let [name, deckpic, data, isPublic] = res; // unpack
@@ -49,7 +49,7 @@ createBtn.addEventListener('mousedown', async () => {
 (async () => {
     await DeckBind.init();
     let user = DeckBind.user();
-    userdata_save = user.userdata;
+    drafts_save = user.userdata.draftdecks;
     let keys = Object.keys(user.userdata.draftdecks);
     if(keys.length > 0) draftdecks_history.innerHTML = "";
     for(let i = 0; i < keys.length; i++) {
@@ -69,22 +69,20 @@ createBtn.addEventListener('mousedown', async () => {
             title.value = deck.name;
             desc.value = deck.desc;
             ispub.checked = deck.pub;
-            let [_, img] = await UserGateway.getDraftImage(time);
+            let [success, img] = await UserGateway.getDraftImage(time);
+            if(!success) return void console.warn("Couldn't get draft img: " + img);
             deckpic.src = img && img.length > 0 ? img : "../../img/defaultdeckpic.png";
         });
         div.getElementsByClassName("del")[0].addEventListener("mousedown", async () => {
             div.remove();
-            if(Object.keys(user.userdata.draftdecks).length == 1) {
-                draftdecks_history.innerHTML = "<p class='info-blank'>-- You don't have any draft decks. You'll see one if you start making a deck but don't finish. --</p>";
-            }
+            if(Object.keys(user.userdata.draftdecks).length == 1) draftdecks_history.innerHTML = "<p class='info-blank'>-- You don't have any draft decks. You'll see one if you start making a deck but don't finish. --</p>";
             delete user.userdata.draftdecks[keys[i]];
-            delete userdata_save.draftdecks[keys[i]];
-            let copy = JSON.stringify(userdata_save.draftdecks);
-            await UserGateway.editUser("draftdecks", copy);
+            delete drafts_save[keys[i]];
+            await UserGateway.editUser("draftdecks", JSON.stringify(drafts_save));
         });
     }
     window.setInterval(async () => {
-        let copy = structuredClone(userdata_save);
+        let copy = structuredClone(drafts_save);
         let res = DeckBind.toDeck(() => {}, true);
         if(!res) return;
         let [name, img, data, pub] = res; // unpack
@@ -92,15 +90,15 @@ createBtn.addEventListener('mousedown', async () => {
         data.name = name;
         data.img = img;
         data.pub = pub;
-        copy.draftdecks[String(Date.now())] = data;
-        if(Object.keys(copy.draftdecks).length > 5) {
-            let keys = Object.keys(copy.draftdecks);
+        copy[String(Date.now())] = data;
+        if(Object.keys(copy).length > 5) {
+            let keys = Object.keys(copy);
             let newKeys = [];
-            keys.forEach((val) => newKeys.push(parseInt(val)));
+            keys.forEach(val => newKeys.push(parseInt(val)));
             let min = Math.min(...newKeys);
-            delete copy.draftdecks[String(min)];
+            delete copy[String(min)];
         }
-        await UserGateway.editUser("draftdecks", JSON.stringify(copy.draftdecks));
+        await UserGateway.editUser("draftdecks", JSON.stringify(copy));
     }, 15_000);
     window.LOADED();
 })();

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>bbbbbbbbbbb (ran out of titles)</title>
     <?php require_once "../globalreqs.php"?>
-    <script type="module" src="../sitejs/test_deck.js" type="text/javascript"></script>
+    <script type="module" src="../sitejs/test-scripts/test_deck.js" type="text/javascript"></script>
 </head>
 <body>
     <p>deck testing thing</p>

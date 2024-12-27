@@ -58,9 +58,8 @@ function newSet() {
     currWrong = [];
 
     let min = Math.min(gameData.length, curr + deckSize);
-    for(let i = curr; i < min; i++) {
-        currSet.push(i);
-    }
+    for(let i = curr; i < min; i++) currSet.push(i);
+    
     curr = min;
     card = 0;
 
@@ -125,11 +124,9 @@ async function init(_decks, info) {
         await UserGateway.editUser("reviews", json);
     }
     // Add terms to deckInfo
-    for(let i = 0; i < deckInfo.length; i++) {
-        for(let j = 0; j < deckInfo[i].length; j++) {
+    for(let i = 0; i < deckInfo.length; i++)
+        for(let j = 0; j < deckInfo[i].length; j++)
             gameData.push(deckInfo[i][j]);
-        }
-    }
     // Scramble terms if needed
     if(info.randomTerms == true) {
         let save = gameData;
@@ -172,11 +169,10 @@ async function init(_decks, info) {
                 user.userdata.reviews[holder][card.q].last = Date.now();
                 let thisScore = cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] || 0)); // correct - wrong
                 user.userdata.reviews[holder][card.q].score = (cache_scores[holder][card.q] * 0.8 + thisScore * 1.1).toFixed(3);
-                if(user.userdata.reviews[holder][card.q].score < -1.25) {
+                if(user.userdata.reviews[holder][card.q].score < -1.25)
                     user.userdata.reviews[holder][card.q].box = Math.max(cache_boxes[holder][card.q] - 1, 1);
-                } else if(user.userdata.reviews[holder][card.q].score > 1.25) {
+                else if(user.userdata.reviews[holder][card.q].score > 1.25)
                     user.userdata.reviews[holder][card.q].box = Math.min(cache_boxes[holder][card.q] + 1, 6);
-                }
             } else {
                 let newcard = {
                     last: Date.now(),
@@ -193,9 +189,7 @@ async function init(_decks, info) {
         await UserGateway.editUser("reviews", json);
     };
     updateFn = update;
-    const updater = window.setInterval(() => {
-        if(!active) window.clearInterval(updater); else update();
-    }, 60_000);
+    const updater = window.setInterval(() => active ? update() : window.clearInterval(updater), 60_000);
     window.addEventListener("beforeunload", update);
     return true;
 }
@@ -224,21 +218,17 @@ function check(answer) {
         case "mc":
             if(problem.req == 1) {
                 let c = true;
-                for(let i = 0; i < problem.ans.length; i++) if(answer.indexOf(problem.ans[i]) < 0) c = false;
+                for(let i = 0; i < problem.ans.length; i++) 
+                    if(answer.indexOf(problem.ans[i]) < 0) c = false;
                 return c;
             } else return problem.ans.indexOf(answer) > -1;
-            // return problem.op[answer] == problem.ans ? updateLastCorrect(true) : updateLastCorrect(false);
         case "txt":
-            for(let i = 0; i < problem.ans.length; i++) {
+            for(let i = 0; i < problem.ans.length; i++)
                 if(problem.ans[i].toLowerCase().replaceAll(/\s/g, "") == answer.toLowerCase().replaceAll(/\s/g, "")) return true;
-                //if(answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans[i].toLowerCase().replaceAll(/\s/g, "")) return true;
-            }
             return false;
-            // return answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans.toLowerCase().replaceAll(/\s/g, "") ? updateLastCorrect(true) : updateLastCorrect(false);
         case "ranking":
-            for(let i = 0; i < answer.length; i++) {
+            for(let i = 0; i < answer.length; i++)
                 if(answer[i] !== problem.ans[i]) return false;
-            }
             return true;
         case "mtch":
             // Note that game.js already handles mtch, so we don't need to
@@ -252,20 +242,18 @@ function isCorrect(answer) {
         case "mc":
             if(problem.req == 1) {
                 let c = true;
-                for(let i = 0; i < problem.ans.length; i++) if(answer.indexOf(problem.ans[i]) < 0) c = false;
+                for(let i = 0; i < problem.ans.length; i++) 
+                    if(answer.indexOf(problem.ans[i]) < 0) c = false;
                 return c ? updateLastCorrect(true) : updateLastCorrect(false);
             } else return problem.ans.indexOf(answer) > -1 ? updateLastCorrect(true) : updateLastCorrect(false);
         case "txt":
-            for(let i = 0; i < problem.ans.length; i++) {
+            for(let i = 0; i < problem.ans.length; i++)
                 if(problem.ans[i].toLowerCase().replaceAll(/\s/g, "") == answer.toLowerCase().replaceAll(/\s/g, "")) return updateLastCorrect(true);
-                //if(answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans[i].toLowerCase().replaceAll(/\s/g, "")) return updateLastCorrect(true);
-            }
             return updateLastCorrect(false);
             // return answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans.toLowerCase().replaceAll(/\s/g, "") ? updateLastCorrect(true) : updateLastCorrect(false);
         case "ranking":
-            for(let i = 0; i < answer.length; i++) {
+            for(let i = 0; i < answer.length; i++)
                 if(answer[i] !== problem.ans[i]) return updateLastCorrect(false)
-            }
             return updateLastCorrect(true);
         case "mtch":
             // Note that game.js already handles mtch, so we don't need to
@@ -283,7 +271,8 @@ function _continue() {
 }
 function reshow() {
     if(reshow_correct == undefined) reshow_correct = lastCorrect;
-    if(!lastCorrect && totalWrong[currSet[card]]) totalWrong[currSet[card]]++; else if(!lastCorrect) totalWrong[currSet[card]] = 1;
+    if(!lastCorrect && totalWrong[currSet[card]]) totalWrong[currSet[card]]++; 
+        else if(!lastCorrect) totalWrong[currSet[card]] = 1;
     lastCorrect = false;
     return true;
 }
@@ -302,7 +291,8 @@ function incorrect() {
     currWrong.push(currSet[card]);
     C_w++;
     seen--;
-    if(totalWrong[currSet[card]]) totalWrong[currSet[card]]++; else totalWrong[currSet[card]] = 1;
+    if(totalWrong[currSet[card]]) totalWrong[currSet[card]]++;
+        else totalWrong[currSet[card]] = 1;
     return !correct();
 }
 
