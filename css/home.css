@@ -1,233 +1,191 @@
-body {
-    height: 100vh;
-    max-height: 100vh;
-}
-.main-bento {
-    margin-top: 15px;
-    display: flex;
-    width: calc(100vw - 50px);
-}
-.bento-svg {
-    display: block;
+.home-grid {
+    display: grid;
     position: relative;
-    width: calc(100vw - 330px);
-    height: initial;
-    background: transparent;
+    grid-template-columns: 1fr 0.5fr 0.5fr 0.5fr;
+    grid-template-rows: 0.75fr 0.75fr 1fr;
+    grid-template-areas:
+    "modal modal modal content"
+    "modal modal modal content"
+    "modal modal modal content";
+    grid-gap: 15px;
+    width: calc(100% - 20px);
+    margin: 20px auto;
 }
-.bento-svg #blanksvg, .bento-svg #bottomsushi {
-    top: 0;
-    display: block;
-    position: absolute;
-    z-index: 5;
-    clear: both;
-}
-.svg-button {
-    filter: drop-shadow(0 0 1rem black);
-    cursor: pointer;
-    animation-name: sushi-shine;
-    animation-duration: 4s;
-    animation-iteration-count: infinite;
-    animation-fill-mode: forwards;
-    transition: scale 1s;
-}
-.inactive-svg-button {
-    animation-name: none;
-}
-.svg-button:hover {
-    scale: 1.005;
-    animation-play-state: paused;
-}
-.home-side-div-holder {
-    margin-left: 3%;
-    width: 300px;
-    background-color: transparent;
-    height: auto;
-    overflow: hidden;
-}
-.home-side-div {
-    background-color: var(--light-gray);
-    border-radius: 5px;
-    width: calc(100% - 10px);
-    padding: 5px;
-    height: auto;
-    margin: 10px 0px;
-}
-.deck-reminders-holder {
-    min-height: 450px;
-    height: max-content;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-.notifications-holder {
-    display: flex;
-    height: auto;
-}
-.notifications-holder * {
-    word-break: normal;
-}
-.notifications-holder span {
-    font-size: 15px;
-    margin: 0px 5px;
-    line-height: 100%;
-    height: 100%;
-}
-.notifications-holder span.material-symbols-outlined {
-    font-size: 15px;
-    line-height: normal;
-    padding: 5px;
-    margin: 0;
-}
-#text {
-    text-align: center;
-}
-.notifications-holder > span:hover {
-    color: var(--accent-1);
-    cursor: pointer;
-    span {
-        color: var(--accent-1);
+.home-grid > div {
+    & svg {
+        max-width: 300px;
+    }
+    & img {
+        max-width: clamp(100px, 35%, 150px);
     }
 }
-.deck-reminders-holder > h3 {
-    text-align: center;
-}
-.dr-deck {
+.bento-box {
     display: flex;
-    width: calc(100% - 10px);
-    margin: 0px 5px;
+    justify-content: space-around;
+    align-items: center;
+    border: var(--gray) 3px solid; 
+    border-radius: 5px;
+    background-color: var(--dark-gray); 
+    padding: 10px;
 }
-.dr-dname {
-    width: calc(100% - 80px);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+.plate-svg {
+    max-width: 400px;
+    max-height: 170px;
 }
-.dr-dterms {
-    width: 80px;
-    text-align: right;
-    white-space: nowrap;
-    color: rgb(150, 150, 50);
+.review-box {
+    grid-column: span 1;
+    grid-row: span 2;
+    & svg {
+        max-width: 650px !important;
+    }
 }
-dialog p {
-    line-height: 300%;
+.decorative-sushi {
+    max-height: 350px !important;
+    max-width: initial !important;
 }
-dialog button {
-    padding: 5px;
+.create-deck-box {
+    grid-column: span 2;
+    gap: 10px;
 }
-#tutorial-background {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
-    background: rgba(0, 0, 0, 0.7);
+.review-schedule {
+    grid-row: span 3;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: start;
+    max-height: 80vh;
+    padding: 0 10px !important;
 }
-#tutorial-box-holder {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 105;
+.review-schedule .container {
+    border: none;
     background: transparent;
-}
-.lit-up {
-    z-index: 101 !important;
-    position: relative;
-}
-#tutorial {
-    background-color: var(--dark-gray);
-    padding: 2%;
-    border-radius: 10px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 102;
-}
-.version {
-    position: sticky;
-}
-div.version {
-    z-index: 9;
-    position: sticky;
     display: flex;
-    flex-direction: row-reverse;
-    margin: 3px 5px;
-    width: auto;
-    font-family: kadwa;
-    bottom: 0;
-    right: 0;
+    grid-row: span 3;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: auto;
 }
-div.version:hover {
-    cursor: pointer;
-}
-.new-version {
-    position: relative;
-    display: flex;
-    width: 5px;
-    height: 5px;
-    justify-content: center;
-    align-content: center;
-    background-color: red;
-    border-radius: 50%;
-}
-.continuebtn, .skipbtn {
+.review-schedule input {
+    width: calc(100% - 10px);
     padding: 0px 5px;
-    margin: 5px;
+    margin: 10px 10px 0 10px;
+    margin-left: 10px;
+}
+.review-name {
+    max-width: calc(18vw - 50px);
+    overflow: hidden;
+    width: auto;
+    white-space: nowrap;
+}
+.review-name:has(> span) {
+    text-overflow: ellipsis;
+
+}
+.review-name:has(> span):hover {
+    text-decoration: underline;
+}
+.review-container:has( span.material-symbols-outlined) {
+    cursor: pointer;
+    transition: 0.3s;
+}
+.review-container:has( span.material-symbols-outlined):hover {
+    background-color: var(--lighter-gray);
+}
+.review-schedule span.material-symbols-outlined {
+    font-size: 13px;
+    margin-right: 5px;
+}
+.review-number {
+    color: var(--accent-1);
+}
+.browse-decks-box {
+    grid-column: span 2;
+    gap: 10px;
+}
+.graph-container {
+    grid-column: span 3;
+}
+.review-sushi, .interactive-sushi {
+    cursor: pointer;
+    z-index: 2;
+    animation-name: sushi-shine;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+}
+#bento-modal {
+    position: absolute;
+    grid-area: modal;
+    height: calc(100% - 26px);
+    width: calc(100% - 26px);
+    z-index: 10;
+    display: flex;
+    border: var(--gray) 3px solid; 
+    border-radius: 5px;
+    background-color: var(--dark-gray); 
+    padding: 10px;
+}
+#search-reviews {
+    font-size: 12pt;
 }
 @keyframes sushi-shine {
     50% {
-        filter: drop-shadow(0 0 2rem gold);
+        filter: drop-shadow(0 0 0.3rem gold);
     }
 }
-@keyframes move-tutorial-box-up {
-    0% {
-        top: 70%;
+@media screen and (max-width: 1010px) {
+    .home-grid {
+        grid-template-columns: 1fr 0.5fr 0.5fr 0.5fr;
+        grid-template-rows: repeat(3, 1fr);
     }
-    100% {
-        top: 20%;
+    .review-box {
+        grid-column: span 2;
+    }
+    .review-schedule {
+        grid-column: span 2;
+    }
+    .create-deck-box {
+        .plate-svg {
+            display: none;
+        }
+    }
+    .graph-container {
+        grid-column: span 4;
+    }
+    .review-name {
+        max-width: calc(34vw - 50px);
     }
 }
-@keyframes move-tutorial-box-init {
-    0% {
-        top: 20%;
+@media only screen and (max-width: 600px) {
+    .home-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(3, 1fr);
     }
-    100% {
-        top: 50%;
+    .bento-box {
+        grid-column: span 1;
+        grid-row: span 1;
     }
-}
-@keyframes move-tutorial-box-down {
-    0% {
-        top: 50%;
-    }
-    100% {
-        top: 70%;
+    .review-name {
+        max-width: calc(80vw - 50px);
     }
 }
-@media screen and (max-width: 800px) {
-    body {
-        max-height: none;
-    }
-    .main-bento {
-        margin-top: 5px;
-        width: 100vw;
-    }
-    .bento-svg {
-        position: relative;
-        width: 100vw;
-        background: transparent;
-    }
-    .main-bento {
-        flex-direction: column;
-    }
-    .home-side-div {
-        margin: 0px 0px 10px 0px;
-    }
-    .home-side-div-holder {
-        margin: 0 2.5%;
-        width: 95%;
-    }
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--lighter-gray);
+} 
+::-webkit-scrollbar-thumb {
+    background: var(--lighter-gray);
+}
+.review-container {
+    background-color: var(--gray);
+    padding: 2.5px 10px;
+    border-radius: 5px;
+    width: calc(100% - 10px);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
