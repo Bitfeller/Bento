@@ -157,6 +157,23 @@
     font-size: 15px;
     text-align: right;
 }
+.matching-terms, .matching-defs {
+    width: calc(50% - 20px);
+}
+.matching-item {
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 10px;
+    border: solid;
+    border-width: 2px;
+    border-color: var(--lighter-gray);
+    background-color: var(--gray);
+    margin-top: 10px;
+    transition: 0.3s;
+}
+.matching-item:hover {
+    background-color: var(--light-gray);
+}
 @media screen and (max-width: 1300px) {
     #cont_a {
         flex-direction: column;
