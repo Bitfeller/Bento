@@ -139,9 +139,16 @@ dialog {
 #addDialog > button {
     margin-left: 95%;
 }
+footer {
+    display: flex;
+    width: 100%;
+}
 #loadBtn {
-    padding: 0px 5px;
-    margin: 30px 0px 10px 15px;
+    padding: 5px 10px;
+    margin: 15px auto;
+}
+#loadBtn > h3 {
+    color: var(--dark-text);
 }
 div.preview-container-part {
     background-color: rgba(50, 50, 50, 0.6);
