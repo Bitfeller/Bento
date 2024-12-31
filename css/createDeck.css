@@ -18,6 +18,9 @@ input, div[contenteditable="true"] {
     align-items: center;
     gap: 5px;
 }
+.mcbtn {
+    margin-left: 0px;
+}
 .mcop-del, .mcop-val, .mcop-nosel, .mcop-sel, .txtans-del, .rank-del {
     height: 27px;
     width: 27px;
@@ -26,7 +29,7 @@ input, div[contenteditable="true"] {
 .mcop-sel, .selbtn-sel {    
     background-color: var(--select-blue);
 }
-.mcop-del, .txtans-del, .rank-del {
+.mcop-del, .txtans-del, .rank-del, .mtchpair-del {
     background-color: var(--danger-red);
 }
 .mcop-sel {
@@ -44,7 +47,7 @@ input, div[contenteditable="true"] {
 .ansdiv {
     width: 50% !important;
 }
-.mcop-corr > span, .mcop-del > span, .mcop-sel > span, .txtans-del > span, .rank-del > span {
+.mcop-corr > span, .mcop-del > span, .mcop-sel > span, .txtans-del > span, .rank-del > span,  .mtchpair-del > span{
     font-size: 15px;
     margin: 7px 0;
     padding: 0;
@@ -318,6 +321,39 @@ button {
 .del {
     background-color: var(--danger-red);
     border-radius: 0px 5px 5px 0px;
+}
+.card-mtch {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.card-mtch {
+    margin: 15px 0;
+}
+.mtch-pair {
+    position: relative;
+    margin: 5px 0px;
+    div:first-child {
+        position: relative;
+    }
+    div:last-child {
+        position: relative;
+        margin-top: 20px; /* Adjust as needed */
+    }
+    div:first-child::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 100%;
+        width: 2px;
+        height: 20px; /* Change both margin-top and height to change height (same value) */
+        background-color: var(--light-text);
+    }
+    button {
+        position: absolute;
+        top: 5px;
+        left: 52%;
+    }
 }
 @media only screen and (max-width: 1025px) {
     .options-container {
