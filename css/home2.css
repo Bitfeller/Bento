@@ -1,12 +1,7 @@
 .home-grid {
     display: grid;
-    position: relative;
     grid-template-columns: 1fr 0.5fr 0.5fr 0.5fr;
     grid-template-rows: 0.75fr 0.75fr 1fr;
-    grid-template-areas:
-    "modal modal modal content"
-    "modal modal modal content"
-    "modal modal modal content";
     grid-gap: 15px;
     width: calc(100% - 20px);
     margin: 20px auto;
@@ -52,51 +47,22 @@
     flex-direction: column;
     gap: 10px;
     justify-content: start;
-    max-height: 80vh;
-    padding: 0 10px !important;
 }
-.review-schedule .container {
-    border: none;
-    background: transparent;
-    display: flex;
-    grid-row: span 3;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    max-height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: auto;
-}
-.review-schedule input {
+.review-container {
+    background-color: var(--gray);
+    padding: 2.5px 10px;
+    border-radius: 5px;
     width: calc(100% - 10px);
-    padding: 0px 5px;
-    margin: 10px 10px 0 10px;
-    margin-left: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 .review-name {
     max-width: calc(18vw - 50px);
     overflow: hidden;
     width: auto;
     white-space: nowrap;
-}
-.review-name:has(> span) {
     text-overflow: ellipsis;
-
-}
-.review-name:has(> span):hover {
-    text-decoration: underline;
-}
-.review-container:has( span.material-symbols-outlined) {
-    cursor: pointer;
-    transition: 0.3s;
-}
-.review-container:has( span.material-symbols-outlined):hover {
-    background-color: var(--lighter-gray);
-}
-.review-schedule span.material-symbols-outlined {
-    font-size: 13px;
-    margin-right: 5px;
 }
 .review-number {
     color: var(--accent-1);
@@ -104,14 +70,6 @@
 .browse-decks-box {
     grid-column: span 2;
     gap: 10px;
-}
-.deck-viewer {
-    display: none;
-    position: absolute;
-    left: calc(10% - 5px);
-    top: 65px;
-    width: 70%;
-    height: calc(100vh - 80px);
 }
 .graph-container {
     grid-column: span 3;
@@ -122,21 +80,6 @@
     animation-name: sushi-shine;
     animation-duration: 5s;
     animation-iteration-count: infinite;
-}
-#bento-modal {
-    position: absolute;
-    grid-area: modal;
-    height: calc(100% - 26px);
-    width: calc(100% - 26px);
-    z-index: 10;
-    display: flex;
-    border: var(--gray) 3px solid; 
-    border-radius: 5px;
-    background-color: var(--dark-gray); 
-    padding: 10px;
-}
-#search-reviews {
-    font-size: 12pt;
 }
 @keyframes sushi-shine {
     50% {
@@ -178,22 +121,4 @@
     .review-name {
         max-width: calc(80vw - 50px);
     }
-}
-::-webkit-scrollbar {
-    width: 8px;
-}
-::-webkit-scrollbar-thumb {
-    background: var(--lighter-gray);
-} 
-::-webkit-scrollbar-thumb {
-    background: var(--lighter-gray);
-}
-.review-container {
-    background-color: var(--gray);
-    padding: 2.5px 10px;
-    border-radius: 5px;
-    width: calc(100% - 10px);
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
 }
