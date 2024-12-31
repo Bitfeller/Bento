@@ -286,8 +286,9 @@ function generator_mtch(card, mtchlist, r, txt) {
     pair.className = 'mtch-pair';
     pair.innerHTML = `
         <div contenteditable="true" type='input' class='mtchpair-term ansdiv' placeholder='Term'></div>
-        <div contenteditable="true" type='input' class='mtchpair-def ansdiv' placeholder='Definition'></div>
         ${r ? "<button class='mtchpair-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>" : ""}
+        <div contenteditable="true" type='input' class='mtchpair-def ansdiv' placeholder='Definition'></div>
+        
     `;
     mtchlist.appendChild(pair);
     let term = pair.getElementsByClassName('mtchpair-term')[0];
