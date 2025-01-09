@@ -33,8 +33,8 @@
             <p>Deck picture:</p>
             <div class="deck-pick-container">
                 <img src="../../img/defaultdeckpic.png" class="deck-pic" id="deckpic">
-                <input class='file-selector' accept="image/png,image/jpeg" id="fileselecttrigger" type="file">
-                <span class="material-symbols-outlined" id="picAddBtn">add_a_photo</span>
+                
+                <span class="material-symbols-outlined" id="picAddBtn">add_a_photo<input class='file-selector' accept="image/png,image/jpeg" id="fileselecttrigger" type="file"></span>
                 <span class="material-symbols-outlined" id="picReset">refresh</span>    
             </div>
             <div>
