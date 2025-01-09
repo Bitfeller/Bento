@@ -38,7 +38,15 @@ function show(user, deck) {
 function hide() {
     deckViewer.style.display = 'none';
 }
-function update(search) {
+async function update(search) {
+    let [success, data] = await UserGateway.getuser(false, true, true, false);
+    if(!success) return;
+    deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
+    let reviews = data.userdata.reviews;
+    
+    let r_keys = Object.keys(reviews);
+    let decks = [], counts = [];
+    
     search = search.toLowerCase();
     let searched = search != '';
     let coll = 0;
