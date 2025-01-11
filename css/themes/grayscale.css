@@ -1,0 +1,14 @@
+:root {
+    --light-text: #ffffff;
+    --dark-text: #ffffff;
+
+    --select-blue: #636466;
+    --danger-red: #c71818;
+    --background: #393c3d;
+
+    --dark-gray: #39393b;
+    --gray: #181825;
+    --light-gray: #777878;
+    --lighter-gray: #cacccc;
+    --accent-1: #e02f2f;
+}
