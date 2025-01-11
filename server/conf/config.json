@@ -13,8 +13,12 @@
         "private_key": "rGqFP5802HeRpJDa2KrCrEqBBVHPPbWZRk9rYAouVJQ"
     },
     "admins": [1, 5],
+    "check_image": true,
+    "max_image_size": 2000000,
     "mail_smtp_server": "smtp.gmail.com",
     "mail_username": "bentoboxcenter@gmail.com",
     "mail_password": "tqivtecxmmvnekzf",
-    "mail_name": "Bento"
+    "mail_name": "Bento",
+    "file_db": "../../../../bento.valleynas.uk.DATA/",
+    "deckload_limit": 30
 }

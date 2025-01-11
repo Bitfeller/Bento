@@ -84,11 +84,18 @@
         const err = document.getElementById("err");
 
         l_btn.addEventListener("mousedown", async () => {
+            if(l_pass.value.length < 8) {
+                err.innerHTML = "Bad username or password.";
+                return;
+            }
             let [success, reason] = await UserGateway.login(l_user.value, l_pass.value);
             if(!success) {
                 switch(reason) {
                     case "bad u/p":
                         err.innerHTML = "Bad username or password.";
+                    break;
+                    case "broken user":
+                        err.innerHTML = "Your account is broken. Contact bentoboxcenter@gmail.com for help.";
                     break;
                     default:
                         console.log(reason);
@@ -106,11 +113,18 @@
         });
         window.onkeydown = async (e) => {
             if (e.key === "Enter") {
+                if(l_pass.value.length < 8) {
+                    err.innerHTML = "Bad username or password.";
+                    return;
+                }
                 let [success, reason] = await UserGateway.login(l_user.value, l_pass.value);
                 if(!success) {
                     switch(reason) {
                         case "bad u/p":
                             err.innerHTML = "Bad username or password.";
+                        break;
+                        case "broken user":
+                            err.innerHTML = "Your account is broken. Contact bentoboxcenter@gmail.com for help.";
                         break;
                         default:
                             console.log(reason);

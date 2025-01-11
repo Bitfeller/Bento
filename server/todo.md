@@ -1,8 +1,6 @@
 # TODO: 
 
 ### Feature Tasks:
-- Verification + password reset system via email
-
 - Add more interactive games?
 
 - Allow cards to be shown both ways
@@ -17,11 +15,7 @@
 
 
 - Allow cards to be shown both ways
-- Verification + password reset system via email
 - Make inertia better + release to the public
-
-- Add a "Reset Password" option on the login screen
-- update editdeck to show error on loading screen if deck doesn't exist
 
 
 # All changes:

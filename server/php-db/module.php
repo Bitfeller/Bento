@@ -33,42 +33,28 @@
     }
     function validate_request() {
         $config = get_server_config();
-        if($config["allowed_hosts"] === "*") {
-            header("Access-Control-Allow-Origin: *");
-        } else {
+        if($config["allowed_hosts"] === "*") header("Access-Control-Allow-Origin: *");
+        else {
             $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : "";
-            if(is_host_allowed($origin, $config["allowed_hosts"])) {
-                header("Access-Control-Allow-Origin: $origin");
-            }
+            if(is_host_allowed($origin, $config["allowed_hosts"])) header("Access-Control-Allow-Origin: $origin");
         }
-        if(!isset($_SERVER['CONTENT_TYPE'])) {
-            access_fail();
-        }
-        if($_SERVER['CONTENT_TYPE'] !== "application/json") {
-            access_fail();
-        }
+        if(!isset($_SERVER['CONTENT_TYPE'])) access_fail();
+        if($_SERVER['CONTENT_TYPE'] !== "application/json") access_fail();
     }
     //      Fetch body data
     function get_data(...$required_values) {
         $json_data = file_get_contents('php://input');
         $data = json_decode($json_data, true);
-        if(!empty($required_values)) {
-            foreach ($required_values as $req_value) {
-                if(!isset($data[$req_value])) {
-                    access_fail();
-                }
-            }
-        }
+        if(!empty($required_values))
+            foreach ($required_values as $req_value)
+                if(!isset($data[$req_value])) access_fail();
         return $data;
     }
     function require_types($types, ...$params) {
         $data = get_data();
-        if(!is_string($types) or !is_array($params)) {
-            return;
-        }
-        if(strlen($types) !== sizeof($params)) {
-            return;
-        }
+        if($data == null) return;
+        if(!is_string($types) or !is_array($params)) return;
+        if(strlen($types) !== sizeof($params)) return;
         foreach ($params as $index => $param) {
             // format type
             $type = "";
@@ -89,18 +75,13 @@
                 break;
             }
             $val = $data[$param];
-            if(isset($val) and (gettype($val) !== $type and gettype($val) !== ($secondType or $type))) {
-                access_fail();
-            }
+            if(isset($val) and (gettype($val) !== $type and gettype($val) !== ($secondType or $type))) access_fail();
         }
     }
     //      Get server config
     function get_server_config() {
-        if(file_exists('../../conf/local-config.json')) {
-            return json_decode(file_get_contents("../../conf/local-config.json"), true);
-        } else {
-            return json_decode(file_get_contents('../../conf/config.json'), true);
-        }
+        if(file_exists('../../conf/local-config.json')) return json_decode(file_get_contents("../../conf/local-config.json"), true);
+        else return json_decode(file_get_contents('../../conf/config.json'), true);
     }
     //      Content sanitizer
     function _traverse_str_sanitize(string $content) {
@@ -110,18 +91,10 @@
         $newContnt = [];
         foreach($content as $val) {
             $newVal = null;
-            if(gettype($val) == "array") {
-                $newVal = _traverse_array_sanitize($val);
-            }
-            if(gettype($val) == "object") {
-                $newVal = _traverse_object_sanitize($val);
-            }
-            if(gettype($val) == "string") {
-                $newVal = _traverse_str_sanitize($val);
-            }
-            if(gettype($val) == "double" || gettype($val) == "integer") {
-                $newVal = $val;
-            }
+            if(gettype($val) == "array") $newVal = _traverse_array_sanitize($val);
+            if(gettype($val) == "object") $newVal = _traverse_object_sanitize($val);
+            if(gettype($val) == "string") $newVal = _traverse_str_sanitize($val);
+            if(gettype($val) == "double" || gettype($val) == "integer") $newVal = $val;
             $newContnt[] = $newVal;
         }
         return $newContnt;
@@ -131,40 +104,24 @@
         foreach($content as $key => $val) {
             $newKey = htmlspecialchars(strip_tags($key));
             $newVal = null;
-            if(gettype($val) == "array") {
-                $newVal = _traverse_array_sanitize($val);
-            }
-            if(gettype($val) == "object") {
-                $newVal = _traverse_object_sanitize($val);
-            }
-            if(gettype($val) == "string") {
-                $newVal = _traverse_str_sanitize($val);
-            }
-            if(gettype($val) == "double" || gettype($val) == "integer") {
-                $newVal = $val;
-            }
+            if(gettype($val) == "array") $newVal = _traverse_array_sanitize($val);
+            if(gettype($val) == "object") $newVal = _traverse_object_sanitize($val);
+            if(gettype($val) == "string") $newVal = _traverse_str_sanitize($val);
+            if(gettype($val) == "double" || gettype($val) == "integer") $newVal = $val;
             $newContnt->$newKey = $newVal;
         }
         return $newContnt;
     }
     function sanitize($content) {
-        if(gettype($content) == "array") {
-            return _traverse_array_sanitize($content);
-        }
-        if(gettype($content) == "object") {
-            return _traverse_object_sanitize($content);
-        }
-        if(gettype($content) == "string") {
-            return _traverse_str_sanitize($content);
-        }
+        if(gettype($content) == "array") return _traverse_array_sanitize($content);
+        if(gettype($content) == "object") return _traverse_object_sanitize($content);
+        if(gettype($content) == "string") return _traverse_str_sanitize($content);
         return null;
     }
     function connect_to_db() {
         $conf = get_server_config();
         $conn = mysqli_connect($conf['mysql']['host'], $conf['mysql']['user'], $conf['mysql']['password'], $conf['mysql']['db']);
-        if(!$conn) {
-            fail("conn: ". mysqli_connect_error());
-        }
+        if(!$conn) fail("conn: ". mysqli_connect_error());
         return $conn;
     }
     // Mailer
@@ -183,11 +140,7 @@
         $mail->Subject = $subject;
         $mail->isHTML();
         $mail->Body = $body;
-        if(isset($alt_body)) {
-            $mail->AltBody = $alt_body;
-        }
-        if(!$mail->send()) {
-            return false;
-        }
+        if(isset($alt_body)) $mail->AltBody = $alt_body;
+        if(!$mail->send()) return false;
         return true;
     }
