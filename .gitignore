@@ -1,2 +1,4 @@
 file_db/**/*.pfp
 file_db/**/*.pic
+**/node_modules/*
+!**/node_modules/PLACEHOLDER
