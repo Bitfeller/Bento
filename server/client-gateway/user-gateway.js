@@ -1,151 +1,147 @@
 const moduleurl = new URL(import.meta.url);
 const spath = moduleurl.pathname + "/../..";
 
-function err(func) {
-    console.log("backend: " + func + "() received an improper response.");
+function types(t, ...args) {
+    return args.every((c, i) => {
+        if(c === undefined) return false;
+        switch(t[i]) {
+            case "S": return typeof c === "string" && c.length > 0;
+            case "s": return typeof c === "string";
+            case "b": return typeof c === "boolean";
+            case "N": return typeof c === "number" && !isNaN(c) && c >= 0;
+            case "n": return typeof c === "number" && !isNaN(c);
+            case "a": return Array.isArray(c);
+        }
+        return false;
+    });
 }
-class UserGateway {
-    static async getuser() {
-        var success, data;
+let UserGateway = {
+    getuser: async (getpfp = false, getudata = false, getreviews = true, getdrafts = false) => {
+        if(!types("bbbb", getpfp, getudata, getreviews, getdrafts)) return [false, "invalid params"];
+        let success = false, data = 'fetch-err';
         await fetch(spath + "/php-db/user/user_get.php", {
-            method: "get",
+            method: "post",
             headers: {
                 'Content-Type': 'application/json'
-            }
-        }).then(function(res) {
-            if(!res.ok) {
-                err("getuser");
-                success = false;
-                data = 'fetch-err';
-                throw "none";
-            }
+            },
+            body: JSON.stringify({
+                getpfp,
+                getudata,
+                getreviews,
+                getdrafts
+            })
+        }).then(res => {
+            if(!res.ok) throw "couldn't fetch! (bad response)";
             return res.json();
-        }).then(function(res) {
-            success = (res.status == "success");
-            if(!success) {
-                data = res.reason;
-            } else {
+        }).then(res => {
+            success = res.status == 'success';
+            if(!success) data = res.reason;
+            else {
                 data = res.data;
-                data.userdata = JSON.parse(data.userdata);
+                if(data.userdata) data.userdata = JSON.parse(data.userdata);
             }
-        }).catch(function(err) {
-            if(err == "none") {return;}
-            console.log("backend: " + err);
-        });
+        }).catch(e => console.log('backend:', e));
         return [success, data];
-    }
-    static async login(username, pwd) {
-        if(!username || !pwd || username.length === 0 || pwd.length === 0) {
-            return [false, "invalid params"];
-        }
-        var success, reason;
+    },
+    login: async (username, pwd) => {
+        if(!types("SS", username, pwd)) return [false, "invalid params"];
+        let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/user/user_login.php", {
             method: "post",
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username: username,
-                pwd: pwd
+                username,
+                pwd
             })
-        }).then(function(res) {
-            if(!res.ok) {
-                err("login");
-                success = false;
-                reason = 'fetch-err';
-                throw "none";
-            }
+        }).then(res => {
+            if(!res.ok) throw "couldn't fetch! (bad response)";
             return res.json();
-        }).then(function(res) {
-            success = (res.status == "success");
+        }).then(res => {
+            success = res.status == 'success', reason = '';
             if(!success) reason = res.reason;
-        }).catch(function(err) {
-            if(err == "none") {return;}
-            console.log("backend: " + err);
-        });
+        }).catch(e => console.log('backend:', e));
         return [success, reason];
-    }
-    static async signup(username, pwd, email) {
-        if(!username || !pwd || !email || username.length === 0 || pwd.length === 0 || email.length === 0) {
-            return [false, "invalid params"];
-        }
-        if(pwd.length < 8) {
-            return [false, "bad pwd"];
-        }
-        var success, reason;
+    },
+    signup: async (username, pwd, email) => {
+        if(!types("SSS", username, pwd, email)) return [false, "invalid params"];
+        if(pwd.length < 8) return [false, "bad pwd"];
+        let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/user/user_new.php", {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username: username,
-                pwd: pwd,
-                email: email
+                username,
+                pwd,
+                email
             })
-        }).then(function(res) {
-            if(!res.ok) {
-                err("signup");
-                success = false;
-                reason = 'fetch-err';
-                throw 'none';
-            }
+        }).then(res => {
+            if(!res.ok) throw "couldn't fetch! (bad response)";
             return res.json();
-        }).then(function(res) {
-            success = (res.status == "success");
+        }).then(res => {
+            success = res.status == 'success', reason = '';
             if(!success) reason = res.reason;
-        }).catch(function(err) {
-            if(err == "none") {return;}
-            console.log("backend: " + err);
-        });
+        }).catch(e => console.log('backend:', e));
         return [success, reason];
-    }
-    static async editUser(setting, val, pwd) {
-        if(typeof(setting) !== "string" || typeof(val) !== "string" || setting.length === 0) {
-            return [false, "invalid params"];
-        }
-        var success, reason;
+    },
+    editUser: async (setting, val, pwd = "") => {
+        if(!types("Sss", setting, val, pwd)) return [false, "invalid params"];
+        let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/user/user_edit.php", {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                setting: setting,
-                val: val,
-                verifpwd: pwd || ""
+                setting,
+                val,
+                verifpwd: pwd
             })
-        }).then(function(res) {
-            if(!res.ok) {
-                err("editUser");
-                success = false;
-                reason = 'fetch-err';
-                throw 'none';
-            }
+        }).then(res => {
+            if(!res.ok) throw "couldn't fetch! (bad response)";
             return res.json();
-        }).then(function(res) {
-            success = (res.status == "success");
+        }).then(res => {
+            success = res.status == 'success', reason = '';
             if(!success) reason = res.reason;
-        }).catch(function(err) {
-            if(err == "none") {return;}
-            console.log("backend: " + err);
-        });
+        }).catch(e => console.log('backend:', e));
         return [success, reason];
-    }
-    static async signout() {
+    },
+    signout: async () => {
         await fetch(spath + "/php-db/user/user_logout.php", {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
             }
         });
-        return [true, undefined];
-    }
-    static async giveFeedback(feedback) {
-        if(typeof(feedback) !== "string" || (feedback.length ?? 0) < 1) {
-            return [false, "invalid params"];
-        }
-        var success, reason;
+        return [true, null];
+    },
+    getDraftImage: async time => {
+        if(!types("n", time)) return [false, "invalid params"];
+        let success = false, data = 'fetch-err';
+        await fetch(spath + "/php-db/user/user_draft_getpic.php", {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                time
+            })
+        }).then(res => {
+            if(!res.ok) throw "couldn't fetch! (bad response)";
+            return res.json();
+        }).then(res => {
+            success = res.status == 'success';
+            if(!success) data = res.reason;
+            else data = res.data;
+        }).catch(e => console.log('backend:', e));
+        return [success, data];
+    },
+    giveFeedback: async feedback => {
+        if(!types("S", feedback)) return [false, "invalid params"];
+        let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/feedback/feedback_new.php", {
             method: 'post',
             headers: {
@@ -154,50 +150,25 @@ class UserGateway {
             body: JSON.stringify({
                 feedback
             })
-        }).then(function(res) {
-            if(!res.ok) {
-                err("giveFeedback");
-                success = false;
-                reason = 'fetch-err';
-                throw 'none';
-            }
+        }).then(res => {
+            if(!res.ok) throw "couldn't fetch! (bad response)";
             return res.json();
-        }).then(function(res) {
-            success = (res.status == "success");
+        }).then(res => {
+            success = res.status == 'success', reason = '';
             if(!success) reason = res.reason;
-        }).catch(function(err) {
-            if(err == "none") {return;}
-            console.log("backend: " + err);
-        });
+        }).catch(e => console.log('backend:', e));
         return [success, reason];
-    }
-    static calculateNTR(box, lastSeen) {
-        let tick = Date.now();
-        let dist = tick - lastSeen;
-        let days = (((dist / 1000) / 60) / 60) / 24;
-        switch(box) {
-            case 1:
-                return days >= 1;
-            case 2:
-                return days >= 3;
-            case 3:
-                return days >= 5;
-            case 4:
-                return days >= 7;
-            case 5:
-                return days >= 10;
-            case 6:
-                return days >= 14;
-            default:
-                return true;
-        }
-    }
+    },
+    calculateNTR: (box, lastSeen) => {
+        if(!types("nn", box, lastSeen)) return true;
+        let tick = Date.now(), dist = tick - lastSeen, days = (((dist / 1000) / 60) / 60) / 24;
+        let boxassoc = [1, 3, 5, 7, 10, 14]; // b1 = 1d, b2=3d, etc.
+        return days >= (boxassoc[box - 1] ?? -1);
+    },
     // Recovery and verification methods
-    static async userdir(mode, uid, verif, newPwd) {
-        if(typeof(mode) !== "string" || typeof(verif) !== "string" || typeof(uid) !== "number") {
-            return [false, "invalid params"];
-        }
-        var success, reason;
+    userdir: async (mode, uid, verif, newPwd = "") => {
+        if(!types("Sns", mode, uid, verif)) return [false, "invalid params"];
+        let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/user/user_direct.php", {
             method: 'post',
             headers: {
@@ -207,30 +178,20 @@ class UserGateway {
                 mode,
                 uid,
                 verif,
-                newPwd: newPwd ?? ""
+                newPwd
             })
-        }).then(function(res) {
-            if(!res.ok) {
-                err("userdir");
-                success = false;
-                reason = 'fetch-err';
-                throw 'none';
-            }
+        }).then(res => {
+            if(!res.ok) throw "couldn't fetch! (bad response)";
             return res.json();
-        }).then(function(res) {
-            success = (res.status == "success");
+        }).then(res => {
+            success = res.status == 'success', reason = '';
             if(!success) reason = res.reason;
-        }).catch(function(err) {
-            if(err == "none") return;
-            console.log("backend: " + err);
-        });
+        }).catch(e => console.log('backend:', e));
         return [success, reason];
-    }
-    static async resetPwd(email) {
-        if(typeof(email) !== "string") {
-            return [false, "invalid params"];
-        }
-        var success, reason;
+    },
+    resetPwd: async email => {
+        if(!types("s", email)) return [false, "invalid params"];
+        let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/user/user_resetpwd.php", {
             method: 'post',
             headers: {
@@ -239,27 +200,15 @@ class UserGateway {
             body: JSON.stringify({
                 email
             })
-        }).then(function(res) {
-            if(!res.ok) {
-                err("resetPwd");
-                success = false;
-                reason = 'fetch-err';
-                throw 'none';
-            }
+        }).then(res => {
+            if(!res.ok) throw "couldn't fetch! (bad response)";
             return res.json();
-        }).then(function(res) {
-            success = (res.status == "success");
+        }).then(res => {
+            success = res.status == 'success', reason = '';
             if(!success) reason = res.reason;
-        }).catch(function(err) {
-            if(err == "none") return;
-            console.log("backend: " + err);
-        });
+        }).catch(e => console.log('backend:', e));
         return [success, reason];
-    }
-    constructor() {
-        console.log("backend: invalid call of class.");
-        throw new Error("backend");
-    }
+    },
 }
 
 export {UserGateway};

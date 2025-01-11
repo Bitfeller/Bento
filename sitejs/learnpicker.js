@@ -43,8 +43,7 @@ function updateDecks(decks) {
         o_infinite_mode.disabled = true;
         o_infinite_mode.setAttribute("data-enabled", String(o_infinite_mode.checked));
         o_infinite_mode.checked = false;
-        infinite_mode_text.innerHTML =
-            "You can't use Infinite Mode when learning decks to review.";
+        infinite_mode_text.innerHTML = "You can't use Infinite Mode when learning decks to review.";
         let r_keys = Object.keys(reviews);
         for (let i = 0; i < r_keys.length; i++) {
             if (decks[i] == 0) continue;
@@ -53,17 +52,16 @@ function updateDecks(decks) {
             let c_keys = Object.keys(reviews[r_keys[i]]);
             for (let j = 0; j < c_keys.length; j++) {
                 let term = reviews[r_keys[i]][c_keys[j]];
-                if (UserGateway.calculateNTR(term.box, term.last)) count++;
+                if(UserGateway.calculateNTR(term.box, term.last)) count++;
             }
             count += deck.contnt_len - c_keys.length;
-            if (count > 0) {
+            if (count > 0) 
                 deckContainer.innerHTML += `
                     <div class="deck-box" data-idx='${deck.id}'>
                         <p>${decks[i].name}</p>
                         <input type='checkbox' class='deckCheck'>
                     </div>
                 `;
-            }
         }
     }
     for(let i = 0; i < deckContainer.children.length; i++) {
@@ -78,48 +76,30 @@ function updateDecks(decks) {
                     deckContainer.children[j].getElementsByClassName(
                         "deckCheck",
                     )[0];
-                if (thatcheckbox.checked == false) {
-                    allSelected = false;
-                } else {
-                    isSelected = true;
-                }
+                if (thatcheckbox.checked == false) allSelected = false;
+                else isSelected = true;
             }
-            if (allSelected) {
-                deckSelect.innerHTML = "check_box";
-            } else {
-                if (isSelected) {
-                    deckSelect.innerHTML = "indeterminate_check_box";
-                } else {
-                    deckSelect.innerHTML = "check_box_outline_blank";
-                }
-            }
+            if (allSelected) deckSelect.innerHTML = "check_box";
+            else if (isSelected) deckSelect.innerHTML = "indeterminate_check_box";
+            else deckSelect.innerHTML = "check_box_outline_blank";
         });
     }
-    if (deckContainer.innerHTML == "")
-        deckContainer.innerHTML =
-            '<p class="info-blank">You don\'t have any decks to review.</p>';
+    if (deckContainer.innerHTML == "") deckContainer.innerHTML = '<p class="info-blank">You don\'t have any decks to review.</p>';
 }
 
 (async () => {
-    let [success, data] = await UserGateway.getuser();
-    if (!success && data == "no session") {
-        mainContainer.innerHTML = "You're not logged in!";
-        return;
-    }
+    let [success, data] = await UserGateway.getuser(false, true, true, false);
+    if (!success && data == "no session") return window.LOAD_ERROR("You're not logged in!");
     deckContainer.innerHTML = "";
     user = data;
     let reviews = user.userdata.reviews;
-    if (reviews.length == 0) {
-        window.location.href = "/learn/kitchen";
-        return;
-    }
+    if (reviews.length == 0) return window.location.href = "/learn/kitchen";
     let decks = [];
     deckContainer.innerHTML = "";
     o_infinite_mode.disabled = true;
     o_infinite_mode.setAttribute("data-enabled", String(o_infinite_mode.checked));
     o_infinite_mode.checked = false;
-    infinite_mode_text.innerHTML =
-        "You can't use Infinite Mode when learning decks to review.";
+    infinite_mode_text.innerHTML = "You can't use Infinite Mode when learning decks to review.";
     o_mode[0].checked = true;
     let r_keys = Object.keys(reviews);
     for (let i = 0; i < r_keys.length; i++) {
@@ -137,28 +117,25 @@ function updateDecks(decks) {
             if (UserGateway.calculateNTR(term.box, term.last)) count++;
         }
         count += deck.contnt_len - c_keys.length;
-        if (count > 0) {
+        if (count > 0) 
             deckContainer.innerHTML += `
                 <div class="deck-box" data-idx='${deck.id}'>
                     <p>${decks[i].name}</p>
                     <input type='checkbox' class='deckCheck'>
                 </div>
             `;
-        }
     }
-    if (deckContainer.innerHTML == "")
-        deckContainer.innerHTML =
-            "<p class='info-blank'>You don't have any decks to review.<br>If you're trying to find all the decks in your reviews, click on \"Review select decks\" above.</p>";
+    if (deckContainer.innerHTML == "") deckContainer.innerHTML = "<p class='info-blank'>You don't have any decks to review.<br>If you're trying to find all the decks in your reviews, click on \"Review select decks\" above.</p>";
     // Settings box input box click event
     for(let i = 0; i < settingsBoxs.length; i++) {
         let box = settingsBoxs[i];
-        if (box.querySelectorAll('input[type="radio"]')[0]) {
+        if(box.querySelectorAll('input[type="radio"]')[0]) {
             let radioButton = box.querySelectorAll('input[type="radio"]')[0];
             box.addEventListener("mousedown", () => {
                 radioButton.checked = true;
                 updateDecks(decks);
             });
-        } else if (box.querySelectorAll('input[type="checkbox"]').length > 0) {
+        } else if(box.querySelectorAll('input[type="checkbox"]').length > 0) {
             let checkbox = box.querySelectorAll('input[type="checkbox"]')[0];
             box.addEventListener("mousedown", () => {
                 if(checkbox.disabled) return;
@@ -178,21 +155,12 @@ function updateDecks(decks) {
                     deckContainer.children[j].getElementsByClassName(
                         "deckCheck",
                     )[0];
-                if (thatcheckbox.checked == false) {
-                    allSelected = false;
-                } else {
-                    isSelected = true;
-                }
+                if (thatcheckbox.checked == false) allSelected = false;
+                else isSelected = true;
             }
-            if (allSelected) {
-                deckSelect.innerHTML = "check_box";
-            } else {
-                if (isSelected) {
-                    deckSelect.innerHTML = "indeterminate_check_box";
-                } else {
-                    deckSelect.innerHTML = "check_box_outline_blank";
-                }
-            }
+            if (allSelected) deckSelect.innerHTML = "check_box";
+            else if (isSelected) deckSelect.innerHTML = "indeterminate_check_box";
+            else deckSelect.innerHTML = "check_box_outline_blank";
         });
     }
     o_mode[1].addEventListener("change", () => updateDecks(decks));
@@ -203,30 +171,19 @@ function updateDecks(decks) {
             let item = deckContainer.children[i];
             let idx = item.dataset.idx;
             let checkbox = item.getElementsByClassName("deckCheck")[0];
-            if (checkbox.checked) {
-                selectedDecks.push(parseInt(idx));
-            }
+            if (checkbox.checked) selectedDecks.push(parseInt(idx));
         }
-        if (selectedDecks.length == 0) {
-            errmsg.innerHTML = "Please select at least one deck to review.";
-            return;
-        }
+        if (selectedDecks.length == 0) return void (errmsg.innerHTML = "Please select at least one deck to review.");
         // Set options
         let mode = o_mode[0].checked ? 1 : 0,
             repeat,
             shuffle,
             infinite_mode = o_infinite_mode.checked ? 1 : 0,
             require_correct = o_require_correct.checked ? 1 : 0;
-        for (let i = 0; i < o_repeat.length; i++) {
-            if (o_repeat[i].checked == true) {
-                repeat = i + 1;
-            }
-        }
-        for (let i = 0; i < o_shuffle.length; i++) {
-            if (o_shuffle[i].checked == true) {
-                shuffle = i + 1;
-            }
-        }
+        for (let i = 0; i < o_repeat.length; i++)
+            if (o_repeat[i].checked == true) repeat = i + 1;
+        for (let i = 0; i < o_shuffle.length; i++)
+            if (o_shuffle[i].checked == true) shuffle = i + 1;
         window.location.href =
             "/learn/game?ds=" +
             selectedDecks.join(",") +
@@ -246,9 +203,7 @@ function updateDecks(decks) {
         for (let i = 0; i < deckContainer.children.length; i++) {
             let item = deckContainer.children[i];
             let checkbox = item.getElementsByClassName("deckCheck")[0];
-            if (!checkbox.checked) {
-                allChecked = true;
-            }
+            if (!checkbox.checked) allChecked = true;
         }
         if (allChecked) {
             for (let i = 0; i < deckContainer.children.length; i++) {
@@ -272,20 +227,11 @@ function updateDecks(decks) {
             let item = deckContainer.children[i];
             let idx = item.dataset.idx;
             let checkbox = item.getElementsByClassName("deckCheck")[0];
-            if (checkbox.checked) {
-                selectedDecks.push(parseInt(idx));
-            }
+            if (checkbox.checked) selectedDecks.push(parseInt(idx));
         }
-        if (selectedDecks.length == 0) {
-            errmsg.innerHTML = "Please select at least one deck to review.";
-            return;
-        }
+        if (selectedDecks.length == 0) return void (errmsg.innerHTML = "Please select at least one deck to review.");
         let shuffle;
-        for (let i = 0; i < o_shuffle.length; i++) {
-            if (o_shuffle[i].checked == true) {
-                shuffle = i + 1;
-            }
-        }
+        for (let i = 0; i < o_shuffle.length; i++) if (o_shuffle[i].checked == true) shuffle = i + 1;
         window.location.href = '/learn/inertia?ds=' + selectedDecks.join(",") + '&m=' + (o_mode[0].checked ? 1 : 0) + '&s=' + shuffle;
     });
     window.LOADED();
