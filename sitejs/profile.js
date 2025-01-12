@@ -20,17 +20,19 @@ const usernameButton = document.getElementById("submit-username");
 const usernameDisplay = document.getElementById("username");
 
 const warningDialog = document.getElementById("warning-dialog");
-
 const deleteAccount = document.getElementById("delete-account");
-
 const resetAccount = document.getElementById("reset-account");
-
 
 const nordRadio = document.getElementById("nord-radio");
 const coffeeMidnightRadio = document.getElementById("coffee-midnight-radio");
 const catppuccinRadio = document.getElementById("catppuccin-radio");
 // const grayscaleRadio = document.getElementById("grayscale-radio");
 
+async function changeTheme(current, theme) {
+    if(current == theme) return;
+    await UserGateway.editUser('theme', "" + theme);
+    window.location.reload();
+}
 // main
 (async () => {
     let [success, data] = await UserGateway.getuser(true, true, false, false);
@@ -44,7 +46,7 @@ const catppuccinRadio = document.getElementById("catppuccin-radio");
         pfp.src = "../../img/defaultpfp.png";
         await UserGateway.editUser("pfp", "");
         window.location.reload();
-    })
+    });
 
     fileSelectTrigger.addEventListener('change', () => {
         let files = fileSelectTrigger.files;
@@ -52,7 +54,7 @@ const catppuccinRadio = document.getElementById("catppuccin-radio");
             let file = files[0];
             if(!file.type.startsWith("image/")) return console.log('failed - file type; ' + file.type);
             let reader = new FileReader();
-            reader.onload = async (e) => {
+            reader.onload = async e => {
                 let content = e.target.result;
                 if(content.byteLength > 3 * 1000 * 100) return console.log("Failed! Past size limit of 3 MB.");
                 await UserGateway.editUser("pfp", content);
@@ -125,10 +127,6 @@ const catppuccinRadio = document.getElementById("catppuccin-radio");
         });
         resetAccountCancel.addEventListener("mousedown", () => warningDialog.close());
     });
-    window.onclick = (e) => {
-        if(e.target == warningDialog) warningDialog.close();
-    }
-
     let currentTheme = data.userdata.theme;
     
     if(currentTheme == 0) nordRadio.checked = true;
@@ -141,10 +139,6 @@ const catppuccinRadio = document.getElementById("catppuccin-radio");
     catppuccinRadio.addEventListener("change", () => changeTheme(currentTheme, 2));
     // grayscaleRadio.addEventListener("change", () => changeTheme(currentTheme, 3));
 })();
-
-async function changeTheme(currentTheme, theme) {
-    if(currentTheme == theme) return;
-    currentTheme = theme;
-    await UserGateway.editUser('theme', "" + theme);
-    window.location.reload();
-}
+window.onclick = e => {
+    if(e.target == warningDialog) warningDialog.close();
+};
