@@ -2,8 +2,6 @@ import { UserGateway } from "../server/client-gateway/user-gateway.js";
 import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 import { DeckBind } from "./client-modules/deck-lib.js";
 
-let drafts_save;
-
 const title = document.getElementById("name");
 const desc = document.getElementById("description");
 const deckpic = document.getElementById("deckpic");
@@ -13,7 +11,8 @@ const cardContain = document.getElementById("cardcontain");
 const createBtn = document.getElementById("create");
 const errmsg = document.getElementById("create-err");
 const draftdecks_history = document.getElementById("draftdecks-history");
-let last = 0;
+
+let drafts_save, last = 0;
 
 createBtn.addEventListener('mousedown', async () => {
     let res = DeckBind.toDeck(v => errmsg.innerHTML = v, false, Date.now() - last < 5000);

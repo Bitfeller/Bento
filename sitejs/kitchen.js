@@ -137,35 +137,30 @@ async function update() {
     });
     search.addEventListener("keyup", async (e) => {
         if(e.key !== "Enter") return;
-        searchedDecksContainer.innerHTML = "";
-        searchText.style.display = "none";
-        searchedDecksContainer.style.display = "none";
+        searchText.style.display = searchedDecksContainer.style.display = "none";
         if(search.value == "" || search.value == " ") return;
         let orig = search.value.split(" ");
         let [success, data] = await DeckGateway.getall(0, orig);
         searchText.style.display = "block";
-        searchedDecksContainer.style.display = "flex";
         searchedDecksContainer.innerHTML = "<p class=\"info-blank\">There weren't any decks that matched your search results.</p>";
-        if(!success) return;
-        if(data.length == 0) return;
-        searchText.style.display = "block";
         searchedDecksContainer.style.display = "flex";
+        if(!success || data.length == 0) return;
         searchedDecksContainer.innerHTML = "";
+
         for(let i = 0; i < data.length; i++) {
             let deck = data[i];
             let inReviews = user.userdata.reviews[deck.id] ? true : false;
             let newBox = box(deck.id, inReviews, deck.name, deck.deckpic, deck.owner, false);
             searchedDecksContainer.appendChild(newBox);
         }
+
         let loaded = data.length;
         let s_loadBtn = document.createElement("button");
         s_loadBtn.id = "search_loadBtn";
         s_loadBtn.innerHTML = "<h3>Load more decks...</h3>";
-        searchedDecksContainer.appendChild(s_loadBtn);
         s_loadBtn.addEventListener("mousedown", async () => {
             let [success, data] = await DeckGateway.getall(loaded, orig);
-            if(!success) return;
-            if(data.length == 0) return void (s_loadBtn.innerHTML = "No more decks to load...");
+            if(!success || data.length == 0) return void (s_loadBtn.innerHTML = "No more decks to load...");
             for(let i = 0; i < data.length; i++) {
                 let deck = data[i];
                 let inReviews = user.userdata.reviews[deck.id] ? true : false;
@@ -174,15 +169,15 @@ async function update() {
             }
             loaded += data.length;
         });
+        searchedDecksContainer.appendChild(s_loadBtn);
     });
 })();
 async function preview(_this, isAdded) {
     previewDialog.showModal();
-    let id = parseInt(_this.dataset.idx);
-    let data = cache_decks[id];
+    let id = parseInt(_this.dataset.idx), data = cache_decks[id];
     previewDialog.innerHTML = `
         <div class='title-bar'>
-            <h2>...</h2>
+            <h2>... fetching your deck ...</h2>
         </div>
     `;
     if(!data) {
@@ -258,7 +253,18 @@ async function preview(_this, isAdded) {
             window.URL.revokeObjectURL(url); 
         });
         previewDialog.getElementsByClassName("edit-btn")[0].addEventListener("mousedown", () => window.location.href = "/learn/editdeck?d=" + deck.id);
+        let confirmed = false;
         previewDialog.getElementsByClassName("delete-btn")[0].addEventListener("mousedown", async () => {
+            if(!confirmed) {
+                previewDialog.getElementsByClassName("delete-btn")[0].innerHTML = "<div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>delete_forever</span> Are you sure?</div>";
+                confirmed = true;
+                return;
+            }
+            previewDialog = `
+                 <div class='title-bar'>
+                    <h2>... deleting this deck ...</h2>
+                </div>
+            `;
             await DeckGateway.modify(deck.id, "delete", "");
             previewDialog.close();
             // find div in added decks container

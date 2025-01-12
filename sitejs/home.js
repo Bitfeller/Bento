@@ -20,9 +20,11 @@ const version = document.getElementById('header:version');
 const version_info = document.getElementById('header:version_info');
 const feedback_dialog = document.getElementById("header:feedback_dialog");
 
+let user;
+
 function show(user, deck) {
     deckViewer.style.display = 'block';
-    let review = user.userdata.reviews[deck.name];
+    // let review = user.userdata.reviews[deck.name];
     let name = deck.name;
     deckViewer.innerHTML = `
         <div class='title deck-container-overview' id='deck-container-overview'>
@@ -38,7 +40,7 @@ function show(user, deck) {
 function hide() {
     deckViewer.style.display = 'none';
 }
-function update(search, decks, counts, data) {
+function update(search, decks, counts) {
     search = search.toLowerCase();
     let searched = search != '';
     let coll = 0;
@@ -62,17 +64,18 @@ function update(search, decks, counts, data) {
             div.className = 'review-container';
             div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>`;
             deckReminders.appendChild(div);
-            div.addEventListener('mouseenter', () => show(data, decks[i]));
+            div.addEventListener('mouseenter', () => show(user, decks[i]));
             div.addEventListener('mouseleave', hide);    
         }
     }
     if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks that match" : "You don't have any decks in your reviews."} --</p>`;
 }
 (async () => {
-    let [success, data] = await UserGateway.getuser(false, true, true, false);
+    let [success, _user] = await UserGateway.getuser(false, true, true, false);
     if(!success) return;
+    user = _user;
     deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
-    let reviews = data.userdata.reviews;
+    let reviews = user.userdata.reviews;
 
     let r_keys = Object.keys(reviews);
     let decks = [], counts = [];
@@ -90,8 +93,8 @@ function update(search, decks, counts, data) {
         count += deck.contnt_len - c_keys.length;
         counts.push(count);
     }
-    update('', decks, counts, data);
-    searcher.addEventListener('input', () => update(searcher.value, decks, counts, data));
+    update('', decks, counts);
+    searcher.addEventListener('input', () => update(searcher.value, decks, counts));
     window.LOADED();
 })();
 version.addEventListener('mousedown', () => version_info.showModal());
@@ -99,4 +102,5 @@ window.addEventListener('mousedown', e => {
     if(e.target == feedback_dialog || e.target == version_info) {
         feedback_dialog.close();
         version_info.close();
-    }});
+    }
+});
