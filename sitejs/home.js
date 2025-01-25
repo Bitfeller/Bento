@@ -5,16 +5,16 @@ const deckReminders = document.getElementsByClassName("review-schedule")[0].getE
 const searcher = document.getElementById('search-reviews');
 const deckViewer = document.getElementById('bento-modal');
 deckViewer.style.display = "none";
-// Tutorial required elements
-// const tutorialDialog = document.getElementById("tutorial-background");
-// const tutorialBoxHolder = document.getElementById("tutorial-box-holder");
-// const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
 
-// const svgHolder = document.getElementsByClassName("bento-svg")[0];
-// const blankSvg = document.getElementById("blanksvg");
-// const leftSushi = document.getElementById("Leftest_Sushi");
-// const bottomSushi = document.getElementById("Bottom_Sushi");
-// const rightSushi = document.getElementById("Right_Sushi");
+const tutorialDialog = document.getElementById("tutorial-background");
+const tutorialBoxHolder = document.getElementById("tutorial-box-holder");
+const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
+
+const svgHolder = document.getElementsByClassName("bento-svg")[0];
+const blankSvg = document.getElementById("blanksvg");
+const leftSushi = document.getElementById("Leftest_Sushi");
+const bottomSushi = document.getElementById("Bottom_Sushi");
+const rightSushi = document.getElementById("Right_Sushi");
 
 const version = document.getElementById('header:version');
 const version_info = document.getElementById('header:version_info');
@@ -66,7 +66,7 @@ function update(search, decks, counts, data) {
             div.addEventListener('mouseleave', hide);    
         }
     }
-    if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks that match" : "You don't have any decks in your reviews."} --</p>`;
+    if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks that match." : "You don't have any decks in your reviews."} --</p>`;
 }
 (async () => {
     let [success, data] = await UserGateway.getuser(false, true, true, false);
@@ -92,6 +92,15 @@ function update(search, decks, counts, data) {
     }
     update('', decks, counts, data);
     searcher.addEventListener('input', () => update(searcher.value, decks, counts, data));
+
+    // Tutorial
+    // Get options from browser URL
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('new')) {
+        // init tutorial
+        
+    }
+
     window.LOADED();
 })();
 version.addEventListener('mousedown', () => version_info.showModal());

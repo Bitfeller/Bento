@@ -17,7 +17,8 @@
         $pic = @file_get_contents($path);
         if($pic !== "" && $pic === false) {
             @unlink($path); // Delete if it exists
-            fail("broken img");
+            // return empty string
+            success("");
         } else success($pic);
     } catch(Exception $e) {
         fail("exception: " . $e->getMessage());
