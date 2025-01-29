@@ -20,11 +20,12 @@ const version = document.getElementById('header:version');
 const version_info = document.getElementById('header:version_info');
 const feedback_dialog = document.getElementById("header:feedback_dialog");
 
+let user;
 let decks = [], counts = [];
 
-function show(user, deck) {
+function show(deck) {
     deckViewer.style.display = 'block';
-    let review = user.userdata.reviews[deck.name];
+    // let review = user.userdata.reviews[deck.name];
     let name = deck.name;
     deckViewer.innerHTML = `
         <div class='title deck-container-overview' id='deck-container-overview'>
@@ -40,7 +41,7 @@ function show(user, deck) {
 function hide() {
     deckViewer.style.display = 'none';
 }
-function update(search, decks, counts, data) {
+function update(search) {
     search = search.toLowerCase();
     let searched = search != '';
     let coll = 0;
@@ -66,21 +67,21 @@ function update(search, decks, counts, data) {
             div.className = 'review-container';
             div.innerHTML = `<span class="review-name"><span class='material-symbols-outlined'>info</span>${decks[i].name}</span>`;
             deckReminders.appendChild(div);
-            div.addEventListener('mouseenter', () => show(data, decks[i]));
+            div.addEventListener('mouseenter', () => show(decks[i]));
             div.addEventListener('mouseleave', hide);    
         }
     }
     if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks that match." : "You don't have any decks in your reviews."} --</p>`;
 }
 (async () => {
-    let [success, data] = await UserGateway.getuser(false, true, true, false);
+    let [success, _user] = await UserGateway.getuser(false, true, true, false);
     if(!success) return;
+    user = _user;
     deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
-    let reviews = data.userdata.reviews;
+  
+    let reviews = user.userdata.reviews;
     let r_keys = Object.keys(reviews);
 
-    let decks = [], counts = [];
-    
     for(let i = 0; i < r_keys.length; i++) {
         let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), false, false, true);
         if(!success) continue;
@@ -94,8 +95,9 @@ function update(search, decks, counts, data) {
         count += deck.contnt_len - c_keys.length;
         counts.push(count);
     }
-    update('', decks, counts, data);
-    searcher.addEventListener('input', () => update(searcher.value, decks, counts, data));
+  
+    update('');
+    searcher.addEventListener('input', () => update(searcher.value));
 
     // Tutorial
     // Get options from browser URL
@@ -112,4 +114,5 @@ window.addEventListener('mousedown', e => {
     if(e.target == feedback_dialog || e.target == version_info) {
         feedback_dialog.close();
         version_info.close();
-    }});
+    }
+});
