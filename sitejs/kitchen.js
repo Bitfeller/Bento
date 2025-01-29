@@ -216,7 +216,7 @@ async function preview(_this, isAdded) {
     else {
         let contnt = data.contnt;
         let keys = Object.keys(contnt);
-        for(let i = 0; i < keys.length; i++) answer_list += `<p><b>Q |  ${keys[i]}</b></p>${contnt[keys[i]].type == "mc" ? "<p>" + contnt[keys[i]].op.join(", ") + "</p>" : ""}<p>A |  ${(contnt[keys[i]].type == "mc" ? contnt[keys[i]].ans.map(x => contnt[keys[i]][x]) : contnt[keys[i]].ans).join(", ")}</p><div class='deck-divider' style='margin: 7px 3px; background-color: rgb(230, 230, 230); height: 2px;'></div>`;
+        for(let i = 0; i < keys.length; i++) answer_list += `<p><b>Q |  ${keys[i]}</b></p>${contnt[keys[i]].type == "mc" ? "<p>" + contnt[keys[i]].op.join(", ") + "</p>" : ""}<p>A | ${(contnt[keys[i]].type == "mc" ? contnt[keys[i]].ans.map(x => contnt[keys[i]].op[x]) : contnt[keys[i]].ans).join(", ")}</p><div class='deck-divider' style='margin: 7px 3px; background-color: rgb(230, 230, 230); height: 2px;'></div>`;
     }
     previewDialog.innerHTML = `
         <div class='title-bar'>
@@ -258,7 +258,13 @@ async function preview(_this, isAdded) {
             window.URL.revokeObjectURL(url); 
         });
         previewDialog.getElementsByClassName("edit-btn")[0].addEventListener("mousedown", () => window.location.href = "/learn/editdeck?d=" + deck.id);
+        let confirmed = false;
         previewDialog.getElementsByClassName("delete-btn")[0].addEventListener("mousedown", async () => {
+            if(confirmed == false) {
+                confirmed = true;
+                previewDialog.getElementsByClassName('delete-btn')[0].innerHTML = "<div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>delete_forever</span> Are you sure?</div>";
+                return;
+            }
             await DeckGateway.modify(deck.id, "delete", "");
             previewDialog.close();
             // find div in added decks container
