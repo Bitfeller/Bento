@@ -5,7 +5,6 @@ const isPublic = document.getElementById("isPublic");
 const description = document.getElementById("description");
 const cardContain = document.getElementById("cardcontain");
 const addCard = document.getElementById("addcard");
-const editpic = document.getElementById("picAddBtn");
 const resetpic = document.getElementById("picReset");
 const fileselecttrigger = document.getElementById("fileselecttrigger");
 const picimg = document.getElementById("deckpic");
@@ -308,6 +307,7 @@ function generator_mtch(card, mtchlist, r, txt) {
     });
     if(r) delbtn.addEventListener('mousedown', () => pair.remove());
 }
+// Builders
 function init_mc(card, n, q) {
     card.innerHTML = `
         <div class='cardsel'>
@@ -325,6 +325,7 @@ function init_mc(card, n, q) {
         <button class='mc-add' tabindex="-1"><span class='material-symbols-outlined small-ico'>add</span> Add option</button>
         <button class='card-del' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Delete Card</button>
         <button class='mc-allcorr inactive' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Require all correct answers</button>
+        <button class='mc-clone' tabindex="-1"><span class='material-symbols-outlined small-ico'>file_copy</span> Clone Card</button>
         <div class='deck-divider'></div>
     `;
     init_card(card, n);
@@ -336,6 +337,16 @@ function init_mc(card, n, q) {
     let addbtn = card.getElementsByClassName('mc-add')[0];
     let allcorr = card.getElementsByClassName('mc-allcorr')[0];
     allcorr.style.display = "none";
+    // Cloner
+    card.getElementsByClassName('mc-clone')[0].addEventListener('mousedown', () => {
+        let data = toDeck(err => alert(err), true, true, n - 1);
+        let newCard = generateCard(data[2].contnt, Object.keys(data[2].contnt), 0, n + 1, true);
+        if(n == cards.length - 1) cardContain.insertAdjacentElement('beforeend', newCard);
+        else {
+            let next = card.nextSibling;
+            cardContain.insertBefore(newCard, next);
+        }
+    });
     // Local generator
     let generator = t => generator_mc(cardmc, card, allcorr, t);
     addbtn.addEventListener('mousedown', () => generator(false));
@@ -367,6 +378,7 @@ function init_txt(card, n, q) {
             <button class='txt-inver quick-action' tabindex="-1">Build inverse <span class='material-symbols-outlined small-ico'>arrow_forward_ios</span></button>
             <button class='txt-rinver inactive' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Remove inverse</button>
             <button class='card-del' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Delete Card</button>
+            <button class='txt-clone' tabindex="-1"><span class='material-symbols-outlined small-ico'>file_copy</span> Clone Card</button>
         </div>
         <div class='inverse'>
             >> Inverse <<
@@ -399,6 +411,17 @@ function init_txt(card, n, q) {
     inverse.style.display = "none";
 
     init_div(inverse.getElementsByClassName('q')[0]);
+
+    // Cloner
+    card.getElementsByClassName('txt-clone')[0].addEventListener('mousedown', () => {
+        let data = toDeck(err => alert(err), true, true, n - 1);
+        let newCard = generateCard(data[2].contnt, Object.keys(data[2].contnt), 0, n + 1, true);
+        if(n == cards.length - 1) cardContain.insertAdjacentElement('beforeend', newCard);
+        else {
+            let next = card.nextSibling;
+            cardContain.insertBefore(newCard, next);
+        }
+    });
     
     // Generator
     let generator = (r, p, t) => generator_txt(card, i_anslist, r, p, t);
@@ -443,6 +466,7 @@ function init_ranking(card, n, q) {
             <div class='card-vals-cont card-rank ranking-list'></div>
             <button class='rank-add' tabindex="-1"><span class='material-symbols-outlined small-ico'>add</span> Add item</button>
             <button class='card-del' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Delete Card</button>
+            <button class='rank-clone' tabindex="-1"><span class='material-symbols-outlined small-ico'>file_copy</span> Clone Card</button>
             <div class='deck-divider'></div>
         </div>
     `;
@@ -453,6 +477,16 @@ function init_ranking(card, n, q) {
     // Set up ranking card functionality
     let ranklist = card.getElementsByClassName('ranking-list')[0];
     let addbtn = card.getElementsByClassName('rank-add')[0];
+    // Cloner
+    card.getElementsByClassName('rank-clone')[0].addEventListener('mousedown', () => {
+        let data = toDeck(err => alert(err), true, true, n - 1);
+        let newCard = generateCard(data[2].contnt, Object.keys(data[2].contnt), 0, n + 1, true);
+        if(n == cards.length - 1) cardContain.insertAdjacentElement('beforeend', newCard);
+        else {
+            let next = card.nextSibling;
+            cardContain.insertBefore(newCard, next);
+        }
+    });
     // Local generator
     let generator = () => generator_rank(card, ranklist);
     addbtn.addEventListener('mousedown', generator);
@@ -473,6 +507,7 @@ function init_mtch(card, n, q) {
             <div class='card-vals-cont card-mtch'></div>
             <button class='mtch-add' tabindex='-1'><span class='material-symbols-outlined small-ico'>add</span> Add pair</button>
             <button class='card-del' tabindex='-1'><span class='material-symbols-outlined small-ico'>close</span> Delete Card</button>
+            <button class='mtch-clone' tabindex='-1'><span class='material-symbols-outlined small-ico'>file_copy</span> Clone Card</button>
             <div class='deck-divider'></div>
         </div>
     `;
@@ -483,6 +518,16 @@ function init_mtch(card, n, q) {
     // Set up match functionality
     let pairlist = card.getElementsByClassName('card-mtch')[0];
     let addbtn = card.getElementsByClassName('mtch-add')[0];
+    // Cloner
+    card.getElementsByClassName('mtch-clone')[0].addEventListener('mousedown', () => {
+        let data = toDeck(err => alert(err), true, true, n - 1);
+        let newCard = generateCard(data[2].contnt, Object.keys(data[2].contnt), 0, n + 1, true);
+        if(n == cards.length - 1) cardContain.insertAdjacentElement('beforeend', newCard);
+        else {
+            let next = card.nextSibling;
+            cardContain.insertBefore(newCard, next);
+        }
+    });
     // Local generator
     let generator = (r) => generator_mtch(card, pairlist, r);
     addbtn.addEventListener('mousedown', () => generator(true));
@@ -533,11 +578,11 @@ resetpic.addEventListener('mousedown', () => {
 // --------------------------------------------------- \\
 
 
-function toDeck(err_assigner, is_draft = false, bypass = false) {
+function toDeck(err_assigner, is_draft = false, bypass = false, setCard, cloning = false) {
     if(!user) return void err_assigner("Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)");
     if(name.value == '' && !is_draft) return void err_assigner("You haven't named your deck yet.");
     let data = {};
-    for(let i = 0; i < cards.length; i++) {
+    for(let i = setCard ?? 0; i < cards.length && (setCard == undefined ? true : i == setCard); i++) {
         let card = cards[i];
         let type = card.getElementsByClassName('selbtn-sel')[0];
         if(!type) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
@@ -561,7 +606,7 @@ function toDeck(err_assigner, is_draft = false, bypass = false) {
             }
             if(q.dataset.cnt.length == 0 && cdata.op.length == 0) continue;
             if(card.getElementsByClassName('active').length > 0 && cdata.ans.length > 1) cdata.req = 1;
-            if(data[q.dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(data[q.dataset.cnt] && !cloning) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('txtbtn')) {
             let cdata = {
@@ -595,7 +640,7 @@ function toDeck(err_assigner, is_draft = false, bypass = false) {
                 if(data[inv.getElementsByClassName('q')[0].dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
                 data[inv.getElementsByClassName('q')[0].dataset.cnt] = i_cdata;
             }
-            if(data[q.dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(data[q.dataset.cnt] && !cloning) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('rankbtn')) {
             let cdata = {
@@ -611,7 +656,7 @@ function toDeck(err_assigner, is_draft = false, bypass = false) {
                 if(txt.dataset.cnt.length > 0) cdata.ans.push(txt.dataset.cnt);
             }
             if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
-            if(data[q.dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(data[q.dataset.cnt] && !cloning) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('mtchbtn')) {
             let cdata = {
@@ -628,7 +673,7 @@ function toDeck(err_assigner, is_draft = false, bypass = false) {
                 if(term.dataset.cnt.length > 0 && def.dataset.cnt.length > 0) cdata.ans.push([term.dataset.cnt, def.dataset.cnt]);
             }
             if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
-            if(data[q.dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(data[q.dataset.cnt] && !cloning) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
         }
     }
@@ -637,6 +682,71 @@ function toDeck(err_assigner, is_draft = false, bypass = false) {
         contnt: data
     };
     return [name.value, deckpic, data, isPublic.checked];
+}
+function generateCard(contnt, d_keys, i, n) {
+    let card = contnt[d_keys[i]];
+    let q = d_keys[i];
+    let carddiv = document.createElement("div");
+    carddiv.id = "c" + n;
+    carddiv.className = "card";
+    cards.push(carddiv);
+    switch(card.type) {
+        case "mc":
+            init_mc(carddiv, n);
+            carddiv.getElementsByClassName('q')[0].setVal(q);
+            let cardmc = carddiv.getElementsByClassName('card-mc')[0];
+            let allcorr = carddiv.getElementsByClassName('mc-allcorr')[0];
+            cardmc.innerHTML = "";
+            for(let i = 0; i < card.op.length; i++) generator_mc(cardmc, carddiv, allcorr, card.ans.indexOf(i) > -1, card.op[i]);
+            if(card.ans.length > 1) {
+                allcorr.style.display = "inline-block";
+                if(card.req == 0) {
+                    allcorr.className = "mc-allcorr inactive";
+                    allcorr.innerHTML = "<span class='material-symbols-outlined small-ico'>close</span> Require all correct answers";
+                } else {
+                    allcorr.className = "mc-allcorr active";
+                    allcorr.innerHTML = "<span class='material-symbols-outlined small-ico'>check</span> Require all correct answers";
+                }
+            }
+        break;
+        case "txt":
+            init_txt(carddiv, n);
+            carddiv.getElementsByClassName('q')[0].setVal(q);
+            let anslist = carddiv.getElementsByClassName('card-txt')[0];
+            let inv = carddiv.getElementsByClassName('inverse')[0];
+            let i_anslist = inv.getElementsByClassName('card-txt-i')[0];
+            if(card.ans.length == 0) return;
+            anslist.getElementsByClassName('txt-ans-cont')[0].children[0].setVal(card.ans[0]);
+            for(let i = 1; i < card.ans.length; i++) generator_txt(carddiv, i_anslist, true, anslist, card.ans[i]);
+            if(card.inv) {
+                let confinver = carddiv.getElementsByClassName('txt-inver')[0];
+                let r_inver = carddiv.getElementsByClassName('txt-rinver')[0];
+                let inv = carddiv.getElementsByClassName('inverse')[0];
+                let i_anslist = inv.getElementsByClassName('card-txt')[0];
+                confinver.innerHTML = "Configure inverse <span class='material-symbols-outlined small-ico'>arrow_forward_ios</span>";
+                r_inver.style.display = "inline-block";
+                let generator = (r, p, a) => generator_txt(carddiv, i_anslist, r, p, a);
+                generator(false, i_anslist, card.inv.ans[0]);
+                for(let i = 1; i < card.inv.ans.length; i++) generator(true, i_anslist, card.inv.ans[i]);
+                inv.getElementsByClassName('q')[0].setVal(card.inv.q);
+            }
+        break;
+        case "ranking":
+            init_ranking(carddiv, n);
+            carddiv.getElementsByClassName('q')[0].setVal(q);
+            let rankinglist = carddiv.getElementsByClassName("ranking-list")[0];
+            rankinglist.innerHTML = '';
+            for(let i = 0; i < card.ans.length; i++) generator_rank(carddiv, rankinglist, card.ans[i]);
+        break;
+        case "mtch":
+            init_mtch(carddiv, n);
+            carddiv.getElementsByClassName('q')[0].setVal(q);
+            let mtchlist = carddiv.getElementsByClassName("card-mtch")[0];
+            mtchlist.innerHTML = '';
+            for(let i = 0; i < card.ans.length; i++) generator_mtch(carddiv, mtchlist, i != 0, card.ans[i]);
+        break;
+    }
+    return carddiv;
 }
 function appendToCards(contnt) {
     // Check if we only have one card first, and remove if so (cause it's annoying)
@@ -650,60 +760,8 @@ function appendToCards(contnt) {
             d_keys.splice(i, 1);
         }
     for(let i = 0; i < d_keys.length; i++) {
-        let card = contnt[d_keys[i]];
-        let q = d_keys[i];
-        let carddiv = document.createElement("div");
-        let n = cards.length + 1;
-        carddiv.id = "c" + n;
-        carddiv.className = "card";
+        let carddiv = generateCard(contnt, d_keys, i, cards.length + 1);
         cardContain.appendChild(carddiv);
-        cards.push(carddiv);
-        switch(card.type) {
-            case "mc":
-                init_mc(carddiv, n);
-                carddiv.getElementsByClassName('q')[0].setVal(q);
-                let cardmc = carddiv.getElementsByClassName('card-mc')[0];
-                let allcorr = carddiv.getElementsByClassName('mc-allcorr')[0];
-                cardmc.innerHTML = "";
-                for(let i = 0; i < card.op.length; i++) generator_mc(cardmc, carddiv, allcorr, card.ans.indexOf(i) > -1, card.op[i]);
-            break;
-            case "txt":
-                init_txt(carddiv, n);
-                carddiv.getElementsByClassName('q')[0].setVal(q);
-                let anslist = carddiv.getElementsByClassName('card-txt')[0];
-                let inv = carddiv.getElementsByClassName('inverse')[0];
-                let i_anslist = inv.getElementsByClassName('card-txt-i')[0];
-                if(card.ans.length == 0) continue;
-                anslist.getElementsByClassName('txt-ans-cont')[0].children[0].setVal(card.ans[0]);
-                for(let i = 1; i < card.ans.length; i++) generator_txt(carddiv, i_anslist, true, anslist, card.ans[i]);
-                if(card.inv) {
-                    let confinver = carddiv.getElementsByClassName('txt-inver')[0];
-                    let r_inver = carddiv.getElementsByClassName('txt-rinver')[0];
-                    let inv = carddiv.getElementsByClassName('inverse')[0];
-                    let i_anslist = inv.getElementsByClassName('card-txt')[0];
-                    confinver.innerHTML = "Configure inverse <span class='material-symbols-outlined small-ico'>arrow_forward_ios</span>";
-                    r_inver.style.display = "inline-block";
-                    let generator = (r, p, a) => generator_txt(carddiv, i_anslist, r, p, a);
-                    generator(false, i_anslist, card.inv.ans[0]);
-                    for(let i = 1; i < card.inv.ans.length; i++) generator(true, i_anslist, card.inv.ans[i]);
-                    inv.getElementsByClassName('q')[0].setVal(card.inv.q);
-                }
-            break;
-            case "ranking":
-                init_ranking(carddiv, n);
-                carddiv.getElementsByClassName('q')[0].setVal(q);
-                let rankinglist = carddiv.getElementsByClassName("ranking-list")[0];
-                rankinglist.innerHTML = '';
-                for(let i = 0; i < card.ans.length; i++) generator_rank(carddiv, rankinglist, card.ans[i]);
-            break;
-            case "mtch":
-                init_mtch(carddiv, n);
-                carddiv.getElementsByClassName('q')[0].setVal(q);
-                let mtchlist = carddiv.getElementsByClassName("card-mtch")[0];
-                mtchlist.innerHTML = '';
-                for(let i = 0; i < card.ans.length; i++) generator_mtch(carddiv, mtchlist, i != 0, card.ans[i]);
-            break;
-        }
     }
 }
 

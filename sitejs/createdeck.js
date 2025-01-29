@@ -12,11 +12,11 @@ const createBtn = document.getElementById("create");
 const errmsg = document.getElementById("create-err");
 const draftdecks_history = document.getElementById("draftdecks-history");
 
-let drafts_save, last = 0;
+let lastTick = 0;
 
 createBtn.addEventListener('mousedown', async () => {
-    let res = DeckBind.toDeck(v => errmsg.innerHTML = v, false, Date.now() - last < 5000);
-    last = Date.now();
+    let res = DeckBind.toDeck(v => errmsg.innerHTML = v, false, Date.now() - lastTick < 5000);
+    lastTick = Date.now();
     if(!res) return;
     let [name, deckpic, data, isPublic] = res; // unpack
     let [success, reason] = await DeckGateway.add(name, deckpic || "", JSON.stringify(data), isPublic);
@@ -48,17 +48,17 @@ createBtn.addEventListener('mousedown', async () => {
 (async () => {
     await DeckBind.init();
     let user = DeckBind.user();
-    drafts_save = user.userdata.draftdecks;
+    let drafts_save = user.userdata.draftdecks;
     let keys = Object.keys(user.userdata.draftdecks);
     if(keys.length > 0) draftdecks_history.innerHTML = "";
     for(let i = 0; i < keys.length; i++) {
         let time = parseInt(keys[i]);
-        let diff = Date.now() - time;
+        let date = new Date(time);
         let deck = user.userdata.draftdecks[keys[i]];
         let div = document.createElement("div");
         div.className = "draftdeck";
         div.innerHTML = `
-            <p>${diff > 2 * 24 * 60 * 60 * 1000 ? "A while ago" : (diff > 24 * 60 * 60 * 1000 ? "Yesterday" : (diff > 12 * 60 * 60 * 1000 ? "Today" : (diff > 5 * 60 * 1000 ? "This hour" : "Moments ago")))}</p>
+            <p>${date.toLocaleString('en-us', { weekday: 'short' })} ${date.getMonth()}/${date.getDate()}/${date.getFullYear().toString().slice(2)}, ${date.getHours()}:${date.getMinutes()}</p>
             <div><button class='show'><span class="material-symbols-outlined">resume</span></button>
             <button class='del'><span class="material-symbols-outlined">delete</span></button></div>`;
         draftdecks_history.appendChild(div);
