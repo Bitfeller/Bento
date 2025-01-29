@@ -6,19 +6,21 @@ const searcher = document.getElementById('search-reviews');
 const deckViewer = document.getElementById('bento-modal');
 deckViewer.style.display = "none";
 
-const tutorialDialog = document.getElementById("tutorial-background");
-const tutorialBoxHolder = document.getElementById("tutorial-box-holder");
-const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
+// const tutorialDialog = document.getElementById("tutorial-background");
+// const tutorialBoxHolder = document.getElementById("tutorial-box-holder");
+// const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
 
-const svgHolder = document.getElementsByClassName("bento-svg")[0];
-const blankSvg = document.getElementById("blanksvg");
-const leftSushi = document.getElementById("Leftest_Sushi");
-const bottomSushi = document.getElementById("Bottom_Sushi");
-const rightSushi = document.getElementById("Right_Sushi");
+// const svgHolder = document.getElementsByClassName("bento-svg")[0];
+// const blankSvg = document.getElementById("blanksvg");
+// const leftSushi = document.getElementById("Leftest_Sushi");
+// const bottomSushi = document.getElementById("Bottom_Sushi");
+// const rightSushi = document.getElementById("Right_Sushi");
 
 const version = document.getElementById('header:version');
 const version_info = document.getElementById('header:version_info');
 const feedback_dialog = document.getElementById("header:feedback_dialog");
+
+let decks = [], counts = [];
 
 function show(user, deck) {
     deckViewer.style.display = 'block';
@@ -42,6 +44,7 @@ function update(search, decks, counts, data) {
     search = search.toLowerCase();
     let searched = search != '';
     let coll = 0;
+
     deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
     for(let i = 0; i < decks.length; i++) {
         if(counts[i] > 0 && decks[i].name.toLowerCase().includes(search)) {
@@ -54,6 +57,7 @@ function update(search, decks, counts, data) {
         }
     }
     if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks for review that match." : "There aren't any decks to review."} --</p>`;
+    
     deckReminders.innerHTML += "<h3>All Decks</h3>";
     for(let i = coll = 0; i < decks.length; i++) {
         if(decks[i].name.toLowerCase().includes(search)) {
@@ -73,10 +77,10 @@ function update(search, decks, counts, data) {
     if(!success) return;
     deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
     let reviews = data.userdata.reviews;
-
     let r_keys = Object.keys(reviews);
-    let decks = [], counts = [];
 
+    let decks = [], counts = [];
+    
     for(let i = 0; i < r_keys.length; i++) {
         let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), false, false, true);
         if(!success) continue;
