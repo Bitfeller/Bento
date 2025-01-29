@@ -35,7 +35,7 @@
                 <img src="../../img/defaultdeckpic.png" class="deck-pic" id="deckpic">
                 
                 <span class="material-symbols-outlined" id="picAddBtn">add_a_photo<input class='file-selector' accept="image/png,image/jpeg" id="fileselecttrigger" type="file"></span>
-                <span class="material-symbols-outlined" id="picReset">refresh</span>    
+                <span class="material-symbols-outlined" id="picReset">refresh</span>
             </div>
             <div>
                 <input type="checkbox" id="isPublic">
