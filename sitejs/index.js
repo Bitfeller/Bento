@@ -72,6 +72,9 @@ async function s_fn() {
     let [success, reason] = await UserGateway.signup(s_user.value, s_pass.value, s_email.value);
     if(!success) {
         switch(reason) {
+            case "bad pwd":
+                s_err.innerHTML = "Password is either common or less than 8 characters long.";
+            break;
             case "invalid username":
                 s_err.innerHTML = "That username has invalid characters. (Valid characters include a-z, A-Z, and 0-9)";
             break;
@@ -97,12 +100,12 @@ l_btn.addEventListener("mousedown", l_fn);
 s_btn.addEventListener("mousedown", s_fn);
 
 [l_user, l_pass].forEach(el => {
-    el.addEventListener("keydown", async e => {
+    el.addEventListener("keydown", e => {
         if(e.key == "Enter") l_fn();
     });
 });
-[s_user, s_email, s_pass].forEach(el => {
-    el.addEventListener("keydown", async e => {
+[s_user, s_email, s_pass, s_pass2].forEach(el => {
+    el.addEventListener("keydown", e => {
         if(e.key == "Enter") s_fn();
     });
 });

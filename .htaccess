@@ -30,7 +30,7 @@ ErrorDocument 404 /site/404.php
 RewriteRule ^.*\/test.*$ - [F]
 
 # Block server-related folders
-RewriteRule ^.*\/conf.*$ - [F]
+RewriteRule ^.*\/conf/.*conf.*$ - [F]
 RewriteRule ^.*\/notif-service.*$ - [F]
 
 # Block dev folder
