@@ -260,7 +260,7 @@ async function preview(_this, isAdded) {
                 confirmed = true;
                 return;
             }
-            previewDialog = `
+            previewDialog.innerHTML = `
                  <div class='title-bar'>
                     <h2>... deleting this deck ...</h2>
                 </div>

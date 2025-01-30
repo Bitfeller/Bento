@@ -1,6 +1,6 @@
 use fs_extra::dir::{copy, CopyOptions};
 use std::os::windows::fs::symlink_dir;
-use std::{process::Command, path::Path};
+use std::{process::Command, path::{Path, PathBuf}};
 
 fn copy_dir(src: &str, dest: &str) -> Result<(), Box<dyn std::error::Error>> {
     println!("Copying dir {} to {}", src, dest);
@@ -28,18 +28,19 @@ fn symlink(target: &str, link: &str) -> Result<(), std::io::Error> {
     println!("\tFinished making symlink.");
     Ok(())
 }
-fn stop_xampp() -> Result<(), std::io::Error> {
+fn stop_xampp(path: &PathBuf) -> Result<(), std::io::Error> {
     println!("Stopping XAMPP");
 
-    Command::new("C:\\xampp\\xampp_stop.exe")
+    Command::new(&join(path, "xampp_stop.exe"))
         .output()
         .expect("Failed to stop XAMPP.");
     println!("\tFinished stopping Apache/MySQL.");
 
     Ok(())
 }
-fn join(mut p: &Path, s: &str) -> &'a str {
-    p.join(s).to_str().unwrap()
+fn join(p: &PathBuf, s: &str) -> String {
+    // Converts the PathBuf into a string
+    p.join(s).to_string_lossy().to_string()
 }
 fn main() {
     let mut xampp_path = "C:\\xampp";
@@ -53,11 +54,11 @@ fn main() {
     if !Path::new(xampp_path).exists() {
         panic!("XAMPP not found.");
     }
-    let xampp_path = Path::new(xampp_path);
+    let xampp_path = Path::new(xampp_path).to_path_buf();
     let path = std::env::current_dir().unwrap();
-    let _ = stop_xampp();
+    let _ = stop_xampp(&xampp_path);
     // Will fail if there isn't a directory there, but we don't care:
-    let _ = copy_dir(join(xampp_path, "htdocs"), join(xampp_path, "htdocs-backup"));
-    let _ = symlink(join(path, "..\\..\\"), join(xampp_path, "htdocs"));
-    let _ = copy_dir(join(path, "..\\rebuild-resourc\\mysql"), join(xampp_path, "mysql\\data"));
+    let _ = copy_dir(&join(&xampp_path, "htdocs"), &join(&xampp_path, "htdocs-backup"));
+    let _ = symlink(&join(&path, "..\\..\\"), &join(&xampp_path, "htdocs"));
+    let _ = copy_dir(&join(&path, "..\\rebuild-resourc\\mysql"), &join(&xampp_path, "mysql\\data"));
 }
