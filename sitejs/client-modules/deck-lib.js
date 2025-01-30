@@ -153,6 +153,17 @@ function toNew() {
 // --------------------------------------------------- \\
 
 
+// Cloner
+function cloner(card, n) {
+    let data = toDeck(err => alert(err), true, true, n - 1);
+    if(Object.keys(data[2].contnt).length == 0) return;
+    let newCard = generateCard(data[2].contnt, Object.keys(data[2].contnt), 0, n + 1, true);
+    if(n == cards.length - 1) cardContain.insertAdjacentElement('beforeend', newCard);
+    else {
+        let next = card.nextSibling;
+        cardContain.insertBefore(newCard, next);
+    }
+}
 // Generators
 function generator_mc(cardmc, card, allcorr, t, txt) {
     let newop = document.createElement('div');
@@ -338,15 +349,7 @@ function init_mc(card, n, q) {
     let allcorr = card.getElementsByClassName('mc-allcorr')[0];
     allcorr.style.display = "none";
     // Cloner
-    card.getElementsByClassName('mc-clone')[0].addEventListener('mousedown', () => {
-        let data = toDeck(err => alert(err), true, true, n - 1);
-        let newCard = generateCard(data[2].contnt, Object.keys(data[2].contnt), 0, n + 1, true);
-        if(n == cards.length - 1) cardContain.insertAdjacentElement('beforeend', newCard);
-        else {
-            let next = card.nextSibling;
-            cardContain.insertBefore(newCard, next);
-        }
-    });
+    card.getElementsByClassName('mc-clone')[0].addEventListener('mousedown', () => cloner(card, n));
     // Local generator
     let generator = t => generator_mc(cardmc, card, allcorr, t);
     addbtn.addEventListener('mousedown', () => generator(false));
@@ -413,15 +416,7 @@ function init_txt(card, n, q) {
     init_div(inverse.getElementsByClassName('q')[0]);
 
     // Cloner
-    card.getElementsByClassName('txt-clone')[0].addEventListener('mousedown', () => {
-        let data = toDeck(err => alert(err), true, true, n - 1);
-        let newCard = generateCard(data[2].contnt, Object.keys(data[2].contnt), 0, n + 1, true);
-        if(n == cards.length - 1) cardContain.insertAdjacentElement('beforeend', newCard);
-        else {
-            let next = card.nextSibling;
-            cardContain.insertBefore(newCard, next);
-        }
-    });
+    card.getElementsByClassName('txt-clone')[0].addEventListener('mousedown', () => cloner(card, n));
     
     // Generator
     let generator = (r, p, t) => generator_txt(card, i_anslist, r, p, t);
@@ -478,15 +473,7 @@ function init_ranking(card, n, q) {
     let ranklist = card.getElementsByClassName('ranking-list')[0];
     let addbtn = card.getElementsByClassName('rank-add')[0];
     // Cloner
-    card.getElementsByClassName('rank-clone')[0].addEventListener('mousedown', () => {
-        let data = toDeck(err => alert(err), true, true, n - 1);
-        let newCard = generateCard(data[2].contnt, Object.keys(data[2].contnt), 0, n + 1, true);
-        if(n == cards.length - 1) cardContain.insertAdjacentElement('beforeend', newCard);
-        else {
-            let next = card.nextSibling;
-            cardContain.insertBefore(newCard, next);
-        }
-    });
+    card.getElementsByClassName('rank-clone')[0].addEventListener('mousedown', () => cloner(card, n));
     // Local generator
     let generator = () => generator_rank(card, ranklist);
     addbtn.addEventListener('mousedown', generator);
@@ -519,15 +506,7 @@ function init_mtch(card, n, q) {
     let pairlist = card.getElementsByClassName('card-mtch')[0];
     let addbtn = card.getElementsByClassName('mtch-add')[0];
     // Cloner
-    card.getElementsByClassName('mtch-clone')[0].addEventListener('mousedown', () => {
-        let data = toDeck(err => alert(err), true, true, n - 1);
-        let newCard = generateCard(data[2].contnt, Object.keys(data[2].contnt), 0, n + 1, true);
-        if(n == cards.length - 1) cardContain.insertAdjacentElement('beforeend', newCard);
-        else {
-            let next = card.nextSibling;
-            cardContain.insertBefore(newCard, next);
-        }
-    });
+    card.getElementsByClassName('mtch-clone')[0].addEventListener('mousedown', () => cloner(card, n));
     // Local generator
     let generator = (r) => generator_mtch(card, pairlist, r);
     addbtn.addEventListener('mousedown', () => generator(true));
@@ -697,7 +676,7 @@ function generateCard(contnt, d_keys, i, n) {
             let cardmc = carddiv.getElementsByClassName('card-mc')[0];
             let allcorr = carddiv.getElementsByClassName('mc-allcorr')[0];
             cardmc.innerHTML = "";
-            for(let i = 0; i < card.op.length; i++) generator_mc(cardmc, carddiv, allcorr, card.ans.indexOf(i) > -1, card.op[i]);
+            for(let i = 0; i < Math.max(card.op.length, 2); i++) generator_mc(cardmc, carddiv, allcorr, card.ans.indexOf(i) > -1, card.op[i] ?? "");
             if(card.ans.length > 1) {
                 allcorr.style.display = "inline-block";
                 if(card.req == 0) {
@@ -727,7 +706,7 @@ function generateCard(contnt, d_keys, i, n) {
                 r_inver.style.display = "inline-block";
                 let generator = (r, p, a) => generator_txt(carddiv, i_anslist, r, p, a);
                 generator(false, i_anslist, card.inv.ans[0]);
-                for(let i = 1; i < card.inv.ans.length; i++) generator(true, i_anslist, card.inv.ans[i]);
+                for(let i = 1; i < Math.max(card.inv.ans.length, 2); i++) generator(true, i_anslist, card.inv.ans[i] ?? "");
                 inv.getElementsByClassName('q')[0].setVal(card.inv.q);
             }
         break;
@@ -736,14 +715,14 @@ function generateCard(contnt, d_keys, i, n) {
             carddiv.getElementsByClassName('q')[0].setVal(q);
             let rankinglist = carddiv.getElementsByClassName("ranking-list")[0];
             rankinglist.innerHTML = '';
-            for(let i = 0; i < card.ans.length; i++) generator_rank(carddiv, rankinglist, card.ans[i]);
+            for(let i = 0; i < Math.max(card.ans.length, 2); i++) generator_rank(carddiv, rankinglist, card.ans[i] ?? "");
         break;
         case "mtch":
             init_mtch(carddiv, n);
             carddiv.getElementsByClassName('q')[0].setVal(q);
             let mtchlist = carddiv.getElementsByClassName("card-mtch")[0];
             mtchlist.innerHTML = '';
-            for(let i = 0; i < card.ans.length; i++) generator_mtch(carddiv, mtchlist, i != 0, card.ans[i]);
+            for(let i = 0; i < Math.max(card.ans.length, 1); i++) generator_mtch(carddiv, mtchlist, i != 0, card.ans[i] ?? "");
         break;
     }
     return carddiv;
