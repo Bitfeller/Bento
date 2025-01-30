@@ -1,3 +1,0 @@
-- Removing deck from reviews doesnt work
-- Updating database when you actually do the reviews
-- Learn mode confusion
