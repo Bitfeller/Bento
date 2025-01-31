@@ -25,16 +25,52 @@ let decks = [], counts = [];
 
 function show(deck) {
     deckViewer.style.display = 'block';
-    // let review = user.userdata.reviews[deck.name];
+    let review = user.userdata.reviews[deck.id];
+    let keys = Object.keys(review);
     let name = deck.name;
+    let mastered = 0;
+    for(let i = 0; i < keys.length; i++) {
+        let term = review[keys[i]];
+        if(term.box > 3) mastered++;
+    }
+    let worst = keys.filter(k => review[k].box <= 2).sort((a, b) => review[a].box + review[a].score / 100 - review[b].box - review[b].score / 100).slice(0, 10).map(k => `<li>${deck.data.contnt[k] ? k : ""} => ${deck.data.contnt[k].type == 'mc' ? deck.data.contnt[k].ans.map(r => deck.data.contnt[k].op[r]).join(', ') : deck.data.contnt[k].ans} (recall rating: ${review[k].box} (of 6), score: ${review[k].score}, next review: ${UserGateway.calculateNTR(review[k].box, review[k].last) ? "now" : "in " + UserGateway.calculateNextReview(review[k].box, review[k].last) + " day(s)"})</li>`).join('');
+    let learning = keys.filter(k => review[k].box > 2 && review[k].box < 5).sort((a, b) => review[a].box + review[a].score / 100 - review[b].box - review[b].score / 100).slice(0, 10).map(k => `<li>${deck.data.contnt[k] ? k : ""} => ${deck.data.contnt[k].type == 'mc' ? deck.data.contnt[k].ans.map(r => deck.data.contnt[k].op[r]).join(', ') : deck.data.contnt[k.replace('&amp;', '&')].ans} (recall rating: ${review[k].box} (of 6), score: ${review[k].score}, next review: ${UserGateway.calculateNTR(review[k].box, review[k].last) ? "now" : "in " + UserGateway.calculateNextReview(review[k].box, review[k].last) + " day(s)"})</li>`).join('');
+    let best = keys.filter(k => review[k].box >= 5).sort((a, b) => review[b].box + review[b].score / 100 - review[a].box - review[a].score / 100).slice(0, 10).map(k => `<li>${deck.data.contnt[k] ? k : ""} => ${deck.data.contnt[k].type == 'mc' ? deck.data.contnt[k].ans.map(r => deck.data.contnt[k].op[r]).join(', ') : deck.data.contnt[k].ans} (recall rating: ${review[k].box} (of 6), score: ${review[k].score}, next review: ${UserGateway.calculateNTR(review[k].box, review[k].last) ? "now" : "in " + UserGateway.calculateNextReview(review[k].box, review[k].last) + " day(s)"})</li>`).join('');
+    if(worst.length == 0) worst = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
+    if(learning.length == 0) learning = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
+    if(best.length == 0) best = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
     deckViewer.innerHTML = `
         <div class='title deck-container-overview' id='deck-container-overview'>
             <h2>${name}</h2>
-            <p>By: ${deck.owner}</p>
+            <p>By <b>${deck.owner}</b></p>
         <div><br>
         <hr><br>
         <div class='deck-container-main' id='deck-container-main'>
-            <p class='info-blank'>-- A cool new feature coming here soon... --</p>
+            <div class='deck-container-mastered'>
+                <div class='green-box'></div><span class='dc-masterbox'>Mastered ${mastered} terms</span>
+                <div class='yellow-box'></div><span class='dc-masterbox'>Learning ${keys.length - mastered} terms</span>
+                <div class='red-box'></div><span class='dc-masterbox'>Haven't seen ${deck.contnt_len - keys.length} terms</span>
+            </div>
+            <div>
+                <div class='deck-container-worst-terms'>
+                    <h3 style='color: rgb(255, 0, 0)'>Least mastered</h3>
+                    <ol class='deck-container-worst-terms-list'>
+                        ${worst}
+                    </ol>
+                </div>
+                <div class='deck-container-learning-terms'>
+                    <h3 style='color: rgb(0, 0, 255)'>Learning</h3>
+                    <ol class='deck-container-learning-terms-list'>
+                        ${learning}
+                    </ol>
+                </div>
+                <div class='deck-container-best-terms'>
+                    <h3 style='color: rgb(0, 255, 0)'>Most mastered</h3>
+                    <ol class='deck-container-best-terms-list'>
+                        ${best}
+                    </ol>
+                </div>
+            </div>
         </div>
     `;
 }
@@ -83,7 +119,7 @@ function update(search) {
     let r_keys = Object.keys(reviews);
 
     for(let i = 0; i < r_keys.length; i++) {
-        let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), false, false, true);
+        let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), true, false, true);
         if(!success) continue;
         decks.push(deck);
         let count = 0;

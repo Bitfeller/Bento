@@ -78,11 +78,13 @@
             if(isset($val) and (gettype($val) !== $type and gettype($val) !== ($secondType or $type))) access_fail();
         }
     }
+
     //      Get server config
     function get_server_config() {
         if(file_exists('../../conf/local-config.json')) return json_decode(file_get_contents("../../conf/local-config.json"), true);
         else return json_decode(file_get_contents('../../conf/config.json'), true);
     }
+    
     //      Content sanitizer
     function _traverse_str_sanitize(string $content) {
         return str_replace("\n", "\\n", htmlspecialchars($content));
@@ -99,22 +101,22 @@
         }
         return $newContnt;
     }
-    function _traverse_object_sanitize(object $content) {
+    function _traverse_object_sanitize(object $content, string $ignore = null) {
         $newContnt = (object) [];
         foreach($content as $key => $val) {
             $newKey = htmlspecialchars(strip_tags($key));
             $newVal = null;
-            if(gettype($val) == "array") $newVal = _traverse_array_sanitize($val);
-            if(gettype($val) == "object") $newVal = _traverse_object_sanitize($val);
+            if(gettype($val) == "array" && $key != $ignore) $newVal = _traverse_array_sanitize($val);
+            if(gettype($val) == "object" && $key != $ignore) $newVal = _traverse_object_sanitize($val);
             if(gettype($val) == "string") $newVal = _traverse_str_sanitize($val);
             if(gettype($val) == "double" || gettype($val) == "integer") $newVal = $val;
             $newContnt->$newKey = $newVal;
         }
         return $newContnt;
     }
-    function sanitize($content) {
+    function sanitize($content, string $ignore = null) {
         if(gettype($content) == "array") return _traverse_array_sanitize($content);
-        if(gettype($content) == "object") return _traverse_object_sanitize($content);
+        if(gettype($content) == "object") return _traverse_object_sanitize($content, $ignore);
         if(gettype($content) == "string") return _traverse_str_sanitize($content);
         return null;
     }

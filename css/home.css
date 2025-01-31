@@ -11,6 +11,27 @@
     width: calc(100% - 20px);
     margin: 20px auto;
 }
+.deck-container-mastered {
+    display: inline;
+}
+.green-box, .yellow-box, .red-box {
+    width: 25px;
+    height: 10px;
+    display: inline-block;
+}
+.green-box {
+    background-color: rgb(0, 255, 0);
+}
+.yellow-box {
+    background-color: rgb(0, 0, 255);
+}
+.red-box {
+    background-color: rgb(255, 0, 0);
+}
+.dc-masterbox {
+    margin-left: 5px;
+    margin-right: 100px;
+}
 .home-grid > div {
     & svg {
         max-width: 300px;
