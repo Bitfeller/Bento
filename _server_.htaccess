@@ -24,7 +24,7 @@ SetEnvIf REQUEST_URI /(.*) NEWURI=$1
 RewriteRule ^.*\/test.*$ - [F]
 
 # Block server-related folders
-RewriteRule ^.*\/conf.*$ - [F]
+RewriteRule ^.*\/.*config.*$ - [F]
 RewriteRule ^.*\/notif-service.*$ - [F]
 
 # Block dev folder
