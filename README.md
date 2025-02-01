@@ -22,6 +22,9 @@ A learning webapp using the magical powers of **SRS** (and other systems) along 
 - **Branch** main/dev and make sure to describe what your code is actually doing
 - Follow project syntax (very much preferred if you can)
 - That's it...
+## Local environments
+- Install XAMPP.
+- Run the rust code under ./dev/rebuild
 #### Project Syntax
 - Comments for frontend (this means everything under sitejs) are **highly** encouraged but not required; just remember if you can't understand/explain the code you wrote at 3 A.M. you'll eventually have to write it again.
 - Comments for backend or development (everything under dev or server) are **very, extremely highly** encouraged for the purposes of contributors understanding the code before merging it in.
