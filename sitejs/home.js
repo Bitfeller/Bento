@@ -55,19 +55,19 @@ function show(deck) {
             </div>
             <div>
                 <div class='deck-container-worst-terms'>
-                    <h3 style='color: rgb(255, 0, 0)'>Least mastered</h3>
+                    <h3 style='color: var(--danger-red)'>Least mastered</h3>
                     <ol class='deck-container-worst-terms-list'>
                         ${worst}
                     </ol>
                 </div>
                 <div class='deck-container-learning-terms'>
-                    <h3 style='color: rgb(0, 0, 255)'>Learning</h3>
+                    <h3 style='color: var(--select-blue)'>Learning</h3>
                     <ol class='deck-container-learning-terms-list'>
                         ${learning}
                     </ol>
                 </div>
                 <div class='deck-container-best-terms'>
-                    <h3 style='color: rgb(0, 255, 0)'>Most mastered</h3>
+                    <h3 style='color: var(--accent-1)'>Most mastered</h3>
                     <ol class='deck-container-best-terms-list'>
                         ${best}
                     </ol>
