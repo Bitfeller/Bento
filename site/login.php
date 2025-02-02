@@ -83,7 +83,7 @@
         const l_btn = document.getElementById("signInBtnM");
         const err = document.getElementById("err");
 
-        l_btn.addEventListener("mousedown", async () => {
+        async function login() {
             if(l_pass.value.length < 8) {
                 err.innerHTML = "Bad username or password.";
                 return;
@@ -110,36 +110,11 @@
             } else {
                 window.location.href = "/home";
             }
-        });
+        }
+        l_btn.addEventListener("mousedown", login);
         window.onkeydown = async (e) => {
-            if (e.key === "Enter") {
-                if(l_pass.value.length < 8) {
-                    err.innerHTML = "Bad username or password.";
-                    return;
-                }
-                let [success, reason] = await UserGateway.login(l_user.value, l_pass.value);
-                if(!success) {
-                    switch(reason) {
-                        case "bad u/p":
-                            err.innerHTML = "Bad username or password.";
-                        break;
-                        case "broken user":
-                            err.innerHTML = "Your account is broken. Contact bentoboxcenter@gmail.com for help.";
-                        break;
-                        default:
-                            console.log(reason);
-                            err.innerHTML = "Looks like there's an issue on our side. Try again later.";
-                        break;
-                    }
-                    return;
-                }
-                const paramList = new URLSearchParams(window.location.search);
-                if(paramList.get("s")) {
-                    window.location.href = "/" + paramList.get("s");
-                } else {
-                    window.location.href = "/home";
-                }
-            }
+            if (e.key === "Enter")
+                await login();
         }
     </script>
 </body>
