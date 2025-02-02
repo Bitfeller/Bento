@@ -9,7 +9,6 @@ const ispub = document.getElementById("isPublic");
 
 const cardContain = document.getElementById("cardcontain");
 const createBtn = document.getElementById("create");
-const exportBtn = document.getElementById("export");
 const errmsg = document.getElementById("create-err");
 const draftdecks_history = document.getElementById("draftdecks-history");
 
@@ -44,28 +43,6 @@ createBtn.addEventListener('mousedown', async () => {
             break;
         }
     else window.location.href = "/home?l=cd&s=1";
-});
-exportBtn.addEventListener('mousedown', () => {
-    let res = DeckBind.toDeck(v => errmsg.innerHTML = v, true, Date.now() - lastTick < 5000);
-    lastTick = Date.now();
-    if(!res) return;
-    let [name, _, data, __] = res; // unpack
-    
-    const d = {
-        name: name,
-        desc: data.desc,
-        contnt: data.contnt
-    };
-    const json = JSON.stringify(d);
-    const file = new File([json], d.name+'.json', {type: "text/plain"});
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(file);
-    link.href = url;
-    link.download = file.name;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
 });
 
 (async () => {
