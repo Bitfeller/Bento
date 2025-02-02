@@ -234,7 +234,7 @@ async function preview(_this, isAdded) {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            window.URL.revokeObjectURL(url); 
+            window.URL.revokeObjectURL(url);
         });
         previewDialog.getElementsByClassName("edit-btn")[0].addEventListener("mousedown", () => window.location.href = "/learn/editdeck?d=" + deck.id);
         let confirmed = false;
