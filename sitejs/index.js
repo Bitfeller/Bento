@@ -79,7 +79,7 @@ async function s_fn() {
                 s_err.innerHTML = "That username has invalid characters. (Valid characters include a-z, A-Z, and 0-9)";
             break;
             case "flagged":
-                errmsg.innerHTML = "Your username was flagged for inappropriate content.";
+                s_err.innerHTML = "Your username was flagged for inappropriate content.";
             break;
             case "invalid email":
                 s_err.innerHTML = "Please enter in a valid email.";

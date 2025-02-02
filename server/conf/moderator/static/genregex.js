@@ -3,36 +3,36 @@
 const fs = require('fs');
 
 // Read each line from config-filter.list and put it into an array.
-const list = fs.readFileSync('../config-filter.list', 'utf8').split('\n');
+const list = fs.readFileSync('./config-filter.list', 'utf8').split('\n');
 
 // Define all characters to replace
 const replace = {};
-replace['a'] = '[a A @]';
-replace['b'] = '[b B I3 l3 i3]';
-replace['c'] = '(?:[c C (]|[k K])';
-replace['d'] = '[d D]';
-replace['e'] = '[e E 3]';
-replace['f'] = '(?:[f F]|[ph pH Ph PH])';
-replace['g'] = '[g G 6]';
-replace['h'] = '[h H]';
-replace['i'] = '[i I l ! 1]';
-replace['j'] = '[j J]';
-replace['k'] = '(?:[c C (]|[k K])';
-replace['l'] = '[l L 1 ! i]';
-replace['m'] = '[m M]';
-replace['n'] = '[n N]';
-replace['o'] = '[o O 0]';
-replace['p'] = '[p P]';
-replace['q'] = '[q Q 9]';
-replace['r'] = '[r R]';
-replace['s'] = '[s S $ 5]';
-replace['t'] = '[t T 7]';
-replace['u'] = '[u U v V]';
-replace['v'] = '[v V u U]';
-replace['w'] = '[w W vv VV]';
-replace['x'] = '[x X]';
-replace['y'] = '[y Y]';
-replace['z'] = '[z Z 2]';
+replace['a'] = '[aA@]';
+replace['b'] = '([bB]|[IilL]3)';
+replace['c'] = '(?:[cC(]|[kK])';
+replace['d'] = '[dD]';
+replace['e'] = '[eE3]';
+replace['f'] = '(?:[fF]|[pP][hH])';
+replace['g'] = '[gG6]';
+replace['h'] = '[hH]';
+replace['i'] = '[iIl!1]';
+replace['j'] = '[jJ]';
+replace['k'] = '(?:[cC(]|[kK])';
+replace['l'] = '[lL1!i]';
+replace['m'] = '[mM]';
+replace['n'] = '[nN]';
+replace['o'] = '[oO0]';
+replace['p'] = '[pP]';
+replace['q'] = '[qQ9]';
+replace['r'] = '[rR]';
+replace['s'] = '[sS$5]';
+replace['t'] = '[tT7]';
+replace['u'] = '[uUvV]';
+replace['v'] = '[vVuU]';
+replace['w'] = '([wW]|vv|VV)';
+replace['x'] = '[xX]';
+replace['y'] = '[yY]';
+replace['z'] = '[zZ2]';
 
 
 // Regex generator
@@ -59,4 +59,4 @@ for(let line of list) {
 }
 
 // Write to new file
-fs.writeFileSync('../config-filter-regex.list', newList.join('\n'), 'utf8');
+fs.writeFileSync('./config-filter-regex.list', newList.join('\n'), 'utf8');
