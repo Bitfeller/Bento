@@ -139,21 +139,26 @@ async function update() {
         }
 
         let loaded = data.length;
-        let s_loadBtn = document.createElement("button");
-        s_loadBtn.id = "search_loadBtn";
-        s_loadBtn.innerHTML = "<h3>Load more decks...</h3>";
-        s_loadBtn.addEventListener("mousedown", async () => {
-            let [success, data] = await DeckGateway.getall(loaded, orig);
-            if(!success || data.length == 0) return void (s_loadBtn.innerHTML = "No more decks to load...");
-            for(let i = 0; i < data.length; i++) {
-                let deck = data[i];
-                let inReviews = user.userdata.reviews[deck.id] ? true : false;
-                let newBox = box(deck.id, inReviews, deck.name, deck.deckpic, deck.owner, false);
-                searchedDecksContainer.appendChild(newBox);
-            }
-            loaded += data.length;
-        });
-        searchedDecksContainer.appendChild(s_loadBtn);
+        function btnize() {
+            let s_loadBtn = document.createElement("button");
+            s_loadBtn.id = "search_loadBtn";
+            s_loadBtn.innerHTML = "<h3>Load more decks...</h3>";
+            s_loadBtn.addEventListener("mousedown", async () => {
+                let [success, data] = await DeckGateway.getall(loaded, orig);
+                if(!success || data.length == 0) return void (s_loadBtn.innerHTML = "No more decks to load...");
+                s_loadBtn.remove();
+                for(let i = 0; i < data.length; i++) {
+                    let deck = data[i];
+                    let inReviews = user.userdata.reviews[deck.id] ? true : false;
+                    let newBox = box(deck.id, inReviews, deck.name, deck.deckpic, deck.owner, false);
+                    searchedDecksContainer.appendChild(newBox);
+                }
+                loaded += data.length;
+                btnize();
+            });
+            searchedDecksContainer.appendChild(s_loadBtn);
+        }
+        btnize();
     });
 })();
 async function preview(_this, isAdded) {
