@@ -154,7 +154,7 @@
             // Individual userdata actions
             case 'draftdecks':
                 $val = json_decode($val, false);
-                $safeVal = sanitize($val, "reviews");
+                $safeVal = sanitize($val);
                 check_drafts($conf, $result, $safeVal);
                 $safeVal = json_encode($safeVal);
                 $curr = $_SESSION['userdata'];
@@ -169,10 +169,9 @@
                 $_SESSION['userdata'] = $curr;
             break;
             case 'reviews':
-                // $val = json_decode($val, false);
-                // $safeVal = sanitize($val);
-                // $safeVal = json_encode($safeVal);
-                $safeVal = $val;
+                $val = json_decode($val, false);
+                $safeVal = sanitize($val);
+                $safeVal = json_encode($safeVal);
                 $curr = $_SESSION['userdata'];
                 $curr = json_decode($curr, false);
                 $curr->reviews = json_decode($safeVal, false);
