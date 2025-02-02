@@ -101,22 +101,22 @@
         }
         return $newContnt;
     }
-    function _traverse_object_sanitize(object $content, string $ignore = null) {
+    function _traverse_object_sanitize(object $content) {
         $newContnt = (object) [];
         foreach($content as $key => $val) {
-            $newKey = htmlspecialchars(strip_tags($key));
+            $newKey = _traverse_str_sanitize($key);
             $newVal = null;
-            if(gettype($val) == "array" && $key != $ignore) $newVal = _traverse_array_sanitize($val);
-            if(gettype($val) == "object" && $key != $ignore) $newVal = _traverse_object_sanitize($val);
+            if(gettype($val) == "array") $newVal = _traverse_array_sanitize($val);
+            if(gettype($val) == "object") $newVal = _traverse_object_sanitize($val);
             if(gettype($val) == "string") $newVal = _traverse_str_sanitize($val);
             if(gettype($val) == "double" || gettype($val) == "integer") $newVal = $val;
             $newContnt->$newKey = $newVal;
         }
         return $newContnt;
     }
-    function sanitize($content, string $ignore = null) {
+    function sanitize($content) {
         if(gettype($content) == "array") return _traverse_array_sanitize($content);
-        if(gettype($content) == "object") return _traverse_object_sanitize($content, $ignore);
+        if(gettype($content) == "object") return _traverse_object_sanitize($content);
         if(gettype($content) == "string") return _traverse_str_sanitize($content);
         return null;
     }
