@@ -83,39 +83,56 @@
         if(file_exists('../../conf/local-config.json')) return json_decode(file_get_contents("../../conf/local-config.json"), true);
         else return json_decode(file_get_contents('../../conf/config.json'), true);
     }
-    //      Content sanitizer
-    function _traverse_str_sanitize(string $content) {
-        return str_replace("\n", "\\n", htmlspecialchars($content));
-    }
-    function _traverse_array_sanitize(array $content) {
+    // Traversers
+    function _traverse_array(array $content, string $fn) {
         $newContnt = [];
         foreach($content as $val) {
             $newVal = null;
-            if(gettype($val) == "array") $newVal = _traverse_array_sanitize($val);
-            if(gettype($val) == "object") $newVal = _traverse_object_sanitize($val);
-            if(gettype($val) == "string") $newVal = _traverse_str_sanitize($val);
+            if(gettype($val) == "array") $newVal = _traverse_array($val, $fn);
+            if(gettype($val) == "object") $newVal = _traverse_object($val, $fn);
+            if(gettype($val) == "string") $newVal = $fn($val);
             if(gettype($val) == "double" || gettype($val) == "integer") $newVal = $val;
             $newContnt[] = $newVal;
         }
         return $newContnt;
     }
-    function _traverse_object_sanitize(object $content) {
+    function _traverse_object(object $content, string $fn) {
         $newContnt = (object) [];
         foreach($content as $key => $val) {
-            $newKey = htmlspecialchars(strip_tags($key));
+            $newKey = $fn($key);
             $newVal = null;
-            if(gettype($val) == "array") $newVal = _traverse_array_sanitize($val);
-            if(gettype($val) == "object") $newVal = _traverse_object_sanitize($val);
-            if(gettype($val) == "string") $newVal = _traverse_str_sanitize($val);
+            if(gettype($val) == "array") $newVal = _traverse_array($val, $fn);
+            if(gettype($val) == "object") $newVal = _traverse_object($val, $fn);
+            if(gettype($val) == "string") $newVal = $fn($val);
             if(gettype($val) == "double" || gettype($val) == "integer") $newVal = $val;
             $newContnt->$newKey = $newVal;
         }
         return $newContnt;
     }
+    //      Content sanitizer
+    function _traverse_str_sanitize(string $content) {
+        return str_replace("\n", "\\n", htmlspecialchars($content));
+    }
     function sanitize($content) {
-        if(gettype($content) == "array") return _traverse_array_sanitize($content);
-        if(gettype($content) == "object") return _traverse_object_sanitize($content);
+        if(gettype($content) == "array") return _traverse_array($content, "_traverse_str_sanitize");
+        if(gettype($content) == "object") return _traverse_object($content, "_traverse_str_sanitize");
         if(gettype($content) == "string") return _traverse_str_sanitize($content);
+        return null;
+    }
+    // Content filter
+    function get_filter_list() {
+        return file('../../config/moderator/config-filter-regex.list');
+    }
+    function _traverse_str_filter(string $content) {
+        $filter_list = get_filter_list();
+        foreach($filter_list as $filter)
+            if(preg_match("/$filter/", $content)) return true;
+        return false;
+    }
+    function filter($content) {
+        if(gettype($content) == "array") return _traverse_array($content, "_traverse_str_filter");
+        if(gettype($content) == "object") return _traverse_object($content, "_traverse_str_filter");
+        if(gettype($content) == "string") return _traverse_str_filter($content);
         return null;
     }
     function connect_to_db() {
