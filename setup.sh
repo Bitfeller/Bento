@@ -39,7 +39,7 @@ cd ../../..
 # Install Node.js dependencies and remove other files
 cd ./server/notif-service
 npm install
-rm _DEPRECATED
+rm "_DEPRECATED"
 rm "_TODO!"
 touch sub-save.json
 cd ../..
