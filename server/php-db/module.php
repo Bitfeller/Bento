@@ -121,7 +121,7 @@
     }
     // Content filter
     function get_filter_list() {
-        return file('../../config/moderator/config-filter-regex.list');
+        return file('../../conf/moderator/config-filter-regex.list');
     }
     function _traverse_str_filter(string $content) {
         $filter_list = get_filter_list();
