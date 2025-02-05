@@ -17,3 +17,5 @@ failed; reason: ReferenceError: desc is not defined
 [-] overflow issue in kitchen, review
 [-] overflow issue => file name
 [X] no error feedback is shown for errors in bento importer
+[-] error messages in profile.php
+[-] be able to sign up in login.php
