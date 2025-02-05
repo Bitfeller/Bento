@@ -37,9 +37,6 @@ jobs:
         ./server_update.sh
         
         cd /var/www/bento.valleynas.uk
-        # Install packages
-        source packages.sh
-        rm packages.sh
 
         chown orange:fruit -R /var/www/bento.valleynas.uk
         chmod 770 -R /var/www/bento.valleynas.uk
