@@ -16,6 +16,10 @@ const sizeLimit = 2 * 1000 * 1000; // NOTE: must be same as max_image_size in se
 const dragline = document.createElement('div');
 dragline.style = 'display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;';
 
+// Load DOMPurify for imports
+const dpscript = document.createElement('script');
+dpscript.src = 'https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js';
+
 
 // --------------------------------------------------- \\
 
@@ -775,6 +779,8 @@ q_importbtn.addEventListener("mousedown", () => q_modal.style.display = "block")
 g_importbtn.addEventListener("mousedown", () => g_modal.style.display = "block");
 
 b_createbtn.addEventListener("mousedown", () => {
+    if(!DOMPurify) return void (b_err.innerHTML = "The system is loading a module. Please try again later. (code: fetching_dompurify?)");
+    let dp = DOMPurify;
     let files = b_file.files;
     if(files && files[0]) {
         let file = files[0];
@@ -785,9 +791,9 @@ b_createbtn.addEventListener("mousedown", () => {
             try {
                 let main = JSON.parse(content);
                 if(main.name == undefined || main.desc == undefined || main.contnt == undefined) return void (b_err.innerHTML = "This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
-                let val_name = main.name;
-                let val_desc = main.desc;
-                let val_contnt = main.contnt;
+                let val_name = window.lib.dpwrapper(dp, main.name);
+                let val_desc = window.lib.dpwrapper(dp, main.desc);
+                let val_contnt = window.lib.dpwrapper(dp, main.contnt);
                 if(b_replacename.checked) name.value = val_name;
                 if(b_replacedesc.checked) desc.value = val_desc;
                 try {
@@ -804,6 +810,8 @@ b_createbtn.addEventListener("mousedown", () => {
     }
 });
 q_createbtn.addEventListener("mousedown", () => {
+    if(!DOMPurify) return void (b_err.innerHTML = "The system is loading a module. Please try again later. (code: fetching_dompurify?)");
+    let dp = DOMPurify;
     let importText = q_txt.value;
     let format = importText.split("^");
     let contnt = {};
@@ -818,7 +826,8 @@ q_createbtn.addEventListener("mousedown", () => {
             isValid = false;
             return;
         }
-        if(q_reverse.checked) contnt[ans] = {type: "txt", ans: [q]}; else contnt[q] = {type: "txt", ans: [ans]};
+        if(q_reverse.checked) contnt[window.lib.dpwrapper(dp, ans)] = {type: "txt", ans: [window.lib.dpwrapper(dp, q)]};
+            else contnt[window.lib.dpwrapper(dp, q)] = {type: "txt", ans: [window.lib.dpwrapper(dp, ans)]};
     });
     if(!isValid) return;
     try {
@@ -829,6 +838,8 @@ q_createbtn.addEventListener("mousedown", () => {
     q_modal.style.display = "none";
 });
 g_createbtn.addEventListener("mousedown", () => {
+    if(!DOMPurify) return void (b_err.innerHTML = "The system is loading a module. Please try again later. (code: fetching_dompurify?)");
+    let dp = DOMPurify;
     let importText = g_txt.value;
     let format = importText.split("\n");
     let contnt = {};
@@ -841,9 +852,9 @@ g_createbtn.addEventListener("mousedown", () => {
             isValid = false;
             return;
         }
-        contnt[q] = {
+        contnt[window.lib.dpwrapper(dp, q)] = {
             type: "txt",
-            ans: [ans]
+            ans: [window.lib.dpwrapper(dp, ans)]
         };
     });
     if(!isValid) return;

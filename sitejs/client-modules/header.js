@@ -17,6 +17,8 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
 
     const uo = document.body.dataset.uo;
 
+    const parser = document.createElement('span');
+
     const loader = document.getElementsByClassName("loader")[0];
     const tips = document.getElementsByClassName("tips")[0];
     
@@ -73,6 +75,31 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         clearInterval(tipper);
         tip_changer(err, "rgb(175, 100, 100)");
     };
+    window.lib = {};
+    window.lib.decode = (str) => {
+        parser.innerHTML = str;
+        return parser.textContent;
+    };
+    window.lib.recur_decode = (obj) => {
+        if(typeof obj == "string")
+            return window.lib.decode(obj);
+        else if(Array.isArray(obj))
+            return obj.map(window.lib.recur_decode);
+        else if(typeof obj == "object" && obj != null)
+            return Object.fromEntries(Object.entries(obj).map(([k, v]) => [window.lib.recur_decode(k), window.lib.recur_decode(v)]));
+        else if(typeof obj == "number" || typeof obj == "boolean" || typeof obj == "bigint" || typeof obj == "undefined" || obj == null)
+            return obj;
+        else console.error('header.js: could not decode obj of following:', typeof obj);
+    };
+    window.lib.dpwrapper = (dp, obj) => {
+        if(typeof obj == "string")
+            return dp.sanitize(obj);
+        else if(Array.isArray(obj))
+            return obj.map(val => dp.sanitize(val));
+        else if(typeof obj == "object" && obj != null)
+            return Object.fromEntries(Object.entries(obj).map(([k, v]) => [dp.sanitize(k), dp.sanitize(v)]));
+        else console.error('header.js: could not sanitize obj of following:', typeof obj);
+    }
 
     tips.innerHTML = tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)];
     let tip_fn = async () => await tip_changer(tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)]);
