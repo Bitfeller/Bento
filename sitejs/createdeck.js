@@ -28,6 +28,9 @@ createBtn.addEventListener('mousedown', async () => {
             case "invalid name":
                 errmsg.innerHTML = "That name has invalid characters or is empty. (Valid characters include dashes, a-z, A-Z, and 0-9)";
             break;
+            case "flagged":
+                errmsg.innerHTML = "Your deck was flagged for inappropriate content.";
+            break;
             case "name exists":
                 errmsg.innerHTML = "You've already created another deck with that name";
             break;
@@ -65,8 +68,8 @@ createBtn.addEventListener('mousedown', async () => {
         div.getElementsByClassName("show")[0].addEventListener("mousedown", async () => {
             cardContain.innerHTML = "";
             DeckBind.appendToCards(deck.contnt);
-            title.value = deck.name;
-            desc.value = deck.desc;
+            title.value = window.lib.decode(deck.name);
+            desc.value = window.lib.decode(deck.desc);
             ispub.checked = deck.pub;
             let [success, img] = await UserGateway.getDraftImage(time);
             if(!success) return void console.warn("Couldn't get draft img: " + img);
@@ -81,7 +84,7 @@ createBtn.addEventListener('mousedown', async () => {
         });
     }
     window.setInterval(async () => {
-        let copy = structuredClone(drafts_save);
+        let copy = window.lib.recur_decode(structuredClone(drafts_save));
         let res = DeckBind.toDeck(() => {}, true);
         if(!res) return;
         let [name, img, data, pub] = res; // unpack

@@ -23,18 +23,66 @@ const feedback_dialog = document.getElementById("header:feedback_dialog");
 let user;
 let decks = [], counts = [];
 
+const INFO_TERM_LIMIT = 10;
+
 function show(deck) {
     deckViewer.style.display = 'block';
-    // let review = user.userdata.reviews[deck.name];
+    let review = window.lib.recur_decode(user.userdata.reviews[deck.id]);
+    let keys = Object.keys(review);
     let name = deck.name;
+    let mastered = 0;
+    for(let i = 0; i < keys.length; i++) {
+        let term = review[keys[i]];
+        if(term.box > 3) mastered++;
+    }
+
+    let lister = (select, sorter) =>
+        keys.filter(select)
+            .filter(k => deck.data.contnt[k] ?? false)
+            .sort(sorter)
+            .slice(0, INFO_TERM_LIMIT)
+            .map(k => `<li>${k} => ${deck.data.contnt[k].type == 'mc' ? deck.data.contnt[k].ans.map(r => deck.data.contnt[k].op[r]).join(', ') : deck.data.contnt[k].ans} (recall rating: ${review[k].box} (of 6), score: ${review[k].score}, average time spent: ${review[k].time ? review[k].time + 's' : '[not tracked yet]'}, next review: ${UserGateway.calculateNTR(review[k].box, review[k].last) ? "now" : "in " + UserGateway.calculateNextReview(review[k].box, review[k].last) + " day(s)"})</li>`).join('');
+
+    let worst = lister(k => review[k].box <= 2, (a, b) => review[a].box + review[a].score / 100 - review[b].box - review[b].score / 100);
+    let learning = lister(k => review[k].box > 2 && review[k].box < 5, (a, b) => review[a].box + review[a].score / 100 - review[b].box - review[b].score / 100);
+    let best = lister(k => review[k].box >= 5, (a, b) => review[b].box + review[b].score / 100 - review[a].box - review[a].score / 100);
+
+    if(worst.length == 0) worst = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
+    if(learning.length == 0) learning = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
+    if(best.length == 0) best = `<p class='info-blank'>-- No terms to show${deck.contnt_len - keys.length > 0 ? ". Complete a review and check back again." : ''} --</p>`;
+    
     deckViewer.innerHTML = `
         <div class='title deck-container-overview' id='deck-container-overview'>
             <h2>${name}</h2>
-            <p>By: ${deck.owner}</p>
+            <p>By <b>${deck.owner}</b></p>
         <div><br>
         <hr><br>
         <div class='deck-container-main' id='deck-container-main'>
-            <p class='info-blank'>-- A cool new feature coming here soon... --</p>
+            <div class='deck-container-mastered'>
+                <div class='green-box'></div><span class='dc-masterbox'>Mastered ${mastered} terms</span>
+                <div class='yellow-box'></div><span class='dc-masterbox'>Learning ${keys.length - mastered} terms</span>
+                <div class='red-box'></div><span class='dc-masterbox'>Haven't seen ${deck.contnt_len - keys.length} terms</span>
+            </div>
+            <div>
+                <div class='deck-container-worst-terms'>
+                    <h3 style='color: var(--danger-red)'>Least mastered</h3>
+                    <ol class='deck-container-worst-terms-list'>
+                        ${worst}
+                    </ol>
+                </div>
+                <div class='deck-container-learning-terms'>
+                    <h3 style='color: var(--select-blue)'>Learning</h3>
+                    <ol class='deck-container-learning-terms-list'>
+                        ${learning}
+                    </ol>
+                </div>
+                <div class='deck-container-best-terms'>
+                    <h3 style='color: var(--accent-1)'>Most mastered</h3>
+                    <ol class='deck-container-best-terms-list'>
+                        ${best}
+                    </ol>
+                </div>
+            </div>
         </div>
     `;
 }
@@ -48,7 +96,7 @@ function update(search) {
 
     deckReminders.innerHTML = "<h3>Upcoming Reviews</h3>";
     for(let i = 0; i < decks.length; i++) {
-        if(counts[i] > 0 && decks[i].name.toLowerCase().includes(search)) {
+        if(counts[i] > 0 && window.lib.decode(decks[i].name).toLowerCase().includes(search)) {
             coll++;
             deckReminders.innerHTML += `
                 <div class="review-container">
@@ -61,7 +109,7 @@ function update(search) {
     
     deckReminders.innerHTML += "<h3>All Decks</h3>";
     for(let i = coll = 0; i < decks.length; i++) {
-        if(decks[i].name.toLowerCase().includes(search)) {
+        if(window.lib.decode(decks[i].name).toLowerCase().includes(search)) {
             coll++;
             let div = document.createElement('div');
             div.className = 'review-container';
@@ -83,7 +131,7 @@ function update(search) {
     let r_keys = Object.keys(reviews);
 
     for(let i = 0; i < r_keys.length; i++) {
-        let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), false, false, true);
+        let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), true, false, true);
         if(!success) continue;
         decks.push(deck);
         let count = 0;
