@@ -28,6 +28,9 @@ createBtn.addEventListener('mousedown', async () => {
             case "invalid name":
                 errmsg.innerHTML = "That name has invalid characters or is empty. (Valid characters include dashes, a-z, A-Z, and 0-9)";
             break;
+            case "flagged":
+                errmsg.innerHTML = "Your deck was flagged for inappropriate content.";
+            break;
             case "name taken":
                 errmsg.innerHTML = "You've already created another deck with that name";
             break;
@@ -59,6 +62,9 @@ createBtn.addEventListener('mousedown', async () => {
         switch(res4) {
             case "same problem":
                 errmsg.innerHTML = "It seems like two or more cards in your deck have the exact same question. (We currently don't support duplicate questions.)";
+            break;
+            case "flagged":
+                errmsg.innerHTML = "Your deck was flagged for inappropriate content.";
             break;
             default:        
                 console.log(res4);

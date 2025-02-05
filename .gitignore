@@ -11,6 +11,9 @@ db/**/*.pic
 # Ignore Node.js installed packages.
 **/node_modules/*
 
+# Ignore generated regex filter words.
+**/config-filter-regex.list
+
 # Ignore Rust builds/executables.
 **/target
 # Ignore automatically generated lock files.

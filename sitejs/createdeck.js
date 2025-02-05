@@ -28,6 +28,9 @@ createBtn.addEventListener('mousedown', async () => {
             case "invalid name":
                 errmsg.innerHTML = "That name has invalid characters or is empty. (Valid characters include dashes, a-z, A-Z, and 0-9)";
             break;
+            case "flagged":
+                errmsg.innerHTML = "Your deck was flagged for inappropriate content.";
+            break;
             case "name exists":
                 errmsg.innerHTML = "You've already created another deck with that name";
             break;
