@@ -179,11 +179,20 @@ let UserGateway = {
         }).catch(e => console.log('backend:', e));
         return [success, reason];
     },
+    calculateDays: (box) => {
+        if(!types("nn", box)) return -1;
+        let boxassoc = [1, 3, 5, 7, 10, 14]; // b1 = 1d, b2 = 3d, etc.
+        return boxassoc[box - 1] ?? -1
+    },
+    calculateNextReview: (box, lastSeen) => {
+        if(!types("nn", box, lastSeen)) return -1;
+        let tick = Date.now(), dist = tick - lastSeen, days = (((dist / 1000) / 60) / 60) / 24;
+        return Math.round(UserGateway.calculateDays(box) - days);
+    },
     calculateNTR: (box, lastSeen) => {
         if(!types("nn", box, lastSeen)) return true;
         let tick = Date.now(), dist = tick - lastSeen, days = (((dist / 1000) / 60) / 60) / 24;
-        let boxassoc = [1, 3, 5, 7, 10, 14]; // b1 = 1d, b2=3d, etc.
-        return days >= (boxassoc[box - 1] ?? -1);
+        return days >= UserGateway.calculateDays(box, lastSeen);
     },
     // Recovery and verification methods
     userdir: async (mode, uid, verif, newPwd = "") => {
