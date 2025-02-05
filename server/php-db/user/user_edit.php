@@ -58,7 +58,8 @@
         switch($setting) {
             case "username":
                 // Make sure username is valid
-                if(!preg_match("/^[A-Za-z0-9]*$/", $val)) fail("invalid username");
+                if(!preg_match("/^[a-zA-Z0-9\-!@#$%^&*\(\)\[\]\{\}\.]*$/", $val)) fail("invalid username");
+                if(filter($val) == true) fail("flagged");
                 // Check if username is taken
                 $sql = "SELECT * FROM users WHERE username = ? LIMIT 1;";
                 $stmt = $conn->prepare($sql);
