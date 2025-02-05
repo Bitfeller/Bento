@@ -95,9 +95,9 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         if(typeof obj == "string")
             return dp.sanitize(obj);
         else if(Array.isArray(obj))
-            return obj.map(val => dp.sanitize(val));
+            return obj.map(val => window.lib.dpwrapper(dp, val));
         else if(typeof obj == "object" && obj != null)
-            return Object.fromEntries(Object.entries(obj).map(([k, v]) => [dp.sanitize(k), dp.sanitize(v)]));
+            return Object.fromEntries(Object.entries(obj).map(([k, v]) => [window.lib.dpwrapper(dp, k), window.lib.dpwrapper(dp, v)]));
         else console.error('header.js: could not sanitize obj of following:', typeof obj);
     }
 
