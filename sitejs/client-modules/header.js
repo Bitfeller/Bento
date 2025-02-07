@@ -98,6 +98,8 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
             return obj.map(val => window.lib.dpwrapper(dp, val));
         else if(typeof obj == "object" && obj != null)
             return Object.fromEntries(Object.entries(obj).map(([k, v]) => [window.lib.dpwrapper(dp, k), window.lib.dpwrapper(dp, v)]));
+        else if(typeof obj == "number" || typeof obj == "boolean" || typeof obj == "bigint" || typeof obj == "undefined" || obj == null)
+            return obj;
         else console.error('header.js: could not sanitize obj of following:', typeof obj);
     }
 

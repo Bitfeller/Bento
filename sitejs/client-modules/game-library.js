@@ -242,7 +242,7 @@ function check(answer) {
             if(problem.req == 1) {
                 let c = true;
                 for(let i = 0; i < problem.ans.length; i++) 
-                    if(answer.indexOf(window.lib.decode(problem.ans[i])) < 0) c = false;
+                    if(answer.indexOf(problem.ans[i]) < 0) c = false;
                 return c;
             } else return problem.ans.indexOf(answer) > -1;
         case "txt":
