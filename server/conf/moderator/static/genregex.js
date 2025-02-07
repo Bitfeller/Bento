@@ -3,7 +3,7 @@
 const fs = require('fs');
 
 // Read each line from config-filter.list and put it into an array.
-const list = fs.readFileSync('./config-filter.list', 'utf8').split('\n');
+const list = fs.readFileSync('../config-filter.list', 'utf8').split('\n');
 
 // Define all characters to replace
 const replace = {};
@@ -59,4 +59,4 @@ for(let line of list) {
 }
 
 // Write to new file
-fs.writeFileSync('./config-filter-regex.list', newList.join('\n'), 'utf8');
+fs.writeFileSync('../config-filter-regex.list', newList.join('\n'), 'utf8');

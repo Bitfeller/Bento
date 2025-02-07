@@ -91,4 +91,12 @@ fn main() {
     // Copy new htdocs/mysql
     let _ = symlink(&join(&path, "..\\..\\"), &join(&xampp_path, "htdocs"));
     let _ = copy_dir(&join(&path, "..\\rebuild-resourc\\data"), &join(&xampp_path, "mysql\\data"));
+    
+    // Build filter words
+    println!("Building filter words...");
+    Command::new("node")
+        .arg(&join(&path, "..\\..\\server\\conf\\moderator\\static\\genregex.js"))
+        .output()
+        .expect("Failed to build filter words.");
+    println!("\tFinished building filter words.");
 }
