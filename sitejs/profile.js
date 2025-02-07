@@ -10,18 +10,22 @@ const fileSelectTrigger = document.getElementById("fileselecttrigger");
 const newEmailField = document.getElementById("email");
 const emailCurrPassword = document.getElementById("email-curr-password");
 const emailbtn = document.getElementById("change-email");
+const emailerr = document.getElementById("email-error");
 
 const pwdfield = document.getElementById("password");
 const currentPassword = document.getElementById("password-curr-password");
 const passwordButton = document.getElementById("change-password");
+const passwordError = document.getElementById("password-error");
 
 const usernameField = document.getElementById("new-username");
 const usernameButton = document.getElementById("submit-username");
 const usernameDisplay = document.getElementById("username");
+const usernameError = document.getElementById("username-error");
 
 const warningDialog = document.getElementById("warning-dialog");
 const deleteAccount = document.getElementById("delete-account");
 const resetAccount = document.getElementById("reset-account");
+
 
 const nordRadio = document.getElementById("nord-radio");
 const coffeeMidnightRadio = document.getElementById("coffee-midnight-radio");
@@ -87,7 +91,7 @@ async function changeTheme(current, theme) {
             <p>This action is irreversible and will remove all of your data from our servers.</p>
             <br>
             <p>Enter your current password to continue...</p>
-            <input type="text" id="delete-account-password" placeholder="Current Password">
+            <input type="password" id="delete-account-password" placeholder="Current Password">
             <div class="dialog-button-container">
                 <button id="delete-account-confirm">Delete Account</button>
                 <button id="delete-account-cancel">Cancel</button>
@@ -110,7 +114,7 @@ async function changeTheme(current, theme) {
             <p>Once you reset your account, all of your user data and preferences (reviews, draft decks, theme preferences, etc.) will be deleted.</p>
             <br>
             <p>Enter your current password to continue...</p>
-            <input type="text" id="reset-account-password" placeholder="Current Password">
+            <input type="password" id="reset-account-password" placeholder="Current Password">
             <div class="dialog-button-container">
                 <button id="reset-account-confirm">Reset Account</button>
                 <button id="reset-account-cancel">Cancel</button>
