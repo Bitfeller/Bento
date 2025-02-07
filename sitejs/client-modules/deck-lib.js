@@ -525,7 +525,7 @@ function newCard() {
     cardContain.appendChild(card);
     cards.push(card);
     if(cards.length < 2) return init_mc(card, n);
-    let type = cards[cards.length - 2].getElementsByClassName('selbtn-sel')[0].getElementsByClassName('selbtn-sel')[0];
+    let type = cards[cards.length - 2].getElementsByClassName('selbtn-sel')[0];
     if(!type) return init_mc(card, n);
     let cn = type.className.split(" ");
     if(cn.includes('txtbtn')) init_txt(card, n);
