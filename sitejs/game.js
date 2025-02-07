@@ -32,6 +32,9 @@ let startTick = -1;
 let endTick = -1;
 
 dragLine.style = "display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;";
+function intrand(a, b) {
+    return Math.floor(Math.random() * (b - a) + a + 0.5);
+}
 function noAnswer() {
     info.style["background-color"] = "rgba(255, 0, 0, 0.4)";
     info.innerHTML = "Please specify an answer!";
@@ -126,10 +129,15 @@ function refresh() {
         case "mc":
             selected = false;
             answerbtn.style.display = "none";
-            for (let i = 0; i < data.op.length; i++) {
+            let copy = data.op.slice();
+            for (let _i = 0; _i < data.op.length; _i++) {
+                let idx = intrand(0, copy.length - 1);
+                let op = copy[idx];
+                copy.splice(idx, 1);
+                let i = data.op.indexOf(op);
                 let op_i = document.createElement("button");
                 op_i.className = "option";
-                op_i.innerHTML = `<p class="answer-symbol">&#${9312 + i}</p> <p>${data.op[i]}</p>`;
+                op_i.innerHTML = `<p class="answer-symbol">&#${9312 + i}</p> <p>${op}</p>`;
                 typeset(op_i);
                 op_i.id = "not-select";
                 op_i.setAttribute("i", i);
