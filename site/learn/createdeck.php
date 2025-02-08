@@ -108,21 +108,21 @@
         </div>
     </div>
     <!-- Importing modal to show all questions about to be imported. TO BE IMPLEMENTED -->
-    <!-- <div class="import-modal" id="importing-modal" style="display: block;">
+    <div class="import-modal" id="importing-modal">
         <div class="modal-content">
             <h1>Importing:</h1>
             <p>Below is every question about to be imported. Uncheck any you don't want.</p>
-            <button>Continue >>></button>
-            <button>Cancel</button><br>
+            <button id="i-import">Continue >>></button>
+            <button id="i-cancel">Cancel</button><br>
             <span class="material-symbols-outlined" id="qSelectAll">check_box_outline_blank</span>
             <div id="importing-questions">
-                <div class="importing-question">
+                <!-- <div class="importing-question">
                     <p class="q">What is the capital of France?</p>
                     <p class="a">Paris</p>
                     <input type="checkbox" checked>
-                </div>
+                </div> -->
             </div>
         </div>
-    </div> -->
+    </div>
 </body>
 </html>

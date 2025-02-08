@@ -776,9 +776,68 @@ const g_txt = document.getElementById("GK-importText");
 const g_createbtn = document.getElementById("GK-createBtn");
 const g_err = document.getElementById("GK-err");
 
+const import_modal = document.getElementById('importing-modal');
+const i_import = document.getElementById('i-import');
+const i_cancel = document.getElementById('i-cancel');
+const import_q = document.getElementById('importing-questions');
+
+let temp_name, temp_desc, temp_contnt;
+
 b_importbtn.addEventListener("mousedown", () => b_modal.style.display = "block");
 q_importbtn.addEventListener("mousedown", () => q_modal.style.display = "block");
 g_importbtn.addEventListener("mousedown", () => g_modal.style.display = "block");
+
+function open_import_modal(contnt) {
+    import_modal.style.display = "block";
+    i_import.disabled = false;
+    i_cancel.disabled = false;
+    import_q.innerHTML = "";
+    let c_keys = Object.keys(contnt);
+    try {
+        for(let i = 0; i < c_keys.length; i++) {
+            let q = c_keys[i];
+            let card = contnt[q];
+            let carddiv = document.createElement("div");
+            carddiv.className = "import-card";
+            carddiv.innerHTML = `
+                <div class='import-q'>${q}</div>
+                <div class='import-a'>${card.type == "mc" ? card.op.join(", ") : card.ans}</div>
+                ${card.type == "mc" ? "<div class='import-ans'>" + card.ans.map((t) => card.op[t]).join(', ') + "</div>" : ''}
+                <input type='checkbox' class='import-sel' data-q='${q}' checked>
+            `;
+            import_q.appendChild(carddiv);
+        }
+        temp_contnt = contnt;
+    } catch(_) {
+        import_q.innerHTML = "We couldn't parse this import.";
+    }
+}
+function continue_import_modal() {
+    let boxes = document.getElementsByClassName('import-sel');
+    if(boxes.length == 0) return close_import_modal();
+    let data = {};
+    for(let i = 0; i < boxes.length; i++)
+        if(boxes[i].checked) data[boxes[i].dataset.q] = temp_contnt[boxes[i].dataset.q];
+    temp_name ? name.value = temp_name : "";
+    temp_desc ? description.value = temp_desc : "";
+    try {
+        appendToCards(data);
+    } catch(e) {
+        console.log("failed; reason:", e);
+        import_q.innerHTML = "Something happened while trying to parse this deck.";
+    }
+    safety_check();
+    close_import_modal();
+}
+function close_import_modal() {
+    import_modal.style.display = "none";
+    i_import.disabled = true;
+    i_cancel.disabled = true;
+    import_q.innerHTML = "";
+    temp_name = undefined, temp_desc = undefined, temp_contnt = undefined;
+}
+i_import.addEventListener("mousedown", () => continue_import_modal(content));
+i_cancel.addEventListener("mousedown", close_import_modal);
 
 function safety_check() {
     if(cards.length == 0) {
@@ -811,9 +870,9 @@ b_createbtn.addEventListener("mousedown", () => {
                 let val_name = window.lib.dpwrapper(dp, main.name);
                 let val_desc = window.lib.dpwrapper(dp, main.desc);
                 let val_contnt = window.lib.dpwrapper(dp, main.contnt);
-                if(b_replacename.checked) name.value = val_name;
-                if(b_replacedesc.checked) description.value = val_desc;
-                appendToCards(val_contnt);
+                if(b_replacename.checked) temp_name = val_name;
+                if(b_replacedesc.checked) temp_desc = val_desc;
+                open_import_modal(val_contnt);
                 b_modal.style.display = "none";
             } catch(e) {
                 safety_check();
@@ -847,7 +906,7 @@ q_createbtn.addEventListener("mousedown", () => {
     });
     if(!isValid) return;
     try {
-        appendToCards(contnt);
+        open_import_modal(contnt);
     } catch(_) {
         safety_check();
         return void (q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
@@ -877,9 +936,9 @@ g_createbtn.addEventListener("mousedown", () => {
     });
     if(!isValid) return;
     try {
-        safety_check();
-        appendToCards(contnt);
+        open_import_modal(contnt);
     } catch(_) {
+        safety_check();
         return void (g_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.");
     }
     safety_check();
