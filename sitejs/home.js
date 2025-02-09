@@ -6,9 +6,9 @@ const searcher = document.getElementById('search-reviews');
 const deckViewer = document.getElementById('bento-modal');
 deckViewer.style.display = "none";
 
-// const tutorialDialog = document.getElementById("tutorial-background");
-// const tutorialBoxHolder = document.getElementById("tutorial-box-holder");
-// const t_dialogmain = tutorialBoxHolder.getElementsByClassName("dialog-main")[0];
+const tutorialDialog = document.getElementById("tutorial-background");
+const tutorialBoxHolder = document.getElementById("tutorial-box-holder");
+const t_dialogmain = tutorialBoxHolder.getElementsByClassName("tutorial-dialog-main")[0];
 
 // const svgHolder = document.getElementsByClassName("bento-svg")[0];
 // const blankSvg = document.getElementById("blanksvg");
@@ -24,6 +24,8 @@ let user;
 let decks = [], counts = [];
 
 const INFO_TERM_LIMIT = 10;
+const TYPEWRITE_SPEED = 1000 / 30; // 1000 / (char per second)
+let typewriteStop = false;
 
 function show(deck) {
     deckViewer.style.display = 'block';
@@ -121,6 +123,28 @@ function update(search) {
     }
     if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks that match." : "You don't have any decks in your reviews."} --</p>`;
 }
+function _dialog(i, text) {
+    if(i >= text.length || typewriteStop) return;
+    let speed = TYPEWRITE_SPEED;
+    if(i > 0 && (text[i-1] == '.' || text[i-1] == ',' || text[i-1] == '!' || text[i-1] == '?' || text[i-1] == ';')) speed *= 5;
+    if(text[i] == '<') {
+        let j = text.indexOf('>', i);
+        t_dialogmain.innerHTML += text.substring(i, j + 1);
+        return _dialog(j + 1, text);
+    }
+    setTimeout(() => {
+        t_dialogmain.innerHTML += text[i];
+        i++;
+        if(i < text.length) _dialog(i, text);
+    }, speed);
+}
+function write(text) {
+    _dialog(0, text);
+}
+function set(text) {
+    t_dialogmain.innerHTML = '';
+    write(text);
+}
 (async () => {
     let [success, _user] = await UserGateway.getuser(false, true, true, false);
     if(!success) return;
@@ -151,8 +175,13 @@ function update(search) {
     // Get options from browser URL
     const params = new URLSearchParams(window.location.search);
     if(params.get('new')) {
-        // init tutorial
-        
+        // replace URL so that user doesn't accidentally re-activate tutorial later
+        history.replaceState(null, "", "home"); // /home?new=1  ==>  /home
+        // tutorial feature
+        tutorialDialog.style.display = "block";
+        tutorialBoxHolder.style.display = "block";
+
+        set("<p>You're about to start the tutorial for Bento to guide you through the basics.</p><p>Or, if you're already familiar, you can skip.</p><p>(You can reactivate this tutorial in your settings.)</p>");
     }
 
     window.LOADED();
