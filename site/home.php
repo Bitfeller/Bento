@@ -32,7 +32,7 @@
             <div class="bento-box container">
 
             </div>
-            <!-- Test Data -->
+            <!-- Sample test data: -->
             <!-- <div class="review-container">
                 <span>Test Deck Here</span>
                 <span class="review-number">16</span>
@@ -90,10 +90,29 @@
                 </ul>
             </dialog>
         </section>
+        <section class="tutorial-container">
+            <div id="tutorial-background"></div>
+            <div id="tutorial-box-holder">
+                <div id="tutorial-box-main">
+                    <div class="title-bar">
+                        <h2>Hey there, welcome to Bento!</h2>
+                    </div>
+                    <div class="tutorial-dialog-main">
+                        <p>Here are some things you can do:</p>
+                        <ul>
+                            <li>Create a deck by clicking the sushi on the right.</li>
+                            <li>Review your decks by clicking on the sushi on the left.</li>
+                            <li>View your progress in the graph on the bottom.</li>
+                            <li>Click on the soy sauce bottle to view your profile.</li>
+                        </ul>
+                        <p>Click anywhere to close this dialog.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
         <div id="header:version" class="version">
         <span class="new-version"></span>
         <span class="version-number">v0.3.0</span>
     </div>
-    <!-- <div class="deck-viewer" id="viewer">woah</div> -->
 </body>
 </html>
