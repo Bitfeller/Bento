@@ -19,6 +19,7 @@ dragline.style = 'display: flex; background-color: rgb(0, 150, 255); width: 100%
 // Load DOMPurify for imports
 const dpscript = document.createElement('script');
 dpscript.src = 'https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js';
+document.head.appendChild(dpscript);
 
 
 // --------------------------------------------------- \\
@@ -524,7 +525,7 @@ function newCard() {
     cardContain.appendChild(card);
     cards.push(card);
     if(cards.length < 2) return init_mc(card, n);
-    let type = cards[cards.length - 2].getElementsByClassName('selbtn-sel')[0].getElementsByClassName('selbtn-sel')[0];
+    let type = cards[cards.length - 2].getElementsByClassName('selbtn-sel')[0];
     if(!type) return init_mc(card, n);
     let cn = type.className.split(" ");
     if(cn.includes('txtbtn')) init_txt(card, n);
@@ -561,9 +562,9 @@ resetpic.addEventListener('mousedown', () => {
 // --------------------------------------------------- \\
 
 
-function toDeck(err_assigner, is_draft = false, bypass = false, setCard, cloning = false) {
+function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
     if(!user) return void err_assigner("Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)");
-    if(name.value == '' && !is_draft) return void err_assigner("You haven't named your deck yet.");
+    if(name.value == '' && !is_temp) return void err_assigner("You haven't named your deck yet.");
     let data = {};
     for(let i = setCard ?? 0; i < cards.length && (setCard == undefined ? true : i == setCard); i++) {
         let card = cards[i];
@@ -584,12 +585,13 @@ function toDeck(err_assigner, is_draft = false, bypass = false, setCard, cloning
             for(let j = 0; j < answers.length; j++) {
                 let ans = answers[j].getElementsByClassName('mcop-val')[0];
                 if(!ans) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
-                if(ans.dataset.cnt.length > 0) cdata.op.push(ans.dataset.cnt);
+                if(ans.dataset.cnt.length > 0 || is_temp) cdata.op.push(ans.dataset.cnt);
+                    else continue;
                 if(answers[j].getElementsByClassName('mcop-sel').length > 0) cdata.ans.push(j);
             }
             if(q.dataset.cnt.length == 0 && cdata.op.length == 0) continue;
             if(card.getElementsByClassName('active').length > 0 && cdata.ans.length > 1) cdata.req = 1;
-            if(data[q.dataset.cnt] && !cloning) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('txtbtn')) {
             let cdata = {
@@ -602,7 +604,7 @@ function toDeck(err_assigner, is_draft = false, bypass = false, setCard, cloning
             for(let j = 0; j < answers.length; j++) {
                 let ans = answers[j].getElementsByClassName('txtans')[0];
                 if(!ans) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
-                if(ans.dataset.cnt.length > 0) cdata.ans.push(ans.dataset.cnt);
+                if(ans.dataset.cnt.length > 0 || is_temp) cdata.ans.push(ans.dataset.cnt);
             }
             if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
             let i_cdata = {
@@ -612,18 +614,18 @@ function toDeck(err_assigner, is_draft = false, bypass = false, setCard, cloning
             }
             let inv = card.getElementsByClassName('inverse')[0];
             let ans = inv.getElementsByClassName('txt-ans-cont-inv')
-            if(inv.style.display == "block" && (!bypass || is_draft)) return void err_assigner("Looks like there's a text card still in inverse mode; we can't configure it yet. (Or, try again to bypass this warning and force-configure the card.)");
+            if(inv.style.display == "block" && (!bypass || is_temp)) return void err_assigner("Looks like there's a text card still in inverse mode; we can't configure it yet. (Or, press again to bypass this warning and force-build the card.)");
             if(ans.length > 0) {
                 i_cdata.ans = [];
                 for(let j = 0; j < ans.length; j++) {
                     let a = ans[j].getElementsByClassName('txtans')[0];
                     if(!a) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
-                    if(a.dataset.cnt.length > 0) i_cdata.ans.push(a.dataset.cnt);
+                    if(a.dataset.cnt.length > 0 || is_temp) i_cdata.ans.push(a.dataset.cnt);
                 }
-                if(data[inv.getElementsByClassName('q')[0].dataset.cnt]) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+                if(data[inv.getElementsByClassName('q')[0].dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
                 data[inv.getElementsByClassName('q')[0].dataset.cnt] = i_cdata;
             }
-            if(data[q.dataset.cnt] && !cloning) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('rankbtn')) {
             let cdata = {
@@ -636,10 +638,10 @@ function toDeck(err_assigner, is_draft = false, bypass = false, setCard, cloning
             for(let j = 0; j < items.length; j++) {
                 let txt = items[j].getElementsByClassName('rank-item-txt')[0];
                 if(!txt) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
-                if(txt.dataset.cnt.length > 0) cdata.ans.push(txt.dataset.cnt);
+                if(txt.dataset.cnt.length > 0 || is_temp) cdata.ans.push(txt.dataset.cnt);
             }
             if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
-            if(data[q.dataset.cnt] && !cloning) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('mtchbtn')) {
             let cdata = {
@@ -653,10 +655,10 @@ function toDeck(err_assigner, is_draft = false, bypass = false, setCard, cloning
                 let term = pairs[j].getElementsByClassName('mtchpair-term')[0];
                 let def = pairs[j].getElementsByClassName('mtchpair-def')[0];
                 if(!term || !def) return void err_assigner("The system encountered an error parsing the cards and has associated it with an unexpected change in the HTML.");
-                if(term.dataset.cnt.length > 0 && def.dataset.cnt.length > 0) cdata.ans.push([term.dataset.cnt, def.dataset.cnt]);
+                if(term.dataset.cnt.length > 0 && def.dataset.cnt.length > 0 || is_temp) cdata.ans.push([term.dataset.cnt, def.dataset.cnt]);
             }
             if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
-            if(data[q.dataset.cnt] && !cloning) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
             data[q.dataset.cnt] = cdata;
         }
     }
@@ -774,17 +776,91 @@ const g_txt = document.getElementById("GK-importText");
 const g_createbtn = document.getElementById("GK-createBtn");
 const g_err = document.getElementById("GK-err");
 
+const import_modal = document.getElementById('importing-modal');
+const i_import = document.getElementById('i-import');
+const i_cancel = document.getElementById('i-cancel');
+const import_q = document.getElementById('importing-questions');
+
+let temp_name, temp_desc, temp_contnt;
+
 b_importbtn.addEventListener("mousedown", () => b_modal.style.display = "block");
 q_importbtn.addEventListener("mousedown", () => q_modal.style.display = "block");
 g_importbtn.addEventListener("mousedown", () => g_modal.style.display = "block");
 
+function open_import_modal(contnt) {
+    import_modal.style.display = "block";
+    i_import.disabled = false;
+    i_cancel.disabled = false;
+    import_q.innerHTML = "";
+    let c_keys = Object.keys(contnt);
+    try {
+        for(let i = 0; i < c_keys.length; i++) {
+            let q = c_keys[i];
+            let card = contnt[q];
+            let carddiv = document.createElement("div");
+            carddiv.className = "import-card";
+            carddiv.innerHTML = `
+                <div class='import-q'>${q}</div>
+                <div class='import-a'>${card.type == "mc" ? card.op.join(", ") : card.ans}</div>
+                ${card.type == "mc" ? "<div class='import-ans'>" + card.ans.map((t) => card.op[t]).join(', ') + "</div>" : ''}
+                <input type='checkbox' class='import-sel' data-q='${q}' checked>
+            `;
+            import_q.appendChild(carddiv);
+        }
+        temp_contnt = contnt;
+    } catch(_) {
+        import_q.innerHTML = "We couldn't parse this import.";
+    }
+}
+function continue_import_modal() {
+    let boxes = document.getElementsByClassName('import-sel');
+    if(boxes.length == 0) return close_import_modal();
+    let data = {};
+    for(let i = 0; i < boxes.length; i++)
+        if(boxes[i].checked) data[boxes[i].dataset.q] = temp_contnt[boxes[i].dataset.q];
+    temp_name ? name.value = temp_name : "";
+    temp_desc ? description.value = temp_desc : "";
+    try {
+        appendToCards(data);
+    } catch(e) {
+        console.log("failed; reason:", e);
+        import_q.innerHTML = "Something happened while trying to parse this deck.";
+    }
+    safety_check();
+    close_import_modal();
+}
+function close_import_modal() {
+    import_modal.style.display = "none";
+    i_import.disabled = true;
+    i_cancel.disabled = true;
+    import_q.innerHTML = "";
+    temp_name = undefined, temp_desc = undefined, temp_contnt = undefined;
+}
+i_import.addEventListener("mousedown", () => continue_import_modal(temp_contnt));
+i_cancel.addEventListener("mousedown", close_import_modal);
+
+function safety_check() {
+    if(cards.length == 0) {
+        newCard();
+        cards[cards.length - 1].getElementsByClassName('q')[0].focus();
+    }
+}
+b_file.addEventListener('change', () => {
+    if(b_file.files.length > 0)
+        b_createbtn.disabled = false;
+    else
+        b_createbtn.disabled = true;
+})
 b_createbtn.addEventListener("mousedown", () => {
     if(!DOMPurify) return void (b_err.innerHTML = "The system is loading a module. Please try again later. (code: fetching_dompurify?)");
     let dp = DOMPurify;
     let files = b_file.files;
     if(files && files[0]) {
         let file = files[0];
-        if(file.type !== "text/plain") return console.log('failed - file type; ' + file.type);
+        if(file.type !== "application/json") {
+            console.log('failed - file type; ' + file.type);
+            return void (b_err.innerHTML = "Bento expects a JSON file - the file type we export and support.");
+        }
         let reader = new FileReader();
         reader.onload = e => {
             let content = e.target.result;
@@ -794,17 +870,16 @@ b_createbtn.addEventListener("mousedown", () => {
                 let val_name = window.lib.dpwrapper(dp, main.name);
                 let val_desc = window.lib.dpwrapper(dp, main.desc);
                 let val_contnt = window.lib.dpwrapper(dp, main.contnt);
-                if(b_replacename.checked) name.value = val_name;
-                if(b_replacedesc.checked) desc.value = val_desc;
-                try {
-                    appendToCards(val_contnt);
-                    b_modal.style.display = "none";
-                } catch(e) {
-                    return void (b_err.innerHTML = "This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
-                }
+                if(b_replacename.checked) temp_name = val_name;
+                if(b_replacedesc.checked) temp_desc = val_desc;
+                open_import_modal(val_contnt);
+                b_modal.style.display = "none";
             } catch(e) {
+                safety_check();
                 console.log("failed; reason:", e);
+                return void (b_err.innerHTML = "This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
             }
+            safety_check();
         }
         reader.readAsText(file);
     }
@@ -831,10 +906,12 @@ q_createbtn.addEventListener("mousedown", () => {
     });
     if(!isValid) return;
     try {
-        appendToCards(contnt);
-    } catch(e) {
+        open_import_modal(contnt);
+    } catch(_) {
+        safety_check();
         return void (q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
     }
+    safety_check();
     q_modal.style.display = "none";
 });
 g_createbtn.addEventListener("mousedown", () => {
@@ -859,10 +936,12 @@ g_createbtn.addEventListener("mousedown", () => {
     });
     if(!isValid) return;
     try {
-        appendToCards(contnt);
-    } catch(e) {
+        open_import_modal(contnt);
+    } catch(_) {
+        safety_check();
         return void (g_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.");
     }
+    safety_check();
     g_modal.style.display = "none";
 });
 
