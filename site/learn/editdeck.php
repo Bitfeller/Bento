@@ -94,8 +94,8 @@
                 <input type="checkbox" id="BI-replace-desc">
                 <span class="slider"></span>
             </label> | Use this imported deck's <b>description</b> in this deck<br>
-            Import your deck: <input type="file" id="BI-file" accept="text/plain"><br>
-            <button id="BI-createBtn">Import</button>
+            Import your deck (.json): <input type="file" id="BI-file" accept="application/json"><br>
+            <button id="BI-createBtn" disabled="true">Import</button>
             <p class="info-error" id="BI-err"></p>
         </div>
     </div>

@@ -1,21 +1,10 @@
+import { types, sameUser } from './gateway-mod.js';
+
 const moduleurl = new URL(import.meta.url);
 const spath = moduleurl.pathname + "/../..";
 
-function types(t, ...args) {
-    return args.every((c, i) => {
-        if(c === undefined) return false;
-        switch(t[i]) {
-            case "S": return typeof c === "string" && c.length > 0;
-            case "s": return typeof c === "string";
-            case "b": return typeof c === "boolean";
-            case "N": return typeof c === "number" && !isNaN(c) && c >= 0;
-            case "n": return typeof c === "number" && !isNaN(c);
-            case "a": return Array.isArray(c);
-        }
-        return false;
-    });
-}
 let pwdcache;
+
 async function pwdfetch() {
     if(pwdcache) return pwdcache;
     try {
@@ -37,6 +26,7 @@ async function isCommon(pwd) {
 let UserGateway = {
     getuser: async (getpfp = false, getudata = false, getreviews = true, getdrafts = false) => {
         if(!types("bbbb", getpfp, getudata, getreviews, getdrafts)) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "invalid params"];
         let success = false, data = 'fetch-err';
         await fetch(spath + "/php-db/user/user_get.php", {
             method: "post",
@@ -109,6 +99,7 @@ let UserGateway = {
     },
     editUser: async (setting, val, pwd = "") => {
         if(!types("Sss", setting, val, pwd)) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "invalid params"];
         let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/user/user_edit.php", {
             method: 'post',
@@ -140,6 +131,7 @@ let UserGateway = {
     },
     getDraftImage: async time => {
         if(!types("n", time)) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "invalid params"];
         let success = false, data = 'fetch-err';
         await fetch(spath + "/php-db/user/user_draft_getpic.php", {
             method: 'post',
@@ -161,6 +153,7 @@ let UserGateway = {
     },
     giveFeedback: async feedback => {
         if(!types("S", feedback)) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "invalid params"];
         let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/feedback/feedback_new.php", {
             method: 'post',
@@ -240,4 +233,4 @@ let UserGateway = {
     },
 }
 
-export {UserGateway};
+export { UserGateway };
