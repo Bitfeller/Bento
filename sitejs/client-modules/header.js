@@ -160,7 +160,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     // Initialize service-worker for notifications if allowed
     if (Notification.permission == "granted" && data.notifsub != "0") {
         try {
-            // half broken notification thing (basically deprecated)
+            // deprecated notification thing
             navigator.serviceWorker.register(location.origin + "/sitejs/client-modules/service-worker.js", {
                 type: "module"
             });
