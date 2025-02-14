@@ -8,13 +8,13 @@ deckViewer.style.display = "none";
 
 const tutorialDialog = document.getElementById("tutorial-background");
 const tutorialBoxHolder = document.getElementById("tutorial-box-holder");
+const tutorialEl = document.getElementById('tutorial-box-main');
 const t_dialogmain = tutorialBoxHolder.getElementsByClassName("tutorial-dialog-main")[0];
+const tutorialOverlay = document.getElementById("tutorial-overlay");
 
-// const svgHolder = document.getElementsByClassName("bento-svg")[0];
-// const blankSvg = document.getElementById("blanksvg");
-// const leftSushi = document.getElementById("Leftest_Sushi");
-// const bottomSushi = document.getElementById("Bottom_Sushi");
-// const rightSushi = document.getElementById("Right_Sushi");
+const reviewSushi = document.getElementsByClassName('review-sushi')[0];
+const kitchenSushi = document.getElementsByClassName('kitchen-sushi')[0];
+const createSushi = document.getElementsByClassName('create-sushi')[0];
 
 const version = document.getElementById('header:version');
 const version_info = document.getElementById('header:version_info');
@@ -25,18 +25,101 @@ let decks = [], counts = [];
 
 const INFO_TERM_LIMIT = 10;
 const TYPEWRITE_SPEED = 1000 / 60; // 1000 / (char per second)
-let typewriteInterval, typewriteCurr;
+let typewriteInterval, typewriteCurr = 0, twElements = [t_dialogmain], t_newline = false;
+let t_btnOverride = false;
 
 const tutorial = [
     {
         main: "<p>You're about to start the tutorial for Bento to guide you through the basics.</p><p>Or, if you're already familiar, you can skip.</p><p>(You can reactivate this tutorial in your settings.)</p>"
     },
     {
+        main: `
+            <p>Let's define some terms:</p>
+            <ul>
+                <li><b>Deck</b>: A collection of cards to review.</li>
+                <li><b>Card</b>: A question and answer pair to review.</li>
+                <li><b>Review</b>: A session where you review terms in a deck.</li>
+            </ul>
+            <p>A card can include <b>multiple choice</b>, <b>text</b>, <b>ranking</b>, or <b>matching</b> questions.</p>
+        `
+    },
+    {
+        main: `
+            <p>Bento uses <b>Spaced Repetition</b> to help you remember terms better.</p>
+            <p>This means Bento recommends you when to review a term based on how well you know it.</p>
+        `
+    },
+    {
         before: () => {
-            tutorialBoxHolder.style.display = "none";
-            deckViewer.style.display = "block";
+            
+            kitchenSushi.parentNode.setAttribute('class', "lit-up");
         },
-        main: "<p>Welcome to Bento! This is your home screen, where you can see all your upcoming reviews and decks.</p><p>Let's get started!</p>"
+        main: `
+            <p>On your home screen, you'll see three buttons - one of these leads to the <b>Kitchen</b>, the community space where you can find decks made by others with resourceful content to save you time.</p>
+            <p>This is where you'll go to add decks to your reviews.</p>
+            <p>You can also see the decks in your reviews, as well as be able to edit/export/delete decks you make.</p>
+        `
+    },
+    {
+        before: () => {
+            kitchenSushi.parentNode.setAttribute('class', "");
+            // Blame Emerson's SVG structure for this
+            reviewSushi.parentNode.parentNode.parentNode.parentNode.setAttribute('class', "lit-up");
+        },
+        main: `
+            <p>You'll also see a <b>Review</b> button, where you can review the decks in your reviews. You can also customize your review, like assistive tools and review settings.</p>
+        `
+    },
+    {
+        before: () => {
+            reviewSushi.parentNode.parentNode.parentNode.parentNode.setAttribute('class', "");
+            document.getElementById('deck-reminders').className = "bento-box review-schedule lit-up";
+        },
+        main: `
+            <p>On the right, you can see the decks Bento recommends you review.</p>
+            <p>You can also see all of the decks in your reviews, and hover over them for specific/helpful information.</p>
+        `
+    },
+    {
+        before: () => {
+            document.getElementById('deck-reminders').className = "bento-box review-schedule";
+            createSushi.setAttribute('class', "lit-up");
+            tutorialEl.style.top = "70%";
+            tutorialEl.style.animation = "move-tutorial-box-down 1s ease";
+        },
+        main: `
+            <p>Lastly, you can create your own decks with the <b>Create</b> button.</p>
+            <p>Here, you can also import decks, create cards with varying types, and customize the deck how <b>you</b> want it.</p>
+        `
+    },
+    {
+        before: () => {
+            createSushi.setAttribute('class', "");
+            tutorialEl.style.top = "50%";
+            tutorialEl.style.animation = "move-tutorial-box-up 1s ease";
+            // Header
+            document.getElementsByTagName("header")[0].style.zIndex = "initial";
+            document.getElementById("header:pfp").className = "pfp right-header-ico lit-up";
+            document.getElementById("header:feedback").classNAme = "header-nav material-symbols-outlined right-header-ico lit-up";
+            document.getElementById("header:logout").className = "header-nav material-symbols-outlined right-header-ico lit-up";
+        },
+        main: `
+            <p>You can find your profile in the top right corner.</p>
+            <p>You can also give us <b>feedback</b>. We're <b><i>always</i></b> looking to improve Bento, and we'll see your feedback within an hour of you sending it.</p>
+            <p>You can also, of course, log out.</p>
+        `
+    },
+    {
+        before: () => {
+            document.getElementById("header:pfp").className = "pfp right-header-ico";
+            document.getElementById("header:feedback").classNAme = "header-nav material-symbols-outlined right-header-ico";
+            document.getElementById("header:logout").className = "header-nav material-symbols-outlined right-header-ico";
+            document.getElementsByTagName("header")[0].style.zIndex = 10;
+        },
+        main: `
+            <p>That's it! Have fun learning.</p>
+            <p>You can find this tutorial again in your profile settings.</p>
+        `
     }
 ];
 
@@ -138,18 +221,62 @@ function update(search) {
 }
 function _finish() {
     clearInterval(typewriteInterval);
-    // tutorial[typewriteCurr]
+    typewriteInterval = undefined;
+    t_dialogmain.innerHTML = tutorial[typewriteCurr].main;
+    t_dialogmain.innerHTML += `
+        <button id='continuebtn'>${typewriteCurr >= tutorial.length - 1 ? "Finish" : "Continue"}</button>
+        ${typewriteCurr >= tutorial.length - 1 ? "" : "<button id='skipbtn' style='background-color: rgb(255, 175, 175);'>Skip</button>"}
+    `;
+    document.getElementById('continuebtn').addEventListener('mousedown', e => {
+        t_btnOverride = true;
+        typewriteCurr++;
+        if(typewriteCurr >= tutorial.length) {
+            tutorialDialog.style.display = "none";
+            tutorialBoxHolder.style.display = "none";
+            tutorialOverlay.style.display = "none";
+            return;
+        }
+        tutorialDialog.style.display = "block";
+        tutorialBoxHolder.style.display = "block";
+        if(tutorial[typewriteCurr].before) tutorial[typewriteCurr].before();
+        set(tutorial[typewriteCurr].main);
+    });
+    if(document.getElementById('skipbtn'))
+        document.getElementById('skipbtn').addEventListener('mousedown', () => {
+            tutorialDialog.style.display = "none";
+            tutorialBoxHolder.style.display = "none";
+            tutorialOverlay.style.display = "none";
+        });
 }
 function _dialog(i, text) {
-    if(i >= text.length) return clearInterval(typewriteInterval);
+    if(i >= text.length) return _finish();
+    
+    if(t_newline && text[i] == ' ')
+        return _dialog(i + 1, text);
+    else if(t_newline)
+        t_newline = false;
+    if(text[i] == '\n') {
+        t_newline = true;
+        return _dialog(i + 1, text);
+    }
+    if(text[i] == '\t') return _dialog(i + 1, text);
+    
     if(text[i] == '<') {
         let j = text.indexOf('>', i);
-        t_dialogmain.innerHTML += text.substring(i, j + 1);
+        if(text[i + 1] == '/')
+            twElements.splice(twElements.length - 1, 1);
+        else {
+            const raw = text.substring(i + 1, j);
+            const newEl = document.createElement(raw.substring(0, raw.indexOf(' ') < 0 ? raw.length : raw.indexOf(' ')));
+            twElements.push(newEl);
+            twElements[twElements.length - 2].appendChild(newEl);
+        }
         return _dialog(j + 1, text);
     }
-    t_dialogmain.innerHTML += text[i++];
+    
+    twElements[twElements.length - 1].innerHTML += text[i++];
     if(i >= text.length)
-        clearInterval(typewriteInterval);
+        _finish();
     return i;
 }
 function write(text) {
@@ -158,6 +285,7 @@ function write(text) {
 }
 function set(text) {
     t_dialogmain.innerHTML = '';
+    twElements = [t_dialogmain];
     write(text);
 }
 (async () => {
@@ -193,12 +321,13 @@ function set(text) {
     const params = new URLSearchParams(window.location.search);
     if(params.get('new')) {
         // replace URL so that user doesn't accidentally re-activate tutorial later
-        history.replaceState(null, "", "home"); // /home?new=1  ==>  /home
+        // history.replaceState(null, "", "home"); // /home?new=1  ==>  /home
         // tutorial feature
         tutorialDialog.style.display = "block";
         tutorialBoxHolder.style.display = "block";
+        tutorialOverlay.style.display = "block";
 
-        set("<p>You're about to start the tutorial for Bento to guide you through the basics.</p><p>Or, if you're already familiar, you can skip.</p><p>(You can reactivate this tutorial in your settings.)</p>");
+        set(tutorial[typewriteCurr].main);
     }
 
     window.LOADED();
@@ -209,4 +338,8 @@ window.addEventListener('mousedown', e => {
         feedback_dialog.close();
         version_info.close();
     }
+    if(typewriteInterval && !t_btnOverride) {
+        _finish();
+    }
+    t_btnOverride = false;
 });

@@ -40,7 +40,7 @@ async function changeTheme(current, theme) {
 // main
 (async () => {
     let [success, data] = await UserGateway.getuser(true, true, false, false);
-    if(!success) console.error(data);
+    if(!success) return void (console.error(data));
     user = data;
 
     usernameDisplay.innerHTML = user.username;
