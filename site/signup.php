@@ -63,7 +63,7 @@
                 <p style="font-size: 13px; font-family: kadwa;">Your password is always secure. No one can see your password, not even us.</p>
                 <p>Confirm Password:</p>
                 <input type="password" id="signUpPassword2">
-                <button class="submitBtn" id="signUpBtnM">Sign Up</button>
+                <button class="submitBtn" id="signUpBtn">Sign Up</button>
                 <p class='login-box-selector' onclick="location.href='/login'">I have an account >></p>
                 <p class="info-error" id="err"></p>
         </div>
@@ -81,7 +81,7 @@
         const s_pass = document.getElementById("signUpPassword");
         const s_pass2 = document.getElementById("signUpPassword2");
         const s_email = document.getElementById("signUpEmail");
-        const s_btn = document.getElementById("signUpBtnM");
+        const s_btn = document.getElementById("signUpBtn");
         const err = document.getElementById("err");
 
         async function signup() {

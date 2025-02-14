@@ -46,8 +46,8 @@ const s_user = document.getElementById("signUpUsername");
 const s_pass = document.getElementById("signUpPassword");
 const s_pass2 = document.getElementById("signUpPassword2");
 const s_email = document.getElementById("signUpEmail");
-const l_btn = document.getElementById("signInBtnM");
-const s_btn = document.getElementById("signUpBtnM");
+const l_btn = document.getElementById("signInBtn");
+const s_btn = document.getElementById("signUpBtn");
 const l_err = document.getElementById("login-err");
 const s_err = document.getElementById("signup-err");
 
