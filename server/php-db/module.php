@@ -6,7 +6,6 @@
     require_once '../lib/phpmailer/src/SMTP.php';
 
     use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\Exception;
 
     // Essential functions
     //      Success and fail return functions
@@ -112,7 +111,7 @@
         return $newContnt;
     }
     function _traverse_str_sanitize(string $content) {
-        return str_replace("\n", "\\n", htmlspecialchars($content));
+        return str_replace("\r", "", str_replace("\n", "", htmlspecialchars($content)));
     }
     function sanitize($content) {
         if(gettype($content) == "array") return _traverse_array_sanitize($content);
