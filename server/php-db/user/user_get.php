@@ -19,7 +19,7 @@
         }
         if($getpfp == 1) $data['pfp'] = $_SESSION['pfp'];
         success($data);
-    } catch(e) {
+    } catch(_) {
         header('Location: /');
         session_start();
         session_unset();

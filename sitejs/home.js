@@ -24,8 +24,21 @@ let user;
 let decks = [], counts = [];
 
 const INFO_TERM_LIMIT = 10;
-const TYPEWRITE_SPEED = 1000 / 30; // 1000 / (char per second)
-let typewriteStop = false;
+const TYPEWRITE_SPEED = 1000 / 60; // 1000 / (char per second)
+let typewriteInterval, typewriteCurr;
+
+const tutorial = [
+    {
+        main: "<p>You're about to start the tutorial for Bento to guide you through the basics.</p><p>Or, if you're already familiar, you can skip.</p><p>(You can reactivate this tutorial in your settings.)</p>"
+    },
+    {
+        before: () => {
+            tutorialBoxHolder.style.display = "none";
+            deckViewer.style.display = "block";
+        },
+        main: "<p>Welcome to Bento! This is your home screen, where you can see all your upcoming reviews and decks.</p><p>Let's get started!</p>"
+    }
+];
 
 function show(deck) {
     deckViewer.style.display = 'block';
@@ -123,23 +136,25 @@ function update(search) {
     }
     if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks that match." : "You don't have any decks in your reviews."} --</p>`;
 }
+function _finish() {
+    clearInterval(typewriteInterval);
+    // tutorial[typewriteCurr]
+}
 function _dialog(i, text) {
-    if(i >= text.length || typewriteStop) return;
-    let speed = TYPEWRITE_SPEED;
-    if(i > 0 && (text[i-1] == '.' || text[i-1] == ',' || text[i-1] == '!' || text[i-1] == '?' || text[i-1] == ';')) speed *= 5;
+    if(i >= text.length) return clearInterval(typewriteInterval);
     if(text[i] == '<') {
         let j = text.indexOf('>', i);
         t_dialogmain.innerHTML += text.substring(i, j + 1);
         return _dialog(j + 1, text);
     }
-    setTimeout(() => {
-        t_dialogmain.innerHTML += text[i];
-        i++;
-        if(i < text.length) _dialog(i, text);
-    }, speed);
+    t_dialogmain.innerHTML += text[i++];
+    if(i >= text.length)
+        clearInterval(typewriteInterval);
+    return i;
 }
 function write(text) {
-    _dialog(0, text);
+    let i = 0;
+    typewriteInterval = setInterval(() => i = _dialog(i, text), TYPEWRITE_SPEED);
 }
 function set(text) {
     t_dialogmain.innerHTML = '';
@@ -154,9 +169,9 @@ function set(text) {
     let reviews = user.userdata.reviews;
     let r_keys = Object.keys(reviews);
 
-    for(let i = 0; i < r_keys.length; i++) {
+    let lazyloader = async (r_keys, i) => {
         let [success, deck] = await DeckGateway.get(parseInt(r_keys[i]), true, false, true);
-        if(!success) continue;
+        if(!success) return;
         decks.push(deck);
         let count = 0;
         let c_keys = Object.keys(reviews[r_keys[i]]);
@@ -166,9 +181,11 @@ function set(text) {
         }
         count += deck.contnt_len - c_keys.length;
         counts.push(count);
-    }
+        update('');
+    };
+    for(let i = 0; i < r_keys.length; i++)
+        lazyloader(r_keys, i);
   
-    update('');
     searcher.addEventListener('input', () => update(searcher.value));
 
     // Tutorial
