@@ -1,3 +1,6 @@
+const moduleurl = new URL(import.meta.url);
+const spath = moduleurl.pathname + "/../..";
+
 let lastUser;
 
 function types(t, ...args) {
