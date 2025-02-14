@@ -1,9 +1,12 @@
-// Essential script for loading user data + initializing page
+// Essential script for loading user data + initializing page (loads everywhere)
 import { UserGateway } from "../../server/client-gateway/user-gateway.js";
 
 (async () => {
-    if(document.getElementById('header') == null) return;
+    // return if no header
+    if (document.getElementById('header') == null) return;
 
+    // get all the elements
+    const back = document.getElementById("header:back");
     const logout = document.getElementById("header:logout");
     const pfp = document.getElementById("header:pfp");
     const feedback = document.getElementById("header:feedback");
@@ -15,25 +18,33 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     const resend_email = document.getElementById('header:resend_verif_email');
     const resend_success = document.getElementById('header:resend_success');
 
+    // page data
     const uo = document.body.dataset.uo;
+    const current_page = window.location.pathname;
 
     const parser = document.createElement('span');
 
+    // ui elements for loading state 
     const loader = document.getElementsByClassName("loader")[0];
     const tips = document.getElementsByClassName("tips")[0];
     
+    const previous_pages = JSON.parse(localStorage.getItem("previous_pages")) || [];
+    console.log(previous_pages);
+
+    // loading variables
     let load_failed = false;
 
     let loadingScripts = false;
     // Search for loading scripts
     const scripts = document.getElementsByTagName('script');
-    for(let i = 0; i < scripts.length; i++) {
-        if(scripts[i].dataset.loading == "true") {
+    for (let i = 0; i < scripts.length; i++) {
+        if (scripts[i].dataset.loading == "true") {
             loadingScripts = true;
             break;
         }
     }
 
+    // array of tip texts
     const tipslist = [
         "When making ranking questions, you can drag answers...",
         "If you own a Bento deck, you can export it when viewing it in the Kitchen...",
@@ -50,26 +61,50 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         "Started making a deck but didn't finish? Bento auto-saves your drafts, and you can find them on the right when cooking."
     ];
 
-    function tip_changer(newtext, color) {
+    // transition between tips
+    function tip_changer(newtext, color, transition_time = 500) {
         return new Promise((res, _) => {
+            // sets current text to prev text
             tips.innerHTML = `<p class='prev-tip'>${tips.innerHTML}</p>`;
             window.setTimeout(() => {
-                if(color) tips.style.color = color;
+                // set old tip colour
+                if (color) tips.style.color = color;
+                // start transition
                 tips.innerHTML = `<p class='new-tip'>${newtext}</p>`;
-                if(color) tips.getElementsByClassName('new-tip')[0].style.color = color;
+                // set new tip colour 
+                if (color) tips.getElementsByClassName('new-tip')[0].style.color = color;
+                // overwrite residue
                 window.setTimeout(() => {
                     tips.innerHTML = newtext;
                     res();
-                }, 500);
-            }, 500);
+                }, transition_time);
+            }, transition_time);
         });
     }
 
+
+    // remove all elements from header
+    function remove_header() {
+        back.remove();
+        logout.remove();
+        pfp.remove();
+        feedback.remove();
+        feedback_dialog.remove();
+    }
+
+    // no back button if empty array
+    if (previous_pages.length === 0) {
+        back.remove();
+    }
+
+    // update window when loaded
     window.LOADED = () => {
         if(load_failed) return;
         clearInterval(tipper);
         loader.remove();
     };
+
+    // handle loading error
     window.LOAD_ERROR = (err) => {
         load_failed = true;
         clearInterval(tipper);
@@ -103,18 +138,20 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         else console.error('header.js: could not sanitize obj of following:', typeof obj);
     }
 
+    // displays random tip under the throbber
     tips.innerHTML = tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)];
     let tip_fn = async () => await tip_changer(tipslist[Math.floor(Math.random() * (tipslist.length - 1) + 0.5)]);
+    // new tip every 3 seconds
     let tipper = setInterval(tip_fn, 3000);
 
+    // get pfp and user data
     let [success, data] = await UserGateway.getuser(true, false, false, false);
-    if(!success && data == "no session") {
-        logout.remove();
-        pfp.remove();
-        feedback.remove();
-        feedback_dialog.remove();
-        if(uo == "true") return void (window.location.href = "/login?s=" + window.location.pathname.slice(1));
-    } else {
+    // if user is not logged in:
+    if (!success && data == "no session") {
+        remove_header();
+        // if webpage requires login, kick user to login screen
+        if (uo == "true") return void (window.location.href = "/login?s=" + window.location.pathname.slice(1));
+    } else { // user is logged in
         // update pfp
         if(data.pfp && data.pfp.length > 0) pfp.src = data.pfp;
         // update verify_email_alert
@@ -124,8 +161,9 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         }
     }
     // Initialize service-worker for notifications if allowed
-    if(Notification.permission == "granted" && data.notifsub != "0") {
+    if (Notification.permission == "granted" && data.notifsub != "0") {
         try {
+            // half broken notification thing (basically deprecated)
             navigator.serviceWorker.register(location.origin + "/sitejs/client-modules/service-worker.js", {
                 type: "module"
             });
@@ -134,11 +172,14 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         }
     }
     
-    if(!loadingScripts) {
-        if(document.readyState == "complete" && !load_failed) {
+    // page load handler when scripts finish loading
+    if (!loadingScripts) {
+        if (document.readyState == "complete" && !load_failed) {
+            // load successful, remove tips and throbber
             clearInterval(tipper);
             loader.remove();
         } else {
+            // load failed, website kills itself
             window.addEventListener("load", () => {
                 if(load_failed) return;
                 clearInterval(tipper);
@@ -147,28 +188,50 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         }
     }
 
+    // listeners for events on pages
+    window.addEventListener("beforeunload", async () => {
+        // Add to array of visited pages before leaving current page and save
+        previous_pages.push(current_page);  // add current page to array
+        localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
+    });
+    back.addEventListener("mousedown", async () => {
+        // set this to the most recently visited page 
+        window.location.href = previous_pages[previous_pages.length - 1];
+        // remove current page from array and save it
+        previous_pages.pop();
+        previous_pages.pop();
+        localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
+    });
     logout.addEventListener("mousedown", async () => {
+        // listen to logout event
         await UserGateway.signout();
         window.location.href = "";
     });
     pfp.addEventListener("mousedown", () => {
+        // go to user profile
         window.location.href = "/user/profile";
     });
     feedback.addEventListener("mousedown", () => {
+        // display feedback dialog
         feedback_dialog.showModal();
     });
     feedback_submit.addEventListener("mousedown", async () => {
+        // submit feedback 
         let content = feedback_content.value;
         await UserGateway.giveFeedback(content);
+        // remove feedback dialog
         feedback_dialog.close();
     });
     resend_email.addEventListener('mousedown', async () => {
         resend_success.innerHTML = "";
+        // attempt sending another verification email
         let [success, data] = await UserGateway.editUser('resend-verif-email', '');
-        if(success) resend_success.innerHTML = "We sent you another verification email.";
-        if(data == 'verified') location.reload();
+        if (success) resend_success.innerHTML = "We sent you another verification email.";
+        if (data == 'verified') location.reload();
     });
     window.addEventListener('mousedown', (e) => {
-        if(e.target == verify_dialog) verify_dialog.close();
+        // click outside of popup: close the popup
+        if (e.target != verify_dialog) verify_dialog.close();
+        if (e.target != feedback_dialog) feedback_dialog.close();
     });
 })();

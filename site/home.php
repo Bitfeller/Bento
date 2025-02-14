@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/css/home.css"/>
     <script type="module" src="../sitejs/home.js" data-loading="true"></script>
 </head>
-<body data-uo="true">
+<body data-uo="true" data-back="/home">
     <?php require_once "header.php"?>
     <div class="home-grid">
         <div id="bento-modal">
