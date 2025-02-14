@@ -190,10 +190,14 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 102;
+    min-width: 50vw;
 }
-button.next, button.skip {
-    padding: 0px 5px;
-    margin: 5px;
+#continueBtn, #skipbtn {
+    margin-top: 5px;
+    font-size: 14px;
+}
+#skipBtn {
+    background-color: var(--danger-red);
 }
 @keyframes sushi-shine {
     50% {
