@@ -392,12 +392,12 @@ dialog::backdrop {
         min-height: 38px;
     }
 }
-.login-box-selector {
+.reset-pwd {
     float: right;
     color: var(--accent-1);
     transition: 0.3s;
 }
-.login-box-selector:hover {
+.reset-pwd:hover {
     filter: brightness(85%);
     cursor: pointer;
 }
