@@ -1,0 +1,19 @@
+- Huge design fixes
+- Moderation, filtering, and account bug fixes
+    - All usernames and user-generated content are now filtered.
+    - Weak passwords, like `password`, are highly discouraged and not allowed for the sake of your account's security.
+- Bug fixes for drafts
+    - Images are now properly stored.
+- Data fixes - characters like "&" will never be rendered as "\&amp;" when editing a deck, exporting a deck, or viewing a deck.
+    - The same applies for all special characters.
+- Review fixes - Bento now properly calculates your accuracy with every question and now properly determines when you should next review a question.
+- Enhanced statistics - Bento now analyzes and stores more nuanced information about how you do with each question, providing you with more informed overviews of how you're doing.
+- Deck overview - hover over a deck in your reviews (on the home page) for basic overviews of how you're doing.
+    - Full information pages to see all statistics are yet to be implemented!
+- Issues with changing a username are now resolved.
+- Issues with accounts randomly breaking are now resolved.
+- Issues with adding and modifying deck images are fixed.
+- Minor fixes with Learn Mode.
+- Fixes with searching decks.
+- You can now see your reviews in the home page!
+- Fixes in learn picker.
