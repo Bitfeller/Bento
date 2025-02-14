@@ -91,10 +91,8 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         feedback_dialog.remove();
     }
 
-    // no back button if empty array
-    if (previous_pages.length === 0) {
-        back.remove();
-    }
+    // no back button if no previous pages
+    if (previous_pages.length === 0) back.remove();
 
     // update window when loaded
     window.LOADED = () => {
