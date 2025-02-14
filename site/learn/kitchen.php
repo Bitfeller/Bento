@@ -12,7 +12,7 @@
     <?php require_once "../header.php"?>
     <div class='container'>
         <div class="search-container">
-            <input type="text" name="search" id="search" class="search-bar" placeholder="Search the marketplace... 　(Enter)">
+            <input type="text" name="search" id="search" class="search-bar" placeholder="Search from the marketplace... 　(Enter)">
         </div>
         <h2 style="display: none;" id="searchText" class="left-text">Search Results</h2>
         <div style="display: none;" class="ingredients-container" id="searched_decks">

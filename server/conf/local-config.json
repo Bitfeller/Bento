@@ -19,6 +19,6 @@
     "mail_username": "",
     "mail_password": "",
     "mail_name": "",
-    "file_db": "../../../db/",
+    "file_db": "../../../file_db/",
     "deckload_limit": 30
 }
