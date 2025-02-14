@@ -7,6 +7,7 @@
     <?php require_once "../globalreqs.php"?>
     <link rel="stylesheet" href="../../css/kitchen.css"/>
     <script src="../../sitejs/kitchen.js" type="module" data-loading="true"></script>
+    <link rel="preload" href="../../img/loading.gif" as="image">
 </head>
 <body data-uo="true">
     <?php require_once "../header.php"?>
