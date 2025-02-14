@@ -15,6 +15,7 @@ let mc_sel = [];
 let selected = true;
 let toProceed = false;
 let requireCorrect = false;
+let lazyCheck = false;
 
 // Ranking functionality (drag)
 let dragElements = [];
@@ -356,7 +357,6 @@ function answerHandler() {
                 if(data.req == 1) {
                     selected = false;
                     if(mc_sel.length == 0) return noAnswer();
-                    correct = Game.isCorrect(mc_sel);
                     if (correct) {
                         for(let i = 0; i < objs.length; i++)
                             if(data.ans.indexOf(parseInt(objs[i].getAttribute('i'))) > -1) objs[i].innerHTML = `<p class="answer-symbol">✅</p> ` + objs[i].getAttribute('orig');
@@ -383,7 +383,11 @@ function answerHandler() {
             case "txt":
                 selected = false;
                 if(objs[0].value === "") return noAnswer();
-                correct = Game.isCorrect(objs[0].value.toLowerCase());
+                if(lazyCheck) {
+                    correct = Game.isLazyCorrect(objs[0].value.toLowerCase());
+                } else {
+                    correct = Game.isCorrect(objs[0].value.toLowerCase());
+                }
                 if(correct) {
                     Game.registerTick(Date.now() - startTick);
                     Game.continue();
@@ -535,6 +539,7 @@ window.addEventListener("dragover", e => {
     let sh = parseFloat(paramList.get("sh"));
     let i = parseFloat(paramList.get("i"));
     let rc = parseFloat(paramList.get("rc"));
+    let lc = parseFloat(paramList.get("lc"));
     await Game.init(dsVal, {
         NTRonly: m == 1 ? true : false,
         randomTerms: sh == 1 ? true : false,
@@ -544,6 +549,7 @@ window.addEventListener("dragover", e => {
         deckdistr: [6, 1, 1]
     });
     if (rc == 1) requireCorrect = true;
+    if (lc == 1) lazyCheck = true;
     refresh();
     window.LOADED();
 })();
