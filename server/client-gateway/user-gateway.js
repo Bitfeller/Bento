@@ -230,28 +230,6 @@ let UserGateway = {
             if(!success) reason = res.reason;
         }).catch(e => console.log('backend:', e));
         return [success, reason];
-    },
-    showError: error => {
-        const errorMessages = {
-            "invalid params": "Invalid parameters"
-        };
-        const message = errorMessages[error] || error;
-
-        const errorPopup = document.createElement("div");
-        errorPopup.innerText = message;
-
-        errorPopup.style.position = "fixed";
-        errorPopup.style.top = "20px";
-        errorPopup.style.left = "50%";
-        errorPopup.style.transform = "translateX(-50%)";
-        errorPopup.style.backgroundColor = "rgba(255, 0, 0, 0.8)";
-        errorPopup.style.color = "white";
-        errorPopup.style.padding = "10px 20px";
-        errorPopup.style.borderRadius = "5px";
-        errorPopup.style.zIndex = "1000";
-
-        document.body.appendChild(errorPopup);
-        setTimeout(() => errorPopup.remove(), 2500);
     }
 }
 
