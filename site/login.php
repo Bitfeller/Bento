@@ -85,22 +85,19 @@
         const err = document.getElementById("err");
 
         async function login() {
-            if(l_pass.value.length < 8) {
-                err.innerHTML = "Bad username or password.";
-                return;
-            }
+            if(l_pass.value.length < 8) return window.SHOW_ERROR("Bad username or password.");
             let [success, reason] = await UserGateway.login(l_user.value, l_pass.value);
             if(!success) {
                 switch(reason) {
                     case "bad u/p":
-                        err.innerHTML = "Bad username or password.";
+                        window.SHOW_ERROR("Bad username or password.");
                     break;
                     case "broken user":
-                        err.innerHTML = "Your account is broken. Contact bentoboxcenter@gmail.com for help.";
+                        window.SHOW_ERROR("Your account is broken. Contact bentoboxcenter@gmail.com for help.");
                     break;
                     default:
                         console.log(reason);
-                        err.innerHTML = "Looks like there's an issue on our side. Try again later.";
+                        window.SHOW_ERROR("Looks like there's an issue on our side. Try again later.");
                     break;
                 }
                 return;

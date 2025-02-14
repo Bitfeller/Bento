@@ -3,7 +3,6 @@ import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 
 const deckContainer = document.getElementsByClassName("deck-container")[0];
 const reviewBtn = document.getElementById("reviewBtn");
-const errmsg = document.getElementById("errmsg");
 
 const o_mode = document.getElementsByClassName("mode");
 const o_repeat = document.getElementsByClassName("repeat");
@@ -125,7 +124,7 @@ function updateDecks(decks, counts) {
             let checkbox = item.getElementsByClassName("deckCheck")[0];
             if (checkbox.checked) selectedDecks.push(parseInt(idx));
         }
-        if (selectedDecks.length == 0) return void (errmsg.innerHTML = "Please select at least one deck to review.");
+        if (selectedDecks.length == 0) return window.SHOW_ERROR("Please select at least one deck to review.");
         // Set options
         let mode = o_mode[0].checked ? 1 : 0,
             repeat,
@@ -170,7 +169,7 @@ function updateDecks(decks, counts) {
             let checkbox = item.getElementsByClassName("deckCheck")[0];
             if (checkbox.checked) selectedDecks.push(parseInt(idx));
         }
-        if (selectedDecks.length == 0) return void (errmsg.innerHTML = "Please select at least one deck to review.");
+        if (selectedDecks.length == 0) return window.SHOW_ERROR("Please select at least one deck to review.");
         for (let i = 0; i < o_shuffle.length; i++)
             if (o_shuffle[i].checked == true) shuffle = i + 1;
         window.location.href = '/learn/inertia?ds=' + selectedDecks.join(",") + '&m=' + (o_mode[0].checked ? 1 : 0) + '&s=' + shuffle;

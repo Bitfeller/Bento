@@ -78,7 +78,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         clearInterval(tipper);
         tip_changer(err, "rgb(175, 100, 100)");
     };
-    window.SHOW_ERROR = (err) => {
+    window.SHOW_ERROR = err => {
         const msg = errorMessages[err] || err;
         const errPopup = document.createElement("div");
         errPopup.innerText = msg;
