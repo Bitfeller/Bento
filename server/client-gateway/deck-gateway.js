@@ -1,20 +1,8 @@
+import { types, sameUser } from './gateway-mod.js';
+
 const moduleurl = new URL(import.meta.url);
 const spath = moduleurl.pathname + "/../..";
 
-function types(t, ...args) {
-    return args.every((c, i) => {
-        if(c === undefined) return false;
-        switch(t[i]) {
-            case "S": return typeof c === "string" && c.length > 0;
-            case "s": return typeof c === "string";
-            case "b": return typeof c === "boolean";
-            case "N": return typeof c === "number" && !isNaN(c) && c >= 0;
-            case "n": return typeof c === "number" && !isNaN(c);
-            case "a": return Array.isArray(c);
-        }
-        return false;
-    });
-}
 function similar(s1, s2) {
     if(s1 == s2) return 0;
     const a = s1.length;
@@ -76,6 +64,7 @@ let DeckGateway = {
     },
     add: async (name, deckpic, data, isPublic) => {
         if(!types("SsSb", name, deckpic, data, isPublic)) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "invalid params"];
         let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/deck/deck_new.php", {
             method: 'post',
@@ -127,6 +116,7 @@ let DeckGateway = {
     },
     modify: async (d_id, setting, val) => {
         if(!types("NSs", d_id, setting, val)) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "invalid params"];
         let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/deck/deck_edit.php", {
             method: 'post',

@@ -27,8 +27,14 @@ let dragLine = document.createElement("div");
 let r_temp = document.createElement('div');
 r_temp.style.visibility = 'hidden';
 document.body.appendChild(r_temp);
+// Time
+let startTick = -1;
+let endTick = -1;
 
 dragLine.style = "display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;";
+function intrand(a, b) {
+    return Math.floor(Math.random() * (b - a) + a + 0.5);
+}
 function noAnswer() {
     info.style["background-color"] = "rgba(255, 0, 0, 0.4)";
     info.innerHTML = "Please specify an answer!";
@@ -84,7 +90,7 @@ async function renderable(input) {
         MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([r_temp])).catch(e => console.warn('math formatting failed; reason:', e.message));
         await MathJax.startup.promise;
         return r_temp.innerHTML.trim() !== '';
-    } catch(e) {
+    } catch(_) {
         return false;
     }
 }
@@ -104,7 +110,7 @@ function refresh() {
         for(let i = 0; i < objs.length; i++) objs[i].remove();
         setTimeout(() =>
             window.addEventListener("keydown", e => e.key == "Enter" ? answerHandler() : null),
-        500);
+            500);
         return;
     }
 
@@ -114,7 +120,8 @@ function refresh() {
     typeset(problem);
     
     for(let i = 0; i < objs.length; i++) objs[i].remove();
-    [objs, dragElements, centroids] = [[], [], []];
+    objs = [], dragElements = [], centroids = [];
+    startTick = Date.now();
     dragging = undefined;
     answerbtn.style.display = "block";
     
@@ -122,10 +129,15 @@ function refresh() {
         case "mc":
             selected = false;
             answerbtn.style.display = "none";
-            for (let i = 0; i < data.op.length; i++) {
+            let copy = data.op.slice();
+            for (let _i = 0; _i < data.op.length; _i++) {
+                let idx = intrand(0, copy.length - 1);
+                let op = copy[idx];
+                copy.splice(idx, 1);
+                let i = data.op.indexOf(op);
                 let op_i = document.createElement("button");
                 op_i.className = "option";
-                op_i.innerHTML = `<p class="answer-symbol">&#${9312 + i}</p> <p>${data.op[i]}</p>`;
+                op_i.innerHTML = `<p class="answer-symbol">&#${9312 + i}</p> <p>${op}</p>`;
                 typeset(op_i);
                 op_i.id = "not-select";
                 op_i.setAttribute("i", i);
@@ -134,7 +146,7 @@ function refresh() {
                     if (selected && data.req == 0) return;
                     selected = true;
                     if(data.req == 1 && mc_sel.indexOf(i) < 0) {
-                        op_i.innerHTML = `<p class="answer-symbol">X</p> ` + op_i.innerHTML;
+                        op_i.innerHTML = `<p class="answer-symbol">⚬</p> ` + op_i.innerHTML;
                         mc_sel.push(i);
                         answerbtn.style.display = "block";
                         answerbtn.innerHTML = "Continue >>> (Enter)";
@@ -149,13 +161,14 @@ function refresh() {
                     if (correct) {
                         op_i.innerHTML = `<p class="answer-symbol">✅</p> ` + op_i.innerHTML;
                         window.setTimeout(() => {
+                            Game.registerTick(Date.now() - startTick);
                             Game.continue();
                             refresh();
                         }, 1000);
                     } else {
-                        for (let j = 0; j < cont_a.children.length; j++) {
-                            let item = cont_a.children[j];
-                            if(data.ans.indexOf(j) > -1) item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
+                        for(let j = 0; j < data.ans.length; j++) {
+                            let right = data.ans[j], item = cont_a.children[right];
+                            item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
                         }
                         op_i.innerHTML = `<p class="answer-symbol">❌</p> ` + op_i.innerHTML;
                         answerMarker.style.display = "block";
@@ -163,6 +176,7 @@ function refresh() {
                         answerbtn.style.display = "block";
                         answerbtn.innerHTML = "Continue >>> (Enter)";
                         toProceed = true;
+                        endTick = Date.now();
                     }
                 });
                 objs.push(op_i);
@@ -170,11 +184,10 @@ function refresh() {
             }
         break;
         case "txt":
-            let input = document.createElement("div");
-            input.contentEditable = true;
+            let input = document.createElement("input");
             input.type = "text";
             input.className = "op-input";
-            input.setAttribute("placeholder", "Enter an answer here... [math formatting happens between two $]");
+            input.placeholder = "Enter an answer here... (math formatting happens between two $)";
             input.autofocus = true;
             objs.push(input);
             cont_a.appendChild(input);
@@ -184,24 +197,8 @@ function refresh() {
                 if(e.key == "Enter" && !toProceed) answerHandler();
             });
             input.addEventListener('keyup', async () => {
-                if(await renderable(input.innerHTML) && input.innerHTML.match(/\$[^$]*\$/g)) showDisplay(input.innerHTML); 
+                if(await renderable(input.value) && input.value.match(/\$[^$]*\$/g)) showDisplay(input.value); 
                     else hideDisplay();
-            });
-            input.addEventListener('paste', e => {
-                e.preventDefault();
-                let data = e.clipboardData.getData('text/plain');
-                let sanitized = data.replace(/\n+/g, '');
-                let sel = window.getSelection();
-                if(sel.rangeCount > 0) {
-                    let range = sel.getRangeAt(0);
-                    let node = document.createTextNode(sanitized);
-                    range.deleteContents();
-                    range.insertNode(node);
-                    range.setStartAfter(node);
-                    range.collapse(true);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                }
             });
         break;
         case "ranking":
@@ -232,22 +229,19 @@ function refresh() {
                     if (dragging !== el) return;
                     el.style["background-color"] = "";
                     dragLine.remove();
-                    let top;
-                    let bottom;
-                    let y = e.pageY;
+                    let top, bottom, y = e.pageY;
                     for (let i = 0; i < dragElements.length; i++) {
                         if (centroids[i].y < y) continue;
-                        else if (i - 1 >= 0) {
-                            top = dragElements[i - 1];
-                            bottom = dragElements[i];
-                            list.insertBefore(el, bottom);
-                            break;
-                        } else {
+                        if(i == 0) {
                             top = dragElements[i];
                             el.remove();
                             list.prepend(el);
                             break;
                         }
+                        top = dragElements[i - 1];
+                        bottom = dragElements[i];
+                        list.insertBefore(el, bottom);
+                        break;
                     }
                     if (!top) {
                         el.remove();
@@ -281,7 +275,6 @@ function refresh() {
             objs.push(defs);
             let termList = data.ans.slice();
             let defsList = data.ans.slice();
-            // if you found this, go touch some grass.
             for(let i = 0; i < data.ans.length; i++) {
                 let t_idx = Math.floor(
                     Math.random() * (termList.length - 1) + 0.5,
@@ -289,6 +282,7 @@ function refresh() {
                 let d_idx = Math.floor(
                     Math.random() * (defsList.length - 1) + 0.5,
                 );
+
                 let t_item = termList[t_idx][0];
                 let d_item = defsList[d_idx][1];
                 let t_el = document.createElement("div");
@@ -298,6 +292,7 @@ function refresh() {
                 typeset(t_el);
                 termList.splice(t_idx, 1);
                 terms.appendChild(t_el);
+
                 let d_el = document.createElement("div");
                 d_el.className = "matching-item";
                 d_el.id = "item-" + data.ans.indexOf(defsList[d_idx]);
@@ -305,11 +300,12 @@ function refresh() {
                 typeset(d_el);
                 defsList.splice(d_idx, 1);
                 defs.appendChild(d_el);
-                t_el.addEventListener("mousedown", () => {
-                    if(termSelect) return;
-                    termSelect = t_el;
-                    termSelect.style["background-color"] = "rgba(0, 255, 0, 0.5)";
-                    if(defSelect) {
+
+                [t_el, d_el].forEach(el => el.addEventListener('mousedown', () => {
+                    if(el == t_el && termSelect || el == d_el && defSelect) return;
+                    el == t_el ? termSelect = el : defSelect = el;
+                    el.style["background-color"] = "rgba(0, 255, 0, 0.5)";
+                    if(el == t_el ? defSelect : termSelect) {
                         if(termSelect.id == defSelect.id) {
                             termSelect.remove();
                             defSelect.remove();
@@ -321,32 +317,10 @@ function refresh() {
                             lt.style["background-color"] = "rgba(0, 0, 0, 0)";
                             ld.style["background-color"] = "rgba(0, 0, 0, 0)";
                         }, 500);
-                        termSelect = undefined;
-                        defSelect = undefined;
+                        termSelect = undefined, defSelect = undefined;
                         if(terms.children.length == 0) answerHandler();
                     }
-                });
-                d_el.addEventListener("mousedown", () => {
-                    if(defSelect) return;
-                    defSelect = d_el;
-                    defSelect.style["background-color"] = "rgba(0, 255, 0, 0.5)";
-                    if(termSelect) {
-                        if(termSelect.id == defSelect.id) {
-                            termSelect.remove();
-                            defSelect.remove();
-                        } else incorrectMatch++;
-                        let [lt, ld] = [termSelect, defSelect];
-                        termSelect.style["background-color"] = "rgba(255, 0, 0, 0.5)";
-                        defSelect.style["background-color"] = "rgba(255, 0, 0, 0.5)";
-                        window.setTimeout(() => {
-                            lt.style["background-color"] = "rgba(0, 0, 0, 0)";
-                            ld.style["background-color"] = "rgba(0, 0, 0, 0)";
-                        }, 500);
-                        termSelect = undefined;
-                        defSelect = undefined;
-                        if(defs.children.length == 0) answerHandler();
-                    }
-                });
+                }));
             }
             answerbtn.innerHTML = "Skip >>> (Backspace)";
             answerbtn.style.display = "block";
@@ -357,16 +331,16 @@ function refresh() {
         <p>${progress.seen - 1}</p> <span class="material-symbols-outlined">check</span>
         <p>${progress.remaining + 1}</p> <span class="material-symbols-outlined">box</span>
     `;
-    progressBar.style.width = `${((progress.seen - 1) / (progress.remaining + progress.seen)) * 100}%`;
+    progressBar.style.width = `${((progress.seen - 1) / progress.total) * 100}%`;
 }
 function answerHandler() {
     hideDisplay();
     if (Game.isDead()) window.location.href = "/home?l=lm&s=1";
     if (toProceed) {
         if (Game.fetchProblem().type == "txt" && requireCorrect && !Game.getLastCorrect()) return;
+        Game.registerTick(endTick - startTick);
         Game.continue();
-        answerMarker.style.display = "none";
-        reshowMarker.style.display = "none";
+        answerMarker.style.display = reshowMarker.style.display = "none";
         answerbtn.innerHTML = "Answer";
         ans_a.innerHTML = "";
         ans_a.style.display = "none";
@@ -387,6 +361,7 @@ function answerHandler() {
                         for(let i = 0; i < objs.length; i++)
                             if(data.ans.indexOf(parseInt(objs[i].getAttribute('i'))) > -1) objs[i].innerHTML = `<p class="answer-symbol">✅</p> ` + objs[i].getAttribute('orig');
                         window.setTimeout(() => {
+                            Game.registerTick(Date.now() - startTick);
                             Game.continue();
                             refresh();
                         }, 1000);
@@ -397,39 +372,43 @@ function answerHandler() {
                             let item = cont_a.children[j];
                             if(data.ans.indexOf(j) > -1 && mc_sel.indexOf(j) < 0) item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
                         }
-                        answerMarker.style.display = "block";
-                        reshowMarker.style.display = "block";
+                        answerMarker.style.display = reshowMarker.style.display = "block";
                         answerbtn.style.display = "block";
                         answerbtn.innerHTML = "Continue >>> (Enter)";
                         toProceed = true;
+                        endTick = Date.now();
                     }
                 }
             break;
             case "txt":
                 selected = false;
-                if(objs[0].textContent === "") return noAnswer();
-                correct = Game.isCorrect(objs[0].textContent.toLowerCase());
+                if(objs[0].value === "") return noAnswer();
+                correct = Game.isCorrect(objs[0].value.toLowerCase());
                 if(correct) {
+                    Game.registerTick(Date.now() - startTick);
                     Game.continue();
                     contlabel();
                     refresh();
                 } else {
-                    if (!requireCorrect) objs[0].contentEditable = false;
+                    if (!requireCorrect) {
+                        objs[0].readOnly = true;
+                        objs[0].blur();
+                    }
                     ans_a.style.display = "flex";
                     ans_a.innerHTML = cont_a.innerHTML;
                     cont_a.children[0].style.backgroundColor = `rgba(255, 0, 0, 0.5)`;
                     ans_a.children[0].style.backgroundColor = `rgba(0, 255, 0, 0.5)`;
-                    ans_a.children[0].innerHTML = data.ans.join(" • ");
+                    ans_a.children[0].value = data.ans.join(" • ");
                     ans_a.children[0].disabled = true;
                     answerbtn.innerHTML = "Continue >>> (Enter)";
                     if (requireCorrect) {
                         answerbtn.innerHTML = "Enter the correct answer before advancing.";
                         answerbtn.disabled = true;
-                        objs[0].textContent = "";
+                        objs[0].value = "";
                     }
-                    answerMarker.style.display = "block";
-                    reshowMarker.style.display = "block";
+                    answerMarker.style.display = reshowMarker.style.display = "block";
                     toProceed = true;
+                    endTick = Date.now();
                 }
             break;
             case "ranking":
@@ -437,6 +416,7 @@ function answerHandler() {
                 for(let i = 0; i < dragElements.length; i++) answerList.push(dragElements[i].textContent);
                 correct = Game.isCorrect(answerList);
                 if(correct) {
+                    Game.registerTick(Date.now() - startTick);
                     Game.continue();
                     contlabel();
                     refresh();
@@ -456,9 +436,9 @@ function answerHandler() {
                     }
                     answerbtn.innerHTML = "Continue >>> (Enter)";
                     answerbtn.focus();
-                    answerMarker.style.display = "block";
-                    reshowMarker.style.display = "block";
+                    answerMarker.style.display = reshowMarker.style.display = "block";
                     toProceed = true;
+                    endTick = Date.now();
                 }
             break;
             case "mtch":
@@ -491,13 +471,14 @@ function answerHandler() {
                         typeset(d_el);
                         defsList.appendChild(d_el);
                     }
-                    answerMarker.style.display = "block";
-                    reshowMarker.style.display = "block";
+                    answerMarker.style.display = reshowMarker.style.display = "block";
                     answerbtn.style.display = "block";
                     answerbtn.innerHTML = "Continue >>> (Enter)";
                     toProceed = true;
+                    endTick = Date.now();
                 } else {
                     Game.markCorrect(); // Mark as correct since we already checked
+                    Game.registerTick(Date.now() - startTick);
                     Game.continue();
                     contlabel();
                     refresh();
@@ -568,6 +549,7 @@ window.addEventListener("dragover", e => {
 })();
 answerMarker.addEventListener("mousedown", () => {
     Game.markCorrect();
+    Game.registerTick(endTick - startTick);
     Game.continue();
     answerMarker.style.display = "none";
     reshowMarker.style.display = "none";
@@ -578,6 +560,7 @@ answerMarker.addEventListener("mousedown", () => {
     refresh();
 });
 reshowMarker.addEventListener("mousedown", () => {
+    Game.registerTick(endTick - startTick);
     Game.reshow();
     answerMarker.style.display = "none";
     reshowMarker.style.display = "none";
@@ -611,8 +594,7 @@ window.addEventListener("keydown", e => {
             mc_keynum = "";
             return;
         }
-        mc_keynum = "";
-        prob = undefined;
+        mc_keynum = "", prob = undefined;
         mc_sel.push(num);
         if(data.req == 1 && mc_sel.length < data.ans.length) return;
         let correct = Game.isCorrect(data.req == 1 ? mc_sel.map((v) => v - 1) : num - 1);
@@ -621,6 +603,7 @@ window.addEventListener("keydown", e => {
                 cont_a.children[mc_sel[i] - 1].innerHTML = `<p class="answer-symbol">✅</p> ` + cont_a.children[mc_sel[i] - 1].innerHTML;
             selected = true;
             window.setTimeout(() => {
+                Game.registerTick(Date.now() - startTick);
                 Game.continue();
                 refresh();
             }, 1000);
@@ -637,6 +620,7 @@ window.addEventListener("keydown", e => {
             answerbtn.style.display = "block";
             answerbtn.innerHTML = "Continue >>> (Enter)";
             toProceed = true;
+            endTick = Date.now();
         }
         mc_sel = [];
     }
@@ -644,6 +628,7 @@ window.addEventListener("keydown", e => {
     if(!toProceed) return;
     if(e.key == "Enter") e.preventDefault();
     if(e.key == "Enter" && (requireCorrect ? answerbtn.disabled == false : e.target != objs[0])) {
+        Game.registerTick(endTick - startTick);
         Game.continue();
         answerMarker.style.display = "none";
         reshowMarker.style.display = "none";
@@ -657,6 +642,7 @@ window.addEventListener("keydown", e => {
         e.preventDefault();
         // Space
         Game.markCorrect();
+        Game.registerTick(endTick - startTick);
         Game.continue();
         answerMarker.style.display = "none";
         reshowMarker.style.display = "none";
@@ -669,6 +655,7 @@ window.addEventListener("keydown", e => {
     if(e.key == "r" && !e.ctrlKey && e.target != objs[0]) {
         e.preventDefault();
         // Reshow
+        Game.registerTick(endTick - startTick);
         Game.reshow();
         answerMarker.style.display = "none";
         reshowMarker.style.display = "none";
@@ -683,7 +670,7 @@ window.addEventListener("input", () => {
     if(selected) return;
     if(!toProceed) return;
     if(Game.fetchProblem().type == "txt" && requireCorrect) {
-        let ans = objs[0].textContent.toLowerCase().replaceAll(/\s/g, "");
+        let ans = objs[0].value.toLowerCase().replaceAll(/\s/g, "");
         if (!Game.check(ans)) {
             answerbtn.innerHTML = "Enter the correct answer before advancing.";
             answerbtn.disabled = true;

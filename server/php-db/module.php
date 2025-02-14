@@ -6,7 +6,6 @@
     require_once '../lib/phpmailer/src/SMTP.php';
 
     use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\Exception;
 
     // Essential functions
     //      Success and fail return functions
@@ -78,15 +77,14 @@
             if(isset($val) and (gettype($val) !== $type and gettype($val) !== ($secondType or $type))) access_fail();
         }
     }
+
     //      Get server config
     function get_server_config() {
         if(file_exists('../../conf/local-config.json')) return json_decode(file_get_contents("../../conf/local-config.json"), true);
         else return json_decode(file_get_contents('../../conf/config.json'), true);
     }
+
     //      Content sanitizer
-    function _traverse_str_sanitize(string $content) {
-        return str_replace("\n", "\\n", htmlspecialchars($content));
-    }
     function _traverse_array_sanitize(array $content) {
         $newContnt = [];
         foreach($content as $val) {
@@ -102,7 +100,7 @@
     function _traverse_object_sanitize(object $content) {
         $newContnt = (object) [];
         foreach($content as $key => $val) {
-            $newKey = htmlspecialchars(strip_tags($key));
+            $newKey = _traverse_str_sanitize($key);
             $newVal = null;
             if(gettype($val) == "array") $newVal = _traverse_array_sanitize($val);
             if(gettype($val) == "object") $newVal = _traverse_object_sanitize($val);
@@ -112,12 +110,57 @@
         }
         return $newContnt;
     }
+    function _traverse_str_sanitize(string $content) {
+        return str_replace("\r", "", str_replace("\n", "", htmlspecialchars($content)));
+    }
     function sanitize($content) {
         if(gettype($content) == "array") return _traverse_array_sanitize($content);
         if(gettype($content) == "object") return _traverse_object_sanitize($content);
         if(gettype($content) == "string") return _traverse_str_sanitize($content);
         return null;
     }
+    //      Content filter
+    function _traverse_array_filter(array $content) {
+        foreach($content as $val) {
+            if(gettype($val) == "array")
+                if(_traverse_array_filter($val) == true) return true;
+            if(gettype($val) == "object")
+                if(_traverse_object_filter($val) == true) return true;
+            if(gettype($val) == "string")
+                if(_traverse_str_filter($val) == true) return true;
+        }
+        return false;
+    }
+    function _traverse_object_filter(object $content) {
+        foreach($content as $key => $val) {
+            if(_traverse_str_filter($key) == true) return true;
+            if(gettype($val) == "array")
+                if(_traverse_array_filter($val) == true) return true;
+            if(gettype($val) == "object")
+                if(_traverse_object_filter($val) == true) return true;
+            if(gettype($val) == "string")
+                if(_traverse_str_filter($val) == true) return true;
+        }
+        return false;
+    }
+    function get_filter_list() {
+        return file('../../conf/moderator/config-filter-regex.list');
+    }
+    function _traverse_str_filter(string $content) {
+        $filter_list = get_filter_list();
+        foreach($filter_list as $filter)
+            if(preg_match("/$filter/", $content))
+                return true;
+        return false;
+    }
+    function filter($content) {
+        if(gettype($content) == "array") return _traverse_array_filter($content);
+        if(gettype($content) == "object") return _traverse_object_filter($content);
+        if(gettype($content) == "string") return _traverse_str_filter($content);
+        return false;
+    }
+
+    // Connect to database
     function connect_to_db() {
         $conf = get_server_config();
         $conn = mysqli_connect($conf['mysql']['host'], $conf['mysql']['user'], $conf['mysql']['password'], $conf['mysql']['db']);
