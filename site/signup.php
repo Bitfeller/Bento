@@ -85,31 +85,31 @@
         const err = document.getElementById("err");
 
         async function signup() {
-            if(s_pass.value != s_pass2.value) return void (err.innerHTML = "Passwords do not match.");
+            if(s_pass.value != s_pass2.value) return void (window.SHOW_ERROR("Passwords do not match."));
             let [success, reason] = await UserGateway.signup(s_user.value, s_pass.value, s_email.value);
             if(!success) {
                 switch(reason) {
                     case "bad pwd":
-                        err.innerHTML = "Password is either common or less than 8 characters long.";
+                        window.SHOW_ERROR("Password is either common or less than 8 characters long.");
                     break;
                     case "invalid username":
-                        err.innerHTML = "That username has invalid characters. (Valid characters include a-z, A-Z, and 0-9)";
+                        window.SHOW_ERROR("That username has invalid characters. (Valid characters include a-z, A-Z, and 0-9)");
                     break;
                     case "flagged":
-                        err.innerHTML = "Your username was flagged for inappropriate content.";
+                        window.SHOW_ERROR("Your username was flagged for inappropriate content.");
                     break;
                     case "invalid email":
-                        err.innerHTML = "Please enter in a valid email.";
+                        window.SHOW_ERROR("Please enter in a valid email.");
                     break;
                     case "user exists":
-                        err.innerHTML = "That username is already taken.";
+                        window.SHOW_ERROR("That username is already taken.");
                     break;
                     case "autologin":
-                        err.innerHTML = "We successfully made an account for you; but we failed to log you in automatically. Try logging in with your new account manually.";
+                        window.SHOW_ERROR("We successfully made an account for you; but we failed to log you in automatically. Try logging in with your new account manually.");
                     break;
                     default:
                         console.log(reason);
-                        err.innerHTML = "Looks like there's an issue on our side. Try again later.";
+                        window.SHOW_ERROR("Looks like there's an issue on our side. Try again later.");
                     break;
                 }
                 return;
