@@ -57,20 +57,41 @@
             <p class="info-error" id="username-error"></p>
         </div>
         <div class="grid-box change-box">
-            <h2>Change Email</h2>
+            <h2>Change Email/Password</h2>
+            <select id="change-option">
+                <option value="email" selected>Change Email</option>
+                <option value="password">Change Password</option>
+            </select>
+            <div id="change-email-box">
                 <input type="text" id="email-curr-password" placeholder="Current Password">
                 <input type="text" id="email" placeholder="Email">
-            <p>Changing your email will require you to verify the new email address so make sure you can access it.</p>
-            <button id="change-email">Change</button>
-            <p class="info-error" id="email-error"></p>
+                <p>Changing your email will require you to verify the new email address so make sure you can access it.</p>
+                <button id="change-email">Change</button>
+                <p class="info-error" id="email-error"></p>
+            </div>
+            <div id="change-password-box" style="display: none;">
+                <input type="password" id="password-curr-password" placeholder="Current Password">
+                <input type="password" id="password" placeholder="New Password">
+                <p>Passwords must be at least 8 characters long <p><i>for now...</i></p></p>
+                <button id="change-password">Change</button>
+                <p class="info-error" id="password-error"></p>
+            </div>
         </div>
         <div class="grid-box change-box">
-            <h2>Change Password</h2>
-            <input type="password" id="password-curr-password" placeholder="Current Password">
-            <input type="password" id="password" placeholder="New Password">
-            <p>Passwords must be at least 8 characters long <p><i>for now...</i></p></p>
-            <button id="change-password">Change</button>
-            <p class="info-error" id="password-error"></p>
+            <h2>Miscellaneous</h2>
+            <div id="global-back-box">
+                <label for="enable-global-back">
+                    <input type="checkbox" id="enable-global-back">
+                    Enable Global Back Button
+                </label>
+                <p>Appears to the left of the Bento!, logo on every page, and is not assured to enhance user experience.</p>
+            </div>
+            <div>
+                <button id="restart-tutorial">Restart Tutorial</button>
+                <p>
+                    Teaches you how to use Bento! about various terminology and the programs features.
+                </p>
+            </div>
         </div>
         <div class="grid-box change-box danger-box">
             <h2>Danger Zone</h2>

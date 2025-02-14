@@ -30,7 +30,9 @@ let t_btnOverride = false;
 
 const tutorial = [
     {
-        main: "<p>You're about to start the tutorial for Bento to guide you through the basics.</p><p>Or, if you're already familiar, you can skip.</p><p>(You can reactivate this tutorial in your settings.)</p>"
+        main: `<p>You're about to start the tutorial for Bento! to guide you through the basics.</p>
+        <p>Or, if you're already familiar, you can skip.</p>
+        <p>(You can reactivate this tutorial in your settings.)</p>`
     },
     {
         main: `
@@ -39,19 +41,22 @@ const tutorial = [
                 <li><b>Deck</b>: A collection of cards to review.</li>
                 <li><b>Card</b>: A question and answer pair to review.</li>
                 <li><b>Review</b>: A session where you review terms in a deck.</li>
+                <br>
             </ul>
             <p>A card can include <b>multiple choice</b>, <b>text</b>, <b>ranking</b>, or <b>matching</b> questions.</p>
         `
     },
     {
         main: `
-            <p>Bento uses <b>Spaced Repetition</b> to help you remember terms better.</p>
-            <p>This means Bento recommends you when to review a term based on how well you know it.</p>
+            <p>Bento! uses <b>Spaced Repetition</b> to help you remember terms better.</p>
+            <p>This means Bento! recommends you when to review a term based on how well you know it.</p>
+            <a href="https://en.wikipedia.org/wiki/Spaced_repetition" style="color: var(--select-blue);" target="_blank">See More</a>
+            <br>
+
         `
     },
     {
         before: () => {
-            
             kitchenSushi.parentNode.setAttribute('class', "lit-up");
         },
         main: `
@@ -76,7 +81,7 @@ const tutorial = [
             document.getElementById('deck-reminders').className = "bento-box review-schedule lit-up";
         },
         main: `
-            <p>On the right, you can see the decks Bento recommends you review.</p>
+            <p>On the right, you can see the decks Bento! recommends you review.</p>
             <p>You can also see all of the decks in your reviews, and hover over them for specific/helpful information.</p>
         `
     },
@@ -100,12 +105,12 @@ const tutorial = [
             // Header
             document.getElementsByTagName("header")[0].style.zIndex = "initial";
             document.getElementById("header:pfp").className = "pfp right-header-ico lit-up";
-            document.getElementById("header:feedback").classNAme = "header-nav material-symbols-outlined right-header-ico lit-up";
+            document.getElementById("header:feedback").className = "header-nav material-symbols-outlined right-header-ico lit-up";
             document.getElementById("header:logout").className = "header-nav material-symbols-outlined right-header-ico lit-up";
         },
         main: `
             <p>You can find your profile in the top right corner.</p>
-            <p>You can also give us <b>feedback</b>. We're <b><i>always</i></b> looking to improve Bento, and we'll see your feedback within an hour of you sending it.</p>
+            <p>You can also give us <b>feedback</b>. We're <b><i>always</i></b> looking to improve Bento!, and we'll see your feedback within an hour of you sending it.</p>
             <p>You can also, of course, log out.</p>
         `
     },
@@ -224,10 +229,10 @@ function _finish() {
     typewriteInterval = undefined;
     t_dialogmain.innerHTML = tutorial[typewriteCurr].main;
     t_dialogmain.innerHTML += `
-        <button id='continuebtn'>${typewriteCurr >= tutorial.length - 1 ? "Finish" : "Continue"}</button>
-        ${typewriteCurr >= tutorial.length - 1 ? "" : "<button id='skipbtn' style='background-color: rgb(255, 175, 175);'>Skip</button>"}
+        <button id='continueBtn'>${typewriteCurr >= tutorial.length - 1 ? "Finish!" : "Continue"}</button>
+        ${typewriteCurr >= tutorial.length - 1 ? "" : "<button id='skipBtn'>Skip</button>"}
     `;
-    document.getElementById('continuebtn').addEventListener('mousedown', e => {
+    document.getElementById('continueBtn').addEventListener('mousedown', e => {
         t_btnOverride = true;
         typewriteCurr++;
         if(typewriteCurr >= tutorial.length) {
@@ -241,8 +246,8 @@ function _finish() {
         if(tutorial[typewriteCurr].before) tutorial[typewriteCurr].before();
         set(tutorial[typewriteCurr].main);
     });
-    if(document.getElementById('skipbtn'))
-        document.getElementById('skipbtn').addEventListener('mousedown', () => {
+    if(document.getElementById('skipBtn'))
+        document.getElementById('skipBtn').addEventListener('mousedown', () => {
             tutorialDialog.style.display = "none";
             tutorialBoxHolder.style.display = "none";
             tutorialOverlay.style.display = "none";
