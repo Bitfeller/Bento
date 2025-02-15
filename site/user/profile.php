@@ -84,7 +84,7 @@
                 <p>Appears to the left of the Bento!, logo on every page, and is not assured to enhance user experience.</p>
             </div>
             <div>
-                <button id="restart-tutorial">Restart Tutorial</button>
+                <button id="restart-tutorial" onclick="window.location.href='/home?new=1'">Restart Tutorial</button>
                 <p>
                     Teaches you how to use Bento! about various terminology and the programs features.
                 </p>
