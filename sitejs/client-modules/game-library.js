@@ -46,6 +46,25 @@ function filter_outliers(arr) {
     }
     return arr;
 }
+function getDist(a, b) {
+    const matrix = [];
+    for (let i = 0; i <= b.length; i++)
+        matrix[i] = [i];
+    for (let j = 0; j <= a.length; j++)
+        matrix[0][j] = j;
+    for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+            if (b.charAt(i - 1) === a.charAt(j - 1))
+                matrix[i][j] = matrix[i - 1][j - 1];
+            else
+                matrix[i][j] = Math.min(
+                    matrix[i - 1][j - 1] + 1,
+                    Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
+                );
+        }
+    }
+    return matrix[b.length][a.length];
+}
 
 // -------------------------------------------------------- \\
 
@@ -264,10 +283,10 @@ function lazyCheck(answer) {
     switch(problem.type) {
         case "txt":
             for(let i = 0; i < problem.ans.length; i++) {
-                let decodedAnswer = window.lib.decode(problem.ans[i]).toLowerCase().replaceAll(/\s/g, "");
-                let userAnswer = answer.toLowerCase().replaceAll(/\s/g, "");
-                if(userAnswer === decodedAnswer) return true;
-                if(getEditDistance(userAnswer, decodedAnswer) <= 2) return true;
+                let realAns = window.lib.decode(problem.ans[i]).toLowerCase().replaceAll(/\s/g, "");
+                let userAns = answer.toLowerCase().replaceAll(/\s/g, "");
+                if(userAns == realAns) return true;
+                if(getDist(userAns, realAns) <= 2) return true;
             }
             return false;
         default:
@@ -323,29 +342,10 @@ function incorrect() {
         else totalWrong[currSet[card]] = 1;
     return !correct();
 }
-function getEditDistance(a, b) {
-    const matrix = [];
-    for (let i = 0; i <= b.length; i++) {
-        matrix[i] = [i];
-    }
-    for (let j = 0; j <= a.length; j++) {
-        matrix[0][j] = j;
-    }
-    for (let i = 1; i <= b.length; i++) {
-        for (let j = 1; j <= a.length; j++) {
-            if (b.charAt(i - 1) === a.charAt(j - 1)) {
-                matrix[i][j] = matrix[i - 1][j - 1];
-            } else {
-                matrix[i][j] = Math.min(
-                    matrix[i - 1][j - 1] + 1,
-                    Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
-                );
-            }
-        }
-    }
-    return matrix[b.length][a.length];
-}
+
+
 // -------------------------------------------------------- \\
+
 
 const Game = {
     init,

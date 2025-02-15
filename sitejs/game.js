@@ -383,11 +383,8 @@ function answerHandler() {
             case "txt":
                 selected = false;
                 if(objs[0].value === "") return noAnswer();
-                if(lazyCheck) {
-                    correct = Game.isLazyCorrect(objs[0].value.toLowerCase());
-                } else {
-                    correct = Game.isCorrect(objs[0].value.toLowerCase());
-                }
+                if(lazyCheck) correct = Game.isLazyCorrect(objs[0].value.toLowerCase());
+                else correct = Game.isCorrect(objs[0].value.toLowerCase());
                 if(correct) {
                     Game.registerTick(Date.now() - startTick);
                     Game.continue();
