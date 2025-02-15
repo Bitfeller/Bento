@@ -141,22 +141,20 @@ async function changeTheme(current, theme) {
                 <button id="delete-account-confirm">Delete Account</button>
                 <button id="delete-account-cancel">Cancel</button>
             </div>
-            <p class="info-error" id="delete-account-error"></p>
         `;
         const deleteAccountPassword = document.getElementById("delete-account-password");
         const deleteAccountConfirm = document.getElementById("delete-account-confirm");
         const deleteAccountCancel = document.getElementById("delete-account-cancel");
-        const deleteAccountError = document.getElementById("delete-account-error");
         deleteAccountConfirm.addEventListener("mousedown", async () => {
             if(deleteAccountPassword.value == "") return;
             let [success, err] = await UserGateway.editUser("delete", "", deleteAccountPassword.value);
             if(!success) {
                 switch(err) {
                     case 'invalid pwd':
-                        deleteAccountError.innerHTML = "Wrong password.";
+                        window.SHOW_ERROR("Wrong password.");
                     break;
                     default:
-                        deleteAccountError.innerHTML = "Look's like there's something wrong on our side. Try again later.";
+                        window.SHOW_ERROR("Look's like there's something wrong on our side. Try again later.");
                     break;
                 }
                 return;
@@ -177,19 +175,14 @@ async function changeTheme(current, theme) {
                 <button id="reset-account-confirm">Reset Account</button>
                 <button id="reset-account-cancel">Cancel</button>
             </div>
-            <p class="info-error" id="reset-account-error"></p>
         `;
         const resetAccountPassword = document.getElementById("reset-account-password");
         const resetAccountConfirm = document.getElementById("reset-account-confirm");
         const resetAccountCancel = document.getElementById("reset-account-cancel");
-        const resetAccountError = document.getElementById("reset-account-error");
         resetAccountConfirm.addEventListener("mousedown", async () => {
             if(resetAccountPassword.value == "") return;
             let [success, err] = await UserGateway.editUser("userdata", '{"reviews":{},"draftdecks":{},"theme":0}', resetAccountPassword.value);
-            if(!success) {
-                resetAccountError.innerHTML = "Looks like there's something wrong on our side. Try again later.";
-                return;
-            }
+            if(!success) return window.SHOW_ERROR("Looks like there's something wrong on our side. Try again later.");
             warningDialog.close();
             window.location.reload();
         });
