@@ -163,6 +163,16 @@
     z-index: 100;
     background: rgba(0, 0, 0, 0.5);
 }
+#tutorial-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 102 !important;
+    background: transparent;
+}
 #tutorial-box-holder {
     z-index: 105;
     background: transparent;
@@ -180,10 +190,14 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 102;
+    min-width: 50vw;
 }
-button.next, button.skip {
-    padding: 0px 5px;
-    margin: 5px;
+#continueBtn, #skipbtn {
+    margin-top: 5px;
+    font-size: 14px;
+}
+#skipBtn {
+    background-color: var(--danger-red);
 }
 @keyframes sushi-shine {
     50% {
@@ -243,4 +257,20 @@ button.next, button.skip {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+@keyframes move-tutorial-box-down {
+    0% {
+        top: 50%;
+    }
+    100% {
+        top: 70%;
+    }
+}
+@keyframes move-tutorial-box-up {
+    0% {
+        top: 70%;
+    }
+    100% {
+        top: 50%;
+    }
 }
