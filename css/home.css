@@ -129,7 +129,7 @@
 .graph-container {
     grid-column: span 3;
 }
-.review-sushi, .interactive-sushi {
+.review-sushi, .interactive-sushi, .kitchen-sushi, .create-sushi {
     cursor: pointer;
     z-index: 2;
     animation-name: sushi-shine;
