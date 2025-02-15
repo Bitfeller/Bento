@@ -3,7 +3,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
 
 (async () => {
     // Exit if header doesn't exist
-    if (document.getElementById('header') == null) return;
+    if(document.getElementById('header') == null) return;
 
     // Elements
     const back = document.getElementById("header:back");
@@ -39,8 +39,8 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
 
     // Search for loading scripts
     const scripts = document.getElementsByTagName('script');
-    for (let i = 0; i < scripts.length; i++) {
-        if (scripts[i].dataset.loading == "true") {
+    for(let i = 0; i < scripts.length; i++) {
+        if(scripts[i].dataset.loading == "true") {
             loadingScripts = true;
             break;
         }
@@ -72,11 +72,11 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
             // Wait for prev-tip to transition out
             window.setTimeout(() => {
                 // Set new color
-                if (color) tips.style.color = color;
+                if(color) tips.style.color = color;
                 
                 // Add new-tip and transition in
                 tips.innerHTML = `<p class='new-tip'>${newtext}</p>`;
-                if (color) tips.getElementsByClassName('new-tip')[0].style.color = color;
+                if(color) tips.getElementsByClassName('new-tip')[0].style.color = color;
 
                 // Finished transition; remove residue and set to new current tip
                 window.setTimeout(() => {
@@ -158,7 +158,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     if (!success && data == "no session") {
         remove_uo_elements();
         // If webpage requires login, kick user to login screen
-        if (uo == "true") return void (window.location.href = "/login?s=" + window.location.pathname.slice(1));
+        if(uo == "true") return void (window.location.href = "/login?s=" + window.location.pathname.slice(1));
     } else { // user is logged in
         // Update user's pfp
         if(data.pfp && data.pfp.length > 0) pfp.src = data.pfp;
@@ -170,7 +170,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     }
     
     // Initialize service-worker for notifications if allowed
-    if (Notification.permission == "granted" && data.notifsub != "0") {
+    if(Notification.permission == "granted" && data.notifsub != "0") {
         try {
             // Deprecated
             navigator.serviceWorker.register(location.origin + "/sitejs/client-modules/service-worker.js", {
@@ -182,8 +182,8 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
     }
     
     // If loading normally and header.js does not have to wait for any loading scripts:
-    if (!loadingScripts) {
-        if (document.readyState == "complete" && !load_failed) {
+    if(!loadingScripts) {
+        if(document.readyState == "complete" && !load_failed) {
             // Load successful, remove tips and throbber
             clearInterval(tipper);
             loader.remove();
@@ -237,13 +237,13 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         resend_success.innerHTML = "";
         // Attempt sending another verification email
         let [success, data] = await UserGateway.editUser('resend-verif-email', '');
-        if (success) resend_success.innerHTML = "We sent you another verification email.";
+        if(success) resend_success.innerHTML = "We sent you another verification email.";
         // If the user happens to be already verified, reload the page
-        if (data == 'verified') location.reload();
+        if(data == 'verified') location.reload();
     });
     window.addEventListener('mousedown', () => {
         // Closes popups when user presses outside of them
-        if (e.target == verify_dialog) verify_dialog.close();
-        if (e.target == feedback_dialog) feedback_dialog.close();
+        if(e.target == verify_dialog) verify_dialog.close();
+        if(e.target == feedback_dialog) feedback_dialog.close();
     });
 })();
