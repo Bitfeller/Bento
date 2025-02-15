@@ -280,6 +280,9 @@ code {
 .right-header {
     float: right;
 }
+.left-header {
+    float: left;
+}
 .info-blank {
     color: color-mix(in srgb, var(--light-text) 90%, black 10%);
     font-style: italic;
