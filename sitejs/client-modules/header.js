@@ -241,7 +241,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         // If the user happens to be already verified, reload the page
         if(data == 'verified') location.reload();
     });
-    window.addEventListener('mousedown', () => {
+    window.addEventListener('mousedown', e => {
         // Closes popups when user presses outside of them
         if(e.target == verify_dialog) verify_dialog.close();
         if(e.target == feedback_dialog) feedback_dialog.close();
