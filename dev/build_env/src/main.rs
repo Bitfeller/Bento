@@ -1,7 +1,45 @@
+extern crate winapi;
+
+use libc;
+use std::mem;
+use winapi::ctypes::c_void;
+use winapi::um::handleapi::CloseHandle;
+use winapi::um::processthreadsapi::{GetCurrentProcess, OpenProcessToken};
+use winapi::um::securitybaseapi::GetTokenInformation;
+use winapi::um::winnt::{TokenElevation, HANDLE, TOKEN_ELEVATION, TOKEN_QUERY};
+
 use fs_extra::dir::{copy, CopyOptions};
 use std::os::windows::fs::symlink_dir;
 use std::{process::Command, path::{Path, PathBuf}};
 use std::fs;
+
+fn is_elevated() -> bool {
+
+    let mut handle: HANDLE = std::ptr::null_mut();
+    unsafe { OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &mut handle) };
+
+    let elevation = unsafe { libc::malloc(mem::size_of::<TOKEN_ELEVATION>()) as *mut c_void };
+    let size = std::mem::size_of::<TOKEN_ELEVATION>() as u32;
+    let mut ret_size = size;
+    unsafe {
+        GetTokenInformation(
+            handle,
+            TokenElevation,
+            elevation,
+            size as u32,
+            &mut ret_size,
+        )
+    };
+    let elevation_struct: TOKEN_ELEVATION = unsafe{ *(elevation as *mut TOKEN_ELEVATION)};
+
+    if !handle.is_null() {
+        unsafe {
+            CloseHandle(handle);
+        }
+    }
+
+    elevation_struct.TokenIsElevated == 1
+}
 
 fn copy_dir(src: &str, dest: &str) -> Result<(), Box<dyn std::error::Error>> {
     println!("Copying dir {} to {}", src, dest);
@@ -75,6 +113,11 @@ fn main() {
     println!("===========================================================");
     println!("Warning: while rebuilding local environment, it is best not to launch any XAMPP services or modify XAMPP.");
     println!("Find an issue? Open a PR/issue on GitHub.\n");
+
+    // Make sure we're running with administrative privileges.
+    if !is_elevated() {
+        panic!("This script won't work without admin privileges.\n");
+    }
 
     // Stop xampp
     let _ = stop_xampp(&xampp_path);

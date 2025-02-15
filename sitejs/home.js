@@ -326,7 +326,7 @@ function set(text) {
     const params = new URLSearchParams(window.location.search);
     if(params.get('new')) {
         // replace URL so that user doesn't accidentally re-activate tutorial later
-        // history.replaceState(null, "", "home"); // /home?new=1  ==>  /home
+        history.replaceState(null, "", "home"); // /home?new=1  ==>  /home
         // tutorial feature
         tutorialDialog.style.display = "block";
         tutorialBoxHolder.style.display = "block";
