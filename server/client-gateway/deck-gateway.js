@@ -64,7 +64,7 @@ let DeckGateway = {
     },
     add: async (name, deckpic, data, isPublic) => {
         if(!types("SsSb", name, deckpic, data, isPublic)) return [false, "invalid params"];
-        if(!await sameUser()) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "no session"];
         let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/deck/deck_new.php", {
             method: 'post',
@@ -116,7 +116,7 @@ let DeckGateway = {
     },
     modify: async (d_id, setting, val) => {
         if(!types("NSs", d_id, setting, val)) return [false, "invalid params"];
-        if(!await sameUser()) return [false, "invalid params"];
+        if(!await sameUser()) return [false, "no session"];
         let success = false, reason = 'fetch-err';
         await fetch(spath + "/php-db/deck/deck_edit.php", {
             method: 'post',
