@@ -383,9 +383,9 @@ function init_txt(card, n, q) {
             </div>
             <div class='card-vals-cont card-txt'></div>
             <button class='txt-add' tabindex="-1"><span class='material-symbols-outlined small-ico'>add</span> Add alt answer</button>
-            <button class='txt-rinver inactive' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Remove inverse</button>
             <button class='card-del' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Delete Card</button>
             <button class='txt-clone' tabindex="-1"><span class='material-symbols-outlined small-ico'>file_copy</span> Clone Card</button>
+            <button class='txt-rinver inactive' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Remove inverse</button>
             <button class='txt-inver quick-action' tabindex="-1">Build inverse <span class='material-symbols-outlined small-ico'>arrow_forward_ios</span></button>
         </div>
         <div class='inverse'>
@@ -592,6 +592,8 @@ function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
             if(q.dataset.cnt.length == 0 && cdata.op.length == 0) continue;
             if(card.getElementsByClassName('active').length > 0 && cdata.ans.length > 1) cdata.req = 1;
             if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(cdata.op.length < 2 && !bypass) return void err_assigner("Looks like a multiple choice card has less than 2 options. (Press again to bypass and skip configuring that card).");
+                else if(cdata.op.length < 2) continue;
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('txtbtn')) {
             let cdata = {
@@ -623,9 +625,12 @@ function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
                     if(a.dataset.cnt.length > 0 || is_temp) i_cdata.ans.push(a.dataset.cnt);
                 }
                 if(data[inv.getElementsByClassName('q')[0].dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
-                data[inv.getElementsByClassName('q')[0].dataset.cnt] = i_cdata;
+                if(i_cdata.ans.length < 1 && !bypass) return void err_assigner("Looks like a configured inverse card has no answers. (Press again to bypass and skip configuring the inverse card).");
+                else if(i_cdata.ans.length > 0) data[inv.getElementsByClassName('q')[0].dataset.cnt] = i_cdata;
             }
             if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(cdata.ans.length < 1 && !bypass) return void err_assigner("Looks like a text card has no answers. (Press again to bypass and skip configuring that card).");
+                else if(cdata.ans.length < 1) continue;
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('rankbtn')) {
             let cdata = {
@@ -642,6 +647,8 @@ function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
             }
             if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
             if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(cdata.ans.length < 2 && !bypass) return void err_assigner("Looks like a ranking card has less than 2 items. (Press again to bypass and skip configuring that card).");
+                else if(cdata.ans.length < 2) continue;
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('mtchbtn')) {
             let cdata = {
@@ -659,6 +666,8 @@ function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
             }
             if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
             if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(cdata.ans.length < 1 && !bypass) return void err_assigner("Looks like a matching card has 0 pairs (empty). (Press again to bypass and skip configuring that card).");
+                else if(cdata.ans.length < 2) continue;
             data[q.dataset.cnt] = cdata;
         }
     }
