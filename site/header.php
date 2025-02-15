@@ -9,9 +9,9 @@
         <span class="header-nav material-symbols-outlined right-header-ico" id="header:logout" title="Logout">logout</span>
     </div>
     <!-- this is loaded after everything to place it as far as possible to the left -->
-    <div class="left-header">
+    <!-- <div class="left-header">
         <span class="header-nav material-symbols-outlined" id="header:back" title="Black Button">keyboard_double_arrow_left</span>
-    </div>
+    </div> -->
 </header>
 <div class="loader">
     <div class="load-rot"></div>
