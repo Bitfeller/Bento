@@ -64,7 +64,7 @@
             <img src="../../img/soy-sauce.svg">
         </div>
         <div class="bento-box changelog">
-            <h2>v0.3.2 - What's new<span style="margin-left: 10px;">2/15/25</span></h2>
+            <h2>v0.4.0 - What's new<span style="margin-left: 10px;">2/15/25</span></h2>
             <p>- Better layout and design fixes.</p>
             <p>- Moderation, filtering, and account bug fixes</p>
             <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- All usernames and user-generated content are now filtered.</p>
@@ -95,7 +95,7 @@
         </section>
         <div id="header:version" class="version">
             <span class="new-version"></span>
-            <span class="version-number">v0.3.0</span>
+            <span class="version-number">v0.4.0</span>
         </div>
         <section class="tutorial-container">
             <div id="tutorial-background"></div>
