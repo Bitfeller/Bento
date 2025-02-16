@@ -16,6 +16,15 @@ const loadBtn = document.getElementById("loadBtn");
 const search = document.getElementById("search");
 const searchText = document.getElementById("searchText");
 
+async function typeset(node) {
+    if(Object.keys(MathJax.startup) == 0) 
+        await new Promise((res) => {
+            MathJax.startup.ready = () => res();
+        });
+    MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([node])).catch(e => console.warn('math formatting failed; reason:', e.message));
+    return MathJax.startup.promise;
+}
+
 function box(idx, inReviews = false, deckName, deckpic, author, ofAddedDecks = false) {
     let a = document.createElement("div");
     a.className = "ingredient-box";
@@ -198,9 +207,32 @@ async function preview(_this, isAdded) {
     let answer_list = "";
     if(!data.contnt) answer_list = "[This deck appears to be corrupt...]";
     else {
-        let contnt = data.contnt;
-        let keys = Object.keys(contnt);
-        for(let i = 0; i < keys.length; i++) answer_list += `<p><b>Q |  ${keys[i]}</b></p>${contnt[keys[i]].type == "mc" ? "<p>" + contnt[keys[i]].op.join(", ") + "</p>" : ""}<p>A | ${(contnt[keys[i]].type == "mc" ? contnt[keys[i]].ans.map(x => contnt[keys[i]].op[x]) : contnt[keys[i]].ans).join(", ")}</p><div class='deck-divider' style='margin: 7px 3px; background-color: rgb(230, 230, 230); height: 2px;'></div>`;
+        let content = data.contnt;
+        let keys = Object.keys(content);
+        for(let i = 0; i < keys.length; i++) {
+            const question = keys[i];
+            const questionData = content[keys[i]];
+
+            answer_list += `
+                <div class="question-box">
+                   <p><b class="mathJax">Q | ${question}</b></p>
+                    ${
+                        content[keys[i]].type === "mc"
+                            ? `<p>O | ${content[keys[i]].op
+                                .map(x => `<span class="mathJax">${x}</span>`).join(" | ")}</p>`
+                            : ""
+                    }
+                   <p class="mathJax">A | 
+                   ${(
+                        content[keys[i]].type === "mc"
+                            ? content[keys[i]].ans.map(x => content[keys[i]].op[x])
+                            : content[keys[i]].ans
+                    ).join(" | ")}
+                    </p>
+                </div>
+            `;
+
+        };
     }
     previewDialog.innerHTML = `
         <div class='title-bar'>
@@ -222,6 +254,7 @@ async function preview(_this, isAdded) {
             </div>
         </div>
     `;
+    Array(previewDialog.getElementsByClassName("mathJax")).map(e => typeset(e));
     previewDialog.getElementsByClassName("closeBtns")[0].addEventListener("mousedown", () => previewDialog.close());
     if(user.username == deck.owner) {    
         previewDialog.getElementsByClassName("export-btn")[0].addEventListener("mousedown", () => {

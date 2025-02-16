@@ -1,7 +1,9 @@
 [package]
-name = "rebuild"
+name = "build_env"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies]
+[target.'cfg(windows)'.dependencies]
 fs_extra = "1.3"
+winapi = {version = "0.3.8", features = ["winuser", "handleapi", "processthreadsapi", "securitybaseapi"]}
+libc = "0.2.169"

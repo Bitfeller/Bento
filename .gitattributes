@@ -1,6 +1,9 @@
-linguist-language=Other
+* linguist-vendored = false
+*.js linguist-vendored = false
 
-*.roff linguist-vendored
-*.json linguist-vendored
-*.md linguist-vendored
-phpmailer.lang-*.php linguist-vendored
+# linguist-language=Other
+
+# *.roff linguist-vendored
+# *.json linguist-vendored
+# *.md linguist-vendored
+# phpmailer.lang-*.php linguist-vendored

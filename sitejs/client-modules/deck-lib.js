@@ -354,7 +354,7 @@ function init_mc(card, n, q) {
     let allcorr = card.getElementsByClassName('mc-allcorr')[0];
     allcorr.style.display = "none";
     // Cloner
-    card.getElementsByClassName('mc-clone')[0].addEventListener('mousedown', () => cloner(card, n));
+    card.getElementsByClassName('mc-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card) + 1));
     // Local generator
     let generator = t => generator_mc(cardmc, card, allcorr, t);
     addbtn.addEventListener('mousedown', () => generator(false));
@@ -383,9 +383,9 @@ function init_txt(card, n, q) {
             </div>
             <div class='card-vals-cont card-txt'></div>
             <button class='txt-add' tabindex="-1"><span class='material-symbols-outlined small-ico'>add</span> Add alt answer</button>
-            <button class='txt-rinver inactive' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Remove inverse</button>
             <button class='card-del' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Delete Card</button>
             <button class='txt-clone' tabindex="-1"><span class='material-symbols-outlined small-ico'>file_copy</span> Clone Card</button>
+            <button class='txt-rinver inactive' tabindex="-1"><span class='material-symbols-outlined small-ico'>close</span> Remove inverse</button>
             <button class='txt-inver quick-action' tabindex="-1">Build inverse <span class='material-symbols-outlined small-ico'>arrow_forward_ios</span></button>
         </div>
         <div class='inverse'>
@@ -421,7 +421,7 @@ function init_txt(card, n, q) {
     init_div(inverse.getElementsByClassName('q')[0]);
 
     // Cloner
-    card.getElementsByClassName('txt-clone')[0].addEventListener('mousedown', () => cloner(card, n));
+    card.getElementsByClassName('txt-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card) + 1));
     
     // Generator
     let generator = (r, p, t) => generator_txt(card, i_anslist, r, p, t);
@@ -478,7 +478,7 @@ function init_ranking(card, n, q) {
     let ranklist = card.getElementsByClassName('ranking-list')[0];
     let addbtn = card.getElementsByClassName('rank-add')[0];
     // Cloner
-    card.getElementsByClassName('rank-clone')[0].addEventListener('mousedown', () => cloner(card, n));
+    card.getElementsByClassName('rank-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card) + 1));
     // Local generator
     let generator = () => generator_rank(card, ranklist);
     addbtn.addEventListener('mousedown', generator);
@@ -511,7 +511,7 @@ function init_mtch(card, n, q) {
     let pairlist = card.getElementsByClassName('card-mtch')[0];
     let addbtn = card.getElementsByClassName('mtch-add')[0];
     // Cloner
-    card.getElementsByClassName('mtch-clone')[0].addEventListener('mousedown', () => cloner(card, n));
+    card.getElementsByClassName('mtch-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card) + 1));
     // Local generator
     let generator = (r) => generator_mtch(card, pairlist, r);
     addbtn.addEventListener('mousedown', () => generator(true));
@@ -562,6 +562,26 @@ resetpic.addEventListener('mousedown', () => {
 // --------------------------------------------------- \\
 
 
+function isEmpty(contnt) {
+    // Checks if there is only card and checks to see if both the question and the options/answers are empty.
+    if(Object.keys(contnt).length > 1) return false;
+    let keys = Object.keys(contnt);
+    let card = contnt[keys[0]];
+    if(card.type == 'mc') {
+        if(keys[0].trim() == '' && card.op.filter(op => op.trim() != '').length == 0)
+            return true;
+    } else if(card.type == 'txt') {
+        if(keys[0].trim() == '' && card.ans.filter(ans => ans.trim() != '').length == 0)
+            return true;
+    } else if(card.type == 'ranking') {
+        if(keys[0].trim() == '' && card.ans.filter(ans => ans.trim() != '').length == 0)
+            return true;
+    } else if(card.type == 'matching') {
+        if(keys[0].trim() == '' && card.ans.filter(op => op.filter(x => x.trim() != '').length != 0).length == 0)
+            return true;
+    }
+    return false;
+}
 function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
     if(!user) return void err_assigner("Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)");
     if(name.value == '' && !is_temp) return void err_assigner("You haven't named your deck yet.");
@@ -592,6 +612,8 @@ function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
             if(q.dataset.cnt.length == 0 && cdata.op.length == 0) continue;
             if(card.getElementsByClassName('active').length > 0 && cdata.ans.length > 1) cdata.req = 1;
             if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(cdata.op.length < 2 && !bypass) return void err_assigner("Looks like a multiple choice card has less than 2 options. (Press again to bypass and skip configuring that card).");
+                else if(cdata.op.length < 2) continue;
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('txtbtn')) {
             let cdata = {
@@ -623,9 +645,12 @@ function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
                     if(a.dataset.cnt.length > 0 || is_temp) i_cdata.ans.push(a.dataset.cnt);
                 }
                 if(data[inv.getElementsByClassName('q')[0].dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
-                data[inv.getElementsByClassName('q')[0].dataset.cnt] = i_cdata;
+                if(i_cdata.ans.length < 1 && !bypass) return void err_assigner("Looks like a configured inverse card has no answers. (Press again to bypass and skip configuring the inverse card).");
+                else if(i_cdata.ans.length > 0) data[inv.getElementsByClassName('q')[0].dataset.cnt] = i_cdata;
             }
             if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(cdata.ans.length < 1 && !bypass) return void err_assigner("Looks like a text card has no answers. (Press again to bypass and skip configuring that card).");
+                else if(cdata.ans.length < 1) continue;
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('rankbtn')) {
             let cdata = {
@@ -642,6 +667,8 @@ function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
             }
             if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
             if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(cdata.ans.length < 2 && !bypass) return void err_assigner("Looks like a ranking card has less than 2 items. (Press again to bypass and skip configuring that card).");
+                else if(cdata.ans.length < 2) continue;
             data[q.dataset.cnt] = cdata;
         } else if(cn.includes('mtchbtn')) {
             let cdata = {
@@ -659,6 +686,8 @@ function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
             }
             if(q.dataset.cnt.length == 0 && cdata.ans.length == 0) continue;
             if(data[q.dataset.cnt] && !is_temp) return void err_assigner("We currently don't support two cards with the exact same question. (This includes inverse cards.)");
+            if(cdata.ans.length < 1 && !bypass) return void err_assigner("Looks like a matching card has 0 pairs (empty). (Press again to bypass and skip configuring that card).");
+                else if(cdata.ans.length < 2) continue;
             data[q.dataset.cnt] = cdata;
         }
     }
@@ -666,6 +695,7 @@ function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
         desc: description.value,
         contnt: data
     };
+    if(isEmpty(data.contnt)) data.contnt = {};
     return [name.value, deckpic, data, isPublic.checked];
 }
 function generateCard(contnt, d_keys, i, n) {
@@ -735,7 +765,7 @@ function generateCard(contnt, d_keys, i, n) {
 }
 function appendToCards(contnt) {
     // Check if we only have one card first, and remove if so (cause it's annoying)
-    if(cards.length == 1) cards.splice(0, 1)[0].remove();
+    if(cards.length == 1 && Object.keys(toDeck(() => {}, true, true)[2].contnt).length == 0) cards.splice(0, 1)[0].remove();
     let d_keys = Object.keys(contnt);
     for(let i = 0; i < d_keys.length; i++)
         if(contnt[d_keys[i]].invfrom) {
@@ -763,18 +793,15 @@ const b_replacename = document.getElementById("BI-replace-name");
 const b_replacedesc = document.getElementById("BI-replace-desc");
 const b_file = document.getElementById("BI-file");
 const b_createbtn = document.getElementById("BI-createBtn");
-const b_err = document.getElementById("BI-err");
 
 const q_importbtn = document.getElementById("quizlet-import-btn");
 const q_txt = document.getElementById("QI-importText");
 const q_createbtn = document.getElementById("QI-createBtn");
 const q_reverse = document.getElementById("QI-reverse");
-const q_err = document.getElementById("QI-err");
 
 const g_importbtn = document.getElementById("gimkit-import-btn");
 const g_txt = document.getElementById("GK-importText");
 const g_createbtn = document.getElementById("GK-createBtn");
-const g_err = document.getElementById("GK-err");
 
 const import_modal = document.getElementById('importing-modal');
 const i_import = document.getElementById('i-import');
@@ -800,11 +827,29 @@ function open_import_modal(contnt) {
             let carddiv = document.createElement("div");
             carddiv.className = "import-card";
             carddiv.innerHTML = `
-                <div class='import-q'>${q}</div>
-                <div class='import-a'>${card.type == "mc" ? card.op.join(", ") : card.ans}</div>
-                ${card.type == "mc" ? "<div class='import-ans'>" + card.ans.map((t) => card.op[t]).join(', ') + "</div>" : ''}
-                <input type='checkbox' class='import-sel' data-q='${q}' checked>
+                <div class="question-box">
+                    <input type="checkbox" name="infinite_mode" class="import-question-checkbox" data-q="${q}" checked>
+                    <p><b class="mathJax">Q | ${q}</b></p>
+                        ${
+                            card.type === "mc"
+                                ? `<p>O | ${card.op
+                                    .map(x => `<span class="mathJax">${x}</span>`).join(", ")}</p>`
+                                : ""
+                        }
+                    <p class="mathJax">A | 
+                        ${(
+                            card.type === "mc"
+                                ? card.ans.map(x => card.op[x])
+                                : card.ans
+                        ).join(", ")}
+                    </p>
+                </div>
             `;
+            carddiv.addEventListener("mousedown", (e) => {
+                let checkbox = carddiv.getElementsByClassName("import-question-checkbox")[0];
+                if (e.target != checkbox) checkbox.checked = !checkbox.checked;
+            })
+            Array(carddiv.getElementsByClassName("mathJax")).map(e => typeset(e));
             import_q.appendChild(carddiv);
         }
         temp_contnt = contnt;
@@ -813,7 +858,7 @@ function open_import_modal(contnt) {
     }
 }
 function continue_import_modal() {
-    let boxes = document.getElementsByClassName('import-sel');
+    let boxes = document.getElementsByClassName('import-question-checkbox');
     if(boxes.length == 0) return close_import_modal();
     let data = {};
     for(let i = 0; i < boxes.length; i++)
@@ -852,21 +897,21 @@ b_file.addEventListener('change', () => {
         b_createbtn.disabled = true;
 })
 b_createbtn.addEventListener("mousedown", () => {
-    if(!DOMPurify) return void (b_err.innerHTML = "The system is loading a module. Please try again later. (code: fetching_dompurify?)");
+    if(!DOMPurify) return window.SHOW_ERROR("The system is loading a module. Please try again later. (code: fetching_dompurify?)");
     let dp = DOMPurify;
     let files = b_file.files;
     if(files && files[0]) {
         let file = files[0];
         if(file.type !== "application/json") {
             console.log('failed - file type; ' + file.type);
-            return void (b_err.innerHTML = "Bento expects a JSON file - the file type we export and support.");
+            return window.SHOW_ERROR("Bento expects a JSON file - the file type we export and support.");
         }
         let reader = new FileReader();
         reader.onload = e => {
             let content = e.target.result;
             try {
                 let main = JSON.parse(content);
-                if(main.name == undefined || main.desc == undefined || main.contnt == undefined) return void (b_err.innerHTML = "This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
+                if(main.name == undefined || main.desc == undefined || main.contnt == undefined) return window.SHOW_ERROR("This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
                 let val_name = window.lib.dpwrapper(dp, main.name);
                 let val_desc = window.lib.dpwrapper(dp, main.desc);
                 let val_contnt = window.lib.dpwrapper(dp, main.contnt);
@@ -877,7 +922,7 @@ b_createbtn.addEventListener("mousedown", () => {
             } catch(e) {
                 safety_check();
                 console.log("failed; reason:", e);
-                return void (b_err.innerHTML = "This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
+                return window.SHOW_ERROR("This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
             }
             safety_check();
         }
@@ -885,19 +930,19 @@ b_createbtn.addEventListener("mousedown", () => {
     }
 });
 q_createbtn.addEventListener("mousedown", () => {
-    if(!DOMPurify) return void (b_err.innerHTML = "The system is loading a module. Please try again later. (code: fetching_dompurify?)");
+    if(!DOMPurify) return window.SHOW_ERROR("The system is loading a module. Please try again later. (code: fetching_dompurify?)");
     let dp = DOMPurify;
     let importText = q_txt.value;
     let format = importText.split("^");
     let contnt = {};
-    if(format.length == 1) return void (q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
+    if(format.length == 1) return window.SHOW_ERROR("This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
     format.pop();
     let isValid = true;
     format.forEach(card => {
         if(!isValid) return;
         const [q, ans] = card.split(">");
         if(ans == undefined) {
-            q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.";
+            window.SHOW_ERROR("This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
             isValid = false;
             return;
         }
@@ -909,13 +954,13 @@ q_createbtn.addEventListener("mousedown", () => {
         open_import_modal(contnt);
     } catch(_) {
         safety_check();
-        return void (q_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
+        return window.SHOW_ERROR("This export doesn't seem to be formatted properly, or isn't a valid Quizlet export.");
     }
     safety_check();
     q_modal.style.display = "none";
 });
 g_createbtn.addEventListener("mousedown", () => {
-    if(!DOMPurify) return void (b_err.innerHTML = "The system is loading a module. Please try again later. (code: fetching_dompurify?)");
+    if(!DOMPurify) return window.SHOW_ERROR("The system is loading a module. Please try again later. (code: fetching_dompurify?)");
     let dp = DOMPurify;
     let importText = g_txt.value;
     let format = importText.split("\n");
@@ -925,7 +970,7 @@ g_createbtn.addEventListener("mousedown", () => {
         if(!isValid) return;
         const [q, ans] = card.split("\t");
         if(ans == undefined) {
-            g_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.";
+            window.SHOW_ERROR("This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.");
             isValid = false;
             return;
         }
@@ -939,7 +984,7 @@ g_createbtn.addEventListener("mousedown", () => {
         open_import_modal(contnt);
     } catch(_) {
         safety_check();
-        return void (g_err.innerHTML = "This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.");
+        return window.SHOW_ERROR("This export doesn't seem to be formatted properly, or isn't a valid Gimkit export.");
     }
     safety_check();
     g_modal.style.display = "none";
