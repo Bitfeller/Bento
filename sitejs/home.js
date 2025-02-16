@@ -27,6 +27,7 @@ const INFO_TERM_LIMIT = 10;
 const TYPEWRITE_SPEED = 1000 / 60; // 1000 / (char per second)
 let typewriteInterval, typewriteCurr = 0, twElements = [t_dialogmain], t_newline = false;
 let t_btnOverride = false;
+let currentDeckView;
 
 const tutorial = [
     {
@@ -129,6 +130,7 @@ const tutorial = [
 ];
 
 function show(deck) {
+    currentDeckView = deck.name;
     deckViewer.style.display = 'block';
     let review = window.lib.recur_decode(user.userdata.reviews[deck.id]);
     let keys = Object.keys(review);
@@ -257,7 +259,7 @@ function update(search) {
             div.addEventListener('mouseenter', () => show(decks[i]));
             div.addEventListener('mouseleave', () => {
                 setTimeout(()=> {
-                    if(!deckViewer.matches(":hover")) hide();
+                    if(!deckViewer.matches(":hover") && currentDeckView == decks[i].name) hide();
                 }, 100);
             });
             deckViewer.addEventListener('mouseleave', hide);
