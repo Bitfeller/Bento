@@ -13,22 +13,34 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-#    - name: Minify
- #     run: |
-#         find . -name "*.html" -exec npx html-minifier-terser --collapse-whitespace --remove-comments --minify-js true --minify-css true --output {} {} \;
- #        find . -name "*.css" -exec npx clean-css-cli -o {} {} \;
- #        find . -name "*.js" -exec npx terser -o {} -- {} \;
+    - name: Minify
+      run: |
+        find ./site -name "*.php" -exec npx html-minifier-terser --collapse-whitespace --remove-comments --minify-js true --minify-css true --output {} {} \;
+        find ./css -name "*.css" -exec npx clean-css-cli -o {} {} \;
+        find ./sitejs -name "*.js" -exec npx terser -o {} -- {} \;
+        find ./server/client-gateway -name "*.js" -exec npx terser -o {} -- {} \;
 
     - name: Deploy via SSH
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        HOST_IP: ${{ secrets.HOST_IP }}
+        HOST_PORT: ${{ secrets.HOST_PORT }}
       run: |
         mkdir -p ~/.ssh
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh -o StrictHostKeyChecking=no orange@174.63.8.101 -p 7797 'bash -s' << 'EOF'
-        # Commands to deploy your website
+        
+        ssh -o StrictHostKeyChecking=no orange@"$HOST_IP" -p "$HOST_PORT" 'bash -s' << 'EOF'
+        
+        # [[ Apache server ]]
         cd /home/orange/
-        ./server_update.sh
-        # Any other deployment commands
+        ./update_bento.sh
+        
+        cd /var/www/bento.valleynas.uk
+
+        chown orange:fruit -R /var/www/bento.valleynas.uk
+        chmod 770 -R /var/www/bento.valleynas.uk
+        
+        exit
+        rm ~/.ssh/id_rsa
         EOF

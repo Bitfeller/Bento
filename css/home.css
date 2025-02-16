@@ -11,6 +11,27 @@
     width: calc(100% - 20px);
     margin: 20px auto;
 }
+.deck-container-mastered {
+    display: inline;
+}
+.green-box, .yellow-box, .red-box {
+    width: 25px;
+    height: 10px;
+    display: inline-block;
+}
+.green-box {
+    background-color: var(--accent-1);
+}
+.yellow-box {
+    background-color: var(--select-blue);
+}
+.red-box {
+    background-color: var(--danger-red);
+}
+.dc-masterbox {
+    margin-left: 5px;
+    margin-right: 100px;
+}
 .home-grid > div {
     & svg {
         max-width: 300px;
@@ -105,18 +126,13 @@
     grid-column: span 2;
     gap: 10px;
 }
-.deck-viewer {
-    display: none;
-    position: absolute;
-    left: calc(10% - 5px);
-    top: 65px;
-    width: 70%;
-    height: calc(100vh - 80px);
-}
-.graph-container {
+.changelog {
+    display: block !important;
     grid-column: span 3;
+    height: 25vh;
+    overflow: auto;
 }
-.review-sushi, .interactive-sushi {
+.review-sushi, .interactive-sushi, .kitchen-sushi, .create-sushi {
     cursor: pointer;
     z-index: 2;
     animation-name: sushi-shine;
@@ -137,6 +153,73 @@
 }
 #search-reviews {
     font-size: 12pt;
+}
+#tutorial-background, #tutorial-box-holder {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+#tutorial-background {
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.5);
+}
+#tutorial-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 102 !important;
+    background: transparent;
+}
+#tutorial-box-holder {
+    z-index: 105;
+    background: transparent;
+}
+.lit-up {
+    z-index: 101 !important;
+    position: relative;
+}
+#tutorial-box-main {
+    background-color: var(--dark-gray);
+    padding: 2%;
+    border-radius: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 102;
+    min-width: 50vw;
+}
+#continueBtn, #skipbtn {
+    margin-top: 5px;
+    font-size: 14px;
+}
+#skipBtn {
+    background-color: var(--danger-red);
+}
+.deck-container-mastered {
+    margin-left: 2.5px;
+    padding: 10px;
+}
+.terms-display-container {
+    background-color: var(--gray);
+    margin-top: 10px;
+    margin-left: 2.5px;
+    padding: 10px;
+    overflow: scroll;
+    max-height: 28vw;
+    border-radius: 5px;
+    & li {
+        margin-left: 20px;
+    };
+}
+.answer-preview {
+    margin-left: 10px;
 }
 @keyframes sushi-shine {
     50% {
@@ -159,7 +242,7 @@
             display: none;
         }
     }
-    .graph-container {
+    .changelog {
         grid-column: span 4;
     }
     .review-name {
@@ -196,4 +279,20 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+@keyframes move-tutorial-box-down {
+    0% {
+        top: 50%;
+    }
+    100% {
+        top: 70%;
+    }
+}
+@keyframes move-tutorial-box-up {
+    0% {
+        top: 70%;
+    }
+    100% {
+        top: 50%;
+    }
 }
