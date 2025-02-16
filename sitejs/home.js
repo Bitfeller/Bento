@@ -16,8 +16,6 @@ const reviewSushi = document.getElementsByClassName('review-sushi')[0];
 const kitchenSushi = document.getElementsByClassName('kitchen-sushi')[0];
 const createSushi = document.getElementsByClassName('create-sushi')[0];
 
-const version = document.getElementById('header:version');
-const version_info = document.getElementById('header:version_info');
 const feedback_dialog = document.getElementById("header:feedback_dialog");
 
 let user;
@@ -129,6 +127,14 @@ const tutorial = [
     }
 ];
 
+async function typeset(node) {
+    if(Object.keys(MathJax.startup) == 0) 
+        await new Promise((res) => {
+            MathJax.startup.ready = () => res();
+        });
+    MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([node])).catch(e => console.warn('math formatting failed; reason:', e.message));
+    return MathJax.startup.promise;
+}
 function show(deck) {
     currentDeckView = deck.name;
     deckViewer.style.display = 'block';
@@ -226,6 +232,7 @@ function show(deck) {
             </div>
         </div>
     `;
+    typeset(deckViewer);
 }
 function hide() {
     deckViewer.style.display = 'none';
@@ -380,12 +387,8 @@ function set(text) {
 
     window.LOADED();
 })();
-version.addEventListener('mousedown', () => version_info.showModal());
 window.addEventListener('mousedown', e => {
-    if(e.target == feedback_dialog || e.target == version_info) {
-        feedback_dialog.close();
-        version_info.close();
-    }
+    if(e.target == feedback_dialog) feedback_dialog.close();
     if(typewriteInterval && !t_btnOverride)
         _finish();
     t_btnOverride = false;
