@@ -9,13 +9,12 @@ const ispub = document.getElementById("isPublic");
 
 const cardContain = document.getElementById("cardcontain");
 const createBtn = document.getElementById("create");
-const errmsg = document.getElementById("create-err");
 const draftdecks_history = document.getElementById("draftdecks-history");
 
 let lastTick = 0;
 
 createBtn.addEventListener('mousedown', async () => {
-    let res = DeckBind.toDeck(v => errmsg.innerHTML = v, false, Date.now() - lastTick < 5000);
+    let res = DeckBind.toDeck(v => window.SHOW_ERROR(v), false, Date.now() - lastTick < 5000);
     lastTick = Date.now();
     if(!res) return;
     let [name, deckpic, data, isPublic] = res; // unpack
@@ -23,26 +22,26 @@ createBtn.addEventListener('mousedown', async () => {
     if(!success) 
         switch(reason) {
             case "no session":
-                errmsg.innerHTML = "Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)";
+                window.SHOW_ERROR("Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)");
             break;
             case "invalid name":
-                errmsg.innerHTML = "That name has invalid characters or is empty. (Valid characters include dashes, a-z, A-Z, and 0-9)";
+                window.SHOW_ERROR("That name has invalid characters or is empty. (Valid characters include dashes, a-z, A-Z, and 0-9)");
             break;
             case "flagged":
-                errmsg.innerHTML = "Your deck was flagged for inappropriate content.";
+                window.SHOW_ERROR("Your deck was flagged for inappropriate content.");
             break;
             case "name exists":
-                errmsg.innerHTML = "You've already created another deck with that name";
+                window.SHOW_ERROR("You've already created another deck with that name");
             break;
             case "size limit":
-                errmsg.innerHTML = "Looks like the deck's image exceeds the size limit of 2 MB.";
+                window.SHOW_ERROR("Looks like the deck's image exceeds the size limit of 2 MB.");
             break;
             case "same problem":
-                errmsg.innerHTML = "It seems like two or more cards in your deck have the exact same question. (We currently don't support duplicate questions.)";
+                window.SHOW_ERROR("It seems like two or more cards in your deck have the exact same question. (We currently don't support duplicate questions.)");
             break;
             default:
                 console.log(reason);
-                errmsg.innerHTML = "Looks like there's an issue on our side. Try again later.";
+                window.SHOW_ERROR("Looks like there's an issue on our side. Try again later.");
             break;
         }
     else window.location.href = "/home?l=cd&s=1";
@@ -60,8 +59,11 @@ createBtn.addEventListener('mousedown', async () => {
         let deck = user.userdata.draftdecks[keys[i]];
         let div = document.createElement("div");
         div.className = "draftdeck";
+        let month = "0".repeat(2 - String(date.getMonth()).length) + date.getMonth();
+        let day = "0".repeat(2 - String(date.getDate()).length) + date.getDate();
+        let min = "0".repeat(2 - String(date.getMinutes()).length) + date.getMinutes();
         div.innerHTML = `
-            <p>${date.toLocaleString('en-us', { weekday: 'short' })} ${date.getMonth()}/${date.getDate()}/${date.getFullYear().toString().slice(2)}, ${date.getHours()}:${date.getMinutes()}</p>
+            <p>${date.toLocaleString('en-us', { weekday: 'short' })} ${month}/${day}/${date.getFullYear().toString().slice(2)}, ${date.getHours()}:${min}</p>
             <div><button class='show'><span class="material-symbols-outlined">resume</span></button>
             <button class='del'><span class="material-symbols-outlined">delete</span></button></div>`;
         draftdecks_history.appendChild(div);

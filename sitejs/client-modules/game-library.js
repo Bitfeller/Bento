@@ -46,6 +46,25 @@ function filter_outliers(arr) {
     }
     return arr;
 }
+function getDist(a, b) {
+    const matrix = [];
+    for (let i = 0; i <= b.length; i++)
+        matrix[i] = [i];
+    for (let j = 0; j <= a.length; j++)
+        matrix[0][j] = j;
+    for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+            if (b.charAt(i - 1) === a.charAt(j - 1))
+                matrix[i][j] = matrix[i - 1][j - 1];
+            else
+                matrix[i][j] = Math.min(
+                    matrix[i - 1][j - 1] + 1,
+                    Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
+                );
+        }
+    }
+    return matrix[b.length][a.length];
+}
 
 // -------------------------------------------------------- \\
 
@@ -258,6 +277,27 @@ function check(answer) {
             console.error("can't check mtch; use game.js");
     }
 }
+function lazyCheck(answer) {
+    if(!active) return { dead: true };
+    let problem = gameData[currSet[card]];
+    switch(problem.type) {
+        case "txt":
+            for(let i = 0; i < problem.ans.length; i++) {
+                let realAns = window.lib.decode(problem.ans[i]).toLowerCase().replaceAll(/\s/g, "");
+                let userAns = answer.toLowerCase().replaceAll(/\s/g, "");
+                if(userAns == realAns) return true;
+                if(getDist(userAns, realAns) <= 2) return true;
+            }
+            return false;
+        default:
+            return check(answer);
+    }
+
+}
+function isLazyCorrect(answer) {
+    if(!active) return { dead: true };
+    return updateLastCorrect(lazyCheck(answer));  
+}
 function isCorrect(answer) {
     if(!active) return { dead: true };
     return updateLastCorrect(check(answer));
@@ -303,7 +343,9 @@ function incorrect() {
     return !correct();
 }
 
+
 // -------------------------------------------------------- \\
+
 
 const Game = {
     init,
@@ -312,6 +354,7 @@ const Game = {
     fetchProblem,
     getProgress,
     isCorrect,
+    isLazyCorrect,
     markCorrect,
     registerTick,
     getLastCorrect,

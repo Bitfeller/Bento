@@ -3,14 +3,14 @@ import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 
 const deckContainer = document.getElementsByClassName("deck-container")[0];
 const reviewBtn = document.getElementById("reviewBtn");
-const errmsg = document.getElementById("errmsg");
 
 const o_mode = document.getElementsByClassName("mode");
 const o_repeat = document.getElementsByClassName("repeat");
 const o_shuffle = document.getElementsByClassName("shuffle");
 const o_infinite_mode = document.getElementsByClassName("infinite-mode")[0];
 const infinite_mode_text = document.getElementsByClassName("infinite_mode_text")[0];
-const o_require_correct = document.getElementsByClassName('require_correct')[0];
+const o_require_correct = document.getElementsByClassName("require_correct")[0];
+const o_lazy_check = document.getElementsByClassName("lazy_check")[0];
 const inertiaButton = document.getElementById("inertia-btn");
 
 const deckSelect = document.getElementById("deckSelectAll");
@@ -124,13 +124,14 @@ function updateDecks(decks, counts) {
             let checkbox = item.getElementsByClassName("deckCheck")[0];
             if (checkbox.checked) selectedDecks.push(parseInt(idx));
         }
-        if (selectedDecks.length == 0) return void (errmsg.innerHTML = "Please select at least one deck to review.");
+        if (selectedDecks.length == 0) return window.SHOW_ERROR("Please select at least one deck to review.");
         // Set options
         let mode = o_mode[0].checked ? 1 : 0,
             repeat,
             shuffle,
             infinite_mode = o_infinite_mode.checked ? 1 : 0,
-            require_correct = o_require_correct.checked ? 1 : 0;
+            require_correct = o_require_correct.checked ? 1 : 0,
+            lazy_check = o_lazy_check.checked ? 1 : 0;
         for (let i = 0; i < o_repeat.length; i++)
             if (o_repeat[i].checked == true) repeat = i + 1;
         for (let i = 0; i < o_shuffle.length; i++)
@@ -141,7 +142,8 @@ function updateDecks(decks, counts) {
             "&r=" + repeat +
             "&sh=" + shuffle +
             "&i=" + infinite_mode +
-            "&rc=" + require_correct;
+            "&rc=" + require_correct +
+            "&lc=" + lazy_check;
     });
     deckSelect.addEventListener("mousedown", () => {
         let allChecked = true;
@@ -167,7 +169,7 @@ function updateDecks(decks, counts) {
             let checkbox = item.getElementsByClassName("deckCheck")[0];
             if (checkbox.checked) selectedDecks.push(parseInt(idx));
         }
-        if (selectedDecks.length == 0) return void (errmsg.innerHTML = "Please select at least one deck to review.");
+        if (selectedDecks.length == 0) return window.SHOW_ERROR("Please select at least one deck to review.");
         for (let i = 0; i < o_shuffle.length; i++)
             if (o_shuffle[i].checked == true) shuffle = i + 1;
         window.location.href = '/learn/inertia?ds=' + selectedDecks.join(",") + '&m=' + (o_mode[0].checked ? 1 : 0) + '&s=' + shuffle;
