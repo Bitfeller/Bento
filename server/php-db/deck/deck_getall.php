@@ -34,6 +34,10 @@
         $raw_res = $stmt->get_result();
         $decks = [];
         while($row = $raw_res->fetch_assoc()) {
+            // Unload viewdata and only get views
+            $views = sizeof(json_decode($row['viewdata'], true));
+            $row['views'] = $views;
+            
             unset($row['data']);
             unset($row['viewdata']);
             $decks[] = $row;

@@ -6,14 +6,12 @@ const isPublic = document.getElementById("isPublic");
 const description = document.getElementById("description");
 const cardContain = document.getElementById("cardcontain");
 const createBtn = document.getElementById("create");
-const errmsg = document.getElementById("edit-err");
 const picimg = document.getElementById("deckpic");
 // Deck
-let deck;
-let last = 0;
+let deck, last = 0;
 
 createBtn.addEventListener('mousedown', async () => {
-    let res = DeckBind.toDeck((v) => errmsg.innerHTML = v, false, (Date.now() - last) < 5000);
+    let res = DeckBind.toDeck((v) => window.SHOW_ERROR(v), false, (Date.now() - last) < 5000);
     last = Date.now();
     if(!res) return;
     let [name, deckpic, data, isPublic] = res; // unpack
@@ -24,17 +22,20 @@ createBtn.addEventListener('mousedown', async () => {
     if(!s1) {
         switch(res1) {
             case "no session":
-                errmsg.innerHTML = "Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)";
+                window.SHOW_ERROR("Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)");
             break;
             case "invalid name":
-                errmsg.innerHTML = "That name has invalid characters or is empty. (Valid characters include dashes, a-z, A-Z, and 0-9)";
+                window.SHOW_ERROR("That name has invalid characters or is empty. (Valid characters include dashes, a-z, A-Z, and 0-9)");
+            break;
+            case "flagged":
+                window.SHOW_ERROR("Your deck was flagged for inappropriate content.");
             break;
             case "name taken":
-                errmsg.innerHTML = "You've already created another deck with that name";
+                window.SHOW_ERROR("You've already created another deck with that name");
             break;
             default:
                 console.log(res1);
-                errmsg.innerHTML = "Looks like there's an issue on our side. Try again later.";
+                window.SHOW_ERROR("Looks like there's an issue on our side. Try again later.");
             break;
         }
         return;
@@ -42,28 +43,31 @@ createBtn.addEventListener('mousedown', async () => {
     if(!s2) {
         switch(res2) {
             case "size limit":
-                errmsg.innerHTML = "Looks like the deck's image exceeds the size limit of 2 MB.";
+                window.SHOW_ERROR("Looks like the deck's image exceeds the size limit of 2 MB.");
             break;
             default:
                 console.log(res2);
-                errmsg.innerHTML = "Looks like there's an issue on our side. Try again later.";
+                window.SHOW_ERROR("Looks like there's an issue on our side. Try again later.");
             break;
         }
         return;
     }
     if(!s3) {
         console.log(res3);
-        errmsg.innerHTML = "Looks like there's an issue on our side. Try again later.";
+        window.SHOW_ERROR("Looks like there's an issue on our side. Try again later.");
         return;
     }
     if(!s4) {
         switch(res4) {
             case "same problem":
-                errmsg.innerHTML = "It seems like two or more cards in your deck have the exact same question. (We currently don't support duplicate questions.)";
+                window.SHOW_ERROR("It seems like two or more cards in your deck have the exact same question. (We currently don't support duplicate questions.)");
+            break;
+            case "flagged":
+                window.SHOW_ERROR("Your deck was flagged for inappropriate content.");
             break;
             default:        
                 console.log(res4);
-                errmsg.innerHTML = "Looks like there's an issue on our side. Try again later.";
+                window.SHOW_ERROR("Looks like there's an issue on our side. Try again later.");
             break;
         }
         return;
@@ -75,15 +79,15 @@ createBtn.addEventListener('mousedown', async () => {
     await DeckBind.init();
     let data = DeckBind.user();
     const paramList = new URLSearchParams(window.location.search);
-    if(!paramList.get("d")) return errmsg.innerHTML = "Looks like there was an error. Go back to where you came from, and try again. (If you continue to experience errors, please inform us.)";
+    if(!paramList.get("d")) return window.SHOW_ERROR("Looks like there was an error. Go back to where you came from, and try again. (If you continue to experience errors, please inform us.)");
     deck = parseInt(paramList.get('d'));
     let [success, contnt] = await DeckGateway.get(deck, true, true);
     if(!success) window.location.href = "/home";
     if(contnt.owner != data.username) window.location.href = "/home";
-    name.value = contnt.name;
+    name.value = window.lib.decode(contnt.name);
     if(contnt.deckpic && contnt.deckpic.length > 0) picimg.src = contnt.deckpic;
     isPublic.checked = contnt.public;
-    description.value = contnt.data.desc;
+    description.value = window.lib.decode(contnt.data.desc);
     cardContain.innerHTML = "";
     DeckBind.appendToCards(contnt.data.contnt);
     window.LOADED();

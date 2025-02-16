@@ -10,27 +10,62 @@ let deckSize = 5;
 let curr = 0;
 let infinite_mode = false;
 
-let currSet = [];
-let currWrong = [];
-let lastWrong = [];
+let currSet = [], currWrong = [], lastWrong = [];
 let card = 0;
 let active = false;
 
-let seen = 0;
-let C_w = 0;
+let seen = 0, C_w = 0;
 
 const totalWrong = {};
 const cardsSeen = {};
+const timeSpent = {};
 let updateFn;
 
-let lastCorrect = false;
-let reshow_correct = undefined;
+let lastCorrect = false, reshow_correct = undefined;
 
 // -------------------------------------------------------- \\
 
 function random(a, b) {
     return Math.floor(Math.random() * (b - a) + a + 0.5);
 }
+function avg(arr) {
+    if(arr.length == 0) return 0;
+    let total = 0;
+    for(let num of arr) {
+        total += num;
+    }
+    return total / arr.length;
+}
+function filter_outliers(arr) {
+    let v = avg(arr);
+    for(let i = 0; i < arr.length; i++) {
+        if(Math.abs(arr[i] - v) > v * 2) {
+            arr.splice(i, 1);
+            i--;
+        }
+    }
+    return arr;
+}
+function getDist(a, b) {
+    const matrix = [];
+    for (let i = 0; i <= b.length; i++)
+        matrix[i] = [i];
+    for (let j = 0; j <= a.length; j++)
+        matrix[0][j] = j;
+    for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+            if (b.charAt(i - 1) === a.charAt(j - 1))
+                matrix[i][j] = matrix[i - 1][j - 1];
+            else
+                matrix[i][j] = Math.min(
+                    matrix[i - 1][j - 1] + 1,
+                    Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
+                );
+        }
+    }
+    return matrix[b.length][a.length];
+}
+
 // -------------------------------------------------------- \\
 
 function iterateCard() {
@@ -74,6 +109,9 @@ async function init(_decks, info) {
     if(!success) return void console.warn("Encountered while attempting to fetch user data:", userData) ?? false;
     user = userData;
 
+    // Unsanitize
+    user.userdata.reviews = window.lib.recur_decode(user.userdata.reviews);
+
     let deckInfo = [];
     let updateReviews = false;
     for(let i = 0; i < _decks.length; i++) {
@@ -102,11 +140,6 @@ async function init(_decks, info) {
                 continue;
             }
             if(info.NTRonly && !UserGateway.calculateNTR(box, last)) delete data.data.contnt[q];
-            if(deckCard.dual) data.data.contnt[deckCard.ans[0]] = {
-                ans: q,
-                type: 'txt',
-                fromDual: true
-            }
         }
         user.userdata.reviews[deck] = userReview;
         let d_keys = Object.keys(data.data.contnt);
@@ -149,6 +182,7 @@ async function init(_decks, info) {
     // Cache
     let cache_boxes = {};
     let cache_scores = {};
+    let cache_times = {};
 
     const update = async () => {
         let csKeys = Object.keys(cardsSeen);
@@ -161,14 +195,17 @@ async function init(_decks, info) {
             // Cache holders for deck
             if(!cache_boxes[holder]) cache_boxes[holder] = {};
             if(!cache_scores[holder]) cache_scores[holder] = {};
+            if(!cache_times[holder]) cache_times[holder] = {};
             // Update card
             let userCard = user.userdata.reviews[holder][card.q];
             if(userCard) {
                 if(!cache_boxes[holder][card.q]) cache_boxes[holder][card.q] = user.userdata.reviews[holder][card.q].box;
                 if(!cache_scores[holder][card.q]) cache_scores[holder][card.q] = user.userdata.reviews[holder][card.q].score;
+                if(!cache_times[holder][card.q]) cache_times[holder][card.q] = user.userdata.reviews[holder][card.q].time ?? avg(filter_outliers(timeSpent[csKeys[i]]));
                 user.userdata.reviews[holder][card.q].last = Date.now();
-                let thisScore = cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] || 0)); // correct - wrong
-                user.userdata.reviews[holder][card.q].score = (cache_scores[holder][card.q] * 0.8 + thisScore * 1.1).toFixed(3);
+                let thisScore = cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] ?? 0)); // correct - wrong
+                user.userdata.reviews[holder][card.q].score = (cache_scores[holder][card.q] * 0.4 + thisScore * 0.6).toFixed(3);
+                user.userdata.reviews[holder][card.q].time = (cache_times[holder][card.q] * 0.4 + avg(filter_outliers(timeSpent[csKeys[i]])) * 0.6).toFixed(3);
                 if(user.userdata.reviews[holder][card.q].score < -1.25)
                     user.userdata.reviews[holder][card.q].box = Math.max(cache_boxes[holder][card.q] - 1, 1);
                 else if(user.userdata.reviews[holder][card.q].score > 1.25)
@@ -177,11 +214,13 @@ async function init(_decks, info) {
                 let newcard = {
                     last: Date.now(),
                     box: 1,
-                    score: ((cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] || 0))) * 1.1).toFixed(3)
+                    time: avg(filter_outliers(timeSpent[csKeys[i]])),
+                    score: ((cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] ?? 0))) * 1.1).toFixed(3)
                 }
-                newcard.box = newcard.score > 1.25 ? 2 : 1;
+                newcard.box = Math.floor((cardsSeen[csKeys[i]] - (totalWrong[csKeys[i]] ?? 0)) / cardsSeen[csKeys[i]] * 5) + 1;
                 cache_boxes[holder][card.q] = newcard.box;
                 cache_scores[holder][card.q] = newcard.score;
+                cache_times[holder][card.q] = newcard.time;
                 user.userdata.reviews[holder][card.q] = newcard;
             }
         }
@@ -193,8 +232,11 @@ async function init(_decks, info) {
     window.addEventListener("beforeunload", update);
     return true;
 }
-function fetchCurrentDecks() {
+function fetchDecks() {
     return decks;
+}
+function unsafeFetchDecks() {
+    return window.lib.recur_decode(decks);
 }
 function fetchProblem() {
     if(!active) return {dead: true};
@@ -212,7 +254,7 @@ function updateLastCorrect(bool) {
     return bool;
 }
 function check(answer) {
-    if(!active) return {dead: true};
+    if(!active) return { dead: true };
     let problem = gameData[currSet[card]];
     switch(problem.type) {
         case "mc":
@@ -224,47 +266,52 @@ function check(answer) {
             } else return problem.ans.indexOf(answer) > -1;
         case "txt":
             for(let i = 0; i < problem.ans.length; i++)
-                if(problem.ans[i].toLowerCase().replaceAll(/\s/g, "") == answer.toLowerCase().replaceAll(/\s/g, "")) return true;
+                if(answer.toLowerCase().replaceAll(/\s/g, "") == window.lib.decode(problem.ans[i]).toLowerCase().replaceAll(/\s/g, "")) return true;
             return false;
         case "ranking":
             for(let i = 0; i < answer.length; i++)
-                if(answer[i] !== problem.ans[i]) return false;
+                if(answer[i] !== window.lib.decode(problem.ans[i])) return false;
             return true;
         case "mtch":
             // Note that game.js already handles mtch, so we don't need to
             console.error("can't check mtch; use game.js");
     }
 }
-function isCorrect(answer) {
-    if(!active) return {dead: true};
+function lazyCheck(answer) {
+    if(!active) return { dead: true };
     let problem = gameData[currSet[card]];
     switch(problem.type) {
-        case "mc":
-            if(problem.req == 1) {
-                let c = true;
-                for(let i = 0; i < problem.ans.length; i++) 
-                    if(answer.indexOf(problem.ans[i]) < 0) c = false;
-                return c ? updateLastCorrect(true) : updateLastCorrect(false);
-            } else return problem.ans.indexOf(answer) > -1 ? updateLastCorrect(true) : updateLastCorrect(false);
         case "txt":
-            for(let i = 0; i < problem.ans.length; i++)
-                if(problem.ans[i].toLowerCase().replaceAll(/\s/g, "") == answer.toLowerCase().replaceAll(/\s/g, "")) return updateLastCorrect(true);
-            return updateLastCorrect(false);
-            // return answer.toLowerCase().replaceAll(/\s/g, "") == problem.ans.toLowerCase().replaceAll(/\s/g, "") ? updateLastCorrect(true) : updateLastCorrect(false);
-        case "ranking":
-            for(let i = 0; i < answer.length; i++)
-                if(answer[i] !== problem.ans[i]) return updateLastCorrect(false)
-            return updateLastCorrect(true);
-        case "mtch":
-            // Note that game.js already handles mtch, so we don't need to
-            console.error("cannot check mtch; use game.js");
+            for(let i = 0; i < problem.ans.length; i++) {
+                let realAns = window.lib.decode(problem.ans[i]).toLowerCase().replaceAll(/\s/g, "");
+                let userAns = answer.toLowerCase().replaceAll(/\s/g, "");
+                if(userAns == realAns) return true;
+                if(getDist(userAns, realAns) <= 2) return true;
+            }
+            return false;
+        default:
+            return check(answer);
     }
+
+}
+function isLazyCorrect(answer) {
+    if(!active) return { dead: true };
+    return updateLastCorrect(lazyCheck(answer));  
+}
+function isCorrect(answer) {
+    if(!active) return { dead: true };
+    return updateLastCorrect(check(answer));
 }
 function getLastCorrect() {
     return lastCorrect;
 }
 function markCorrect() {
     lastCorrect = true;
+}
+function registerTick(len) {
+    len /= 1000;
+    if(timeSpent[currSet[card]]) timeSpent[currSet[card]].push(len);
+        else timeSpent[currSet[card]] = [len];
 }
 function _continue() {
     return (reshow_correct == undefined ? lastCorrect : reshow_correct) ? correct() : incorrect();
@@ -296,15 +343,20 @@ function incorrect() {
     return !correct();
 }
 
+
 // -------------------------------------------------------- \\
+
 
 const Game = {
     init,
-    fetchCurrentDecks,
+    fetchDecks,
+    unsafeFetchDecks,
     fetchProblem,
     getProgress,
     isCorrect,
+    isLazyCorrect,
     markCorrect,
+    registerTick,
     getLastCorrect,
     check,
     continue: _continue,

@@ -1,12 +1,17 @@
 <div id="too-big-img"></div>
 <header class=header id=header>
-    <img alt="Bento! Logo" class=logo height=40px onclick='location.href="/home"' src="/img/bento logo white.svg" title="Bento! home"><span class="info">BETA</span>
+    <img alt="Bento! Logo" class=logo height=40px onclick='location.href="/home"' src="/img/bento logo white.svg" title="Bento! home">
+    <span class="info" onclick='location.href="/home"'>BETA</span>
     <div class=right-header>
         <span id="header:verify-email-alert" class="verify-email-alert header-nav right-header-ico">Verify Your Email</span>
         <img class="pfp right-header-ico" src="/img/defaultpfp.png" id="header:pfp" title="Your Profile">
         <span class='header-nav material-symbols-outlined right-header-ico' id='header:feedback' title='Give A Suggestion'>feedback</span>
         <span class="header-nav material-symbols-outlined right-header-ico" id="header:logout" title="Logout">logout</span>
     </div>
+    <!-- this is loaded after everything to place it as far as possible to the left -->
+    <!-- <div class="left-header">
+        <span class="header-nav material-symbols-outlined" id="header:back" title="Black Button">keyboard_double_arrow_left</span>
+    </div> -->
 </header>
 <div class="loader">
     <div class="load-rot"></div>
