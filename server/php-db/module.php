@@ -92,7 +92,7 @@
             if(gettype($val) == "array") $newVal = _traverse_array_sanitize($val);
             if(gettype($val) == "object") $newVal = _traverse_object_sanitize($val);
             if(gettype($val) == "string") $newVal = _traverse_str_sanitize($val);
-            if(gettype($val) == "double" || gettype($val) == "integer") $newVal = $val;
+            if(gettype($val) == "double" || gettype($val) == "integer" || gettype($val) == "boolean") $newVal = $val;
             $newContnt[] = $newVal;
         }
         return $newContnt;
@@ -105,7 +105,7 @@
             if(gettype($val) == "array") $newVal = _traverse_array_sanitize($val);
             if(gettype($val) == "object") $newVal = _traverse_object_sanitize($val);
             if(gettype($val) == "string") $newVal = _traverse_str_sanitize($val);
-            if(gettype($val) == "double" || gettype($val) == "integer") $newVal = $val;
+            if(gettype($val) == "double" || gettype($val) == "integer" || gettype($val) == "boolean") $newVal = $val;
             $newContnt->$newKey = $newVal;
         }
         return $newContnt;

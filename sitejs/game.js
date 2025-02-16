@@ -402,7 +402,7 @@ function answerHandler() {
                     ans_a.innerHTML = cont_a.innerHTML;
                     cont_a.children[0].style.backgroundColor = `rgba(255, 0, 0, 0.5)`;
                     ans_a.children[0].style.backgroundColor = `rgba(0, 255, 0, 0.5)`;
-                    ans_a.children[0].value = data.ans.join(" • ");
+                    ans_a.children[0].value = window.lib.recur_decode(data.ans.join(" • "));
                     ans_a.children[0].disabled = true;
                     answerbtn.innerHTML = "Continue >>> (Enter)";
                     if (requireCorrect) {
@@ -569,7 +569,7 @@ reshowMarker.addEventListener("mousedown", () => {
     refresh();
 })
 let mc_keynum = "", prob;
-window.addEventListener("keydown", e => {
+window.addEventListener("keydown", async e => {
     let data = Game.fetchProblem();
     let nums = "0123456789";
     if(data.type == "mc" && (nums.indexOf(e.key) > -1 || e.key == "Enter") && !toProceed && !selected) {
@@ -583,12 +583,17 @@ window.addEventListener("keydown", e => {
             let strlen = String(len);
             mc_keynum += e.key;
             problem.innerHTML = data.q + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : '') + "<p style='font-size: 10px;'>" + mc_sel.join(",") + (mc_sel.length > 0 ? "," : "") + mc_keynum + "</p>";
+            await typeset(problem);
             if (strlen.length > mc_keynum) return;
         }
-        if (mc_keynum.length == 0) return void (problem.innerHTML = data.q + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : ''));
+        if (mc_keynum.length == 0) {
+            problem.innerHTML = data.q + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : '');
+            return await typeset(problem);
+        }
         let num = parseInt(mc_keynum);
         if (num > data.op.length) {
             problem.innerHTML = data.q + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : '');
+            await typeset(problem);
             mc_keynum = "";
             return;
         }
