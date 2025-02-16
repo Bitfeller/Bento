@@ -143,8 +143,10 @@ textarea {
     padding: 5px;
     background-color: var(--gray);
     color: var(--light-text);
-    width: calc(100% - 60px);
-    height: max-content;
+    width: calc(100% - 30px);
+    margin: 0px auto;
+    height: 30dvh;
+    resize: none;
 }
 select {
     border: none;
