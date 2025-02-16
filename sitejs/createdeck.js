@@ -2,6 +2,8 @@ import { UserGateway } from "../server/client-gateway/user-gateway.js";
 import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 import { DeckBind } from "./client-modules/deck-lib.js";
 
+let drafts_save;
+
 const title = document.getElementById("name");
 const desc = document.getElementById("description");
 const deckpic = document.getElementById("deckpic");
@@ -9,39 +11,36 @@ const ispub = document.getElementById("isPublic");
 
 const cardContain = document.getElementById("cardcontain");
 const createBtn = document.getElementById("create");
+const errmsg = document.getElementById("create-err");
 const draftdecks_history = document.getElementById("draftdecks-history");
-
-let lastTick = 0;
+let last = 0;
 
 createBtn.addEventListener('mousedown', async () => {
-    let res = DeckBind.toDeck(v => window.SHOW_ERROR(v), false, Date.now() - lastTick < 5000);
-    lastTick = Date.now();
+    let res = DeckBind.toDeck(v => errmsg.innerHTML = v, false, Date.now() - last < 5000);
+    last = Date.now();
     if(!res) return;
     let [name, deckpic, data, isPublic] = res; // unpack
     let [success, reason] = await DeckGateway.add(name, deckpic || "", JSON.stringify(data), isPublic);
     if(!success) 
         switch(reason) {
             case "no session":
-                window.SHOW_ERROR("Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)");
+                errmsg.innerHTML = "Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)";
             break;
             case "invalid name":
-                window.SHOW_ERROR("That name has invalid characters or is empty. (Valid characters include dashes, a-z, A-Z, and 0-9)");
-            break;
-            case "flagged":
-                window.SHOW_ERROR("Your deck was flagged for inappropriate content.");
+                errmsg.innerHTML = "That name has invalid characters or is empty. (Valid characters include dashes, a-z, A-Z, and 0-9)";
             break;
             case "name exists":
-                window.SHOW_ERROR("You've already created another deck with that name");
+                errmsg.innerHTML = "You've already created another deck with that name";
             break;
             case "size limit":
-                window.SHOW_ERROR("Looks like the deck's image exceeds the size limit of 2 MB.");
+                errmsg.innerHTML = "Looks like the deck's image exceeds the size limit of 2 MB.";
             break;
             case "same problem":
-                window.SHOW_ERROR("It seems like two or more cards in your deck have the exact same question. (We currently don't support duplicate questions.)");
+                errmsg.innerHTML = "It seems like two or more cards in your deck have the exact same question. (We currently don't support duplicate questions.)";
             break;
             default:
                 console.log(reason);
-                window.SHOW_ERROR("Looks like there's an issue on our side. Try again later.");
+                errmsg.innerHTML = "Looks like there's an issue on our side. Try again later.";
             break;
         }
     else window.location.href = "/home?l=cd&s=1";
@@ -50,28 +49,25 @@ createBtn.addEventListener('mousedown', async () => {
 (async () => {
     await DeckBind.init();
     let user = DeckBind.user();
-    let drafts_save = user.userdata.draftdecks;
+    drafts_save = user.userdata.draftdecks;
     let keys = Object.keys(user.userdata.draftdecks);
     if(keys.length > 0) draftdecks_history.innerHTML = "";
     for(let i = 0; i < keys.length; i++) {
         let time = parseInt(keys[i]);
-        let date = new Date(time);
+        let diff = Date.now() - time;
         let deck = user.userdata.draftdecks[keys[i]];
         let div = document.createElement("div");
         div.className = "draftdeck";
-        let month = "0".repeat(2 - String(date.getMonth()).length) + date.getMonth();
-        let day = "0".repeat(2 - String(date.getDate()).length) + date.getDate();
-        let min = "0".repeat(2 - String(date.getMinutes()).length) + date.getMinutes();
         div.innerHTML = `
-            <p>${date.toLocaleString('en-us', { weekday: 'short' })} ${month}/${day}/${date.getFullYear().toString().slice(2)}, ${date.getHours()}:${min}</p>
+            <p>${diff > 2 * 24 * 60 * 60 * 1000 ? "A while ago" : (diff > 24 * 60 * 60 * 1000 ? "Yesterday" : (diff > 12 * 60 * 60 * 1000 ? "Today" : (diff > 5 * 60 * 1000 ? "This hour" : "Moments ago")))}</p>
             <div><button class='show'><span class="material-symbols-outlined">resume</span></button>
             <button class='del'><span class="material-symbols-outlined">delete</span></button></div>`;
         draftdecks_history.appendChild(div);
         div.getElementsByClassName("show")[0].addEventListener("mousedown", async () => {
             cardContain.innerHTML = "";
             DeckBind.appendToCards(deck.contnt);
-            title.value = window.lib.decode(deck.name);
-            desc.value = window.lib.decode(deck.desc);
+            title.value = deck.name;
+            desc.value = deck.desc;
             ispub.checked = deck.pub;
             let [success, img] = await UserGateway.getDraftImage(time);
             if(!success) return void console.warn("Couldn't get draft img: " + img);
@@ -86,7 +82,7 @@ createBtn.addEventListener('mousedown', async () => {
         });
     }
     window.setInterval(async () => {
-        let copy = window.lib.recur_decode(structuredClone(drafts_save));
+        let copy = structuredClone(drafts_save);
         let res = DeckBind.toDeck(() => {}, true);
         if(!res) return;
         let [name, img, data, pub] = res; // unpack

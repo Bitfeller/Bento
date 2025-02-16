@@ -19,7 +19,6 @@
         $conn = connect_to_db();
         // Sanitize name
         $name = sanitize($name);
-        if(filter($name) == true) fail("flagged");
         // Check for previous deck made from same user
         $sql = "SELECT * FROM decks WHERE name = ? AND owner = ? LIMIT 1;";
         $stmt = $conn->prepare($sql);
@@ -35,7 +34,6 @@
         if(!isset($deckData->desc)) fail("invalid data");
         if(!isset($deckData->contnt)) fail("invalid data");
         $deckData = sanitize($deckData);
-        if(filter($deckData) == true) fail("flagged");
         $deckData = json_encode($deckData);
         // Sanitize values
         if($deckpic !== "" && $conf['check_image'] == true) {
