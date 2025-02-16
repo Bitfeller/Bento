@@ -131,7 +131,7 @@
             <div class="modal-content">
                 <p><u>Sign Up</u></p>
                 <p>Username:</p>
-                <input type="text" id="signUpUsername">
+                <input type="email" id="signUpUsername">
                 <p>Email:</p>
                 <input type="email" id="signUpEmail">
                 <p>Password:</p>
@@ -139,7 +139,7 @@
                 <p style="font-size: 13px; font-family: kadwa;">Your password is always secure. No one can see your password, not even us.</p>
                 <p>Confirm Password:</p>
                 <input type="password" id="signUpPassword2">
-                <button class="submitBtn" id="signUpBtn">Sign Up</button>
+                <button class="submitBtn" id="signUpBtnM">Sign Up</button>
                 <p class="info-error" id="signup-err"></p>
             </div>
         </dialog>
@@ -147,11 +147,11 @@
             <div class="modal-content">
                 <p><u>Login</u></p>
                 <p>Username:</p>
-                <input type="text" id="signInUsername">
+                <input type="email" id="signInUsername">
                 <p>Password:</p>
                 <input type="password" id="signInPassword">
-                <button class="submitBtn" id="signInBtn">Login</button>
-                <p class='login-box-selector' onclick="location.href='/user/resetpwd'">I forgot my password >></p>
+                <button class="submitBtn" id="signInBtnM">Login</button>
+                <p class='reset-pwd' onclick="location.href='/user/resetpwd'">I forgot my password >></p>
                 <p class="info-error" id="login-err"></p>
             </div>
         </dialog>

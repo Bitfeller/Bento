@@ -12,7 +12,6 @@
         $conn = connect_to_db();
         // Check username
         if(!preg_match("/^[a-zA-Z0-9\-!@#$%^&*\(\)\[\]\{\}\.]*$/", $username)) fail("invalid username");
-        if(filter($username) == true) fail("flagged");
         // Check email
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)) fail("invalid email");
         // Check whether current username/email exists

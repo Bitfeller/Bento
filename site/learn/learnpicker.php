@@ -28,7 +28,8 @@
             <div class="big-box" id="deck-big-box">
                 <h2>Deck Picker</h2>
                 <span class="material-symbols-outlined" id="deckSelectAll">check_box_outline_blank</span>
-                <div class="deck-container"></div>
+                <div class="deck-container">
+                </div>
             </div>
         </div>
         <div>
@@ -68,19 +69,16 @@
                 </div>
             </div>
             <div class="big-box" id="settings-big-box">
-                <h2>Assistive Tools </h2>
+                <h2>Assistive Tools <i style='color: rgb(200, 0, 0); font-size: 25px;'>NEW</i></h2>
                 <div class="settings-container">
                     <div class="setting-box">
                         <input type="checkbox" name="require_correct" class="sb-radio require_correct">
-                        <p>| (Text only) Require correct answer before advancing</p>
-                    </div>
-                    <div class="setting-box">
-                        <input type="checkbox" name="lazy_check" class="sb-radio lazy_check">
-                        <p>| (Text only) Allow answers up to 2 characters off</p>
+                        <p>| (Text questions only) Require correct answer before advancing</p>
                     </div>
                 </div>
             </div>
             <button id="reviewBtn"><h1>Review! →</h1></button>
+            <p class="info-error" id="errmsg"></p>
         </div>
     </div>
     <button id="intertiaBtn">
