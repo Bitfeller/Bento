@@ -368,7 +368,8 @@ function set(text) {
     };
     for(let i = 0; i < r_keys.length; i++)
         lazyloader(r_keys, i);
-  
+    update('');
+
     searcher.addEventListener('input', () => update(searcher.value));
 
     // Tutorial
