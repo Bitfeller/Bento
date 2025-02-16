@@ -199,6 +199,24 @@
 #skipBtn {
     background-color: var(--danger-red);
 }
+.deck-container-mastered {
+    margin-left: 2.5px;
+    padding: 10px;
+}
+.terms-display-container {
+    background-color: var(--gray);
+    margin-left: 2.5px;
+    padding: 10px;
+    overflow: scroll;
+    max-height: 28vw;
+    border-radius: 5px;
+    & li {
+        margin-left: 20px;
+    };
+}
+.answer-preview {
+    margin-left: 10px;
+}
 @keyframes sushi-shine {
     50% {
         filter: drop-shadow(0 0 0.3rem gold);
