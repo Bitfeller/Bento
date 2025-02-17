@@ -11,7 +11,7 @@ class Logger {
             .replaceAll("{timestamp}", new Date().toISOString())
             .replaceAll("{script}", this.scriptName);
         for(let key in metadata)
-            pre = pre.replaceAll(`{${key}}`, log.metadata[key]);
+            pre = pre.replaceAll(`{${key}}`, metadata[key]);
         return `${pre}${log}`;
     }
     setLogSrc(src) {
