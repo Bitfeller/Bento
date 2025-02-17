@@ -1,5 +1,5 @@
 const { get_config } = require('./config.js');
-const { Logger } = require('./logger.js');
+const Logger = require('./logger.js');
 const mysql = require('mysql');
 
 const conf = get_config();
