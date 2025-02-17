@@ -1,5 +1,8 @@
 const sql = require('../utils/sql.js');
+const Logger = require('../utils/logger.js');
 const schedule = require('node-schedule');
+
+const log = new Logger('backup.js', '../logs', '[{script}, {timestamp}] - ');
 
 async function copy(src, dest) {
     let tables = await src.query("SHOW TABLES");
@@ -11,9 +14,14 @@ async function copy(src, dest) {
 }
 
 const _ = schedule.scheduleJob("0 0 12 * * *", async () => {
-    const bento = sql.connect('bento');
-    const bento_backup = sql.connect('bento-backup');
-    await copy(bento, bento_backup);
-    bento.end();
-    bento_backup.end();
+    try {
+        const bento = sql.connect('bento');
+        const bento_backup = sql.connect('bento-backup');
+        await copy(bento, bento_backup);
+        bento.end();
+        bento_backup.end();
+        log.log('backup.log', 'Backup completed for MySQL server.');
+    } catch(e) {
+        log.log('backup.log', `[!] Failed to backup MySQL server: ${e} [!]`);
+    }
 });

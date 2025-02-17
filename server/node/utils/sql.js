@@ -1,14 +1,17 @@
 const { get_config } = require('./config.js');
+const { Logger } = require('./logger.js');
 const mysql = require('mysql');
 
 const conf = get_config();
 
 const sql = (() => {
     let conn;
-    let logger = false;
+    let logger = new Logger("sql.js", "../logs", "[{script}, {timestamp}, {level}] - ");
+    let verbose = false;
 
-    function log(b) {
-        logger = b;
+    // Set up logger
+    function setVerbose(v) {
+        verbose = v;
     }
     function connect(db = conf.mysql.db) {
         return new Promise((res, rej) => {
@@ -21,10 +24,10 @@ const sql = (() => {
             conn.connect(e => {
                 if(e) {
                     rej(e);
-                    if(logger) console.error(e);
+                    logger.log("sql.log", `Couldn't establish connection to ${db}: ${e}`, { level: "ERROR" });
                     return;
                 }
-                if(logger) console.log("Connected to MySQL server.");
+                if(verbose) logger.log("sql.log", `Connected to MySQL server: ${db}`, { level: "INFO" });
                 res(conn);
             });
         });
@@ -37,9 +40,10 @@ const sql = (() => {
             c.query(str, (e, r) => {
                 if(e) {
                     rej(e);
-                    if(logger) console.error(e);
+                    logger.log("sql.log", `Error executing query (${str}): ${e}`, { level: "ERROR" });
                     return;
                 }
+                if(verbose) logger.log("sql.log", `Executed query (${str})`, { level: "INFO" });
                 res(r);
             })
         });
@@ -49,7 +53,7 @@ const sql = (() => {
             c.ping(e => {
                 if(e) {
                     rej(e);
-                    if(logger) console.error(e);
+                    logger.log("sql.log", `Couldn't ping MySQL server (connection lost?): ${e}`, { level: "WARN" });
                     return;
                 }
                 res(true);
@@ -58,12 +62,12 @@ const sql = (() => {
     }
     function end(c = conn) {
         c.end();
-        if(logger) console.log("Disconnected from MySQL server.");
+        if(verbose) logger.log("sql.log", `Disconnected from MySQL server.`, { level: "INFO" });
         if(c == conn) conn = null;
     }
 
     return {
-        log,
+        setVerbose,
         connect,
         state,
         query,
