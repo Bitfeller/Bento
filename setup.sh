@@ -37,6 +37,24 @@ rm ./static -R
 cd ../../..
 
 
+# =================== Node ===================
+# Install Node.js dependencies
+cd ./server/node
+npm install
+
+rm -R README.md
+
+cd logs
+touch backup.log
+touch misc.log
+touch notif-service.log
+touch sql.log
+touch suspend-server.log
+cd ..
+
+cd ../..
+
+
 # =================== Node.js ===================
 # Install Node.js dependencies and remove other files
 cd ./server/notif-service
@@ -45,6 +63,7 @@ rm "_DEPRECATED"
 rm "_TODO!"
 touch sub-save.json
 cd ../..
+
 
 # =================== PHPMailer ===================
 # Go to php-db/lib
