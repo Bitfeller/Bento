@@ -64,16 +64,6 @@ pm2 save
 cd ../..
 
 
-# =================== Node.js ===================
-# Install Node.js dependencies and remove other files
-cd ./server/notif-service
-npm install
-rm "_DEPRECATED"
-rm "_TODO!"
-touch sub-save.json
-cd ../..
-
-
 # =================== PHPMailer ===================
 # Go to php-db/lib
 cd ./server/php-db/lib
