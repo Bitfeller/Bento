@@ -1,4 +1,3 @@
-# [NOTE] Must be in sync with /server/node/suspend-server/htaccess/normal.htaccess
 # This code is only to be utilized on the primary server.
 
 # Access Control headers
@@ -13,11 +12,10 @@ RewriteEngine on
 
 SetEnvIf REQUEST_URI /(.*) NEWURI=$1
 
-# THESE LINES TO BE UNCOMMENTED AND SAVED SEPARATELY IN /server/node/suspend-server/htaccess/suspend.htaccess
 # RewriteCond %{ENV:NEWURI} !^(.*)css\/(.*)$
 # RewriteCond %{ENV:NEWURI} !^(.*)img\/(.*)$
 # RewriteCond %{ENV:NEWURI} !^(.*)globalreqs.php(.*)$
-# exception to VPN'd users and server containers [unstable]:
+# exception to VPN'd users and server containers
 # RewriteCond %{REMOTE_ADDR} !^10\.
 # RewriteRule ^(.*)$ /site/maintenance.php [END]
 
