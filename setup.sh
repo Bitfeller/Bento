@@ -37,14 +37,33 @@ rm ./static -R
 cd ../../..
 
 
-# =================== Node.js ===================
-# Install Node.js dependencies and remove other files
+# =================== Node ===================
+# Install Node.js dependencies
 cd ./server/notif-service
 npm install
-rm "_DEPRECATED"
-rm "_TODO!"
-touch sub-save.json
+
+# Remove all README files
+rm -R README.md
+
+# Make sure all log files exist
+# cd logs
+# touch backup.log
+# touch misc.log
+# touch sql.log
+# touch suspend-server.log
+# cd ..
+
+# Set normal state for server
+# echo "0" > ../conf/config-suspend-server
+
+# Start all Node.js scripts
+# pm2 start ./backup/backup.js --name backup
+# pm2 start ./suspend-server/suspend-server.js --name suspend-server
+pm2 start server-notif-main.js --name server-notif-main
+pm2 save
+
 cd ../..
+
 
 # =================== PHPMailer ===================
 # Go to php-db/lib
