@@ -62,7 +62,7 @@
                 <option value="password">Change Password</option>
             </select>
             <div id="change-email-box">
-                <input type="text" id="email-curr-password" placeholder="Current Password">
+                <input type="password" id="email-curr-password" placeholder="Current Password">
                 <input type="text" id="email" placeholder="Email">
                 <p>Changing your email will require you to verify the new email address so make sure you can access it.</p>
                 <button id="change-email">Change</button>
