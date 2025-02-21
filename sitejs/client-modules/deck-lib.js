@@ -833,7 +833,6 @@ function open_import_modal(contnt) {
         return [allChecked, oneChecked];
     }
     function updateQSelectAll() {
-        console.log('running');
         let state = checked();
         if(state[0]) qSelectAll.innerHTML = "check_box";
         else if(state[1]) qSelectAll.innerHTML = "indeterminate_check_box";
@@ -847,7 +846,7 @@ function open_import_modal(contnt) {
             carddiv.className = "import-card";
             carddiv.innerHTML = `
                 <div class="question-box">
-                    <input type="checkbox" class="import-question-checkbox" data-q="${q}" checked>
+                    <input type="checkbox" class="import-question-checkbox" checked>
                     <p><b class="mathJax">Q | ${q}</b></p>
                         ${
                             card.type === "mc"
@@ -865,11 +864,11 @@ function open_import_modal(contnt) {
                 </div>
             `;
             let checkbox = carddiv.getElementsByClassName("import-question-checkbox")[0];
+            checkbox.dataset.q = q;
             carddiv.addEventListener("mousedown", e => {
                 if (e.target != checkbox) checkbox.checked = !checkbox.checked;
                 updateQSelectAll();
             });
-            console.log(checkbox);
             checkbox.addEventListener('change', updateQSelectAll);
             Array(carddiv.getElementsByClassName("mathJax")).map(typeset);
             import_q.appendChild(carddiv);
