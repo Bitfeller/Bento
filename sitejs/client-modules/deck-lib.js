@@ -556,6 +556,27 @@ fileselecttrigger.addEventListener('change', () => {
         reader.readAsDataURL(file);
     }
 });
+document.addEventListener("paste", e => {
+    let items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (let item of items) {
+        if (item.type.startsWith("image/")) {
+            let file = item.getAsFile();
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = e => {
+                    let imageData = e.target.result;
+                    let content = e.target.result;
+                    if(content.byteLength > sizeLimit) return console.warn(`failed! Past size limit of ${sizeLimit / (1 * 1000 * 1000)} MB.`);
+                    deckpic = content;
+                    picimg.src = content;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    }
+});
 resetpic.addEventListener('mousedown', () => {
     deckpic = '';
     picimg.src = '../../img/defaultdeckpic.png';
