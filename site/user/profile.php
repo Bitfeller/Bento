@@ -1,3 +1,4 @@
+<?php $_X_UO = true; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +9,7 @@
     <link rel="stylesheet" href="../../css/profile.css"/>
     <script type="module" src="../../sitejs/profile.js"></script>
 </head>
-<body data-uo="true">
+<body>
     <?php require_once "../header.php"?>
     <div class="profile-grid">
         <div class="grid-box pfp-box">
