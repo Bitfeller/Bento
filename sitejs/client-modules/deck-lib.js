@@ -174,7 +174,7 @@ function generator_mc(cardmc, card, allcorr, t, txt) {
     let newop = document.createElement('div');
     newop.className = "mcop";
     newop.innerHTML = `
-        <div contenteditable="true" type='input' class='mcop-val' placeholder='...'></div>
+        <div class="opt-text">Option:</div>  <div contenteditable="true" type='input' class='mcop-val' placeholder='...'></div>
         <button class='mcop-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
         <button class='mcop-corr mcop-${t ? 'sel' : 'nosel'}' tabindex="-1"><span class="material-symbols-outlined">${t ? 'check' : 'check_indeterminate_small'}</span></button>
     `;
