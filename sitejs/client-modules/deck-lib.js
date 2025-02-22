@@ -157,6 +157,7 @@ function toNew() {
     cards[cards.length - 1].getElementsByClassName('q')[0].focus();
 }
 
+
 // --------------------------------------------------- \\
 
 
