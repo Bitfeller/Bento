@@ -12,6 +12,7 @@ const emailCurrPassword = document.getElementById("email-curr-password");
 const emailbtn = document.getElementById("change-email");
 
 const pwdfield = document.getElementById("password");
+const confirmpwdfield = document.getElementById("password-confirm");
 const currentPassword = document.getElementById("password-curr-password");
 const passwordbtn = document.getElementById("change-password");
 
@@ -92,6 +93,10 @@ async function changeTheme(current, theme) {
     });
     passwordbtn.addEventListener("mousedown", async () => {
         if(pwdfield.value == "" || currentPassword.value == "") return;
+        if(pwdfield.value !== confirmpwdfield.value) {
+            window.SHOW_ERROR("New password and confirm password do not match.");
+            return;
+        }
         let [success, err] = await UserGateway.editUser("password", pwdfield.value, currentPassword.value);
         if(!success) {
             switch(err) {
