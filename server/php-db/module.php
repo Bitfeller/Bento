@@ -187,3 +187,12 @@
         if(!$mail->send()) return false;
         return true;
     }
+    
+    // File/log updater
+    function increment($file) {
+        // Do not affect if using local_config
+        if(file_exists('../../conf/local-config.json')) return;
+        $current = file_get_contents($file);
+        $current++;
+        file_put_contents($file, $current);
+    }

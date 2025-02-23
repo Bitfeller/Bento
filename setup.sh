@@ -51,6 +51,8 @@ touch backup.log
 touch misc.log
 touch sql.log
 touch suspend-server.log
+touch log-collector.log
+touch log-collector-info.log
 cd ..
 
 # Set normal state for server
@@ -59,6 +61,7 @@ echo "0" > ../conf/config-suspend-server
 # Start all Node.js scripts
 pm2 start ./backup/backup.js --name backup
 pm2 start ./suspend-server/suspend-server.js --name suspend-server
+pm2 start ./log-collector/log-collector.js --name log-collector
 pm2 save
 
 cd ../..
