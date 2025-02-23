@@ -76,11 +76,11 @@
         font-size: 12pt;
     }
 }
-.add-tag {
+.add-tag, .remove-tag {
     cursor: pointer;
     transition: 0.3s;
 }
-.add-tag:hover {
+.add-tag:hover, .remove-tag:hover {
     filter: brightness(85%);
 }
 .filters {
