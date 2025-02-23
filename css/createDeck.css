@@ -61,6 +61,7 @@ button:hover {
     display: flex;
     flex-direction: row;
     width: 85%;
+    max-width: 85%;
     margin: auto;
     margin-top: 20px;
     background-color: transparent;
@@ -79,6 +80,7 @@ button:hover {
 }
 #description {
     max-width: 700px;
+    margin-bottom: 5px;
 }
 .create-container input, .create-container > button {
     font-size: 11pt;
@@ -93,11 +95,18 @@ button {
 .create-container input, .q, .mcop-val {
     border: none;
     color: var(--light-text);
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
 .q, .mcop-val, .txtans, .rank-item-txt  {
     width: 70%;
+    max-width: 70vw;
     display: inline-block;
-    height: 30px;
+    height: auto;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
 .create-container > .mcbtn {
     margin-left: 0px;
