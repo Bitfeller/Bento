@@ -1098,6 +1098,7 @@ const DeckBind = {
     user: () => user,
     cards: () => cards,
     deckpic: () => deckpic,
+    setDeckpic: (pic) => deckpic = pic,
     computeCenter,
     init_card,
     typeset,
