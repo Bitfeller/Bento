@@ -171,7 +171,13 @@ function refresh() {
                         }, 1000);
                     } else {
                         for(let j = 0; j < data.ans.length; j++) {
-                            let right = data.ans[j], item = cont_a.children[right];
+                            let right = data.ans[j], item;
+                            for(let k = 0; k < cont_a.children.length; k++) {
+                                if(cont_a.children[k].getAttribute('i') == right) {
+                                    item = cont_a.children[k];
+                                    break;
+                                }
+                            }
                             item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
                         }
                         op_i.innerHTML = `<p class="answer-symbol">❌</p> ` + op_i.innerHTML;
@@ -369,11 +375,19 @@ function answerHandler() {
                             refresh();
                         }, 1000);
                     } else {
-                        for(let i = 0; i < mc_sel.length; i++)
-                            objs[mc_sel[i]].innerHTML = `<p class="answer-symbol">${data.ans.indexOf(mc_sel[i]) > -1 ? '☑️' : '❌'}</p> ` + objs[mc_sel[i]].getAttribute('orig');
+                        for(let i = 0; i < mc_sel.length; i++) {
+                            let obj;
+                            for(let k = 0; k < objs.length; k++) {
+                                if(parseInt(objs[k].getAttribute('i')) == mc_sel[i]) {
+                                    obj = objs[k];
+                                    break;
+                                }
+                            }
+                            obj.innerHTML = `<p class="answer-symbol">${data.ans.indexOf(mc_sel[i]) > -1 ? '☑️' : '❌'}</p> ` + obj.getAttribute('orig');
+                        }              
                         for (let j = 0; j < cont_a.children.length; j++) {
                             let item = cont_a.children[j];
-                            if(data.ans.indexOf(j) > -1 && mc_sel.indexOf(j) < 0) item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
+                            if(data.ans.indexOf(item.getAttribute('i')) > -1 && mc_sel.indexOf(item.getAttribute('i')) < 0) item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
                         }
                         answerMarker.style.display = reshowMarker.style.display = "block";
                         answerbtn.style.display = "block";
