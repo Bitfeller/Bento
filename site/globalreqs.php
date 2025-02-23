@@ -5,9 +5,12 @@
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <script type="module" src="/sitejs/client-modules/header.js"></script>
 <?php
-    // Load themes
+    // Load session
     session_start();
+    // Load themes
     if(isset($_SESSION['uid'])) {
+        if(isset($_X_NUO) and $_X_NUO == "1")
+            header("Location: /home");
         $contnt = json_decode($_SESSION['userdata'], true);
         switch($contnt["theme"]) {
             case 1:
@@ -20,5 +23,6 @@
                 echo "<link rel='stylesheet' href='../css/themes/grayscale.css'>";
             break;
         }
-    }
+    } else if(isset($_X_UO) and $_X_UO == "1")
+        header("Location: /login?s=".$_SERVER['REQUEST_URI']);
 ?>
