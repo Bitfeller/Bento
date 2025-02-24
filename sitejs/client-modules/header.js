@@ -207,16 +207,14 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         previous_pages.push(current_page); // Add current page to array
         localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
     });
-    if (backEnabled) {
-        back.addEventListener("mousedown", async () => {
-            // Set this to the most recently visited page 
-            window.location.href = previous_pages[previous_pages.length - 1];
-            // Remove current page from array and save it
-            previous_pages.pop();
-            previous_pages.pop();
-            localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
-        });
-    }
+    back.addEventListener("mousedown", async () => {
+        // Set this to the most recently visited page 
+        window.location.href = previous_pages[previous_pages.length - 1];
+        // Remove current page from array and save it
+        previous_pages.pop();
+        previous_pages.pop();
+        localStorage.setItem("previous_pages", JSON.stringify(previous_pages));
+    });
 
     // Logout functionality
     logout.addEventListener("mousedown", async () => {
