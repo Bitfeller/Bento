@@ -53,6 +53,8 @@ touch sql.log
 touch suspend-server.log
 touch log-collector.log
 touch log-collector-info.log
+touch error.log
+touch error-reports.log
 cd ..
 
 # Set normal state for server
