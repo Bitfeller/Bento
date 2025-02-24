@@ -33,6 +33,14 @@ const coffeeMidnightRadio = document.getElementById("coffee-midnight-radio");
 const catppuccinRadio = document.getElementById("catppuccin-radio");
 // const grayscaleRadio = document.getElementById("grayscale-radio");
 
+
+const logo = document.getElementById("header:logo");
+const beta_text = document.getElementById("header:beta-text");
+const backBtnEnabled = !!localStorage.getItem("enable-global-back");
+const backBtn = document.getElementById("header:back");
+const backBtnCheckbox = document.getElementById("enable-global-back");
+if (backBtnEnabled) backBtnCheckbox.checked = true;
+
 async function changeTheme(current, theme) {
     if(current == theme) return;
     await UserGateway.editUser('theme', "" + theme);
@@ -52,6 +60,24 @@ async function changeTheme(current, theme) {
         await UserGateway.editUser("pfp", "");
         window.location.reload();
     });
+
+    backBtnCheckbox.addEventListener("change", () => {
+        // maybe use db for this (?)
+        // set new value + animation
+        if (backBtnCheckbox.checked) { // enable back button
+            localStorage.setItem("enable-global-back", "true");
+            backBtn.style.opacity = 1; 
+            // move logo
+            beta_text.style.transform = "translateX(48px)";
+            logo.style.transform = "translateX(0px)";
+        } else { // disable back button
+            localStorage.removeItem("enable-global-back");
+            backBtn.style.opacity = 0;
+            // move logo
+            beta_text.style.transform = "translateX(0px)";
+            logo.style.transform = "translateX(-48px)";
+        }    
+    })
 
     fileSelectTrigger.addEventListener('change', () => {
         let files = fileSelectTrigger.files;
