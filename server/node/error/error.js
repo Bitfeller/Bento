@@ -56,7 +56,7 @@ app.post('/error', async (req, res) => {
     for(let i = 0; i < r_keys.length; i++)
         rdStr += "\t" + r_keys[i] + ": " + relatedData[r_keys[i]] + "\n";
     
-    log.log('error.log', `Error in [${name}]:\n\`\`\`\n${error}\n\`\`\`\nRelated info: {\n${rdStr}\n}`);
+    log.log('error-reports.log', `Error in [${name}]:\n\`\`\`\n${error}\n\`\`\`\nRelated info: {\n${rdStr}\n}`);
 
     resolve(200, "logged");
 });
