@@ -66,7 +66,7 @@
                 }
                 return;
             }
-            window.location.href = "/home";
+            window.location.href = "/home?new=1";
         }
         s_btn.addEventListener("mousedown", signup);
         window.onkeydown = async (e) => {
