@@ -159,7 +159,7 @@ function show(deck) {
                         : deck.data.contnt[k].ans
                     }
                 (correct ${review[k].box} times of 6),</p> 
-                <p>average time spent: ${review[k].time ? review[k].time.toFixed(3) + 's' : '[not tracked yet]'},</p> 
+                <p>average time spent: ${review[k].time ? parseFloat(review[k].time).toFixed(3) + 's' : '[not tracked yet]'},</p> 
                 <p>next review: ${
                     UserGateway.calculateNTR(review[k].box, review[k].last) 
                         ? "now" 
