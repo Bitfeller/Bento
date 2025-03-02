@@ -82,18 +82,22 @@ php -r "unlink('composer-setup.php');"
 
 # Install phpmailer
 php composer.phar require phpmailer/phpmailer
+php composer.phar require predis/predis
 
 # Remove composer-generated files
 rm composer*
 
 # Move phpmailer to temp and remove vendor
 mv vendor/phpmailer ./temp
+mv vendor/predis ./temp
 rm vendor -R
 
 # Get real phpmailer in lib
 mv temp/phpmailer .
+mv temp/predis .
 rm temp -R
 
 # Remove files not needed
 rm phpmailer/*.md
 rm phpmailer/.editorconfig
+rm predis/*.md
