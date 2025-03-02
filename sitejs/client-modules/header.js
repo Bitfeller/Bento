@@ -231,6 +231,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         resend_success.innerHTML = "";
         // Attempt sending another verification email
         let [success, data] = await UserGateway.editUser('resend-verif-email', '');
+        if(!success && data == 'timeout') window.SHOW_ERROR('You can only resend a verification email every 5 minutes. Wait less than 5 minutes...');
         if(success) resend_success.innerHTML = "We sent you another verification email.";
         // If the user happens to be already verified, reload the page
         if(data == 'verified') location.reload();
