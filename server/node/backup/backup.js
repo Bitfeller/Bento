@@ -36,6 +36,7 @@ async function backup() {
         bento_backup.end();
         const src = path.join(__dirname, config.file_db);
         const dest = path.join(__dirname, config.file_db + '-backup');
+        if(fs.existsSync(dest)) fs.rmdirSync(dest, { recursive: true });
         if(!fs.existsSync(dest)) fs.mkdirSync(dest);
         copydir(src, dest);
         log.log('backup.log', 'Backup completed for MySQL server.');
