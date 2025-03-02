@@ -311,7 +311,10 @@ function generator_mtch(card, mtchlist, r, txt) {
     let delbtn = pair.getElementsByClassName('mtchpair-del')[0];
     init_div(term);
     init_div(def);
-    if(txt) term.setVal(txt);
+    if(txt) {
+        term.setVal(txt[0]);
+        def.setVal(txt[1]);
+    }
     def.addEventListener('keydown', e => {
         if(e.key != "Tab" || e.shiftKey) return;
         if(cards.indexOf(card) < cards.length - 1) return;
@@ -758,7 +761,7 @@ function generateCard(contnt, d_keys, i, n) {
             carddiv.getElementsByClassName('q')[0].setVal(q);
             let mtchlist = carddiv.getElementsByClassName("card-mtch")[0];
             mtchlist.innerHTML = '';
-            for(let i = 0; i < Math.max(card.ans.length, 1); i++) generator_mtch(carddiv, mtchlist, i != 0, card.ans[i] ?? "");
+            for(let i = 0; i < Math.max(card.ans.length, 1); i++) generator_mtch(carddiv, mtchlist, i != 0, card.ans[i] ?? ["", ""]);
         break;
     }
     return carddiv;
