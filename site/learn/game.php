@@ -30,6 +30,7 @@
     <div id="main">
         <h2 id="problem"></h2>
         <div>
+        <!-- <div id="infotext">Multiple Choice</div> (remove this dingaling text when reached the end of thing, make it say `Text`, `Ranking` or `Matching` depending on the type of question-->
             <div id="a_container">
                 <div id="cont_a"></div>
                 <div id="ans_a"></div>
@@ -41,5 +42,6 @@
         <div id="answer_info"></div>
     </div>
     <div id="progressBar"></div>
+    <div id="infotext">If you can't see the rest of the option(s) or question, scroll!</div>
 </body>
 </html>
