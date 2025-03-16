@@ -115,7 +115,7 @@
         <div id="decks-container" class="decks-display">
             <h2>Owned Decks:</h2>
             <div class="owned-decks">
-                <div class="ingredient-box" style="background-image: url(../../img/defaultdeckpic.png);">
+                <!-- <div class="ingredient-box" style="background-image: url(../../img/defaultdeckpic.png);">
                     <div>
                         <h2>Title</h2>
                         <div class="deck-bottom-row">
@@ -171,7 +171,7 @@
                     <button class="add-button">
                         <div class="material-symbols-outlined">add</div>
                     </button>
-                </div>
+                </div> -->
             </div>
             <h2 id="pub-d-title">Public Decks:</h2>
             <div class="popular-decks">
