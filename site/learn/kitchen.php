@@ -6,7 +6,7 @@
     <title>Kitchen</title>
     <?php require_once "../globalreqs.php"?>
     <link rel="stylesheet" href="../../css/kitchen.css"/>
-    <!-- <script src="../../sitejs/kitchen.js" type="module" data-loading="true"></script> -->
+    <script src="../../sitejs/kitchen_new.js" type="module" data-loading="true"></script>
     <link rel="preload" href="../../img/loading.gif" as="image">
     <!-- MathJax -->
     <script>
@@ -91,7 +91,7 @@
                     <p>Include </p>
                     <div>
                         <div></div>
-                        <span>Strictly / </span><span> Loosely</span>
+                        <span>Strictly</span> / <span>Loosely</span>
                     </div>
                 </div>
                 <div class="checkbox-box">
@@ -112,7 +112,7 @@
                 </div>
             </div>
         </div>
-        <div class="decks-display">
+        <div id="decks-container" class="decks-display">
             <h2>Owned Decks:</h2>
             <div class="owned-decks">
                 <div class="ingredient-box" style="background-image: url(../../img/defaultdeckpic.png);">
@@ -173,11 +173,8 @@
                     </button>
                 </div>
             </div>
-            <h2>Popular Decks:</h2>
+            <h2 id="pub-d-title">Public Decks:</h2>
             <div class="popular-decks">
-
-            </div>
-            <div class="search-results">
 
             </div>
         </div>
