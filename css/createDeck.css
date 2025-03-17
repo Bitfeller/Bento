@@ -145,16 +145,26 @@ button {
 }
 
 #flush {
+    display: flex;
+    justify-content: center;
     background-color: var(--danger-red);
     color: var(--light-text);
     top: 12px;
     right: 18px;
     width: 20%;
     float: right;
-    max-width: 200px;
+    width: 40px;
+    height: 40px;
+    padding: 0px;
     position: absolute;
 }
-
+#flush > span {
+    color: var(--light-text);
+    margin-left: 0px;
+}
+#flush > span:hover {
+    filter: brightness(115%);
+}
 #addcard, #create{
     background-color: var(--light-text);
     width: 76%;
