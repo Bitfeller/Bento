@@ -178,6 +178,15 @@
 
             </div>
         </div>
+        <section>
+            <dialog id="preview-dialogs">
+                <div class="title-bar">
+                    <h2>Preview:</h2>
+                    <button class="closeBtns" id="previewDialog_leave"><span class="material-symbols-outlined">close</span></button>
+                </div>
+                <div class="preview-container"></div>
+            </dialog>
+        </section>
     </div>
 </body>
 </html>
