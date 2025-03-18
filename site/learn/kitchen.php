@@ -89,7 +89,7 @@
             <div class="question-type-filters">
                 <div class="include-container">
                     <p>Include </p>
-                    <div>
+                    <div id="strict-maching-slider">
                         <div></div>
                         <span>Strictly</span> / <span>Loosely</span>
                     </div>
