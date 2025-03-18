@@ -72,6 +72,19 @@
 
             $sql .= ") ";
         }
+
+        $conj = $strictly ? "AND" : "OR";
+        if($mc or $txt or $ranking or $mtch) {
+            $sql .= "AND (";
+            $cond = [];
+            if($mc) $cond[] = `data LIKE '%"type":"mc"%'`;
+            if($txt) $cond[] = `data LIKE '%"type":"txt"%'`;
+            if($ranking) $cond[] = `data LIKE '%"type":"ranking"%'`;
+            if($mtch) $cond[] = `data LIKE '%"type":"mtch"%'`;
+            $sql .= implode(" $conj ", $cond);
+
+            $sql .= ") ";
+        }
         
         $sortType = "";
         switch($sortFilter) {
