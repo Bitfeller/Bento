@@ -73,8 +73,9 @@
                     $type = "boolean";
                 break;
             }
+            if(!isset($data[$param])) continue;
             $val = $data[$param];
-            if(isset($val) and (gettype($val) !== $type and gettype($val) !== ($secondType or $type))) access_fail();
+            if(gettype($val) !== $type and gettype($val) !== ($secondType or $type)) access_fail();
         }
     }
 

@@ -179,7 +179,7 @@
             </div>
         </div>
         <section>
-            <dialog id="preview-dialogs">
+            <dialog id="preview-dialog">
                 <div class="title-bar">
                     <h2>Preview:</h2>
                     <button class="closeBtns" id="previewDialog_leave"><span class="material-symbols-outlined">close</span></button>
