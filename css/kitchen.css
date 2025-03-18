@@ -121,6 +121,9 @@
         }
     };
 }
+#strict-maching-slider {
+    cursor: pointer;
+}
 .decks-display {
     width: 100%;
 }
@@ -183,8 +186,8 @@
 }
 .owned-decks {
     display: flex;
-    overflow: hidden;
-    justify-content: space-around;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 .decks-display > div{
     margin-bottom: 10px;
