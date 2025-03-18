@@ -73,8 +73,21 @@
             $sql .= ") ";
         }
         
-        $sortType = ($sortFilter > 2 ? "id" : "name") . ' ';
-        $sortType .= $sortFilter % 2 == 0 ? "DESC" : "ASC";
+        $sortType = "";
+        switch($sortFilter) {
+            case 1:
+                $sortType = "id ASC";
+            break;
+            case 2:
+                $sortType = "id DESC";
+            break;
+            case 3:
+                $sortType = "name DESC";
+            break;
+            case 4:
+                $sortType = "name ASC";
+            break;
+        }
         $limit = $conf['deckload_limit'];
         $sql .= "ORDER BY $sortType LIMIT $limit OFFSET ?;";
         $sql = (string)$sql;
