@@ -40,8 +40,7 @@
             <div id="tagsContainer">
                 <p>Tags:</p>
                 <input type="text" id="tagInput" placeholder="New Tag...">
-                <div id="tags">
-                </div>
+                <div id="tags"></div>
             </div>
             <div>
                 <input type="checkbox" id="isPublic" checked>
