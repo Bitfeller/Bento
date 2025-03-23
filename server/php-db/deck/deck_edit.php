@@ -59,6 +59,19 @@
                 success();
             case "data":
                 $val = json_decode($val, false);
+                // Check to make sure data is valid
+                if($val === null) fail("invalid data");
+                if(!isset($val->desc)) fail("invalid data");
+                if(!isset($val->contnt)) fail("invalid data");
+                if($val->desc === null) fail("invalid data");
+                if($val->contnt === null) fail("invalid data");
+                if(!isset($val->tags)) $val->tags = [];
+                // Iterate through tags and make sure they're all valid
+                $validTags = get_allowed_tags();
+                foreach($val->tags as $tag) {
+                    if(!in_array($tag, $validTags)) fail("invalid tag");
+                }
+                // Sanitize deck data and encode
                 $safeVal = sanitize($val);
                 if(filter($safeVal) == true) fail("flagged");
                 $safeVal = json_encode($safeVal);

@@ -30,11 +30,18 @@
         // Check data is valid
         $deckData = json_decode($deckData, false);
         if($deckData === null) fail("invalid data");
-        if($deckData->desc === null) fail("invalid data");
-        if($deckData->contnt === null) fail("invalid data");
         if(!isset($deckData->desc)) fail("invalid data");
         if(!isset($deckData->contnt)) fail("invalid data");
+        if($deckData->desc === null) fail("invalid data");
+        if($deckData->contnt === null) fail("invalid data");
+        if(!isset($deckData->tags)) $deckData->tags = [];
         $deckData = sanitize($deckData);
+        // Iterate through tags and make sure they're all valid
+        $validTags = get_allowed_tags();
+        foreach($deckData->tags as $tag) {
+            if(!in_array($tag, $validTags)) fail("invalid tag");
+        }
+        // Sanitize deck data and encode
         if(filter($deckData) == true) fail("flagged");
         $deckData = json_encode($deckData);
         // Sanitize values
