@@ -427,6 +427,16 @@ input[type="file"] {
     margin: 0px;
     height: 32px;
 }
+.drag-handle {
+    width: 15px;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 10px;
+    user-select: none;
+}
+.drag-handle:hover {
+    filter: brightness(115%);
+}
 @media only screen and (max-width: 1025px) {
     .options-container {
         margin: 10px 0px;
