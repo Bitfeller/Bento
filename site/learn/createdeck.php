@@ -112,7 +112,6 @@
             <p class="info-error" id="BI-err"></p>
         </div>
     </div>
-    <!-- Importing modal to show all questions about to be imported. TO BE IMPLEMENTED -->
     <div class="import-modal" id="importing-modal">
         <div class="modal-content">
             <h1>Importing:</h1>
