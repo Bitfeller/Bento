@@ -1,4 +1,5 @@
 import { UserGateway } from "../../server/client-gateway/user-gateway.js";
+import { DeckGateway } from "../../server/client-gateway/deck-gateway.js";
 
 const name = document.getElementById("name");
 const isPublic = document.getElementById("isPublic");
@@ -12,6 +13,8 @@ const picimg = document.getElementById("deckpic");
 let cards = [], deckpic = '', drag;
 let user;
 const sizeLimit = 2 * 1000 * 1000; // NOTE: must be same as max_image_size in server/conf/config.json
+
+let allowedTags = [];
 
 const dragline = document.createElement('div');
 dragline.style = 'display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;';
@@ -1078,6 +1081,7 @@ async function init() {
     let [success, data] = await UserGateway.getuser(false, true, false, true);
     if(!success) return;
     user = data;
+    allowedTags = await DeckGateway.getAllowedTags();
     newCard();
     cards[cards.length - 1].getElementsByClassName('q')[0].focus();
     addCard.addEventListener('mousedown', newCard);
@@ -1092,6 +1096,7 @@ const DeckBind = {
     user: () => user,
     cards: () => cards,
     deckpic: () => deckpic,
+    allowedTags: () => allowedTags,
     computeCenter,
     init_card,
     typeset,
