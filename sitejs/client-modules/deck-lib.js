@@ -329,7 +329,7 @@ function generator_mtch(card, mtchlist, r, txt) {
     });
     if(r) delbtn.addEventListener('mousedown', () => pair.remove());
 }
-// Builders
+// Card Builders
 function init_mc(card, n, q) {
     card.innerHTML = `
         <div class='cardsel'>
