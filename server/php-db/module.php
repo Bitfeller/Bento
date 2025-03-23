@@ -81,10 +81,13 @@
         }
     }
 
-    //      Get server config
+    //      Get server config and other configurations
     function get_server_config() {
         if(file_exists('../../conf/local-config.json')) return json_decode(file_get_contents("../../conf/local-config.json"), true);
         else return json_decode(file_get_contents('../../conf/config.json'), true);
+    }
+    function get_allowed_tags() {
+        return json_decode(file_get_contents('../../conf/moderator/allowed_tags.json'), true);
     }
 
     //      Content sanitizer
@@ -146,15 +149,15 @@
         }
         return false;
     }
-    function get_filter_list() {
-        return file('../../conf/moderator/config-filter-regex.list');
-    }
     function _traverse_str_filter(string $content) {
         $filter_list = get_filter_list();
         foreach($filter_list as $filter)
             if(preg_match("/$filter/", $content))
                 return true;
         return false;
+    }
+    function get_filter_list() {
+        return file('../../conf/moderator/config-filter-regex.list');
     }
     function filter($content) {
         if(gettype($content) == "array") return _traverse_array_filter($content);

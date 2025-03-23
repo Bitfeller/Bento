@@ -37,6 +37,11 @@
                 <span class="material-symbols-outlined" id="picAddBtn">add_a_photo<input class='file-selector' accept="image/png,image/jpeg" id="fileselecttrigger" type="file"></span>
                 <span class="material-symbols-outlined" id="picReset">refresh</span>    
             </div>
+            <div id="tagsContainer">
+                <p>Tags:</p>
+                <input type="text" id="tagInput" placeholder="New Tag...">
+                <div id="tags"></div>
+            </div>
             <div>
                 <input type="checkbox" id="isPublic" checked>
                 <span>| Public Deck</span>
