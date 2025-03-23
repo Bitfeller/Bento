@@ -1,4 +1,4 @@
-import { types, sameUser } from './gateway-mod.js';
+import { types, sameUser, gateway_fetch } from './gateway-mod.js';
 
 const moduleurl = new URL(import.meta.url);
 const spath = moduleurl.pathname + "/../..";
@@ -145,6 +145,9 @@ let DeckGateway = {
             if(!success) reason = res.reason;
         }).catch(e => console.log('backend[deck-gateway.js:modify]:', e))
         return [success, reason];
+    },
+    getAllowedTags: async () => {
+        return await gateway_fetch("/conf/allowed_tags.json");
     }
 };
 

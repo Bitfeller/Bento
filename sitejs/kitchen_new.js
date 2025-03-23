@@ -5,7 +5,6 @@ import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
 let user;
 let loaded = -1, loadedReviews = false;
 let decks = [];
-let saveDecks = [];
 
 const sidebar = document.getElementsByClassName("sidebar")[0];
 
@@ -350,6 +349,16 @@ function getSortFilter() {
         case "reverse-time": return 4;
     }
 }
+async function fetchDecks() {
+    let query = searchBar.value;
+    let sort = getSortFilter();
+    let [success, data] = DeckGateway.getall(0, query?.split(" ") ?? [], regex.checked, caseSensitive.checked, [], sort, false, hasMc.checked, hasTxt.checked, hasRank.checked, hasMtch.checked);
+    if(!success) return;
+    decks = data;
+    loaded = -1;
+    pubDecks.innerHTML = "";
+    await update();
+}
 
 (async () => {
     let [success, data] = await UserGateway.getuser(false, true, true, false);
@@ -367,26 +376,18 @@ function getSortFilter() {
 searchBar.addEventListener('keyup', async e => {
     if(e.key != 'Enter') return;
     let query = searchBar.value;
-    if(query.length == 0 && saveDecks.length != 0) {
-        // Reset to default
+    // Reset to defaults
+    if(query.length == 0)
         pubDTitle.innerHTML = "Public Decks:";
-        loaded = -1;
-        decks = saveDecks;
-        saveDecks = [];
-        pubDecks.innerHTML = "";
-        update();
-        return;
-    }
-    if(query.length == 0) return;
-    if(saveDecks.length == 0) saveDecks = decks;
-    pubDTitle.innerHTML = "Search Results:";
-    let [success, data] = await DeckGateway.getall(0, query.split(" "), regex.checked, caseSensitive.checked, [], getSortFilter(), false, hasMc.checked, hasTxt.checked, hasRank.checked, hasMtch.checked);
-    if(!success) return;
-    decks = data;
-    loaded = -1;
-    pubDecks.innerHTML = "";
-    await update();
+    await fetchDecks();
 });
+
+[regex, caseSensitive, hasMc, hasTxt, hasRank, hasMtch, sortOptions].map(x => x.addEventListener('change', async () => {
+    let query = searchBar.value;
+    if(query.length == 0)
+        pubDTitle.innerHTML = "Public Decks:";
+    await fetchDecks();
+}));
 
 window.addEventListener('mousedown', e => {
     if(e.target == previewDialog)
