@@ -271,6 +271,7 @@ async function preview(_this) {
             const deckExport = {
                 name: window.lib.decode(deck.name),
                 desc: window.lib.decode(deck.data.desc),
+                tags: window.lib.decode(deck.data.tags),
                 contnt: window.lib.recur_decode(deck.data.contnt)
             };
             const json = JSON.stringify(deckExport);
