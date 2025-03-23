@@ -39,7 +39,9 @@
             </div>
             <div id="tagsContainer">
                 <p>Tags:</p>
-                <input type="text" id="tagInput" placeholder="New Tag...">
+                <input type="text" id="tagInput" list="tag-suggestions" placeholder="New Tag...">
+                <datalist id="tag-suggestions"></datalist>
+                <p id="tag-ok"></p>
                 <div id="tags"></div>
             </div>
             <div>

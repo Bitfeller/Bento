@@ -87,7 +87,7 @@
         else return json_decode(file_get_contents('../../conf/config.json'), true);
     }
     function get_allowed_tags() {
-        return json_decode(file_get_contents('../../conf/moderator/allowed_tags.json'), true);
+        return json_decode(file_get_contents('../../conf/allowed_tags.json'), true);
     }
 
     //      Content sanitizer
