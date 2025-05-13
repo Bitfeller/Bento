@@ -23,28 +23,29 @@ createBtn.addEventListener('mousedown', async () => {
         switch(reason) {
             case "no session":
                 window.SHOW_ERROR("Looks like you're not logged in! We can't create this deck unless you log in again. (If you'd like, open another tab and login there.)");
-            break;
+                break;
             case "invalid name":
                 window.SHOW_ERROR("That name has invalid characters or is empty. (Valid characters include dashes, a-z, A-Z, and 0-9)");
-            break;
+                break;
             case "flagged":
                 window.SHOW_ERROR("Your deck was flagged for inappropriate content.");
-            break;
+                break;
             case "name exists":
                 window.SHOW_ERROR("You've already created another deck with that name");
-            break;
+                break;
             case "size limit":
                 window.SHOW_ERROR("Looks like the deck's image exceeds the size limit of 2 MB.");
-            break;
+                break;
             case "same problem":
                 window.SHOW_ERROR("It seems like two or more cards in your deck have the exact same question. (We currently don't support duplicate questions.)");
-            break;
+                break;
             default:
                 console.log(reason);
                 window.SHOW_ERROR("Looks like there's an issue on our side. Try again later.");
-            break;
+                break;
         }
-    else window.location.href = "/home?l=cd&s=1";
+    else 
+        window.location.href = "/home?l=cd&s=1";
 });
 
 (async () => {
@@ -74,12 +75,14 @@ createBtn.addEventListener('mousedown', async () => {
             desc.value = window.lib.decode(deck.desc);
             ispub.checked = deck.pub;
             let [success, img] = await UserGateway.getDraftImage(time);
-            if(!success) return void console.warn("Couldn't get draft img: " + img);
+            if(!success) 
+                return void console.warn("Couldn't get draft img: " + img);
             deckpic.src = img && img.length > 0 ? img : "../../img/defaultdeckpic.png";
         });
         div.getElementsByClassName("del")[0].addEventListener("mousedown", async () => {
             div.remove();
-            if(Object.keys(user.userdata.draftdecks).length == 1) draftdecks_history.innerHTML = "<p class='info-blank'>-- You don't have any draft decks. You'll see one if you start making a deck but don't finish. --</p>";
+            if(Object.keys(user.userdata.draftdecks).length == 1) 
+                draftdecks_history.innerHTML = "<p class='info-blank'>-- You don't have any draft decks. You'll see one if you start making a deck but don't finish. --</p>";
             delete user.userdata.draftdecks[keys[i]];
             delete drafts_save[keys[i]];
             await UserGateway.editUser("draftdecks", JSON.stringify(drafts_save));

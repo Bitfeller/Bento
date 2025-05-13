@@ -21,7 +21,7 @@ const cardsSeen = {};
 const timeSpent = {};
 let updateFn;
 
-let lastCorrect = false, reshow_correct = undefined;
+let lastCorrect = false, reshow_correct;
 
 // -------------------------------------------------------- \\
 
@@ -29,11 +29,11 @@ function random(a, b) {
     return Math.floor(Math.random() * (b - a) + a + 0.5);
 }
 function avg(arr) {
-    if(arr.length == 0) return 0;
+    if(arr.length == 0) 
+        return 0;
     let total = 0;
-    for(let num of arr) {
+    for(let num of arr)
         total += num;
-    }
     return total / arr.length;
 }
 function filter_outliers(arr) {
@@ -69,16 +69,21 @@ function getDist(a, b) {
 // -------------------------------------------------------- \\
 
 function iterateCard() {
-    if(cardsSeen[currSet[card]]) cardsSeen[currSet[card]]++; else cardsSeen[currSet[card]] = 1;
+    if(cardsSeen[currSet[card]]) 
+        cardsSeen[currSet[card]]++; 
+    else 
+        cardsSeen[currSet[card]] = 1;
     card++;
     seen++;
-    if(card >= currSet.length) return newSet();
+    if(card >= currSet.length) 
+        return newSet();
     return true;
 }
 function newSet() {
     if(gameData.length - curr <= 0 && currWrong.length == 0 && lastWrong.length == 0) {
         card = 0;
-        if(infinite_mode) curr = 0;
+        if(infinite_mode) 
+            curr = 0;
         else {
             seen--;
             active = false;
@@ -93,7 +98,8 @@ function newSet() {
     currWrong = [];
 
     let min = Math.min(gameData.length, curr + deckSize);
-    for(let i = curr; i < min; i++) currSet.push(i);
+    for(let i = curr; i < min; i++) 
+        currSet.push(i);
     
     curr = min;
     card = 0;
@@ -106,7 +112,8 @@ function newSet() {
 async function init(_decks, info) {
     // Get user
     let [success, userData] = await UserGateway.getuser(false, true, true, false);
-    if(!success) return void console.warn("Encountered while attempting to fetch user data:", userData) ?? false;
+    if(!success) 
+        return void console.warn("Encountered while attempting to fetch user data:", userData) ?? false;
     user = userData;
 
     // Unsanitize
@@ -139,7 +146,8 @@ async function init(_decks, info) {
                 updateReviews = true;
                 continue;
             }
-            if(info.NTRonly && !UserGateway.calculateNTR(box, last)) delete data.data.contnt[q];
+            if(info.NTRonly && !UserGateway.calculateNTR(box, last)) 
+                delete data.data.contnt[q];
         }
         user.userdata.reviews[deck] = userReview;
         let d_keys = Object.keys(data.data.contnt);
@@ -193,15 +201,21 @@ async function init(_decks, info) {
             // Make sure the user has the question right at least once
             if(cardsSeen[csKeys[i]] <= totalWrong[csKeys[i]]) continue;
             // Cache holders for deck
-            if(!cache_boxes[holder]) cache_boxes[holder] = {};
-            if(!cache_scores[holder]) cache_scores[holder] = {};
-            if(!cache_times[holder]) cache_times[holder] = {};
+            if(!cache_boxes[holder]) 
+                cache_boxes[holder] = {};
+            if(!cache_scores[holder]) 
+                cache_scores[holder] = {};
+            if(!cache_times[holder]) 
+                cache_times[holder] = {};
             // Update card
             let userCard = user.userdata.reviews[holder][card.q];
             if(userCard) {
-                if(!cache_boxes[holder][card.q]) cache_boxes[holder][card.q] = user.userdata.reviews[holder][card.q].box;
-                if(!cache_scores[holder][card.q]) cache_scores[holder][card.q] = user.userdata.reviews[holder][card.q].score;
-                if(!cache_times[holder][card.q]) cache_times[holder][card.q] = user.userdata.reviews[holder][card.q].time ?? avg(filter_outliers(timeSpent[csKeys[i]]));
+                if(!cache_boxes[holder][card.q]) 
+                    cache_boxes[holder][card.q] = user.userdata.reviews[holder][card.q].box;
+                if(!cache_scores[holder][card.q]) 
+                    cache_scores[holder][card.q] = user.userdata.reviews[holder][card.q].score;
+                if(!cache_times[holder][card.q]) 
+                    cache_times[holder][card.q] = user.userdata.reviews[holder][card.q].time ?? avg(filter_outliers(timeSpent[csKeys[i]]));
                 user.userdata.reviews[holder][card.q].last = Date.now();
                 let thisScore = cardsSeen[csKeys[i]] - (2 * (totalWrong[csKeys[i]] ?? 0)); // correct - wrong
                 user.userdata.reviews[holder][card.q].score = (cache_scores[holder][card.q] * 0.4 + thisScore * 0.6).toFixed(3);
@@ -228,7 +242,9 @@ async function init(_decks, info) {
         await UserGateway.editUser("reviews", json);
     };
     updateFn = update;
-    const updater = window.setInterval(() => active ? update() : window.clearInterval(updater), 60_000);
+    const updater = window.setInterval(() => 
+        active ? update() : window.clearInterval(updater)
+    , 60_000);
     window.addEventListener("beforeunload", update);
     return true;
 }
@@ -239,7 +255,7 @@ function unsafeFetchDecks() {
     return window.lib.recur_decode(decks);
 }
 function fetchProblem() {
-    if(!active) return {dead: true};
+    if(!active) return { dead: true };
     return gameData[currSet[card]];
 }
 function getProgress() {
@@ -260,16 +276,19 @@ function check(answer) {
         case "mc":
             if(problem.req == 1) {
                 for(let i = 0; i < problem.ans.length; i++) 
-                    if(answer.indexOf(problem.ans[i]) < 0) return false;
+                    if(answer.indexOf(problem.ans[i]) < 0) 
+                        return false;
                 return true;
             } else return problem.ans.indexOf(answer) > -1;
         case "txt":
             for(let i = 0; i < problem.ans.length; i++)
-                if(answer.toLowerCase().replaceAll(/\s/g, "") == window.lib.decode(problem.ans[i]).toLowerCase().replaceAll(/\s/g, "")) return true;
+                if(answer.toLowerCase().replaceAll(/\s/g, "") == window.lib.decode(problem.ans[i]).toLowerCase().replaceAll(/\s/g, "")) 
+                    return true;
             return false;
         case "ranking":
             for(let i = 0; i < answer.length; i++)
-                if(answer[i] !== window.lib.decode(problem.ans[i])) return false;
+                if(answer[i] !== window.lib.decode(problem.ans[i])) 
+                    return false;
             return true;
         case "mtch":
             // Note that game.js already handles mtch, so we don't need to
@@ -284,8 +303,8 @@ function lazyCheck(answer) {
             for(let i = 0; i < problem.ans.length; i++) {
                 let realAns = window.lib.decode(problem.ans[i]).toLowerCase().replaceAll(/\s/g, "");
                 let userAns = answer.toLowerCase().replaceAll(/\s/g, "");
-                if(userAns == realAns) return true;
-                if(getDist(userAns, realAns) <= 2) return true;
+                if(userAns == realAns || getDist(userAns, realAns) <= 2) 
+                    return true;
             }
             return false;
         default:
@@ -308,36 +327,43 @@ function markCorrect() {
 }
 function registerTick(len) {
     len /= 1000;
-    if(timeSpent[currSet[card]]) timeSpent[currSet[card]].push(len);
-        else timeSpent[currSet[card]] = [len];
+    if(timeSpent[currSet[card]]) 
+        timeSpent[currSet[card]].push(len);
+    else 
+        timeSpent[currSet[card]] = [len];
 }
 function _continue() {
-    return (reshow_correct == undefined ? lastCorrect : reshow_correct) ? correct() : incorrect();
+    return (reshow_correct == null ? lastCorrect : reshow_correct) ? correct() : incorrect();
 }
 function reshow() {
-    if(reshow_correct == undefined) reshow_correct = lastCorrect;
-    if(!lastCorrect && totalWrong[currSet[card]]) totalWrong[currSet[card]]++; 
-        else if(!lastCorrect) totalWrong[currSet[card]] = 1;
+    if(reshow_correct == null) reshow_correct = lastCorrect;
+    if(!lastCorrect && totalWrong[currSet[card]]) 
+        totalWrong[currSet[card]]++; 
+    else if(!lastCorrect) 
+        totalWrong[currSet[card]] = 1;
     lastCorrect = false;
     return true;
 }
 function isDead() {
-    return active == false;
+    return !active;
 }
 // -- Local functions
 function correct() {
     lastCorrect = false;
-    reshow_correct = undefined;
+    reshow_correct = null;
     let success = iterateCard();
-    if(!success) active = false;
+    if(!success) 
+        active = false;
     return true;
 }
 function incorrect() {
     currWrong.push(currSet[card]);
     C_w++;
     seen--;
-    if(totalWrong[currSet[card]]) totalWrong[currSet[card]]++;
-        else totalWrong[currSet[card]] = 1;
+    if(totalWrong[currSet[card]]) 
+        totalWrong[currSet[card]]++;
+    else 
+        atotalWrong[currSet[card]] = 1;
     return !correct();
 }
 

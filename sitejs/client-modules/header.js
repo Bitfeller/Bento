@@ -70,9 +70,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         "You can find your profile in the top right corner.",
         "Started making a deck but didn't finish? Bento auto-saves your drafts, and you can find them on the right when cooking."
     ];
-    const errorMessages = {
-
-    };
+    const errorMessages = {};
 
     // Transitions between current tip and the next tip
     // Supports changes in color.
@@ -83,11 +81,13 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
             // Wait for prev-tip to transition out
             window.setTimeout(() => {
                 // Set new color
-                if(color) tips.style.color = color;
+                if(color) 
+                    tips.style.color = color;
                 
                 // Add new-tip and transition in
                 tips.innerHTML = `<p class='new-tip'>${newtext}</p>`;
-                if(color) tips.getElementsByClassName('new-tip')[0].style.color = color;
+                if(color) 
+                    tips.getElementsByClassName('new-tip')[0].style.color = color;
 
                 // Finished transition; remove residue and set to new current tip
                 window.setTimeout(() => {
@@ -241,13 +241,17 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         resend_success.innerHTML = "";
         // Attempt sending another verification email
         let [success, data] = await UserGateway.editUser('resend-verif-email', '');
-        if(success) resend_success.innerHTML = "We sent you another verification email.";
+        if(success) 
+            resend_success.innerHTML = "We sent you another verification email.";
         // If the user happens to be already verified, reload the page
-        if(data == 'verified') location.reload();
+        if(data == 'verified') 
+            location.reload();
     });
     window.addEventListener('mousedown', e => {
         // Closes popups when user presses outside of them
-        if(e.target == verify_dialog) verify_dialog.close();
-        if(e.target == feedback_dialog) feedback_dialog.close();
+        if(e.target == verify_dialog) 
+            verify_dialog.close();
+        if(e.target == feedback_dialog) 
+            feedback_dialog.close();
     });
 })();

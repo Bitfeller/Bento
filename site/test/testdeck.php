@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>bbbbbbbbbbb (ran out of titles)</title>
+    <title>testdeck</title>
     <?php require_once "../globalreqs.php"?>
     <script type="module" src="../sitejs/test-scripts/test_deck.js" type="text/javascript"></script>
 </head>
 <body>
+    <p>-- DEPRECATED --</p>
     <p>deck testing thing</p>
     <p>you must be logged in to do some things</p>
     <input type="text" id="name">

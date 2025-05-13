@@ -32,7 +32,8 @@ function updateDecks(decks, counts) {
                 </div>
             `;
         }
-        if (deckContainer.innerHTML == "") deckContainer.innerHTML = '<p class="info-blank">You don\'t have any decks to review.</p>';
+        if (deckContainer.innerHTML == "") 
+            deckContainer.innerHTML = '<p class="info-blank">You don\'t have any decks to review.</p>';
     } else {
         o_infinite_mode.disabled = true;
         o_infinite_mode.setAttribute("data-enabled", String(o_infinite_mode.checked));
@@ -49,7 +50,8 @@ function updateDecks(decks, counts) {
                     </div>
                 `;
         }
-        if (deckContainer.innerHTML == "") deckContainer.innerHTML = "<p class='info-blank'>You don't have any decks to review.<br>If you're trying to find all the decks in your reviews, click on \"Review select decks\" above.</p>";
+        if (deckContainer.innerHTML == "") 
+            deckContainer.innerHTML = "<p class='info-blank'>You don't have any decks to review.<br>If you're trying to find all the decks in your reviews, click on \"Review select decks\" above.</p>";
     }
     for(let i = 0; i < deckContainer.children.length; i++) {
         let deckBox = deckContainer.children[i];
@@ -59,22 +61,29 @@ function updateDecks(decks, counts) {
             let allSelected = true, isSelected = false;
             for (let j = 0; j < deckContainer.children.length; j++) {
                 let otherbox = deckContainer.children[j].getElementsByClassName("deckCheck")[0];
-                if (otherbox.checked == false) allSelected = false;
-                else isSelected = true;
+                if (otherbox.checked == false) 
+                    allSelected = false;
+                else 
+                    isSelected = true;
             }
-            if (allSelected) deckSelect.innerHTML = "check_box";
-            else if (isSelected) deckSelect.innerHTML = "indeterminate_check_box";
-            else deckSelect.innerHTML = "check_box_outline_blank";
+            if (allSelected) 
+                deckSelect.innerHTML = "check_box";
+            else if (isSelected) 
+                deckSelect.innerHTML = "indeterminate_check_box";
+            else 
+                deckSelect.innerHTML = "check_box_outline_blank";
         });
     }
 }
 
 (async () => {
     let [success, user] = await UserGateway.getuser(false, true, true, false);
-    if (!success && data == "no session") return window.LOAD_ERROR("You're not logged in!");
+    if (!success && data == "no session") 
+        return window.LOAD_ERROR("You're not logged in!");
 
     let reviews = user.userdata.reviews;
-    if (reviews.length == 0) return window.location.href = "/learn/kitchen";
+    if (reviews.length == 0) 
+        return window.location.href = "/learn/kitchen";
     o_mode[0].checked = true; // Explicitly defined to make sure
 
     let r_keys = Object.keys(reviews);
@@ -92,7 +101,8 @@ function updateDecks(decks, counts) {
         let c_keys = Object.keys(reviews[r_keys[i]]);
         for (let j = 0; j < c_keys.length; j++) {
             let term = reviews[r_keys[i]][c_keys[j]];
-            if (UserGateway.calculateNTR(term.box, term.last)) count++;
+            if (UserGateway.calculateNTR(term.box, term.last)) 
+                count++;
         }
         count += deck.contnt_len - c_keys.length;
         counts.push(count);
@@ -110,21 +120,23 @@ function updateDecks(decks, counts) {
         } else if(box.querySelectorAll('input[type="checkbox"]').length > 0) {
             let checkbox = box.querySelectorAll('input[type="checkbox"]')[0];
             box.addEventListener("mousedown", () => {
-                if(!checkbox.disabled) checkbox.checked = !checkbox.checked;
+                if(!checkbox.disabled) 
+                    checkbox.checked = !checkbox.checked;
             });
         }
     };
-    o_mode[1].addEventListener("change", () => updateDecks(decks, counts));
-    o_mode[0].addEventListener("change", () => updateDecks(decks, counts));
+    Array(o_mode).forEach(x => x.addEventListener("change", () => updateDecks(decks, counts)));
     reviewBtn.addEventListener("mousedown", () => {
         let selectedDecks = [];
         for (let i = 0; i < deckContainer.children.length; i++) {
             let item = deckContainer.children[i];
             let idx = item.dataset.idx;
             let checkbox = item.getElementsByClassName("deckCheck")[0];
-            if (checkbox.checked) selectedDecks.push(parseInt(idx));
+            if (checkbox.checked) 
+                selectedDecks.push(parseInt(idx));
         }
-        if (selectedDecks.length == 0) return window.SHOW_ERROR("Please select at least one deck to review.");
+        if (selectedDecks.length == 0) 
+            return window.SHOW_ERROR("Please select at least one deck to review.");
         // Set options
         let mode = o_mode[0].checked ? 1 : 0,
             repeat,
@@ -133,9 +145,11 @@ function updateDecks(decks, counts) {
             require_correct = o_require_correct.checked ? 1 : 0,
             lazy_check = o_lazy_check.checked ? 1 : 0;
         for (let i = 0; i < o_repeat.length; i++)
-            if (o_repeat[i].checked == true) repeat = i + 1;
+            if (o_repeat[i].checked == true) 
+                repeat = i + 1;
         for (let i = 0; i < o_shuffle.length; i++)
-            if (o_shuffle[i].checked == true) shuffle = i + 1;
+            if (o_shuffle[i].checked == true) 
+                shuffle = i + 1;
         window.location.href =
             "/learn/game?ds=" + selectedDecks.join(",") +
             "&m=" + mode +
@@ -150,7 +164,8 @@ function updateDecks(decks, counts) {
         for (let i = 0; i < deckContainer.children.length; i++) {
             let item = deckContainer.children[i];
             let checkbox = item.getElementsByClassName("deckCheck")[0];
-            if (!checkbox.checked) allChecked = false;
+            if (!checkbox.checked) 
+                allChecked = false;
         }
         if(allChecked) {
             for (let item in deckContainer.children)
@@ -167,11 +182,14 @@ function updateDecks(decks, counts) {
         for (let item in deckContainer.children) {
             let idx = item.dataset.idx;
             let checkbox = item.getElementsByClassName("deckCheck")[0];
-            if (checkbox.checked) selectedDecks.push(parseInt(idx));
+            if (checkbox.checked) 
+                selectedDecks.push(parseInt(idx));
         }
-        if (selectedDecks.length == 0) return window.SHOW_ERROR("Please select at least one deck to review.");
+        if (selectedDecks.length == 0) 
+            return window.SHOW_ERROR("Please select at least one deck to review.");
         for (let i = 0; i < o_shuffle.length; i++)
-            if (o_shuffle[i].checked == true) shuffle = i + 1;
+            if (o_shuffle[i].checked == true) 
+                shuffle = i + 1;
         window.location.href = '/learn/inertia?ds=' + selectedDecks.join(",") + '&m=' + (o_mode[0].checked ? 1 : 0) + '&s=' + shuffle;
     });
     window.LOADED();

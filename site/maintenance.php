@@ -24,11 +24,8 @@
             <p>We should be back up <b id="time">in 5 minutes.</b></p>
         </div>
     </section>
-    <!--<section id="404-content"> 
-        <h2>Uh oh! Looks like the site is under maintenance. Please check back later!</h2>
-    </section>
-    <img id="a">-->
     <script>
+        // Hard-coded date. Not the best idea...
         let date = new Date("2024-07-01T12:00:00");
         
         const timeText = document.getElementById("time");
@@ -36,6 +33,7 @@
         function updateTime() {
             let now = Date.now();
             let diff = date.getTime() - now;
+            // Calculate day, hours, minutes
             let days = Math.floor(diff / (1000 * 60 * 60 * 24));
             let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));

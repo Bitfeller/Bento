@@ -15,9 +15,9 @@
 }
 .mc-option-del {
     span {
-        color: var(--dark-text);
+        color: var(--dark-text) !important;
     }
 }
 .card-del {
-    color: var(--dark-text);
+    color: var(--dark-text) !important;
 }

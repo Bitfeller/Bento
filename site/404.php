@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento - 404!</title>
     <?php require_once "globalreqs.php"?>
+    <!-- Quick CSS syntax here; this is put here just in case /css can't be accessed during maintenance/server shutdown -->
     <style>
         section {
             display: flex;

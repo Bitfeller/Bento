@@ -28,8 +28,10 @@
             let [success, reason] = await UserGateway.getuser();
             if(success) {
                 const paramList = new URLSearchParams(window.location.search);
-                if(paramList.get("s")) window.location.href = "/" + paramList.get("s");
-                else window.location.href = "/home";
+                if(paramList.get("s"))
+                    window.location.href = "/" + paramList.get("s");
+                else
+                    window.location.href = "/home";
             }
         })();
         
@@ -39,35 +41,36 @@
         const err = document.getElementById("err");
 
         async function login() {
-            if(l_pass.value.length < 8) return window.SHOW_ERROR("Bad username or password.");
+            if(l_pass.value.length < 8) 
+                return window.SHOW_ERROR("Bad username or password.");
+            
             let [success, reason] = await UserGateway.login(l_user.value, l_pass.value);
             if(!success) {
                 switch(reason) {
                     case "bad u/p":
                         window.SHOW_ERROR("Bad username or password.");
-                    break;
+                        break;
                     case "broken user":
                         window.SHOW_ERROR("Your account is broken. Contact bentoboxcenter@gmail.com for help.");
-                    break;
+                        break;
                     default:
                         console.log(reason);
                         window.SHOW_ERROR("Looks like there's an issue on our side. Try again later.");
-                    break;
+                        break;
                 }
                 return;
             }
             const paramList = new URLSearchParams(window.location.search);
-            if(paramList.get("s")) {
+            if(paramList.get("s"))
                 window.location.href = "/" + paramList.get("s");
-            } else {
+            else
                 window.location.href = "/home";
-            }
         }
         l_btn.addEventListener("mousedown", login);
-        window.onkeydown = async (e) => {
+        window.onkeydown = async e => {
             if (e.key === "Enter")
                 await login();
-        }
+        };
     </script>
 </body>
 </html>

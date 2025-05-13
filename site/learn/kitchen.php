@@ -52,8 +52,6 @@
                 <div class="preview-container"></div>
             </dialog>
         </section>
-
-        
     </div>
     <footer>
             <button id="loadBtn"><h3>Load more decks...</h3></button>

@@ -8,6 +8,7 @@
     <?php require_once "../globalreqs.php"?>
 </head>
 <body>
+    <p>-- DEPRECATED --</p>
     <p>this is a testing software for making, logging into, fetching, and signing out of acc</p>
     <p>perfectly functional</p>
     <p>do not doubt</p>

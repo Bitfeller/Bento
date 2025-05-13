@@ -1,5 +1,7 @@
+// DEPRECATED \\
 import { DeckGateway } from "../server/client-gateway/deck-gateway.js";
-function g(el) {return document.getElementById(el);}
+
+let g = el => document.getElementById(el);
 var name = g('name');
 var data = g('data');
 var publicVal = g('public');
@@ -10,6 +12,7 @@ var add = g('add');
 var getall = g('getall');
 var modify = g('modify');
 var open = g('open');
+
 add.addEventListener("mousedown", async function() {
     var [success, reason] = await DeckGateway.add(name.value, data.value, publicVal.value);
     console.log("add:", success, reason);

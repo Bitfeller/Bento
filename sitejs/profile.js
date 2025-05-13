@@ -49,11 +49,13 @@ async function changeTheme(current, theme) {
 // main
 (async () => {
     let [success, data] = await UserGateway.getuser(true, true, false, false);
-    if(!success) return void (console.error(data));
+    if(!success) 
+        return void (console.error(data));
     user = data;
 
     usernameDisplay.innerHTML = user.username;
-    if(user.pfp && user.pfp.length > 0) pfp.src = user.pfp;
+    if(user.pfp && user.pfp.length > 0) 
+        pfp.src = user.pfp;
     editpfp.addEventListener("mousedown", () => fileSelectTrigger.click()); // show file upload option
     pfpReset.addEventListener("mousedown", async () => {
         pfp.src = "../../img/defaultpfp.png";
@@ -83,11 +85,13 @@ async function changeTheme(current, theme) {
         let files = fileSelectTrigger.files;
         if(files && files[0]) {
             let file = files[0];
-            if(!file.type.startsWith("image/")) return console.log('failed - file type; ' + file.type);
+            if(!file.type.startsWith("image/")) 
+                return console.log('failed - file type; ' + file.type);
             let reader = new FileReader();
             reader.onload = async e => {
                 let content = e.target.result;
-                if(content.byteLength > 3 * 1000 * 100) return console.log("Failed! Past size limit of 3 MB.");
+                if(content.byteLength > 3 * 1000 * 100) 
+                    return console.log("Failed! Past size limit of 3 MB.");
                 await UserGateway.editUser("pfp", content);
                 window.location.reload();
             }
@@ -102,16 +106,17 @@ async function changeTheme(current, theme) {
             switch(err) {
                 case 'invalid pwd':
                     window.SHOW_ERROR("Wrong password.");
-                break;
+                    break;
                 case 'invalid email':
                     window.SHOW_ERROR("That email isn't valid.");
-                break;
+                    break;
                 case 'email taken':
                     window.SHOW_ERROR("That email is already taken.");
-                break;
+                    break;
                 default:
+                    console.error(err);
                     window.SHOW_ERROR("Look's like there's something wrong on our side. Try again later.");
-                break;
+                    break;
             }
             return;
         }
@@ -128,10 +133,11 @@ async function changeTheme(current, theme) {
             switch(err) {
                 case "invalid pwd":
                     window.SHOW_ERROR("Wrong password.");
-                break;
+                    break;
                 default:
+                    console.error(err);
                     window.SHOW_ERROR("Look's like there's something wrong on our side. Try again later.");
-                break;
+                    break;
             }
             return;
         }
@@ -144,16 +150,17 @@ async function changeTheme(current, theme) {
             switch(err) {
                 case "invalid username":
                     window.SHOW_ERROR("Your username has characters that are not allowed.");
-                break;
+                    break;
                 case "flagged":
                     window.SHOW_ERROR("Your username was flagged for inappropriate content.");
-                break;
+                    break;
                 case "username taken":
                     window.SHOW_ERROR("That username is already taken.");
-                break;
+                    break;
                 default:
+                    console.error(err);
                     window.SHOW_ERROR("Look's like there's something wrong on our side. Try again later.");
-                break;
+                    break;
             }
             return;
         }
@@ -173,6 +180,7 @@ async function changeTheme(current, theme) {
                 <button id="delete-account-cancel">Cancel</button>
             </div>
         `;
+
         const deleteAccountPassword = document.getElementById("delete-account-password");
         const deleteAccountConfirm = document.getElementById("delete-account-confirm");
         const deleteAccountCancel = document.getElementById("delete-account-cancel");
@@ -183,16 +191,16 @@ async function changeTheme(current, theme) {
                 switch(err) {
                     case 'invalid pwd':
                         window.SHOW_ERROR("Wrong password.");
-                    break;
+                        break;
                     default:
                         window.SHOW_ERROR("Look's like there's something wrong on our side. Try again later.");
-                    break;
+                        break;
                 }
                 return;
             }
             window.location.reload();
         });
-        deleteAccountCancel.addEventListener("mousedown", () => warningDialog.close());
+        deleteAccountCancel.addEventListener("mousedown", warningDialog.close);
     });
     resetAccount.addEventListener("mousedown", async () => {
         warningDialog.showModal();
@@ -207,24 +215,32 @@ async function changeTheme(current, theme) {
                 <button id="reset-account-cancel">Cancel</button>
             </div>
         `;
+
         const resetAccountPassword = document.getElementById("reset-account-password");
         const resetAccountConfirm = document.getElementById("reset-account-confirm");
         const resetAccountCancel = document.getElementById("reset-account-cancel");
         resetAccountConfirm.addEventListener("mousedown", async () => {
             if(resetAccountPassword.value == "") return;
             let [success, err] = await UserGateway.editUser("userdata", '{"reviews":{},"draftdecks":{},"theme":0}', resetAccountPassword.value);
-            if(!success) return window.SHOW_ERROR("Looks like there's something wrong on our side. Try again later.");
+            if(!success) {
+                console.error(err);
+                return window.SHOW_ERROR("Looks like there's something wrong on our side. Try again later.");
+            }
             warningDialog.close();
             window.location.reload();
         });
-        resetAccountCancel.addEventListener("mousedown", () => warningDialog.close());
+        resetAccountCancel.addEventListener("mousedown", warningDialog.close);
     });
     let currentTheme = data.userdata.theme;
     
-    if(currentTheme == 0) nordRadio.checked = true;
-    else if(currentTheme == 1) coffeeMidnightRadio.checked = true;
-    else if(currentTheme == 2) catppuccinRadio.checked = true;
-    // else if(currentTheme == 3) grayscaleRadio.checked = true;
+    if(currentTheme == 0) 
+        nordRadio.checked = true;
+    else if(currentTheme == 1) 
+        coffeeMidnightRadio.checked = true;
+    else if(currentTheme == 2) 
+        catppuccinRadio.checked = true;
+    // else if(currentTheme == 3) 
+    //     grayscaleRadio.checked = true;
 
     nordRadio.addEventListener("change", () => changeTheme(currentTheme, 0));
     coffeeMidnightRadio.addEventListener("change", () => changeTheme(currentTheme, 1));
@@ -242,5 +258,6 @@ async function changeTheme(current, theme) {
     });
 })();
 window.onclick = e => {
-    if(e.target == warningDialog) warningDialog.close();
+    if(e.target == warningDialog) 
+        warningDialog.close();
 };

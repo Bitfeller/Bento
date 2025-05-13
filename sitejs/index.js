@@ -64,11 +64,11 @@ async function l_fn() {
         switch(reason) {
             case "bad u/p":
                 window.SHOW_ERROR("Bad username or password.");
-            break;
+                break;
             default:
                 console.log(reason);
                 window.SHOW_ERROR("Looks like there's an issue on our side. Try again later.");
-            break;
+                break;
         }
         return;
     }
@@ -81,26 +81,26 @@ async function s_fn() {
         switch(reason) {
             case "bad pwd":
                 window.SHOW_ERROR("Password is either common or less than 8 characters long.");
-            break;
+                break;
             case "invalid username":
                 window.SHOW_ERROR("That username has invalid characters. (Valid characters include a-z, A-Z, and 0-9)");
-            break;
+                break;
             case "flagged":
                 window.SHOW_ERROR("Your username was flagged for inappropriate content.");
-            break;
+                break;
             case "invalid email":
                 window.SHOW_ERROR("Please enter in a valid email.");
-            break;
+                break;
             case "user exists":
                 window.SHOW_ERROR("That username is already taken.");
-            break;
+                break;
             case "autologin":
                 window.SHOW_ERROR("We successfully made an account for you; but we failed to log you in automatically. Try logging in with your new account manually.");
-            break;
+                break;
             default:
                 console.log(reason);
                 window.SHOW_ERROR("Looks like there's an issue on our side. Try again later.");
-            break;
+                break;
         }
         return;
     }

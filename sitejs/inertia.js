@@ -54,15 +54,18 @@ function endGame() {
 function pauseGame() {
     if(ended) return;
     paused = !paused;
-    if(paused) asteroids.forEach(ast => ast.render());
-        else requestAnimationFrame(frame);
+    if(paused) 
+        asteroids.forEach(ast => ast.render());
+    else 
+        requestAnimationFrame(frame);
 }
 function gameStart() {
     mainfn = window.setInterval(() => {
         frameCount++;
         if(paused) return;
         if(ended) return;
-        if(frameCount % (30 - level < 1 ? 1 : (30 - level) * 3) == 0) asteroids.push(createAsteroid());
+        if(frameCount % (30 - level < 1 ? 1 : (30 - level) * 3) == 0) 
+            asteroids.push(createAsteroid());
         if(frameCount % 100 == 0) {
             level++;
             updateDisplay();
@@ -81,7 +84,8 @@ function wrapText(str, maxWidth) {
         if(width > maxWidth) {
             lines.push(line);
             line = word;
-        } else line = testLine;
+        } else 
+            line = testLine;
     }
     lines.push(line);
     return lines;
@@ -90,7 +94,7 @@ function wrapText(str, maxWidth) {
 function frame() {
     if(paused || ended) return;
     render.clearRect(0, 0, width, height);
-    asteroids.forEach((ast) => ast.render());
+    asteroids.forEach(ast => ast.render());
     if(ended) return;
     requestAnimationFrame(frame);
 }
@@ -103,7 +107,8 @@ class Asteroid {
         this.q = card.q;
         this.answer = card.type == "txt" ? card.ans : [];
         if(card.type == "mc")
-            for(let i = 0; i < card.ans.length; i++) this.answer.push(card.op[card.ans[i]]);
+            for(let i = 0; i < card.ans.length; i++) 
+                this.answer.push(card.op[card.ans[i]]);
         this.wrappedText = wrapText(this.q, 100);
     }
     render() {
@@ -113,7 +118,8 @@ class Asteroid {
             render.font = "14px Kadwa";
             render.fillStyle = "black";
             render.fillText("❌🧀", this.x + 250, this.y + 450);
-            if (this.y + 500 > height) endGame();
+            if (this.y + 500 > height) 
+                endGame();
             return;
         }
         this.y += this.speed;
@@ -122,8 +128,10 @@ class Asteroid {
         render.rect(this.x, this.y, 500, 500);
         render.font = "10px Kadwa";
         render.fillStyle = "black";
-        for(let i = 0; i < this.wrappedText.length; i++) render.fillText(this.wrappedText[i], this.x + 250, this.y + 430 + i * 15);
-        if(this.y + 200 > height) endGame();
+        for(let i = 0; i < this.wrappedText.length; i++) 
+            render.fillText(this.wrappedText[i], this.x + 250, this.y + 430 + i * 15);
+        if(this.y + 200 > height) 
+            endGame();
     }
 }
 
@@ -131,7 +139,8 @@ class Asteroid {
     let [success, user] = await UserGateway.getuser(false, true, true, false);
     if (!success) return;
     const paramList = new URLSearchParams(window.location.search);
-    if(!paramList.get("ds")) return void (window.location.href = "/home");
+    if(!paramList.get("ds")) 
+        return void (window.location.href = "/home");
     
     let decks = paramList.get("ds").split(",");
     decks.forEach((val, idx) => decks[idx] = parseInt(val));
@@ -169,9 +178,11 @@ class Asteroid {
                 updateReviews = true;
                 updateIdx = true;
             }
-            if(ntronly && !UserGateway.calculateNTR(box, last)) delete data.data.contnt[q];
+            if(ntronly && !UserGateway.calculateNTR(box, last)) 
+                delete data.data.contnt[q];
         }
-        if(updateIdx) user.userdata.reviews[deck] = userReview;
+        if(updateIdx) 
+            user.userdata.reviews[deck] = userReview;
         let d_keys = Object.keys(data.data.contnt);
         let datalist = [];
         for(let i = 0; i < d_keys.length; i++) {
@@ -188,7 +199,8 @@ class Asteroid {
     // Add terms to deckContnt
     for(let i = 0; i < deckContnt.length; i++)
         for(let j = 0; j < deckContnt[i].length; j++)
-            if(deckContnt[i][j].type != "ranking" && deckContnt[i][j].type != "mtch") deckData.push(deckContnt[i][j]);
+            if(deckContnt[i][j].type != "ranking" && deckContnt[i][j].type != "mtch") 
+                deckData.push(deckContnt[i][j]);
     // Scramble terms if needed
     if(randomTerms == true) {
         let save = deckData;

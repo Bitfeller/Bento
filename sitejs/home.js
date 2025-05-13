@@ -129,10 +129,12 @@ const tutorial = [
 
 async function typeset(node) {
     if(Object.keys(MathJax.startup) == 0) 
-        await new Promise((res) => {
-            MathJax.startup.ready = () => res();
+        await new Promise(res => {
+            MathJax.startup.ready = res;
         });
-    MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([node])).catch(e => console.warn('math formatting failed; reason:', e.message));
+    MathJax.startup.promise = MathJax.startup.promise
+        .then(() => MathJax.typesetPromise([node]))
+        .catch(e => console.warn('math formatting failed; reason:', e.message));
     return MathJax.startup.promise;
 }
 function show(deck) {
@@ -265,18 +267,20 @@ function update(search) {
             deckReminders.appendChild(div);
             div.addEventListener('mouseenter', () => show(decks[i]));
             div.addEventListener('mouseleave', () => {
-                setTimeout(()=> {
-                    if(!deckViewer.matches(":hover") && currentDeckView == decks[i].name) hide();
+                setTimeout(() => {
+                    if(!deckViewer.matches(":hover") && currentDeckView == decks[i].name) 
+                        hide();
                 }, 100);
             });
             deckViewer.addEventListener('mouseleave', hide);
         }
     }
-    if(coll == 0) deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks that match." : "You don't have any decks in your reviews."} --</p>`;
+    if(coll == 0) 
+        deckReminders.innerHTML += `<p class='info-blank'>-- ${searched ? "There aren't any decks that match." : "You don't have any decks in your reviews."} --</p>`;
 }
 function _finish() {
     clearInterval(typewriteInterval);
-    typewriteInterval = undefined;
+    typewriteInterval = null;
     t_dialogmain.innerHTML = tutorial[typewriteCurr].main;
     t_dialogmain.innerHTML += `
         <button id='continueBtn'>${typewriteCurr >= tutorial.length - 1 ? "Finish!" : "Continue"}</button>
@@ -314,7 +318,8 @@ function _dialog(i, text) {
         t_newline = true;
         return _dialog(i + 1, text);
     }
-    if(text[i] == '\t') return _dialog(i + 1, text);
+    if(text[i] == '\t') 
+        return _dialog(i + 1, text);
     
     if(text[i] == '<') {
         let j = text.indexOf('>', i);
@@ -360,7 +365,8 @@ function set(text) {
         let c_keys = Object.keys(reviews[r_keys[i]]);
         for(let j = 0; j < c_keys.length; j++) {
             let term = reviews[r_keys[i]][c_keys[j]];
-            if(UserGateway.calculateNTR(term.box, term.last)) count++;
+            if(UserGateway.calculateNTR(term.box, term.last)) 
+                count++;
         }
         count += deck.contnt_len - c_keys.length;
         counts.push(count);
@@ -389,7 +395,8 @@ function set(text) {
     window.LOADED();
 })();
 window.addEventListener('mousedown', e => {
-    if(e.target == feedback_dialog) feedback_dialog.close();
+    if(e.target == feedback_dialog) 
+        feedback_dialog.close();
     if(typewriteInterval && !t_btnOverride)
         _finish();
     t_btnOverride = false;

@@ -19,7 +19,6 @@
                 <span class="material-symbols-outlined" id="pfpAddBtn">add_a_photo</span>
                 <span class="material-symbols-outlined" id="pfpResetBtn">refresh</span>
             </div>
-            
             <h1 id="username">Username</h1>
         </div>
         <div class="grid-box">

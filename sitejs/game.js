@@ -1,5 +1,6 @@
 import { Game } from "./client-modules/game-library.js";
 import { UserGateway } from "../server/client-gateway/user-gateway.js";
+
 const problem = document.getElementById("problem");
 const cont_a = document.getElementById("cont_a");
 const answerbtn = document.getElementById("answerbtn");
@@ -75,20 +76,24 @@ function computeCenter(el) {
 }
 async function typeset(node) {
     if(Object.keys(MathJax.startup) == 0) 
-        await new Promise((res) => {
-            MathJax.startup.ready = () => res();
+        await new Promise(res => {
+            MathJax.startup.ready = res;
         });
-    MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([node])).catch(e => console.warn('math formatting failed; reason:', e.message));
+    MathJax.startup.promise = MathJax.startup.promise
+        .then(() => MathJax.typesetPromise([node]))
+        .catch(e => console.warn('math formatting failed; reason:', e.message));
     return MathJax.startup.promise;
 }
 async function renderable(input) {
     if(Object.keys(MathJax.startup) == 0) 
-        await new Promise((res) => {
-            MathJax.startup.ready = () => res();
+        await new Promise(res => {
+            MathJax.startup.ready = res;
         });
     r_temp.innerHTML = input;
     try {
-        MathJax.startup.promise = MathJax.startup.promise.then(() => MathJax.typesetPromise([r_temp])).catch(e => console.warn('math formatting failed; reason:', e.message));
+        MathJax.startup.promise = MathJax.startup.promise
+            .then(() => MathJax.typesetPromise([r_temp]))
+            .catch(e => console.warn('math formatting failed; reason:', e.message));
         await MathJax.startup.promise;
         return r_temp.innerHTML.trim() !== '';
     } catch(_) {
@@ -108,11 +113,13 @@ function refresh() {
         `;
         answerbtn.style.display = "block";
         answerbtn.innerHTML = "Go back home >>>";
-        for(let i = 0; i < objs.length; i++) objs[i].remove();
+        objs.map(x => x.remove());
         setTimeout(() =>
             window.addEventListener("keydown", e => {
-                if(e.key == "Enter") answerHandler();
-                if(e.key == " ") window.location.reload();
+                if(e.key == "Enter") 
+                    answerHandler();
+                if(e.key == " ") 
+                    window.location.reload();
             }),
         200);
         return;
@@ -120,13 +127,14 @@ function refresh() {
 
     let data = Game.fetchProblem();
     problem.innerHTML = data.q;
-    if(data.type == 'mc' && data.req == 1) problem.innerHTML += "<p class='small-text'>Select all correct answers.</p>";
+    if(data.type == 'mc' && data.req == 1) 
+        problem.innerHTML += "<p class='small-text'>Select all correct answers.</p>";
     typeset(problem);
     
-    for(let i = 0; i < objs.length; i++) objs[i].remove();
+    objs.map(x => x.remove());
     objs = [], dragElements = [], centroids = [];
     startTick = Date.now();
-    dragging = undefined;
+    dragging = null;
     answerbtn.style.display = "block";
     
     switch (data.type) {
@@ -158,7 +166,8 @@ function refresh() {
                     } else if(data.req == 1) {
                         op_i.innerHTML = op_i.getAttribute('orig');
                         mc_sel.splice(mc_sel.indexOf(i), 1);
-                        if(mc_sel.length == 0) answerbtn.style.display = "none";
+                        if(mc_sel.length == 0) 
+                            answerbtn.style.display = "none";
                         return;
                     }
                     let correct = Game.isCorrect( parseInt(op_i.getAttribute("i")) );
@@ -203,12 +212,16 @@ function refresh() {
             cont_a.appendChild(input);
             document.getElementsByClassName("op-input")[0].focus();
             input.addEventListener("keydown", e => {
-                if(e.key == "Enter") e.preventDefault();
-                if(e.key == "Enter" && !toProceed) answerHandler();
+                if(e.key == "Enter") 
+                    e.preventDefault();
+                if(e.key == "Enter" && !toProceed) 
+                    answerHandler();
             });
             input.addEventListener('keyup', async () => {
-                if(await renderable(input.value) && input.value.match(/\$[^$]*\$/g)) showDisplay(input.value); 
-                    else hideDisplay();
+                if(await renderable(input.value) && input.value.match(/\$[^$]*\$/g)) 
+                    showDisplay(input.value); 
+                else 
+                    hideDisplay();
             });
         break;
         case "ranking":
@@ -241,7 +254,8 @@ function refresh() {
                     dragLine.remove();
                     let top, bottom, y = e.pageY;
                     for (let i = 0; i < dragElements.length; i++) {
-                        if (centroids[i].y < y) continue;
+                        if (centroids[i].y < y) 
+                            continue;
                         if(i == 0) {
                             top = dragElements[i];
                             el.remove();
@@ -257,7 +271,7 @@ function refresh() {
                         el.remove();
                         list.appendChild(el);
                     }
-                    dragging = undefined;
+                    dragging = null;
                     dragElements.sort((a, b) => {
                         let centerA = computeCenter(a);
                         let centerB = computeCenter(b);
@@ -319,7 +333,9 @@ function refresh() {
                         if(termSelect.id == defSelect.id) {
                             termSelect.remove();
                             defSelect.remove();
-                        } else incorrectMatch++;
+                        } 
+                        else 
+                            incorrectMatch++;
                         let [lt, ld] = [termSelect, defSelect];
                         termSelect.style["background-color"] = "rgba(255, 0, 0, 0.5)";
                         defSelect.style["background-color"] = "rgba(255, 0, 0, 0.5)";
@@ -327,8 +343,9 @@ function refresh() {
                             lt.style["background-color"] = "rgba(0, 0, 0, 0)";
                             ld.style["background-color"] = "rgba(0, 0, 0, 0)";
                         }, 500);
-                        termSelect = undefined, defSelect = undefined;
-                        if(terms.children.length == 0) answerHandler();
+                        termSelect = null, defSelect = null;
+                        if(terms.children.length == 0) 
+                            answerHandler();
                     }
                 }));
             }
@@ -347,7 +364,8 @@ function answerHandler() {
     hideDisplay();
     if (Game.isDead()) window.location.href = "/home?l=lm&s=1";
     if (toProceed) {
-        if (Game.fetchProblem().type == "txt" && requireCorrect && !Game.getLastCorrect()) return;
+        if (Game.fetchProblem().type == "txt" && requireCorrect && !Game.getLastCorrect()) 
+            return;
         Game.registerTick(endTick - startTick);
         Game.continue();
         answerMarker.style.display = reshowMarker.style.display = "none";
@@ -369,7 +387,8 @@ function answerHandler() {
                     correct = Game.isCorrect(mc_sel);
                     if (correct) {
                         for(let i = 0; i < objs.length; i++)
-                            if(data.ans.indexOf(parseInt(objs[i].getAttribute('i'))) > -1) objs[i].innerHTML = `<p class="answer-symbol">✅</p> ` + objs[i].getAttribute('orig');
+                            if(data.ans.indexOf(parseInt(objs[i].getAttribute('i'))) > -1) 
+                                objs[i].innerHTML = `<p class="answer-symbol">✅</p> ` + objs[i].getAttribute('orig');
                         window.setTimeout(() => {
                             Game.registerTick(Date.now() - startTick);
                             Game.continue();
@@ -388,7 +407,8 @@ function answerHandler() {
                         }              
                         for (let j = 0; j < cont_a.children.length; j++) {
                             let item = cont_a.children[j];
-                            if(data.ans.indexOf(item.getAttribute('i')) > -1 && mc_sel.indexOf(item.getAttribute('i')) < 0) item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
+                            if(data.ans.indexOf(item.getAttribute('i')) > -1 && mc_sel.indexOf(item.getAttribute('i')) < 0) 
+                                item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
                         }
                         answerMarker.style.display = reshowMarker.style.display = "block";
                         answerbtn.style.display = "block";
@@ -400,9 +420,12 @@ function answerHandler() {
             break;
             case "txt":
                 selected = false;
-                if(objs[0].value === "") return noAnswer();
-                if(lazyCheck) correct = Game.isLazyCorrect(objs[0].value.toLowerCase());
-                else correct = Game.isCorrect(objs[0].value.toLowerCase());
+                if(objs[0].value === "") 
+                    return noAnswer();
+                if(lazyCheck) 
+                    correct = Game.isLazyCorrect(objs[0].value.toLowerCase());
+                else 
+                    correct = Game.isCorrect(objs[0].value.toLowerCase());
                 if(correct) {
                     Game.registerTick(Date.now() - startTick);
                     Game.continue();
@@ -432,7 +455,8 @@ function answerHandler() {
             break;
             case "ranking":
                 let answerList = [];
-                for(let i = 0; i < dragElements.length; i++) answerList.push(dragElements[i].textContent);
+                for(let i = 0; i < dragElements.length; i++) 
+                    answerList.push(dragElements[i].textContent);
                 correct = Game.isCorrect(answerList);
                 if(correct) {
                     Game.registerTick(Date.now() - startTick);
@@ -515,7 +539,8 @@ window.addEventListener("dragover", e => {
     if(dragLine.parentNode !== list) list.prepend(dragLine);
     let top, bottom, y = e.pageY;
     for(let i = 0; i < dragElements.length; i++) {
-        if(centroids[i].y < y) continue;
+        if(centroids[i].y < y) 
+            continue;
         else if((i - 1) >= 0) {
             top = dragElements[i - 1];
             bottom = dragElements[i];
@@ -538,7 +563,8 @@ window.addEventListener("dragover", e => {
     let [success, _] = await UserGateway.getuser(false, false, false, false);
     if (!success) return;
     const paramList = new URLSearchParams(window.location.search);
-    if (!paramList.get("ds")) return window.location.href = "/home";
+    if (!paramList.get("ds")) 
+        return window.location.href = "/home";
     let dsVal = paramList.get("ds").split(",");
     dsVal.forEach((val, idx) => dsVal[idx] = parseInt(val));
     let m = parseFloat(paramList.get("m")) ?? 0;
@@ -555,8 +581,10 @@ window.addEventListener("dragover", e => {
         infinite_mode: i == 1 && m != 1 ? true : false,
         deckdistr: [6, 1, 1]
     });
-    if (rc == 1) requireCorrect = true;
-    if (lc == 1) lazyCheck = true;
+    if (rc == 1) 
+        requireCorrect = true;
+    if (lc == 1) 
+        lazyCheck = true;
     refresh();
     window.LOADED();
 })();
@@ -597,28 +625,34 @@ window.addEventListener("keydown", async e => {
             let len = data.op.length;
             let strlen = String(len);
             mc_keynum += e.key;
-            problem.innerHTML = data.q + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : '') + "<p style='font-size: 10px;'>" + mc_sel.join(",") + (mc_sel.length > 0 ? "," : "") + mc_keynum + "</p>";
+            problem.innerHTML = data.q 
+                + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : '')
+                + "<p style='font-size: 10px;'>" + mc_sel.join(",") + (mc_sel.length > 0 ? "," : "")
+                + mc_keynum + "</p>";
             await typeset(problem);
             if (strlen.length > mc_keynum) return;
         }
         if (mc_keynum.length == 0) {
-            problem.innerHTML = data.q + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : '');
+            problem.innerHTML = data.q
+                + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : '');
             return await typeset(problem);
         }
         let num = parseInt(mc_keynum);
         if (num > data.op.length) {
-            problem.innerHTML = data.q + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : '');
+            problem.innerHTML = data.q
+                + (data.req == 1 ? "<p class='small-text'>Select all correct answers.</p>" : '');
             await typeset(problem);
             mc_keynum = "";
             return;
         }
-        mc_keynum = "", prob = undefined;
+        mc_keynum = "", prob = null;
         mc_sel.push(num);
         if(data.req == 1 && mc_sel.length < data.ans.length) return;
         let correct = Game.isCorrect(data.req == 1 ? mc_sel.map((v) => v - 1) : num - 1);
         if (correct) {
             for(let i = 0; i < mc_sel.length; i++)
-                cont_a.children[mc_sel[i] - 1].innerHTML = `<p class="answer-symbol">✅</p> ` + cont_a.children[mc_sel[i] - 1].innerHTML;
+                cont_a.children[mc_sel[i] - 1].innerHTML = `<p class="answer-symbol">✅</p> ` 
+                    + cont_a.children[mc_sel[i] - 1].innerHTML;
             selected = true;
             window.setTimeout(() => {
                 Game.registerTick(Date.now() - startTick);
@@ -629,7 +663,8 @@ window.addEventListener("keydown", async e => {
             selected = true;
             for (let i = 0; i < cont_a.children.length; i++) {
                 let item = cont_a.children[i];
-                if(data.ans.indexOf(i) > -1) item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
+                if(data.ans.indexOf(i) > -1) 
+                    item.innerHTML = `<p class="answer-symbol">✅</p> ` + item.innerHTML;
             }
             for(let i = 0; i < mc_sel.length; i++)
                 cont_a.children[mc_sel[i] - 1].innerHTML = `<p class="answer-symbol">❌</p> ` + cont_a.children[mc_sel[i] - 1].innerHTML;
@@ -642,9 +677,11 @@ window.addEventListener("keydown", async e => {
         }
         mc_sel = [];
     }
-    if(data.type == "mtch" && e.key == "Backspace") answerHandler();
+    if(data.type == "mtch" && e.key == "Backspace") 
+        answerHandler();
     if(!toProceed) return;
-    if(e.key == "Enter") e.preventDefault();
+    if(e.key == "Enter") 
+        e.preventDefault();
     if(e.key == "Enter" && (requireCorrect ? answerbtn.disabled == false : e.target != objs[0])) {
         Game.registerTick(endTick - startTick);
         Game.continue();
@@ -701,7 +738,8 @@ window.addEventListener("input", () => {
 });
 window.addEventListener("beforeunload", e => {
     let progress = Game.getProgress();
-    if(progress.seen == 0 || progress.remaining == 0) return;
+    if(progress.seen == 0 || progress.remaining == 0) 
+        return;
     let confirm = "Are you sure you want to leave learn mode and stop reviewing?";
     (e || window.event).returnValue = confirm;
     return confirm;

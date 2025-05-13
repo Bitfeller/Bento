@@ -16,10 +16,6 @@
         </div>
         <div class="right-header">
             <button class="header-button" id="signInBtn">Login</button>
-            <nav>
-                <!-- <a class="header-nav">About Us</a>
-                <a class="header-nav">Science</a> -->
-            </nav>
         </div>
     </header>
     <section id="hero">
@@ -113,13 +109,6 @@
         </section>
         <hr>
     </section>
-    <!-- <div id="contact-box">
-        <h1>Contact Us</h1>
-        <input placeholder="Name:">
-        <input type="email" placeholder="Email:">
-        <textarea placeholder="Message:"></textarea>
-        <button id="contactSubmitButton">Submit</button>
-    </div> -->
 
     <footer>
         <hr>

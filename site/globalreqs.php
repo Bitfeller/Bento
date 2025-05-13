@@ -15,14 +15,15 @@
         switch($contnt["theme"]) {
             case 1:
                 echo "<link rel='stylesheet' href='../css/themes/coffee-midnight.css'>";
-            break;
+                break;
             case 2:
                 echo "<link rel='stylesheet' href='../css/themes/catppuccin.css'>";
-            break;
+                break;
             case 3:
                 echo "<link rel='stylesheet' href='../css/themes/grayscale.css'>";
-            break;
+                break;
         }
-    } else if(isset($_X_UO) and $_X_UO == "1")
+    } else if(isset($_X_UO) and $_X_UO == "1") {
         header("Location: /login?s=".$_SERVER['REQUEST_URI']);
+    }
 ?>
