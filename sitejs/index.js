@@ -1,7 +1,6 @@
 import { UserGateway } from "../server/client-gateway/user-gateway.js";
 
 // Check if user is signed in
-
 (async () => {
     let [success, _] = await UserGateway.getuser(false, false, false, false);
     if(success) window.location.href = "/home";

@@ -70,7 +70,33 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         "You can find your profile in the top right corner.",
         "Started making a deck but didn't finish? Bento auto-saves your drafts, and you can find them on the right when cooking."
     ];
-    const errorMessages = {};
+    const errorMessages = {
+        // Login errors
+        "login-bad": "Bad username or password.",
+        // Signup errors
+        "pwd-nomatch": "Passwords don't match.",
+        "pwd-comm": "Your password is either common or less than 8 characters long.",
+        "uname-bad": "Your username has invalid characters.",
+        "uname-flag": "Your username was flagged for inappropriate content.",
+        "uname-taken": "That username is already taken.",
+        "email-bad": "Enter in a valid email.",
+        "email-taken": "That email is already taken.",
+        "autologin-bad": "We successfully made an account for you, but we can't log you in automatically. Try logging in manually.",
+        // Deck create/edit errors
+        "no-session": "Looks like you're logged out. Open another page, log in again, and then you can create this deck.",
+        "dname-bad": "That name has invalid characters or is empty.",
+        "dname-flag": "That name was flagged for inappropriate content.",
+        "dname-taken": "You've already created another deck with that name.",
+        "dpic-size": "Looks like the deck's image exceeds the size limit of 2 MB.",
+        "ddata-sameprob": "Two or more cards have the exact same question (or an inverse has the exact same question as some other card). We don't currently support those.",
+        "ddata-flag": "Your cards were flagged for inappropriate content.",
+        // Learn picker
+        "select-deck": "Please select at least one deck to review.",
+        // Profile
+        "pwd-wrong": "Wrong password.",
+        // Unknown
+        "unk": "Looks like there's something wrong on our side. Try again later."
+    };
 
     // Transitions between current tip and the next tip
     // Supports changes in color.
@@ -123,6 +149,7 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         clearInterval(tipper);
         tip_changer(err, "rgb(175, 100, 100)");
     };
+    // SHOW_ERROR: shows an error to the user.
     window.SHOW_ERROR = err => {
         const msg = errorMessages[err] || err;
         const errPopup = document.createElement("div");
@@ -132,6 +159,10 @@ import { UserGateway } from "../../server/client-gateway/user-gateway.js";
         document.body.appendChild(errPopup);
         setTimeout(() => errPopup.remove(), 2500);
     };
+    window.ERROR_TYPE_EXISTS = err => {
+        return errorMessages[err] ? true : false;
+    };
+
     window.lib = {};
     // Decode plain string
     window.lib.decode = str => {
