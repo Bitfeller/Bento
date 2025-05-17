@@ -22,7 +22,7 @@ const sizeLimit = 2 * 1000 * 1000; // NOTE: must be same as max_image_size in se
 let allowedTags = [];
 
 const dragline = document.createElement('div');
-dragline.style = 'display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;';
+dragline.style = 'display: flex; background-color: var(--drag-color); width: 100%; height: 5px;';
 
 // Load DOMPurify for imports
 const dpscript = document.createElement('script');
@@ -206,14 +206,17 @@ function toNew() {
 // Builders builds the card structure
 // Generators generate answers
 // Cloners clone cards
+// --------------------------------------------------- \\
 
 
 // Cloner
 function cloner(card, n) {
     let data = toDeck(err => alert(err), true, true, n - 1);
-    if(Object.keys(data[2].contnt).length == 0) return;
+    if(Object.keys(data[2].contnt).length == 0) 
+        return;
     let newCard = generateCard(data[2].contnt, Object.keys(data[2].contnt), 0, n + 1, true);
-    if(n == cards.length - 1) cardContain.insertAdjacentElement('beforeend', newCard);
+    if(n == cards.length - 1)
+        cardContain.insertAdjacentElement('beforeend', newCard);
     else {
         let next = card.nextSibling;
         cardContain.insertBefore(newCard, next);
@@ -223,6 +226,7 @@ function cloner(card, n) {
 function generator_mc(cardmc, card, allcorr, t, txt) {
     let newop = document.createElement('div');
     newop.className = "mcop";
+    newop.setAttribute('draggable', true);
     newop.innerHTML = `
         <div class="drag-handle">:</div>
         <div contenteditable="true" type='input' class='mcop-val' placeholder='...'></div>
@@ -230,6 +234,13 @@ function generator_mc(cardmc, card, allcorr, t, txt) {
         <button class='mcop-corr mcop-${t ? 'sel' : 'nosel'}' tabindex="-1"><span class="material-symbols-outlined">${t ? 'check' : 'check_indeterminate_small'}</span></button>
     `;
     cardmc.appendChild(newop);
+    newop.addEventListener('dragstart', () => {
+        drag = newop;
+        dragParent = cardmc;
+        newop.style.backgroundColor = 'var(--drag-color)';
+        cardmc.append(dragline);
+    });
+    newop.addEventListener('dragend', e => endDrag(e, newop, cardmc));
     let input = newop.getElementsByClassName('mcop-val')[0];
     let delbtn = newop.getElementsByClassName('mcop-del')[0];
     let corrbtn = newop.getElementsByClassName('mcop-corr')[0];
@@ -269,11 +280,19 @@ function generator_mc(cardmc, card, allcorr, t, txt) {
 function generator_txt(card, i_anslist, r, p, txt) {
     let newans = document.createElement('div');
     newans.className = "txt-ans-cont" + (p == i_anslist ? "-inv" : "");
+    newans.setAttribute('draggable', true);
     newans.innerHTML = `
         <div class="drag-handle">:</div>
         <div contenteditable="true" type='input' class='txtans ansdiv' placeholder='...'></div>
         ${r ? `<button class='txtans-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>` : ``}
     `;
+    newans.addEventListener('dragstart', () => {
+        drag = newans;
+        dragParent = p;
+        newans.style.backgroundColor = 'var(--drag-color)';
+        p.append(dragline);
+    });
+    newans.addEventListener('dragend', e => endDrag(e, newans, p));
     p.appendChild(newans);
     let input = newans.getElementsByClassName('txtans')[0];
     let delbtn = newans.getElementsByClassName('txtans-del')[0];
@@ -303,7 +322,7 @@ function generator_rank(card, ranklist, txt) {
     item.addEventListener('dragstart', () => {
         drag = item;
         dragParent = ranklist;
-        item.style.backgroundColor = 'rgb(150, 200, 255)';
+        item.style.backgroundColor = 'var(--drag-color)';
         ranklist.append(dragline);
     });
     item.addEventListener('dragend', e => endDrag(e, item, ranklist));
@@ -567,6 +586,16 @@ function newCard() {
         else if(cn.includes('rankbtn')) init_ranking(card, n);
         else if(cn.includes('mtchbtn')) init_mtch(card, n);
         else init_mc(card, n); // mcbtn + etc.
+    
+    let dragHandle = card.getElementsByClassName('card-drag-handle')[0];
+    dragHandle.setAttribute('draggable', true);
+    dragHandle.addEventListener('dragstart', () => {
+        drag = card;
+        dragParent = cardContain;
+        card.style.backgroundColor = 'var(--drag-color)';
+        cardContain.append(dragline);
+    });
+    dragHandle.addEventListener('dragend', e => endDrag(e, card, cardContain));
 }
 
 
@@ -832,6 +861,16 @@ function generateCard(contnt, d_keys, i, n) {
             for(let i = 0; i < Math.max(card.ans.length, 1); i++) generator_mtch(carddiv, mtchlist, i != 0, card.ans[i] ?? ["", ""]);
         break;
     }
+    // Set up dragging
+    let dragHandle = carddiv.getElementsByClassName('card-drag-handle')[0];
+    dragHandle.setAttribute('draggable', true);
+    dragHandle.addEventListener('dragstart', () => {
+        drag = carddiv;
+        dragParent = cardContain;
+        carddiv.style.backgroundColor = 'var(--drag-color)';
+        cardContain.append(dragline);
+    });
+    dragHandle.addEventListener('dragend', e => endDrag(e, carddiv, cardContain));
     return carddiv;
 }
 function appendToCards(contnt) {
