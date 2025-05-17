@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento | Inertia</title>
     <?php require_once "../globalreqs.php"?>
-    <link rel="stylesheet" href="../../css/intertia.css"/>
+    <link rel="stylesheet" href="../../css/learn/inertia.css"/>
     <script type="module" src="../../sitejs/inertia.js" data-loading="true"></script>
 </head>
 <body>

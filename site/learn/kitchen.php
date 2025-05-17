@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kitchen</title>
     <?php require_once "../globalreqs.php"?>
-    <link rel="stylesheet" href="../../css/kitchen.css"/>
+    <link rel="stylesheet" href="../../css/learn/kitchen.css"/>
     <script src="../../sitejs/kitchen.js" type="module" data-loading="true"></script>
     <link rel="preload" href="../../img/loading.gif" as="image">
     <!-- MathJax -->

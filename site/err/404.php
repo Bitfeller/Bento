@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento - 404!</title>
-    <?php require_once "globalreqs.php"?>
-    <!-- Quick CSS syntax here; this is put here just in case /css can't be accessed during maintenance/server shutdown -->
+    <?php require_once "../globalreqs.php"?>
+    <!-- Quick CSS syntax here, since it doesn't need to be in an entirely new file. -->
     <style>
         section {
             display: flex;
@@ -29,7 +29,7 @@
     </style>
 </head>
 <body>
-    <?php require_once "header.php" ?>
+    <?php require_once "../header.php" ?>
     <section id="404-content"> 
         <h2>Uh oh! Looks like you landed at a <b>404</b>. (The page you tried accessing doesn't exist...)</h2>
         <a href="/home">Go Home</a>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento!</title>
     <?php require_once "../globalreqs.php"?>
-    <link rel="stylesheet" href="/css/userdir.css"/>
+    <link rel="stylesheet" href="../../css/user/userdir.css"/>
     <script type="module" src="../../sitejs/userdir.js" type="text/javascript" data-loading="true"></script>
 </head>
 <body>

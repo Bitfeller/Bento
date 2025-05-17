@@ -25,7 +25,7 @@ RewriteRule ^(.*)$ /site/$1.php [L]
 
 # Redirect to 404 if file does not exist.
 RewriteCond ./site/%{ENV_NEWURI} -d
-RewriteRule ^(.*)$ /site/404.php [L]
+RewriteRule ^(.*)$ /site/err/404.php [L]
 
 # Set directory.
 <IfModule mod_dirtractive.c>
@@ -33,7 +33,7 @@ RewriteRule ^(.*)$ /site/404.php [L]
 </IfModule>
 
 # Set 404 redirect page.
-ErrorDocument 404 /site/404.php
+ErrorDocument 404 /site/err/404.php
 
 # Block all test folders
 RewriteRule ^.*\/test.*$ - [F]

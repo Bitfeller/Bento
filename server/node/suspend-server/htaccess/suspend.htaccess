@@ -38,10 +38,10 @@ RewriteRule ^(.*)$ $1.php [L]
 # Redirect non-existent paths to 404.
 RewriteCond %{DOCUMENT_ROOT}/%{ENV:NEWURI} -d
 RewriteCond %{ENV:NEWURI} ^\s$
-RewriteRule ^(.*)$ 404.php [L]
+RewriteRule ^(.*)$ /err/404.php [L]
 
 # Set directory index
 DirectoryIndex index.php
 
 # Set 404 page
-ErrorDocument 404 /site/404.php
+ErrorDocument 404 /site/err/404.php

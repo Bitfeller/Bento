@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento | Learn</title>
-    <link rel="stylesheet" href="../../css/game.css"/>
+    <link rel="stylesheet" href="../../css/learn/game.css"/>
     <?php require_once "../globalreqs.php"?>
     <script type="module" src="../../sitejs/game.js" data-loading="true"></script>
     <!-- MathJax -->

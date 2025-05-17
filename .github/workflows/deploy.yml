@@ -1,3 +1,5 @@
+# Use Github Actions to deploy the website to the server via SSH.
+# Runs every merge/commit to the main branch.
 name: Deploy Website
 
 on:
@@ -9,35 +11,31 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
+    # Checkout code
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Minify
-      run: |
-        find ./site -name "*.php" -exec npx html-minifier-terser --collapse-whitespace --remove-comments --minify-js true --minify-css true --output {} {} \;
-        find ./css -name "*.css" -exec npx clean-css-cli -o {} {} \;
-        find ./sitejs -name "*.js" -exec npx terser -o {} -- {} \;
-        find ./server/client-gateway -name "*.js" -exec npx terser -o {} -- {} \;
-
+    # Deploy to server
     - name: Deploy via SSH
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         HOST_IP: ${{ secrets.HOST_IP }}
         HOST_PORT: ${{ secrets.HOST_PORT }}
       run: |
+        # Access server via SSH
         mkdir -p ~/.ssh
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         
         ssh -o StrictHostKeyChecking=no orange@"$HOST_IP" -p "$HOST_PORT" 'bash -s' << 'EOF'
         
-        # [[ Apache server ]]
+        # [[ Apache server ]]; run setup script
         cd /home/orange/
         ./update_bento.sh
         
+        # Update permissions
         cd /var/www/bento.valleynas.uk
-
         chown orange:fruit -R /var/www/bento.valleynas.uk
         chmod 770 -R /var/www/bento.valleynas.uk
         

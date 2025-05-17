@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bento | New Deck</title>
     <?php require_once "../globalreqs.php"?>
-    <link rel="stylesheet" href="../../css/deckEditor.css"/>
+    <link rel="stylesheet" href="../../css/learn/deckEditor.css"/>
     <script type="module" src="../../sitejs/createdeck.js" data-loading="true"></script>
     <!-- MathJax -->
     <script>
