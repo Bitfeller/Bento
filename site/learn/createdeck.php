@@ -41,8 +41,8 @@
                 <p>Tags:</p>
                 <input type="text" id="tagInput" list="tag-suggestions" placeholder="New Tag...">
                 <datalist id="tag-suggestions"></datalist>
-                <p id="tag-ok"></p>
                 <div id="tags"></div>
+                <p id="tag-ok"></p>
             </div>
             <div>
                 <input type="checkbox" id="isPublic" checked>
