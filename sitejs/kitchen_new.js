@@ -393,8 +393,7 @@ async function fetchDecks(start = 0) {
 }
 
 const map = [
-    [40, [0, 255, 127]],    // Spring green 🌱
-    [20, [255, 255, 0]],    // Yellow
+    [20, [255, 191, 0]],    // Amber
     [100, [255, 0, 127]],   // Pink
     [60, [0, 127, 255]],    // Azure
     [0, [255, 0, 0]],       // Red
@@ -473,7 +472,7 @@ async function populateRecommended() {
         tagDiv.style.backgroundColor = generateTagColor(tag);
         tagDiv.onclick = () => {
             filteredTags.innerHTML += `
-                <div class='tag remove-tag' onclick='this.remove()'>
+                <div class='tag remove-tag' onclick='this.remove()' style='background-color: ${generateTagColor(tag)}'>
                     <div class='material-symbols-outlined'>remove</div>
                     <p class='tag-value'>${tag}</p>
                 </div>
@@ -526,7 +525,7 @@ tagSearch.addEventListener('keydown', async e => {
         e.preventDefault();
         if(tag_exists(value)) return;
         filteredTags.innerHTML += `
-            <div class='tag remove-tag' onclick='this.remove()'>
+            <div class='tag remove-tag' onclick='this.remove()' style='background-color: ${generateTagColor(value)}'>
                 <div class='material-symbols-outlined'>remove</div>
                 <p class='tag-value'>${value}</p>
             </div>
