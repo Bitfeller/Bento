@@ -372,6 +372,50 @@ async function fetchDecks() {
     await update();
 }
 
+const map = [
+    [40, [0, 255, 127]],    // Spring green 🌱
+    [20, [255, 255, 0]],    // Yellow
+    [100, [255, 0, 127]],   // Pink
+    [60, [0, 127, 255]],    // Azure
+    [0, [255, 0, 0]],       // Red
+    [70, [0, 0, 255]],      // Blue
+    [90, [255, 0, 255]],    // Magenta
+    [30, [0, 255, 0]],      // Green
+    [10, [255, 127, 0]],    // Orange
+    [80, [127, 0, 255]],    // Violet
+    [50, [0, 255, 255]]     // Cyan
+]
+// A pure function that generates a color based on a name
+function generateTagColor(n) {
+    let bc = map.filter((c) => parseInt(n.charCodeAt(n.length - 1) / 10) % 10 * 10 == c[0])[0][1];
+    const fh = map.filter((c) => 
+        parseInt((n.substring(1)
+            .substring(0, Math.floor(n.substring(1).length / 2))
+            .split('')
+            .reduce((a, c) => a + c.charCodeAt(0), 0) / n.substring(1)
+            .substring(0, Math.floor(n.substring(1).length / 2)).length) / 10)
+        % 10 * 10 == c[0])[0][1];
+    const sh = map.filter((c) => 
+        parseInt((n.substring(1)
+            .substring(Math.floor(n.substring(1).length / 2))
+            .split('')
+            .reduce((a, c) => a + c.charCodeAt(0), 0) / n.substring(1)
+            .substring(0, Math.floor(n.substring(1).length / 2)).length) / 10)
+        % 10 * 10 == c[0])[0][1];
+    return `rgb(${
+        bc.map((c, i) => {
+            let value = c + parseInt(fh[i] / 25) + parseInt(sh[i] / 25);
+            while (value > 255) 
+                Math.abs(n - 0) < Math.abs(n - 255) ? 
+                    value = 255 : 
+                    Math.abs(n - 255) < Math.abs(n - 0) ? value -= 255 : value = 255;
+            return parseInt(value * 0.65);
+        }).join(', ')
+    })`;
+}
+
+
+
 async function populateRecommended() {
     // Count tag occurrences from all loaded decks
     const tagCounts = {};
@@ -401,7 +445,8 @@ async function populateRecommended() {
         if (tag_exists(tag)) continue;
         
         predefinedTags.innerHTML += `
-            <div class='tag add-tag' 
+            <div class='tag add-tag'
+                style='background-color: ${generateTagColor(tag)};'
                 onclick='
                     this.className = "tag remove-tag";
                     this.children[0].innerHTML = "remove";
