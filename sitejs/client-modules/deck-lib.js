@@ -643,15 +643,15 @@ tagInput.addEventListener('input', () => {
         if(tag_exists(value)) {
             tagOk.style.display = 'block';
             tagOk.innerHTML = 'Already added';
-            tagOk.style.color = 'red';
+            tagOk.style.color = 'var(--danger-red)';
         } else if(allowedTags.indexOf(value) > -1) {
             tagOk.style.display = 'block';
             tagOk.innerHTML = 'Valid';
-            tagOk.style.color = 'green';
+            tagOk.style.color = 'var(--select-blue)';
         } else {
             tagOk.style.display = 'block';
             tagOk.innerHTML = 'Invalid';
-            tagOk.style.color = 'red';
+            tagOk.style.color = 'var(--danger-red)';
         }
     }
     else tagOk.style.display = 'none';

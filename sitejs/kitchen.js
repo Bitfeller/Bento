@@ -242,7 +242,7 @@ async function preview(_this, isAdded) {
         <div class='preview-container'>
             <div class='preview-container-part' id='overview'>
                 <h2>${deck.name}</h2>
-                <p>By: <span class='username'>${deck.owner}</span>${deck.public == 0 ? "<span class='private-deck'>Private</span>" : ""}</p>
+                <p style='text-wrap: nowrap;'>By: <span class='username'>${deck.owner}</span>${deck.public == 0 ? "<span class='private-deck'>Private</span>" : ""}</p>
                 <div class="line-up-icons view-container"><span class='views'>${deck.views ?? 0}</span> <span class="material-symbols-outlined views-icon">visibility</span></div>
                 ${user.username == deck.owner ? "<div class='deck-buttons'><button class='export-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>download</span> Export</div></button> <button class='edit-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>edit</span> Edit</div></button> <button class='delete-btn' style='padding: 3px;'><div class='line-up-icons'><span class='material-symbols-outlined' style='font-size: 15px; color: black;'>delete</span> Delete</div></button></div>" : ""}
             </div>

@@ -79,7 +79,7 @@ function box(id, killfn = (box) => box.remove()) {
         <div>
             <h2 class='name'>.</h2>
             <div class='deck-bottom-row'>
-                <p>by: <span class='username'>.</span></p>
+                <p style='text-wrap: nowrap;'>by: <span class='username'>.</span></p>
                 <div class='deck-tags'></div>
             </div>
         </div>
@@ -241,7 +241,7 @@ async function preview(_this) {
         <div class='preview-container'>
             <div class='preview-container-part' id='overview'>
                 <h2>${deck.name}</h2>
-                <p>by: <span class='username'><u>${deck.owner}</u></span>${deck.public == 0 ? `<span class='private-deck>private</span>` : ''}</p>
+                <p style='text-wrap: nowrap;'>by: <span class='username'><u>${deck.owner}</u></span>${deck.public == 0 ? `<span class='private-deck>private</span>` : ''}</p>
                 <div class='line-up-icons view-container'><span class='views'>${deck.views ?? 0}</span> <span class="material-symbols-outlined views-icon">visibility</span></div>
                 ${user.username == deck.owner
                     ? ` <div class='preview-btns'>
@@ -256,7 +256,8 @@ async function preview(_this) {
                                 </div>
                             </button>
                             <button class='preview-btn' id='preview-delete-btn'>
-                                <div class='preview-ico material-symbols-outlined'>delete</span> Delete
+                                <div class='line-up-icons'>
+                                    <span class='preview-ico material-symbols-outlined'>delete</span> Delete
                                 </div>
                             </button>
                         </div>`

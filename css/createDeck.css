@@ -424,6 +424,7 @@ input[type="file"] {
 #tagInput {
     width: 150px;
     padding: 0px;
+    padding-left: 5px;
     margin: 0px;
     height: 32px;
 }
