@@ -1,24 +1,10 @@
-import { types, sameUser } from './gateway-mod.js';
+import { types, sameUser, gateway_fetch } from './gateway-mod.js';
 
 const moduleurl = new URL(import.meta.url);
 const spath = moduleurl.pathname + "/../..";
 
-let pwdcache;
-
-async function pwdfetch() {
-    if(pwdcache) return pwdcache;
-    try {
-        const resp = await fetch(spath + "/conf/commonpwd.json");
-        if(!resp.ok) throw "couldn't fetch!";
-        const data = await resp.json();
-        return pwdcache = data;
-    } catch(e) {
-        console.error('backend: Failed to fetch common passwords:', e);
-        return [];
-    }
-}
 async function isCommon(pwd) {
-    let list = await pwdfetch();
+    let list = await gateway_fetch("/conf/commonpwd.json");
     for(let i = 0; i < list.length; i++)
         if(pwd.includes(list[i])) return true;
     return false;

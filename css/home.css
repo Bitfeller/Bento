@@ -252,12 +252,22 @@
 @media only screen and (max-width: 600px) {
     .home-grid {
         grid-template-columns: 1fr;
-        grid-template-rows: repeat(3, 1fr);
+        grid-template-areas: none;
     }
-    .bento-box {
-        grid-column: span 1;
-        grid-row: span 1;
+    
+    .review-box, .create-deck-box, .browse-decks-box, .changelog, .review-schedule {
+        grid-column: 1;
+        width: 94%;
     }
+
+    #deck-reminders {
+        display: none;
+    }
+    
+    .review-name {
+        max-width: calc(80vw - 50px);
+    }
+
     .review-name {
         max-width: calc(80vw - 50px);
     }
