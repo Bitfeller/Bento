@@ -362,6 +362,7 @@ function init_mc(card, n, q) {
             <button class='txtbtn selbtn selbtn-nosel'>Text</button>
             <button class='rankbtn selbtn selbtn-nosel'>Ranking</button>
             <button class='mtchbtn selbtn selbtn-nosel'>Matching</button>
+            <button class='card-drag-handle' tabindex="-1"><span class='material-symbols-outlined'>drag_handle</span></button>
         </div>
         <div class='cardmain'>
             <div class='card-q-cont'>
@@ -407,6 +408,7 @@ function init_txt(card, n, q) {
             <button class='txtbtn selbtn selbtn-sel'>Text</button>
             <button class='rankbtn selbtn selbtn-nosel'>Ranking</button>
             <button class='mtchbtn selbtn selbtn-nosel'>Matching</button>
+            <button class='card-drag-handle' tabindex="-1"><span class='material-symbols-outlined'>drag_handle</span></button>
         </div>
         <div class='cardmain'>
             <div class='card-q-cont'>
@@ -489,6 +491,7 @@ function init_ranking(card, n, q) {
             <button class='txtbtn selbtn selbtn-nosel'>Text</button>
             <button class='rankbtn selbtn selbtn-sel'>Ranking</button>
             <button class='mtchbtn selbtn selbtn-nosel'>Matching</button>
+            <button class='card-drag-handle' tabindex="-1"><span class='material-symbols-outlined'>drag_handle</span></button>
         </div>
         <div class='cardmain'>
             <div class='card-q-cont'>
@@ -522,6 +525,7 @@ function init_mtch(card, n, q) {
             <button class='txtbtn selbtn selbtn-nosel'>Text</button>
             <button class='rankbtn selbtn selbtn-nosel'>Ranking</button>
             <button class='mtchbtn selbtn selbtn-sel'>Matching</button>
+            <button class='card-drag-handle' tabindex="-1"><span class='material-symbols-outlined'>drag_handle</span></button>
         </div>
         <div class='cardmain'>
             <div class='card-q-cont'>
