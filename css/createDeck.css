@@ -430,12 +430,29 @@ input[type="file"] {
 .drag-handle {
     width: 15px;
     display: inline-block;
-    cursor: pointer;
+    cursor: grab;
     border-radius: 10px;
     user-select: none;
 }
 .drag-handle:hover {
     filter: brightness(115%);
+}
+.cardsel {
+    position: relative;
+}
+.card-drag-handle {
+    height: 27px;
+    display: inline-block;
+    cursor: grab;
+    border-radius: 10px;
+    user-select: none;
+    right: 0;
+    bottom: 5px;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0);
+    * {
+        font-size: 22pt;
+    }
 }
 @media only screen and (max-width: 1025px) {
     .options-container {
