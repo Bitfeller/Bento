@@ -29,8 +29,10 @@ async function sameUser() {
         return res.json();
     }).then(res => {
         if(res.status == 'success') {
-            if(!lastUser) same = true;
-            else same = parseInt(res.data) == lastUser;
+            if(!lastUser) 
+                same = true;
+            else 
+                same = parseInt(res.data) == lastUser;
             lastUser = res.data;
         }
     }).catch(e => console.log('backend:', e));

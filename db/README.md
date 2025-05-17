@@ -8,3 +8,5 @@ drafts/X-Y.pic
 db - the file-system database structure used by Bento to store images and pfps.
 Used for local environments.
 - On the production/test server, the config relies on the actual file-server database.
+
+PLACEHOLDER files are used here to ensure the directories exist on origin and across machines.
