@@ -66,6 +66,7 @@
         if(!$handle) fail("CRITICAL: couldn't create deckpic!");
         fclose($handle);
         if($deckpic !== "") file_put_contents($path, $deckpic);
+        increment('../info/deck_creates');
         success();
     } catch(Exception $e) {
         fail("exception: " . $e->getMessage());
