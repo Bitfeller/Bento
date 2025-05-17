@@ -62,10 +62,10 @@
                     <div class="filter-box">
                         <p>Sort</p>
                         <select name="sort-options" id="sortOptions">
-                            <option value="time">Chronologically</option>
-                            <option value="reverse-time">Reverse Chronologically</option>
-                            <option value="alphabet">Alphabetically</option>
-                            <option value="reverse-alphabet">Reverse Alphabetically</option>
+                            <option value="time">Chronologically (new &rarr; old)</option>
+                            <option value="reverse-time">Reverse Chronologically (old &rarr; new)</option>
+                            <option value="alphabet">Alphabetically (A &rarr; Z)</option>
+                            <option value="reverse-alphabet">Reverse Alphabetically (Z &rarr; A)</option>
                         </select>
                     </div>
                     <div class="filter-box">
