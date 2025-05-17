@@ -275,7 +275,11 @@ span.views {
     background-color: rgb(255, 255, 255, 0.05);
     margin-bottom: 10px;
 }
-
+#loadMore {
+    width: min(100%, 350px);
+    height: 40px;
+    margin: 10px calc(50% - min(100%, 350px) / 2);
+}
 @media screen and (max-width: 1250px) {
     .ingredient-box {
         width: 48%;

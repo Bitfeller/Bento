@@ -113,7 +113,7 @@
 
                 </div>
                 <button id="loadMore">
-                    Load More
+                    Show More Results
                 </button>
             </div>
         </div>
