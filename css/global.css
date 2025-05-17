@@ -162,6 +162,9 @@ code {
     padding: 5px;
     border-radius: 5px;
 }
+select, option {
+    cursor: pointer;
+}
 .loader {
     margin: 0;
     padding: 0;
