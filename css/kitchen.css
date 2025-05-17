@@ -39,6 +39,7 @@
 }
 #searchBar {
     margin-bottom: 5px;
+    width: calc(100% - 5px);
 }
 .checkbox-box {
     display: flex;
