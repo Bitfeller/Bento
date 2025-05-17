@@ -3,6 +3,13 @@
     gap: 15px;
     margin: 20px 10px;
 }
+
+.sidebar-container {
+    min-width: calc(25vw - 6px);
+    position: relative;
+    margin-right: 15px;
+}
+
 .sidebar {
     min-width: calc(25vw - 6px);
     height: calc(100vh - 129px);
@@ -10,6 +17,8 @@
     border-radius: 5px;
     background-color: var(--dark-gray);
     padding: 10px;
+    position: sticky;
+    top: 5px;
     input[type="text"] {
         font-size: 12pt;
         padding: 2.5px;
@@ -46,12 +55,13 @@
 .tags-box, .filters, .question-type-filters {
     margin-top: 10px;
     background-color: var(--gray);
-    padding: 5px;
+    padding: 10px;
     padding-bottom: 7.5px;
     border-radius: 10px;
 }
-.predefined-tags {
+.predefined-tags, .filtered-tags {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
 }
 .break-line {
@@ -71,13 +81,21 @@
     .material-symbols-outlined {
         font-size: 12pt;
     }
+    p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: clip;
+    }
 }
 .add-tag, .remove-tag {
     cursor: pointer;
     transition: 0.3s;
 }
-.add-tag:hover, .remove-tag:hover {
-    filter: brightness(85%);
+.add-tag:hover {
+    background-color: var(--select-blue);
+}
+.remove-tag:hover {
+    background-color: var(--danger-red);
 }
 .filters {
     display: flex;
@@ -97,14 +115,14 @@
     & div {
         position: relative;
         & div {
-            /* Toggle the comment to switch between the strictly and loosely */
-            /* right: 0; */
+            right: auto;
             position: absolute;
             width: 50%;
             height: 100%;
             background-color: rgba(175, 150, 100, 0.8);
             border-radius: 10px;
-        };
+            transition: right 0.3s ease;
+        }
         span:first-of-type {
             margin-left: 5px;
         }
@@ -115,9 +133,9 @@
             position: relative;
             z-index: 2;
         }
-    };
+    }
 }
-#strict-maching-slider {
+#strictMachingSlider {
     cursor: pointer;
 }
 .decks-display {
@@ -185,6 +203,92 @@
     gap: 15px;
     flex-wrap: wrap;
 }
+.deck-title-container {
+    border: var(--gray) 3px solid;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: var(--dark-gray);
+}
+.deck-title-container h2 {
+    font-size: 20pt;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .decks-display > div{
     margin-bottom: 10px;
+}
+dialog {
+    max-height: 85%;
+    margin: auto;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--dark-gray);
+    width: 50%;
+}
+#overview {
+    position: relative;
+    background-color: var(--light-gray);
+}
+div.preview-container-part {
+    background-color: var(--gray);
+    margin: 5px 5px 10px 5px;
+    padding: 10px;
+    border-radius: 3px;    
+}
+span.views {
+    font-size: 25px;
+    margin-left: 0px;
+}
+.view-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.views-icon {
+    margin-right: 15px;
+    font-size: 21px;
+}
+.title-bar {
+    display: flex;
+    justify-content: space-between;
+}
+#preview-dialog-leave {
+    color: var(--light-text);
+    background-color: var(--danger-red);
+    height: 30px;
+    width: 30px;
+}
+#preview-dialog-leave > span {
+    font-size: 15px;
+    margin: 7px 0;
+    padding: 0;
+}
+#cards, #overview, #description {
+    border-radius: 10px;
+}
+.question-box {
+    position: relative;
+    border-radius: 5px;
+    margin: 0px 5px;
+      margin-bottom: 0px;
+    padding: 10px;
+    background-color: rgb(255, 255, 255, 0.05);
+    margin-bottom: 10px;
+}
+
+@media screen and (max-width: 1250px) {
+    .ingredient-box {
+        width: 48%;
+    }
+}
+@media screen and (max-width: 960px) {
+    .sidebar-container {
+        display: none;
+    }
+}
+@media screen and (max-width: 550px) {
+    .ingredient-box {
+        width: 98%;
+    }
 }

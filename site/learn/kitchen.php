@@ -27,162 +27,94 @@
 <body data-uo="true">
     <?php require_once "../header.php"?>
     <div class="main-container">
-        <div class="sidebar">
-            <div class="search-box">
-                <div style="display: flex; gap: 10px;">
-                    <div class="material-symbols-outlined search-menu">menu</div>
-                    <input type="text" id="searchBar" placeholder="Search...">
-                </div>
-                <div class="checkbox-box">
-                    <input type="checkbox" name="regex">
-                    <p>Regex Search</p>
-                </div>
-                <div class="checkbox-box">
-                    <input type="checkbox" name="case-sensitive">
-                    <p>Case Sensitive</p>
-                </div>
-                <!-- <div class="checkbox-box">
-                    <input type="checkbox" name="hide-owned-decks">
-                    <p>Hide Owned Decks</p>
-                </div> -->
-            </div>
-            <div class="tags-box">
-                <p>Filtering by:</p>    
-                <div class="filtered-tags">
-                    <div class="tag remove-tag">
-                        <div class="material-symbols-outlined">remove</div>
-                        <p>Tag 1</p>
+        <div class="sidebar-container">
+            <div class="sidebar">
+                <div class="search-box">
+                    <div style="display: flex; gap: 10px;">
+                        <div class="material-symbols-outlined search-menu">menu</div>
+                        <input type="text" id="searchBar" placeholder="Search...">
                     </div>
-                    <div class="tag remove-tag">
-                        <div class="material-symbols-outlined">remove</div>
-                        <p>Tag 2</p>
+                    <div class="checkbox-box">
+                        <input type="checkbox" name="case-sensitive">
+                        <p>Case Sensitive</p>
                     </div>
-                </div>
-                <div class="break-line"></div>
-                <p>Recommended Tags: </p>
-                <div class="predefined-tags">
-                    <div class="tag add-tag">
-                        <div class="material-symbols-outlined">add</div>
-                        <p>Tag 1</p>
+                    <div class="checkbox-box">
+                        <input type="checkbox" name="regex">
+                        <p>Regex Search</p>
                     </div>
-                    <div class="tag add-tag">
-                        <div class="material-symbols-outlined">add</div>
-                        <p>Tag 2</p>
+                    <!-- <div class="checkbox-box">
+                        <input type="checkbox" name="hide-owned-decks">
+                        <p>Hide Owned Decks</p>
+                    </div> -->
+                </div>
+                <div class="tags-box">
+                    <p>Filtering by:</p>    
+                    <div class="filtered-tags">
                     </div>
+                    <div class="break-line"></div>
+                    <p>Recommended Tags: </p>
+                    <div class="predefined-tags">
+                    </div>
+                    <div class="break-line"></div>
+                    <p>Filter by tag:</p>
+                    <input type="text" id="tagSearch" list="tag-suggestions" placeholder="Search...">
+                    <datalist id="tag-suggestions"></datalist>
                 </div>
-                <div class="break-line"></div>
-                <p>Filter by tag:</p>
-                <input type="text" id="tagSearch" list="tag-suggestions" placeholder="Search...">
-                <datalist id="tag-suggestions"></datalist>
-                <p id="tag-ok"></p>
-            </div>
-            <div class="filters">
-                <p>Filters:</p>
-                <div class="filter-box">
-                    <p>Sort</p>
-                    <select name="sort-options" id="sortOptions">
-                        <option value="alphabet">Alphabetically</option>
-                        <option value="reverse-alphabet">Reverse Alphabetically</option>
-                        <option value="time">Chronologically</option>
-                        <option value="reverse-time">Reverse Chronologically</option>
-                    </select>
-                </div>
-                <div class="filter-box">
-                    <!-- <p>Number of Terms</p> -->
-                    <!-- <input type="range" min="1" max="400" value="100"> -->
-                    <!-- Make it 2-way -->
-                </div>
-            </div>
-            <div class="question-type-filters">
-                <div class="include-container">
-                    <p>Include </p>
-                    <div id="strict-maching-slider">
-                        <div></div>
-                        <span>Strictly</span> / <span>Loosely</span>
+                <div class="filters">
+                    <p>Filters:</p>
+                    <div class="filter-box">
+                        <p>Sort</p>
+                        <select name="sort-options" id="sortOptions">
+                            <option value="time">Chronologically</option>
+                            <option value="reverse-time">Reverse Chronologically</option>
+                            <option value="alphabet">Alphabetically</option>
+                            <option value="reverse-alphabet">Reverse Alphabetically</option>
+                        </select>
+                    </div>
+                    <div class="filter-box">
+                        <!-- <p>Number of Terms</p> -->
+                        <!-- <input type="range" min="1" max="400" value="100"> -->
+                        <!-- Make it 2-way -->
                     </div>
                 </div>
-                <div class="checkbox-box">
-                    <input type="checkbox" name="mc-type" id="mcCheckbox" checked>
-                    <p>Multiple Choice</p>
-                </div>
-                <div class="checkbox-box">
-                    <input type="checkbox" name="text-type" id="textCheckbox" checked>
-                    <p>Text</p>
-                </div>
-                <div class="checkbox-box">
-                    <input type="checkbox" name="rank-type" id="rankCheckbox" checked>
-                    <p>Ranking</p>
-                </div>
-                <div class="checkbox-box">
-                    <input type="checkbox" name="match-type" id="matchingCheckbox" checked>
-                    <p>Matching</p>
+                <div class="question-type-filters">
+                    <div class="include-container">
+                        <p>Include </p>
+                        <div id="strictMachingSlider">
+                            <div></div>
+                            <span>Strictly</span> / <span>Loosely</span>
+                        </div>
+                    </div>
+                    <div class="checkbox-box">
+                        <input type="checkbox" name="mc-type" id="mcCheckbox" checked>
+                        <p>Multiple Choice</p>
+                    </div>
+                    <div class="checkbox-box">
+                        <input type="checkbox" name="text-type" id="textCheckbox" checked>
+                        <p>Text</p>
+                    </div>
+                    <div class="checkbox-box">
+                        <input type="checkbox" name="rank-type" id="rankCheckbox" checked>
+                        <p>Ranking</p>
+                    </div>
+                    <div class="checkbox-box">
+                        <input type="checkbox" name="match-type" id="matchingCheckbox" checked>
+                        <p>Matching</p>
+                    </div>
                 </div>
             </div>
         </div>
         <div id="decks-container" class="decks-display">
-            <h2>Owned Decks:</h2>
-            <div class="owned-decks">
-                <!-- <div class="ingredient-box" style="background-image: url(../../img/defaultdeckpic.png);">
-                    <div>
-                        <h2>Title</h2>
-                        <div class="deck-bottom-row">
-                            <p>by: <span class="username"><u>Username</u></span></p>
-                            <div class="deck-tags">
-                                <div class="tag">
-                                    <p>Tag 1</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="preview-button">
-                        <div class="material-symbols-outlined">visibility</div>
-                    </button>
-                    <button class="add-button">
-                        <div class="material-symbols-outlined">add</div>
-                    </button>
+            <div class="deck-title-container">
+                <h2>Added Decks:</h2>
+                <div class="owned-decks">
                 </div>
-                <div class="ingredient-box" style="background-image: url(../../img/defaultdeckpic.png);">
-                    <div>
-                        <h2>Title</h2>
-                        <div class="deck-bottom-row">
-                            <p>by: <span class="username"><u>Username</u></span></p>
-                            <div class="deck-tags">
-                                <div class="tag">
-                                    <p>Tag 1</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="preview-button">
-                        <div class="material-symbols-outlined">visibility</div>
-                    </button>
-                    <button class="add-button">
-                        <div class="material-symbols-outlined">add</div>
-                    </button>
-                </div>
-                <div class="ingredient-box" style="background-image: url(../../img/defaultdeckpic.png);">
-                    <div>
-                        <h2>Title</h2>
-                        <div class="deck-bottom-row">
-                            <p>by: <span class="username"><u>Username</u></span></p>
-                            <div class="deck-tags">
-                                <div class="tag">
-                                    <p>Tag 1</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="preview-button">
-                        <div class="material-symbols-outlined">visibility</div>
-                    </button>
-                    <button class="add-button">
-                        <div class="material-symbols-outlined">add</div>
-                    </button>
-                </div> -->
             </div>
-            <h2 id="pub-d-title">Public Decks:</h2>
-            <div class="popular-decks">
+            <div class="deck-title-container">
+                <h2 id="pub-d-title">Public Decks:</h2>
+                <div class="popular-decks">
 
+                </div>
             </div>
         </div>
         <section>
