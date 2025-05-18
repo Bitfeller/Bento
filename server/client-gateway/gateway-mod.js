@@ -49,5 +49,22 @@ async function sameUser() {
     }).catch(e => console.log('backend:', e));
     return same;
 }
+async function senderror(name, error, relatedData) {
+    if(relatedData.plain)
+        relatedData.plain = relatedData.plain?.toString() ?? relatedData.plain;
+    await fetch("https://bentoapi.valleynas.uk:443/error", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name,
+            error,
+            relatedData
+        })
+    }).catch(e => {
+        console.error("[CRITICAL] backend: couldn't send errror log to server:", e);
+    })
+}
 
-export { types, sameUser, gateway_fetch };
+export { types, sameUser, senderror, gateway_fetch };
