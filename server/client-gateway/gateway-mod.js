@@ -2,7 +2,20 @@ const moduleurl = new URL(import.meta.url);
 const spath = moduleurl.pathname + "/../..";
 
 let lastUser;
+let fetchCache = {};
 
+async function gateway_fetch(path) {
+    if(fetchCache[path]) return fetchCache[path];
+    try {
+        const resp = await fetch(spath + path);
+        if(!resp.ok) throw "couldn't fetch!";
+        const data = await resp.json();
+        return fetchCache[path] = data;
+    } catch(e) {
+        console.error('backend: Failed to fetch:', e);
+        return {};
+    }
+}
 function types(t, ...args) {
     return args.every((c, i) => {
         if(c === undefined) return false;
@@ -36,5 +49,22 @@ async function sameUser() {
     }).catch(e => console.log('backend:', e));
     return same;
 }
+async function senderror(name, error, relatedData) {
+    if(relatedData.plain)
+        relatedData.plain = relatedData.plain?.toString() ?? relatedData.plain;
+    await fetch("https://bentoapi.valleynas.uk:443/error", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name,
+            error,
+            relatedData
+        })
+    }).catch(e => {
+        console.error("[CRITICAL] backend: couldn't send errror log to server:", e);
+    })
+}
 
-export { types, sameUser };
+export { types, sameUser, senderror, gateway_fetch };

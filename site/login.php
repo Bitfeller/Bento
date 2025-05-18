@@ -12,7 +12,7 @@
     <div class="modal" id="signInModal">
         <div class="modal-content">
             <p><u>Login</u></p>
-            <p>Username:</p>
+            <p>Username/Email:</p>
             <input type="text" id="signInUsername" autofocus>
             <p>Password:</p>
             <input type="password" id="signInPassword">
@@ -28,11 +28,8 @@
             let [success, reason] = await UserGateway.getuser();
             if(success) {
                 const paramList = new URLSearchParams(window.location.search);
-                if(paramList.get("s")) {
-                    window.location.href = "/" + paramList.get("s");
-                } else {
-                    window.location.href = "/home";
-                }
+                if(paramList.get("s")) window.location.href = "/" + paramList.get("s");
+                else window.location.href = "/home";
             }
         })();
         

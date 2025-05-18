@@ -20,17 +20,19 @@
     margin-top: 10px;
 }
 #main {
-    overflow: scroll;
+    overflow: auto !important;
     margin: auto;
     width: 75%;
-    height: 50vh;
+    height: 66vh;
     margin-top: 5%;
+    max-height: 60vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     background-color: var(--dark-gray);
     border-radius: 10px;
     padding: 15px;
+    padding-bottom: 0px;
 }
 #cont_a {
     display: flex;
@@ -39,7 +41,8 @@
     justify-content: space-between;
 }
 #problem {
-    overflow: hidden;
+    max-height: 15vh;
+    overflow: scroll;
     text-overflow: ellipsis;
     text-align: center;
 }
@@ -47,6 +50,15 @@
     font-size: 24pt;
     color: var(--accent-1);
 }
+#infotext {
+    margin-top: 8px;
+    margin-bottom: 6px;
+    font-style: italic;
+    font-size: 14pt;
+    color: var(--accent-1);
+    text-align: center;
+}
+
 .small-text {
     font-size: 15px;
 }
@@ -68,6 +80,13 @@
     height: 45px;
     font-size: 18pt;
 }
+#a_container {
+    margin-top: 16px;
+    max-height: 40vh !important;
+    margin-bottom: 20px;
+    overflow-y: scroll !important;
+}
+
 .option {
     display: flex;
     flex-direction: row;
@@ -78,6 +97,11 @@
     width: 49%;
     margin-top: 2%;
     min-height: 5vh;
+    max-height: 20vh;
+}
+.mcop-text {
+    max-height: 20vh;
+    overflow: hidden;
 }
 .option:hover {
     border-color: #6a6a6a;

@@ -61,6 +61,7 @@ button:hover {
     display: flex;
     flex-direction: row;
     width: 85%;
+    max-width: 85%;
     margin: auto;
     margin-top: 20px;
     background-color: transparent;
@@ -72,12 +73,14 @@ button:hover {
     padding: 20px;
     width: 100%;
     background-color: var(--dark-gray);
+    position: relative;
 }
 #name {
     max-width: 600px;
 }
 #description {
     max-width: 700px;
+    margin-bottom: 15px;
 }
 .create-container input, .create-container > button {
     font-size: 11pt;
@@ -92,11 +95,18 @@ button {
 .create-container input, .q, .mcop-val {
     border: none;
     color: var(--light-text);
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
 .q, .mcop-val, .txtans, .rank-item-txt  {
     width: 70%;
+    max-width: 70vw;
     display: inline-block;
-    height: 30px;
+    height: auto;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
 .create-container > .mcbtn {
     margin-left: 0px;
@@ -359,7 +369,7 @@ button {
     cursor: pointer;
 }
 input[type="file"] {
-    max-width: 200px;
+    max-width: 300px;
 }
 .rank-clone, .mtch-clone, .txt-clone, .mc-clone {
     .small-ico {
@@ -388,6 +398,83 @@ input[type="file"] {
     top: 15px;
     left: 10px;
 }
+#tagsContainer {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0px;
+    justify-items: center;
+}
+#tags {
+    display: flex;
+    gap: 10px;
+    overflow-x: scroll;
+}
+.tag {
+    display: flex;
+    padding: 0px 5px;
+    background-color: rgb(175, 150, 100);
+    border-radius: 5px;
+    align-items: center;
+    gap: 5px;
+    .material-symbols-outlined {
+        font-size: 12pt;
+    }
+    & p {
+        white-space: nowrap;
+    }
+}
+.add-tag, .remove-tag {
+    cursor: pointer;
+    transition: 0.3s;
+}
+.add-tag:hover, .remove-tag:hover {
+    filter: brightness(85%);
+}
+#tagInput {
+    width: 150px;
+    padding: 0px;
+    padding-left: 5px;
+    margin: 0px;
+    height: 32px;
+}
+.drag-handle {
+    width: 15px;
+    display: inline-block;
+    cursor: grab;
+    border-radius: 10px;
+    user-select: none;
+}
+.drag-handle:hover {
+    filter: brightness(115%);
+}
+.cardsel {
+    position: relative;
+}
+.card-drag-handle {
+    height: 27px;
+    display: inline-block;
+    cursor: grab;
+    border-radius: 10px;
+    user-select: none;
+    right: 0;
+    bottom: 5px;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0);
+    * {
+        font-size: 22pt;
+    }
+}
+#flush {
+    width: min-content;
+    height: min-content;
+    position: absolute;
+    right: 0px;
+    background-color: transparent;
+    span {
+        color: var(--danger-red);
+    }
+}
+
 @media only screen and (max-width: 1025px) {
     .options-container {
         margin: 10px 0px;

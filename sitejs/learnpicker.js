@@ -109,8 +109,8 @@ function updateDecks(decks, counts) {
             });
         } else if(box.querySelectorAll('input[type="checkbox"]').length > 0) {
             let checkbox = box.querySelectorAll('input[type="checkbox"]')[0];
-            box.addEventListener("mousedown", () => {
-                if(!checkbox.disabled) checkbox.checked = !checkbox.checked;
+            box.addEventListener("mousedown", (e) => {
+                if (e.target != checkbox) checkbox.checked = !checkbox.checked;
             });
         }
     };
@@ -164,7 +164,8 @@ function updateDecks(decks, counts) {
     });
     inertiaButton.addEventListener('mousedown', () => {
         let selectedDecks = [], shuffle;
-        for (let item in deckContainer.children) {
+        for (let i = 0; i < deckContainer.children.length; i++) {
+            let item = deckContainer.children[i];
             let idx = item.dataset.idx;
             let checkbox = item.getElementsByClassName("deckCheck")[0];
             if (checkbox.checked) selectedDecks.push(parseInt(idx));

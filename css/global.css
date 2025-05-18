@@ -4,8 +4,11 @@
 
     --select-blue: #2a72dc;
     --danger-red: #e01f15;
-    --background: #070a0e;
 
+    --drag-bar: var(--select-blue);
+    --drag-background: var(--gray);
+
+    --background: #070a0e;
     --dark-gray: #0a1015;
     --gray: #10151a;
     --light-gray: #1e2831;
@@ -103,7 +106,7 @@ button {
     color: var(--dark-text);
     cursor: pointer;
     transition: 0.3s;
-    padding: 0px 8px;
+    padding: 0px 5px;
 }
 button:hover {
     filter: brightness(85%);
@@ -120,6 +123,9 @@ div[contenteditable="true"] {
     color: #eeeeee;
     background-color: var(--lighter-gray);
     transition: 0.3s;
+    padding: 0px 5px;
+    font-size: 12pt;
+    box-sizing: border-box;
 }
 input:hover,
 div[contenteditable="true"]:hover {
@@ -161,6 +167,9 @@ code {
     color: var(--accent-1);
     padding: 5px;
     border-radius: 5px;
+}
+select, option {
+    cursor: pointer;
 }
 .loader {
     margin: 0;
@@ -265,7 +274,7 @@ code {
 .header > span.info:hover {
     color: white;
 }
-.header span {
+.header .right-header-ico {
     transition: 0.3s;
     transition-timing-function: ease-in-out;
 }
@@ -274,7 +283,7 @@ code {
 }
 .logo {
     cursor: pointer;
-    transition: 0.3s;
+    transition: filter 0.3s ease-in-out;
 }
 .logo:hover {
     filter: brightness(85%);
@@ -434,6 +443,12 @@ dialog::backdrop {
 .feedback-submit-button {
     margin-top: 10px !important;
     margin-left: 0px !important;
+}
+.drag-line {
+    display: flex; 
+    background-color: var(--drag-bar); 
+    width: 100%; 
+    height: 5px;
 }
 @media only screen and (min-width: 9999px) {
     #too-big-img {
