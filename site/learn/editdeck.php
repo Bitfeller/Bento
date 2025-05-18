@@ -39,6 +39,13 @@
                 <span class="material-symbols-outlined" id="picAddBtn">add_a_photo<input class='file-selector' accept="image/png,image/jpeg" id="fileselecttrigger" type="file"></span>
                 <span class="material-symbols-outlined" id="picReset">refresh</span>    
             </div>
+            <div id="tagsContainer">
+                <p>Tags:</p>
+                <input type="text" id="tagInput" list="tag-suggestions" placeholder="New Tag...">
+                <datalist id="tag-suggestions"></datalist>
+                <div id="tags"></div>
+                <p id="tag-ok"></p>
+            </div>
             <div>
                 <input type="checkbox" id="isPublic" checked>
                 <span>| Public Deck</span>
@@ -105,7 +112,7 @@
             <p>Below is every question about to be imported. Uncheck any you don't want.</p>
             <button id="i-import">Continue >>></button>
             <button id="i-cancel">Cancel</button><br>
-            <!-- <span class="material-symbols-outlined" id="qSelectAll">check_box_outline_blank</span> -->
+            <span class="material-symbols-outlined" id="qSelectAll">check_box_outline_blank</span>
             <div id="importing-questions">
                 <!-- <div class="importing-question">
                     <p class="q">What is the capital of France?</p>

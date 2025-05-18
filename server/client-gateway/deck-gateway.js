@@ -1,4 +1,4 @@
-import { types, sameUser, senderror } from './gateway-mod.js';
+import { types, sameUser, senderror, gateway_fetch } from './gateway-mod.js';
 
 const moduleurl = new URL(import.meta.url);
 const spath = moduleurl.pathname + "/../..";
@@ -23,8 +23,8 @@ function similar(s1, s2) {
 }
 
 let DeckGateway = {
-    getall: async (offset = 0, searchTerms = []) => {
-        if(!types("Na", offset, searchTerms)) return [false, "invalid params"];
+    getall: async (offset = 0, searchTerms = [], regex = false, caseSensitive = false, tags = [], sortFilter = 4, strictly = false, mc = false, txt = false, ranking = false, mtch = false) => {
+        if(!types("NabbaNbbbbb", offset, searchTerms, regex, caseSensitive, tags, sortFilter, strictly, mc, txt, ranking, mtch)) return [false, "invalid params"];
         let success = false, data = 'fetch-err', fres;
         await fetch(spath + "/php-db/deck/deck_getall.php", {
             method: 'post',
@@ -33,7 +33,16 @@ let DeckGateway = {
             },
             body: JSON.stringify({
                 offset,
-                searchTerms
+                searchTerms,
+                regex,
+                caseSensitive,
+                tags,
+                sortFilter,
+                strictly,
+                mc,
+                txt,
+                ranking,
+                mtch
             })
         }).then((res) => {
             if(!res.ok) throw "couldn't fetch! (bad response)";
@@ -173,6 +182,9 @@ let DeckGateway = {
             });
         })
         return [success, reason];
+    },
+    getAllowedTags: async () => {
+        return await gateway_fetch("/conf/allowed_tags.json");
     }
 };
 
