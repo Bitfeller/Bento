@@ -42,7 +42,7 @@
 }
 #problem {
     max-height: 15vh;
-    overflow: scroll !important;
+    overflow: scroll;
     text-overflow: ellipsis;
     text-align: center;
 }
@@ -82,7 +82,7 @@
 }
 #a_container {
     margin-top: 16px;
-    height: 40vh !important;
+    max-height: 40vh !important;
     margin-bottom: 20px;
     overflow-y: scroll !important;
 }
@@ -101,7 +101,7 @@
 }
 .mcop-text {
     max-height: 20vh;
-    overflow: scroll !important;
+    overflow: hidden;
 }
 .option:hover {
     border-color: #6a6a6a;
