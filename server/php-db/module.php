@@ -106,7 +106,6 @@
     }
 
     //      Get server config and other configurations
-    
     function is_local_config() {
         return file_exists('../../conf/local-config.json');
     }

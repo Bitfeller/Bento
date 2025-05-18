@@ -61,6 +61,7 @@ button:hover {
     display: flex;
     flex-direction: row;
     width: 85%;
+    max-width: 85%;
     margin: auto;
     margin-top: 20px;
     background-color: transparent;
@@ -72,6 +73,7 @@ button:hover {
     padding: 20px;
     width: 100%;
     background-color: var(--dark-gray);
+    position: relative;
 }
 #name {
     max-width: 600px;
@@ -93,11 +95,18 @@ button {
 .create-container input, .q, .mcop-val {
     border: none;
     color: var(--light-text);
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
 .q, .mcop-val, .txtans, .rank-item-txt  {
     width: 70%;
+    max-width: 70vw;
     display: inline-block;
-    height: 30px;
+    height: auto;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
 .create-container > .mcbtn {
     margin-left: 0px;
@@ -133,28 +142,6 @@ button {
     color: var(--light-text);
     background-color: var(--danger-red);
     margin-right: 5px;
-}
-
-#flush {
-    display: flex;
-    justify-content: center;
-    background-color: var(--danger-red);
-    color: var(--light-text);
-    top: 12px;
-    right: 18px;
-    width: 20%;
-    float: right;
-    width: 40px;
-    height: 40px;
-    padding: 0px;
-    position: absolute;
-}
-#flush > span {
-    color: var(--light-text);
-    margin-left: 0px;
-}
-#flush > span:hover {
-    filter: brightness(115%);
 }
 #addcard, #create {
     background-color: var(--light-text);
