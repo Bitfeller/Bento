@@ -12,7 +12,7 @@
     <div class="modal" id="signInModal">
         <div class="modal-content">
             <p><u>Login</u></p>
-            <p>Username:</p>
+            <p>Username/Email:</p>
             <input type="text" id="signInUsername" autofocus>
             <p>Password:</p>
             <input type="password" id="signInPassword">

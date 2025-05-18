@@ -1,45 +1,144 @@
-body > h2 {
-    margin-top: 10px;
-    margin-left: 15px;
-}
-
-.search-container {
+.main-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 50px 0;
+    gap: 15px;
+    margin: 20px 10px;
 }
-.search-bar {
-    padding: 3px 7px;
-    width: 350px;
-    height: 30px;
-    font: inherit;
-    color: var(--light-text);
-    text-align: center;
+.sidebar-container {
+    min-width: calc(25vw - 6px);
+    position: relative;
+    margin-right: 15px;
 }
-#searchText, #addedText, .ingredients-container {
+.sidebar {
+    min-width: calc(25vw - 6px);
+    height: calc(100vh - 129px);
+    border: var(--gray) 3px solid;
+    border-radius: 5px;
+    background-color: var(--dark-gray);
+    padding: 10px;
+    position: sticky;
+    top: 5px;
+    input[type="text"] {
+        font-size: 12pt;
+        padding: 2.5px;
+        width: calc(100% - 60px);
+    }
+}
+.search-box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.search-menu {
+    cursor: pointer;
+}
+.search-menu:hover {
+    filter: brightness(85%);
+}
+#searchBar {
+    margin-bottom: 5px;
+    width: calc(100% - 5px);
+}
+.checkbox-box {
+    display: flex;
+    gap: 5px;
+    padding: 2.5px 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    background-color: var(--gray);
+    border-radius: 5px;
+}
+.checkbox-box:hover {
+    background-color: var(--light-gray);
+}
+.tags-box, .filters, .question-type-filters {
+    margin-top: 10px;
+    background-color: var(--gray);
+    padding: 10px;
+    padding-bottom: 7.5px;
+    border-radius: 10px;
+}
+.predefined-tags, .filtered-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    margin-left: 15px;
+    gap: 10px;
 }
-.left-text {
-    margin-left: 15px;
+.break-line {
+    height: 10px;
 }
-/* .previewBtns, .userReviewsUpdateBtns {
-    border: solid;
-    border-width: 0.75px;
-    border-color: var(--light-text);
-    background-color: var(--light-gray);
-    color: var(--light-text);
-    padding: 2.5px;
-} */
-.create-deck-box {
-    margin-top: 15px;
-    height: 235px;
-    width: 235px;
-    border-radius: 10px;
-    background-color: var(--accent-1);
+.user-tags {
+    display: flex;
+    gap: 5px;
+}
+.tag {
+    display: flex;
+    padding: 0px 5px;
+    background-color: rgb(175, 150, 100);
+    border-radius: 5px;
+    align-items: center;
+    gap: 5px;
+    .material-symbols-outlined {
+        font-size: 12pt;
+    }
+    p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: clip;
+    }
+}
+.add-tag, .remove-tag {
+    cursor: pointer;
+    transition: 0.3s;
+}
+.add-tag:hover {
+    background-color: var(--select-blue);
+}
+.remove-tag:hover {
+    background-color: var(--danger-red);
+}
+.filters {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.filter-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+.include-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+    & div {
+        position: relative;
+        & div {
+            right: auto;
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            background-color: rgba(175, 150, 100, 0.8);
+            border-radius: 10px;
+            transition: right 0.3s ease;
+        }
+        span:first-of-type {
+            margin-left: 5px;
+        }
+        span:last-of-type {
+            margin-right: 5px;
+        }
+        & span {
+            position: relative;
+            z-index: 2;
+        }
+    }
+}
+#strictMatchingSlider {
+    cursor: pointer;
+}
+.decks-display {
+    width: 100%;
 }
 .ingredient-box {
     display: flex;
@@ -47,28 +146,13 @@ body > h2 {
     position: relative;
     margin-top: 15px;
     height: clamp(180px, 202.5px, 202.5px);
-    width: clamp(320px, 360px, 360px);
+    width: 32%;
     background-color: var(--dark-gray);
     background-image: src="";
     background-size: cover;
     border-radius: 10px;
 }
-.ingredient-box > div {
-    background-color: transparent;
-    backdrop-filter: blur(5px) brightness(0.5);
-    position: absolute;
-    max-width: 100%;
-    bottom: 0;
-    padding: 5px;
-    border-start-end-radius: 10px;
-}
-.ingredient-box h2 {
-    min-width: 130px;
-    max-width: var(100% - 40px);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.userReviewsUpdateBtns, .previewBtns {
+.preview-button, .add-button {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -77,51 +161,81 @@ body > h2 {
     height: 40.5px;
     width: 40.5px;
 }
-.userReviewsUpdateBtns:hover, .previewBtns:hover {
-    backdrop-filter: blur(2px) brightness(0.75);
+.preview-button {
+    top: 10px;
+    right: 60px;
 }
-.userReviewsUpdateBtns *, .previewBtns * {
+.add-button *, .preview-button * {
     color: var(--light-text);
     font-size: 22.5px;
     margin: 8px 0;
 }
-.previewBtns {
-    top: 10px;
-    right: 60px;
-}
-.username {
-    text-decoration: underline;
-    font-size: 18.5px;
-}
-.private-deck {
-    margin: 0px 5px;
-    padding: 0px 5px;
-    background-color: rgb(175, 150, 100);
-    border-radius: 10px;
-    font-size: 13px;
-}
-::backdrop {
-    background-image: radial-gradient(45deg, black);
-    opacity: 0.75;    
-}
-#overview {
-    position: relative;
-    background-color: var(--light-gray);
-}
-#overview > h2 {
-    max-width: calc(100% - 55px);
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-.title-bar {
+.preview-btns {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
+    gap: 5px;
 }
-section { 
-    display: inline;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
+.preview-btn {
+    gap: 5px;
+    padding: 3px;
+    padding-right: 5px;
+    div {
+        display: flex;
+        gap: 5px;
+        color: var(--dark-text);
+    }
+}
+.preview-ico {
+    font-size: 15px !important;
+    color: var(--dark-text);
+}
+.ingredient-box > div {
+    background-color: transparent;
+    backdrop-filter: blur(5px) brightness(0.5);
+    position: absolute;
+    min-width: 100%;
+    bottom: 0;
+    padding: 5px;
+    border-start-end-radius: 10px;
+}
+.ingredient-box h2 {
+    width: clamp(320px, 360px, 360px);
+    max-width: var(100% - 40px);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.deck-bottom-row {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    overflow-x: hidden;
+}
+.deck-tags {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+.deck-tags > *:nth-child(n+4) {
+    display: none;
+}
+.owned-decks, .popular-decks {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.deck-title-container {
+    border: var(--gray) 3px solid;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: var(--dark-gray);
+}
+.deck-title-container h2 {
+    font-size: 20pt;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.decks-display > div{
+    margin-bottom: 10px;
 }
 dialog {
     max-height: 85%;
@@ -132,22 +246,9 @@ dialog {
     background-color: var(--dark-gray);
     width: 50%;
 }
-#addDialog {
-    overflow-x: hidden;
-}
-#addDialog > button {
-    margin-left: 95%;
-}
-footer {
-    display: flex;
-    width: 100%;
-}
-#loadBtn {
-    padding: 5px 10px;
-    margin: 15px auto;
-}
-#loadBtn > h3 {
-    color: var(--dark-text);
+#overview {
+    position: relative;
+    background-color: var(--light-gray);
 }
 div.preview-container-part {
     background-color: var(--gray);
@@ -168,13 +269,17 @@ span.views {
     margin-right: 15px;
     font-size: 21px;
 }
-#previewDialog_leave {
+.title-bar {
+    display: flex;
+    justify-content: space-between;
+}
+#preview-dialog-leave {
     color: var(--light-text);
     background-color: var(--danger-red);
     height: 30px;
     width: 30px;
 }
-#previewDialog_leave > span {
+#preview-dialog-leave > span {
     font-size: 15px;
     margin: 7px 0;
     padding: 0;
@@ -182,43 +287,32 @@ span.views {
 #cards, #overview, #description {
     border-radius: 10px;
 }
-#search_loadBtn {
-    margin: auto 0;
-    width: 15%;
-    height: 40%;
-}
-img {
-    border-radius: 10px;
-}
-.deck-buttons {
-    display: flex;
-    gap: 6px;
-}
-.deck-buttons div {
-    color: var(--dark-text);
-    gap: 5px;
-    margin-right: 5px;
-}
-#oveview > h2, #description > p, .ingredient-box h2, #cards p {
-    overflow: hidden;
-}
 .question-box {
     position: relative;
     border-radius: 5px;
     margin: 0px 5px;
+      margin-bottom: 0px;
     padding: 10px;
     background-color: rgb(255, 255, 255, 0.05);
     margin-bottom: 10px;
 }
-@media screen and (max-width: 768px) {
-    dialog {
-        max-height: 75%;
-        width: 95%;
-        padding: 10px;
+#loadMore {
+    width: min(100%, 350px);
+    height: 40px;
+    margin: 10px calc(50% - min(100%, 350px) / 2);
+}
+@media screen and (max-width: 1250px) {
+    .ingredient-box {
+        width: 48%;
     }
 }
-@media screen and (max-width: 400px) {
-    #added_decks {
-        margin-left: 2.5%;
+@media screen and (max-width: 960px) {
+    .sidebar-container {
+        display: none;
+    }
+}
+@media screen and (max-width: 550px) {
+    .ingredient-box {
+        width: 98%;
     }
 }

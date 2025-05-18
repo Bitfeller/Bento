@@ -1,4 +1,5 @@
 import { UserGateway } from "../../server/client-gateway/user-gateway.js";
+import { DeckGateway } from "../../server/client-gateway/deck-gateway.js";
 
 const name = document.getElementById("name");
 const isPublic = document.getElementById("isPublic");
@@ -9,15 +10,21 @@ const flushDeck = document.getElementById("flush");
 const resetpic = document.getElementById("picReset");
 const fileselecttrigger = document.getElementById("fileselecttrigger");
 const picimg = document.getElementById("deckpic");
+const tags = document.getElementById("tags");
+const tagInput = document.getElementById("tagInput");
+const tagSuggestions = document.getElementById('tag-suggestions');
+const tagOk = document.getElementById('tag-ok');
 
-let cards = [], deckpic = '', drag;
+let cards = [], deckpic = '';
+let drag, dragParent;
 let user;
 const sizeLimit = 2 * 1000 * 1000; // NOTE: must be same as max_image_size in server/conf/config.json
 
+let allowedTags = [];
 let flushTick = 0;
 
 const dragline = document.createElement('div');
-dragline.style = 'display: flex; background-color: rgb(0, 150, 255); width: 100%; height: 5px;';
+dragline.className = 'drag-line';
 
 // Load DOMPurify for imports
 const dpscript = document.createElement('script');
@@ -28,7 +35,7 @@ document.head.appendChild(dpscript);
 // --------------------------------------------------- \\
 
 
-// Essential functions to set up div + ranking functionality
+// Essential functions to set up div + ranking functionality + tags
 function computeCenter(el) {
     let rect = el.getBoundingClientRect();
     return {
@@ -78,6 +85,15 @@ function init_card(card, n) {
         if(idx > -1) cards.splice(idx, 1);
         card.remove();
     });
+    let dragHandle = card.getElementsByClassName('card-drag-handle')[0];
+    dragHandle.setAttribute('draggable', true);
+    dragHandle.addEventListener('dragstart', () => {
+        drag = card;
+        dragParent = cardContain;
+        card.style.backgroundColor = 'var(--drag-background)';
+        cardContain.append(dragline);
+    });
+    dragHandle.addEventListener('dragend', e => endDrag(e, card, cardContain));
 }
 async function typeset(node) {
     if(Object.keys(MathJax.startup) == 0) 
@@ -100,6 +116,9 @@ async function renderable(input) {
     } catch(_) {
         return false;
     }
+}
+function tag_exists(tag) {
+    return Array(...document.getElementsByClassName('tag-value')).map(x => x.textContent).filter(x => x == tag).length > 0;
 }
 function init_div(div) {
     div.setAttribute('data-cnt', div.textContent);
@@ -151,22 +170,106 @@ function init_div(div) {
         typeset(div);
     }
 }
+function dragAppend(e, node, parent) {
+    let top, bottom, y = e.pageY;
+    const children = parent.children;
+    for(let i = 0; i < children.length; i++) {
+        let centroid = computeCenter(children[i]);
+        if(centroid.y < y) continue;
+        else if(i - 1 >= 0) {
+            top = children[i - 1];
+            bottom = children[i];
+            parent.insertBefore(node, bottom);
+            break;
+        } else {
+            top = children[i];
+            node.remove();
+            parent.prepend(node);
+            break;
+        }
+    }
+    if(!top) {
+        node.remove();
+        parent.appendChild(node);
+    }
+}
+function processDrag(e, parent) {
+    if(!drag) return;
+    if(dragline.parentNode != parent) parent.prepend(dragline);
+    dragAppend(e, dragline, parent);
+}
+function endDrag(e, node, parent) {
+    if(drag != node) return;
+    dragline.remove();
+    dragAppend(e, node, parent);
+    node.style.backgroundColor = '';
+    drag = null;
+    dragline.remove();
+}
 function toNew() {
     newCard();
     document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
     cards[cards.length - 1].getElementsByClassName('q')[0].focus();
 }
+// Color map
+const map = [
+    [20, [255, 191, 0]],    // Amber
+    [100, [255, 0, 127]],   // Pink
+    [60, [0, 127, 255]],    // Azure
+    [0, [255, 0, 0]],       // Red
+    [70, [0, 0, 255]],      // Blue
+    [90, [255, 0, 255]],    // Magenta
+    [40, [50, 205, 50]],    // Light Green
+    [30, [0, 255, 0]],      // Green
+    [10, [255, 127, 0]],    // Orange
+    [80, [127, 0, 255]],    // Violet
+    [50, [0, 255, 255]]     // Cyan
+]
+// A pure function that generates a color based on a name
+function generateTagColor(n) {
+    let bc = map.filter((c) => parseInt(n.charCodeAt(n.length - 1) / 10) % 10 * 10 == c[0])[0][1];
+    const fh = map.filter((c) => 
+        parseInt((n.substring(1)
+            .substring(0, Math.floor(n.substring(1).length / 2))
+            .split('')
+            .reduce((a, c) => a + c.charCodeAt(0), 0) / n.substring(1)
+            .substring(0, Math.floor(n.substring(1).length / 2)).length) / 10)
+        % 10 * 10 == c[0])[0][1];
+    const sh = map.filter((c) => 
+        parseInt((n.substring(1)
+            .substring(Math.floor(n.substring(1).length / 2))
+            .split('')
+            .reduce((a, c) => a + c.charCodeAt(0), 0) / n.substring(1)
+            .substring(0, Math.floor(n.substring(1).length / 2)).length) / 10)
+        % 10 * 10 == c[0])[0][1];
+    return `rgb(${
+        bc.map((c, i) => {
+            let value = c + parseInt(fh[i] / 25) + parseInt(sh[i] / 25);
+            while (value > 255) 
+                Math.abs(n - 0) < Math.abs(n - 255) ? 
+                    value = 255 : 
+                    Math.abs(n - 255) < Math.abs(n - 0) ? value -= 255 : value = 255;
+            return parseInt(value * 0.65);
+        }).join(', ')
+    })`;
+}
 
 
+// --------------------------------------------------- \\
+// Builders builds the card structure
+// Generators generate answers
+// Cloners clone cards
 // --------------------------------------------------- \\
 
 
 // Cloner
 function cloner(card, n) {
     let data = toDeck(err => alert(err), true, true, n - 1);
-    if(Object.keys(data[2].contnt).length == 0) return;
+    if(Object.keys(data[2].contnt).length == 0) 
+        return;
     let newCard = generateCard(data[2].contnt, Object.keys(data[2].contnt), 0, n + 1, true);
-    if(n == cards.length - 1) cardContain.insertAdjacentElement('beforeend', newCard);
+    if(n == cards.length - 1)
+        cardContain.insertAdjacentElement('beforeend', newCard);
     else {
         let next = card.nextSibling;
         cardContain.insertBefore(newCard, next);
@@ -176,12 +279,21 @@ function cloner(card, n) {
 function generator_mc(cardmc, card, allcorr, t, txt) {
     let newop = document.createElement('div');
     newop.className = "mcop";
+    newop.setAttribute('draggable', true);
     newop.innerHTML = `
+        <div class="drag-handle">:</div>
         <div contenteditable="true" type='input' class='mcop-val' placeholder='...'></div>
         <button class='mcop-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
         <button class='mcop-corr mcop-${t ? 'sel' : 'nosel'}' tabindex="-1"><span class="material-symbols-outlined">${t ? 'check' : 'check_indeterminate_small'}</span></button>
     `;
     cardmc.appendChild(newop);
+    newop.addEventListener('dragstart', () => {
+        drag = newop;
+        dragParent = cardmc;
+        newop.style.backgroundColor = 'var(--drag-background)';
+        cardmc.append(dragline);
+    });
+    newop.addEventListener('dragend', e => endDrag(e, newop, cardmc));
     let input = newop.getElementsByClassName('mcop-val')[0];
     let delbtn = newop.getElementsByClassName('mcop-del')[0];
     let corrbtn = newop.getElementsByClassName('mcop-corr')[0];
@@ -221,10 +333,19 @@ function generator_mc(cardmc, card, allcorr, t, txt) {
 function generator_txt(card, i_anslist, r, p, txt) {
     let newans = document.createElement('div');
     newans.className = "txt-ans-cont" + (p == i_anslist ? "-inv" : "");
+    newans.setAttribute('draggable', true);
     newans.innerHTML = `
+        <div class="drag-handle">:</div>
         <div contenteditable="true" type='input' class='txtans ansdiv' placeholder='...'></div>
         ${r ? `<button class='txtans-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>` : ``}
     `;
+    newans.addEventListener('dragstart', () => {
+        drag = newans;
+        dragParent = p;
+        newans.style.backgroundColor = 'var(--drag-background)';
+        p.append(dragline);
+    });
+    newans.addEventListener('dragend', e => endDrag(e, newans, p));
     p.appendChild(newans);
     let input = newans.getElementsByClassName('txtans')[0];
     let delbtn = newans.getElementsByClassName('txtans-del')[0];
@@ -246,42 +367,18 @@ function generator_rank(card, ranklist, txt) {
     item.className = 'ranking-item';
     item.setAttribute('draggable', true);
     item.innerHTML = `
+        <div class="drag-handle">:</div>
         <div contenteditable="true" type='input' class='rank-item-txt ansdiv' placeholder='...'></div>
         <button class='rank-del' tabindex='-1'><span class='material-symbols-outlined'>close</span></button>
     `;
     ranklist.appendChild(item);
     item.addEventListener('dragstart', () => {
         drag = item;
-        item.style.backgroundColor = 'rgb(150, 200, 255)';
+        dragParent = ranklist;
+        item.style.backgroundColor = 'var(--drag-background)';
         ranklist.append(dragline);
     });
-    item.addEventListener('dragend', e => {
-        if(drag != item) return;
-        item.style.backgroundColor = '';
-        dragline.remove();
-        let top, bottom, y = e.pageY;
-        const objects = ranklist.children;
-        for(let i = 0; i < objects.length; i++) {
-            let centroid = computeCenter(objects[i]);
-            if(centroid.y < y) continue;
-            else if(i - 1 >= 0) {
-                top = objects[i - 1];
-                bottom = objects[i];
-                ranklist.insertBefore(item, bottom);
-                break;
-            } else {
-                top = objects[i];
-                item.remove();
-                ranklist.prepend(item);
-                break;
-            }
-        }
-        if(!top) {
-            item.remove();
-            ranklist.appendChild(item);
-        }
-        drag = null;
-    });
+    item.addEventListener('dragend', e => endDrag(e, item, ranklist));
     let input = item.getElementsByClassName('rank-item-txt')[0];
     let delbtn = item.getElementsByClassName('rank-del')[0];
     init_div(input);
@@ -314,7 +411,10 @@ function generator_mtch(card, mtchlist, r, txt) {
     let delbtn = pair.getElementsByClassName('mtchpair-del')[0];
     init_div(term);
     init_div(def);
-    if(txt) term.setVal(txt);
+    if(txt) {
+        term.setVal(txt[0]);
+        def.setVal(txt[1]);
+    }
     def.addEventListener('keydown', e => {
         if(e.key != "Tab" || e.shiftKey) return;
         if(cards.indexOf(card) < cards.length - 1) return;
@@ -326,7 +426,7 @@ function generator_mtch(card, mtchlist, r, txt) {
     });
     if(r) delbtn.addEventListener('mousedown', () => pair.remove());
 }
-// Builders
+// Card Builders
 function init_mc(card, n, q) {
     card.innerHTML = `
         <div class='cardsel'>
@@ -334,6 +434,7 @@ function init_mc(card, n, q) {
             <button class='txtbtn selbtn selbtn-nosel'>Text</button>
             <button class='rankbtn selbtn selbtn-nosel'>Ranking</button>
             <button class='mtchbtn selbtn selbtn-nosel'>Matching</button>
+            <button class='card-drag-handle' tabindex="-1"><span class='material-symbols-outlined'>drag_handle</span></button>
         </div>
         <div class='cardmain'>
             <div class='card-q-cont'>
@@ -379,6 +480,7 @@ function init_txt(card, n, q) {
             <button class='txtbtn selbtn selbtn-sel'>Text</button>
             <button class='rankbtn selbtn selbtn-nosel'>Ranking</button>
             <button class='mtchbtn selbtn selbtn-nosel'>Matching</button>
+            <button class='card-drag-handle' tabindex="-1"><span class='material-symbols-outlined'>drag_handle</span></button>
         </div>
         <div class='cardmain'>
             <div class='card-q-cont'>
@@ -423,10 +525,10 @@ function init_txt(card, n, q) {
 
     init_div(inverse.getElementsByClassName('q')[0]);
 
-    // Cloner
+    // Local Cloner
     card.getElementsByClassName('txt-clone')[0].addEventListener('mousedown', () => cloner(card, cards.indexOf(card) + 1));
     
-    // Generator
+    // Local Generator
     let generator = (r, p, t) => generator_txt(card, i_anslist, r, p, t);
     let inverse_ch = t => {
         cardsel.style.display = cardmain.style.display = t ? "none" : "block";
@@ -461,6 +563,7 @@ function init_ranking(card, n, q) {
             <button class='txtbtn selbtn selbtn-nosel'>Text</button>
             <button class='rankbtn selbtn selbtn-sel'>Ranking</button>
             <button class='mtchbtn selbtn selbtn-nosel'>Matching</button>
+            <button class='card-drag-handle' tabindex="-1"><span class='material-symbols-outlined'>drag_handle</span></button>
         </div>
         <div class='cardmain'>
             <div class='card-q-cont'>
@@ -494,6 +597,7 @@ function init_mtch(card, n, q) {
             <button class='txtbtn selbtn selbtn-nosel'>Text</button>
             <button class='rankbtn selbtn selbtn-nosel'>Ranking</button>
             <button class='mtchbtn selbtn selbtn-sel'>Matching</button>
+            <button class='card-drag-handle' tabindex="-1"><span class='material-symbols-outlined'>drag_handle</span></button>
         </div>
         <div class='cardmain'>
             <div class='card-q-cont'>
@@ -580,6 +684,41 @@ document.addEventListener("paste", e => {
 resetpic.addEventListener('mousedown', () => {
     deckpic = '';
     picimg.src = '../../img/defaultdeckpic.png';
+});
+tagInput.addEventListener('keydown', e => {
+    let value = tagInput.value.trim();
+    if(e.key == 'Enter' && value != '' && allowedTags.indexOf(value) > -1) {
+        e.preventDefault();
+        if(tag_exists(value)) return;
+        tags.innerHTML += `
+            <div class='tag remove-tag' onclick='this.remove()' style='background-color: ${generateTagColor(value)}'>
+                <div class='material-symbols-outlined'>remove</div>
+                <p class='tag-value'>${value}</p>
+            </div>
+        `;
+        tagInput.value = '';
+        tagInput.focus();
+        tagOk.style.display = 'none';
+    }
+});
+tagInput.addEventListener('input', () => {
+    let value = tagInput.value.trim();
+    if(value != '') {
+        if(tag_exists(value)) {
+            tagOk.style.display = 'block';
+            tagOk.innerHTML = 'Already added';
+            tagOk.style.color = 'var(--danger-red)';
+        } else if(allowedTags.indexOf(value) > -1) {
+            tagOk.style.display = 'block';
+            tagOk.innerHTML = 'Valid';
+            tagOk.style.color = 'var(--select-blue)';
+        } else {
+            tagOk.style.display = 'block';
+            tagOk.innerHTML = 'Invalid';
+            tagOk.style.color = 'var(--danger-red)';
+        }
+    }
+    else tagOk.style.display = 'none';
 });
 
 
@@ -717,7 +856,8 @@ function toDeck(err_assigner, is_temp = false, bypass = false, setCard) {
     }
     data = {
         desc: description.value,
-        contnt: data
+        contnt: data,
+        tags: Array(...document.getElementsByClassName('tag-value')).map(x => x.textContent),
     };
     if(isEmpty(data.contnt)) data.contnt = {};
     return [name.value, deckpic, data, isPublic.checked];
@@ -755,7 +895,7 @@ function generateCard(contnt, d_keys, i, n) {
             let inv = carddiv.getElementsByClassName('inverse')[0];
             let i_anslist = inv.getElementsByClassName('card-txt-i')[0];
             if(card.ans.length == 0) return;
-            anslist.getElementsByClassName('txt-ans-cont')[0].children[0].setVal(card.ans[0]);
+            anslist.getElementsByClassName('txt-ans-cont')[0].children[1].setVal(card.ans[0]);
             for(let i = 1; i < card.ans.length; i++) generator_txt(carddiv, i_anslist, true, anslist, card.ans[i]);
             if(card.inv) {
                 let confinver = carddiv.getElementsByClassName('txt-inver')[0];
@@ -782,7 +922,7 @@ function generateCard(contnt, d_keys, i, n) {
             carddiv.getElementsByClassName('q')[0].setVal(q);
             let mtchlist = carddiv.getElementsByClassName("card-mtch")[0];
             mtchlist.innerHTML = '';
-            for(let i = 0; i < Math.max(card.ans.length, 1); i++) generator_mtch(carddiv, mtchlist, i != 0, card.ans[i] ?? "");
+            for(let i = 0; i < Math.max(card.ans.length, 1); i++) generator_mtch(carddiv, mtchlist, i != 0, card.ans[i] ?? ["", ""]);
         break;
     }
     return carddiv;
@@ -802,6 +942,16 @@ function appendToCards(contnt) {
         let carddiv = generateCard(contnt, d_keys, i, cards.length + 1);
         cardContain.appendChild(carddiv);
     }
+}
+function appendTags(tagsToAppend = []) {
+    tagsToAppend.map(tag => {
+        tags.innerHTML += `
+            <div class='tag remove-tag' onclick='this.remove()' style='background-color: ${generateTagColor(tag)}'>
+                <div class='material-symbols-outlined'>remove</div>
+                <p class='tag-value'>${tag}</p>
+            </div>
+        `;
+    });
 }
 
 
@@ -831,8 +981,9 @@ const import_modal = document.getElementById('importing-modal');
 const i_import = document.getElementById('i-import');
 const i_cancel = document.getElementById('i-cancel');
 const import_q = document.getElementById('importing-questions');
+const qSelectAll = document.getElementById('qSelectAll');
 
-let temp_name, temp_desc, temp_contnt;
+let temp_name, temp_desc, temp_tags, temp_contnt;
 
 b_importbtn.addEventListener("mousedown", () => b_modal.style.display = "block");
 q_importbtn.addEventListener("mousedown", () => q_modal.style.display = "block");
@@ -844,6 +995,23 @@ function open_import_modal(contnt) {
     i_cancel.disabled = false;
     import_q.innerHTML = "";
     let c_keys = Object.keys(contnt);
+    // Local function iterator:
+    function checked() {
+        let allChecked = true;
+        let oneChecked = false;
+        let boxes = import_q.getElementsByClassName('import-question-checkbox');
+        for(let i = 0; i < boxes.length; i++) {
+            if(boxes[i].checked) oneChecked = true;
+            if(!boxes[i].checked) allChecked = false;
+        }
+        return [allChecked, oneChecked];
+    }
+    function updateQSelectAll() {
+        let state = checked();
+        if(state[0]) qSelectAll.innerHTML = "check_box";
+        else if(state[1]) qSelectAll.innerHTML = "indeterminate_check_box";
+        else qSelectAll.innerHTML = "check_box_outline_blank";
+    }
     try {
         for(let i = 0; i < c_keys.length; i++) {
             let q = c_keys[i];
@@ -852,7 +1020,7 @@ function open_import_modal(contnt) {
             carddiv.className = "import-card";
             carddiv.innerHTML = `
                 <div class="question-box">
-                    <input type="checkbox" class="import-question-checkbox" data-q="${q}" checked>
+                    <input type="checkbox" class="import-question-checkbox" checked>
                     <p><b class="mathJax">Q | ${q}</b></p>
                         ${
                             card.type === "mc"
@@ -869,13 +1037,26 @@ function open_import_modal(contnt) {
                     </p>
                 </div>
             `;
-            carddiv.addEventListener("mousedown", (e) => {
-                let checkbox = carddiv.getElementsByClassName("import-question-checkbox")[0];
+            let checkbox = carddiv.getElementsByClassName("import-question-checkbox")[0];
+            checkbox.dataset.q = q;
+            carddiv.addEventListener("mousedown", e => {
                 if (e.target != checkbox) checkbox.checked = !checkbox.checked;
-            })
-            Array(carddiv.getElementsByClassName("mathJax")).map(e => typeset(e));
+                updateQSelectAll();
+            });
+            checkbox.addEventListener('change', updateQSelectAll);
+            Array(carddiv.getElementsByClassName("mathJax")).map(typeset);
             import_q.appendChild(carddiv);
         }
+        // Configure qSelectAll
+        qSelectAll.innerHTML = "check_box";
+        qSelectAll.addEventListener('mousedown', () => {
+            let state = checked();
+            let boxes = import_q.getElementsByClassName('import-question-checkbox');
+            for(let i = 0; i < boxes.length; i++)
+                if(state[0]) boxes[i].checked = false;
+                else boxes[i].checked = true;
+            updateQSelectAll();
+        });
         temp_contnt = contnt;
     } catch(_) {
         import_q.innerHTML = "We couldn't parse this import.";
@@ -887,8 +1068,9 @@ function continue_import_modal() {
     let data = {};
     for(let i = 0; i < boxes.length; i++)
         if(boxes[i].checked) data[boxes[i].dataset.q] = temp_contnt[boxes[i].dataset.q];
-    temp_name ? name.value = temp_name : "";
-    temp_desc ? description.value = temp_desc : "";
+    if(temp_name) name.value = temp_name;
+    if(temp_desc) description.value = temp_desc;
+    if(temp_tags) appendTags(temp_tags);
     try {
         appendToCards(data);
     } catch(e) {
@@ -903,7 +1085,7 @@ function close_import_modal() {
     i_import.disabled = true;
     i_cancel.disabled = true;
     import_q.innerHTML = "";
-    temp_name = undefined, temp_desc = undefined, temp_contnt = undefined;
+    temp_name = undefined, temp_desc = undefined, temp_tags = undefined, temp_contnt = undefined;
 }
 i_import.addEventListener("mousedown", () => continue_import_modal(temp_contnt));
 i_cancel.addEventListener("mousedown", close_import_modal);
@@ -939,6 +1121,7 @@ b_createbtn.addEventListener("mousedown", () => {
                 let val_name = window.lib.dpwrapper(dp, main.name);
                 let val_desc = window.lib.dpwrapper(dp, main.desc);
                 let val_contnt = window.lib.dpwrapper(dp, main.contnt);
+                temp_tags = window.lib.dpwrapper(dp, main.tags);
                 if(b_replacename.checked) temp_name = val_name;
                 if(b_replacedesc.checked) temp_desc = val_desc;
                 open_import_modal(val_contnt);
@@ -1034,32 +1217,7 @@ flushDeck.addEventListener('mousedown', () => {
     newCard();
     safety_check();
 });
-window.addEventListener('dragover', e => {
-    if(!drag) return;
-    let list = drag.parentNode;
-    if(dragline.parentNode != list) list.prepend(dragline);
-    let top, bottom, y = e.pageY;
-    const objects = list.children;
-    for(let i = 0; i < objects.length; i++) {
-        let centroid = computeCenter(objects[i]);
-        if(centroid.y < y) continue;
-        else if((i - 1) >= 0) {
-            top = objects[i - 1];
-            bottom = objects[i];
-            list.insertBefore(dragline, bottom);
-            break;
-        } else {
-            top = objects[i];
-            dragline.remove();
-            list.prepend(dragline);
-            break;
-        }
-    }
-    if(!top) {
-        dragline.remove();
-        list.appendChild(dragline);
-    }
-});
+window.addEventListener('dragover', e => processDrag(e, dragParent));
 window.addEventListener("keydown", e => {
     if(e.target === addCard && (e.key === "Enter" || e.key === " ")) {
         newCard();
@@ -1084,8 +1242,10 @@ async function init() {
     let [success, data] = await UserGateway.getuser(false, true, false, true);
     if(!success) return;
     user = data;
+    allowedTags = await DeckGateway.getAllowedTags();
+    allowedTags.map(x => tagSuggestions.innerHTML += `<option value='${x}'>`);
     newCard();
-    cards[cards.length - 1].getElementsByClassName('q')[0].focus();
+    cards[0].getElementsByClassName('q')[0].focus();
     addCard.addEventListener('mousedown', newCard);
 }
 function active() {
@@ -1099,6 +1259,7 @@ const DeckBind = {
     cards: () => cards,
     deckpic: () => deckpic,
     setDeckpic: (pic) => deckpic = pic,
+    allowedTags: () => allowedTags,
     computeCenter,
     init_card,
     typeset,
@@ -1110,7 +1271,8 @@ const DeckBind = {
     init_ranking,
     newCard,
     toDeck,
-    appendToCards
+    appendToCards,
+    appendTags
 };
 
 export { DeckBind };
