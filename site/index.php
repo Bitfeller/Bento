@@ -1,3 +1,4 @@
+<?php $_X_NUO = true; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -1,3 +1,4 @@
+<?php $_X_NUO = true; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,12 +28,6 @@
     </div>
     <script type='module'>
         import { UserGateway } from "../server/client-gateway/user-gateway.js";
-
-        (async () => {
-            let [success, reason] = await UserGateway.getuser();
-            if(success)
-                window.location.href = "/home";
-        })();
         
         const s_user = document.getElementById("signUpUsername");
         const s_pass = document.getElementById("signUpPassword");
@@ -71,7 +66,7 @@
                 }
                 return;
             }
-            window.location.href = "/home";
+            window.location.href = "/home?new=1";
         }
         s_btn.addEventListener("mousedown", signup);
         window.onkeydown = async (e) => {
