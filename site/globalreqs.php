@@ -5,16 +5,9 @@
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <script type="module" src="/sitejs/client-modules/header.js"></script>
 <?php
-    // Load session
-    session_start();
     // Load themes
+    session_start();
     if(isset($_SESSION['uid'])) {
-        if($_SESSION['verified'] == 0 and (isset($_X_UO) and $_X_UO == "1"))
-            header("Location: /user/verify");
-        else if($_SESSION['verified'] == 1 and (isset($_X_VE) and $_X_VE == "1"))
-            header("Location: /home");
-        if(isset($_X_NUO) and $_X_NUO == "1")
-            header("Location: /home");
         $contnt = json_decode($_SESSION['userdata'], true);
         switch($contnt["theme"]) {
             case 1:
@@ -27,6 +20,5 @@
                 echo "<link rel='stylesheet' href='../css/themes/grayscale.css'>";
             break;
         }
-    } else if((isset($_X_UO) and $_X_UO == "1") or (isset($_X_VE ) and $_X_VE == "1"))
-        header("Location: /login?s=".substr($_SERVER['REQUEST_URI'], 1));
+    }
 ?>

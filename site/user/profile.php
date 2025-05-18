@@ -1,4 +1,3 @@
-<?php $_X_UO = true; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +8,7 @@
     <link rel="stylesheet" href="../../css/profile.css"/>
     <script type="module" src="../../sitejs/profile.js"></script>
 </head>
-<body>
+<body data-uo="true">
     <?php require_once "../header.php"?>
     <div class="profile-grid">
         <div class="grid-box pfp-box">
@@ -63,7 +62,7 @@
                 <option value="password">Change Password</option>
             </select>
             <div id="change-email-box">
-                <input type="password" id="email-curr-password" placeholder="Current Password">
+                <input type="text" id="email-curr-password" placeholder="Current Password">
                 <input type="text" id="email" placeholder="Email">
                 <p>Changing your email will require you to verify the new email address so make sure you can access it.</p>
                 <button id="change-email">Change</button>
@@ -71,7 +70,6 @@
             <div id="change-password-box" style="display: none;">
                 <input type="password" id="password-curr-password" placeholder="Current Password">
                 <input type="password" id="password" placeholder="New Password">
-                <input type="password" id="password-confirm" placeholder="Confirm New Password">
                 <p>Passwords must be at least 8 characters long <p><i>for now...</i></p></p>
                 <button id="change-password">Change</button>
             </div>
@@ -80,7 +78,7 @@
             <h2>Miscellaneous</h2>
             <div id="global-back-box">
                 <label for="enable-global-back">
-                    <input type="checkbox" id="enable-global-back" enabled>
+                    <input type="checkbox" id="enable-global-back" disabled>
                     Enable Global Back Button
                 </label>
                 <p>Appears to the left of the Bento!, logo on every page, and is not assured to enhance user experience.</p>

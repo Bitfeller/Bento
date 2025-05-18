@@ -26,15 +26,6 @@ window.onclick = e => {
         signUpModal.style.display = "none";
     }
 }
-window.SHOW_ERROR = err => {
-    const msg = err;
-    const errPopup = document.createElement("div");
-    errPopup.innerText = msg;
-    errPopup.className = "error-popup";
-
-    document.body.appendChild(errPopup);
-    setTimeout(() => errPopup.remove(), 2500);
-};
 
 // Scroll Animation Code
 const observer = new IntersectionObserver(entries => {
@@ -55,8 +46,8 @@ const s_user = document.getElementById("signUpUsername");
 const s_pass = document.getElementById("signUpPassword");
 const s_pass2 = document.getElementById("signUpPassword2");
 const s_email = document.getElementById("signUpEmail");
-const l_btn = document.getElementById("signInBtnM");
-const s_btn = document.getElementById("signUpBtnM");
+const l_btn = document.getElementById("signInBtn");
+const s_btn = document.getElementById("signUpBtn");
 
 async function l_fn() {
     let [success, reason] = await UserGateway.login(l_user.value, l_pass.value);
