@@ -4,7 +4,9 @@
 
     --select-blue: #2a72dc;
     --danger-red: #e01f15;
-    --drag-color: #aeff00;
+
+    --drag-bar: var(--select-blue);
+    --drag-background: var(--gray);
 
     --background: #070a0e;
     --dark-gray: #0a1015;
