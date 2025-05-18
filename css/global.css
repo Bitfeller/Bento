@@ -233,9 +233,6 @@ select, option {
     position: relative;
     z-index: 10;
 }
-[id="header:beta-text"] {
-    transition: 0s;
-}
 .header > * {
     padding-top: 12px;
     z-index: 10;
@@ -278,7 +275,7 @@ select, option {
 .header > span.info:hover {
     color: white;
 }
-.header span {
+.header .right-header-ico {
     transition: 0.3s;
     transition-timing-function: ease-in-out;
 }
@@ -287,7 +284,7 @@ select, option {
 }
 .logo {
     cursor: pointer;
-    transition: 0.3s;
+    transition: filter 0.3s ease-in-out;
 }
 .logo:hover {
     filter: brightness(85%);
