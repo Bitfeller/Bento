@@ -31,7 +31,7 @@ A learning webapp using the magical powers of **SRS** (and other systems) along 
 - Install XAMPP - specifically Apache and MySQL.
 - Run the deployment code under dev/build_env
     - If it doesn't work, don't hesitate! The deployment code under `main` or `dev` usually works.
-    - If that doesn't work either...hey, it was Va1ley who told me to write the code in Rust. No one told me to test it thorougly, either.
+    - If that doesn't work either...hey, it was Va1ley who told me to write the code in Rust. No one told me to test it thoroughly, either.
     - If you're on Linux, you can look through the source and try to run similar commands to set up your environment.
 - Open XAMPP and start Apache (first) and MySQL (second).
 - That's it! All edits you make here will automatically be shown in your local Apache server (type `localhost` in your browser).
