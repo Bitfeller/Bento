@@ -49,7 +49,7 @@
                     <div class="filtered-tags">
                     </div>
                     <div class="break-line"></div>
-                    <p>Recommended Tags: </p>
+                    <p>Possible Tags (random): </p>
                     <div class="predefined-tags">
                     </div>
                     <div class="break-line"></div>
@@ -62,8 +62,8 @@
                     <div class="filter-box">
                         <p>Sort</p>
                         <select name="sort-options" id="sortOptions">
-                            <option value="time">Chronologically (new &rarr; old)</option>
-                            <option value="reverse-time">Reverse Chronologically (old &rarr; new)</option>
+                            <option value="new-time">Newest to Oldest</option>
+                            <option value="old-time">Oldest to Newest</option>
                             <option value="alphabet">Alphabetically (A &rarr; Z)</option>
                             <option value="reverse-alphabet">Reverse Alphabetically (Z &rarr; A)</option>
                         </select>
