@@ -83,6 +83,15 @@ function init_card(card, n) {
         if(idx > -1) cards.splice(idx, 1);
         card.remove();
     });
+    let dragHandle = card.getElementsByClassName('card-drag-handle')[0];
+    dragHandle.setAttribute('draggable', true);
+    dragHandle.addEventListener('dragstart', () => {
+        drag = card;
+        dragParent = cardContain;
+        card.style.backgroundColor = 'var(--drag-color)';
+        cardContain.append(dragline);
+    });
+    dragHandle.addEventListener('dragend', e => endDrag(e, card, cardContain));
 }
 async function typeset(node) {
     if(Object.keys(MathJax.startup) == 0) 
@@ -199,6 +208,48 @@ function toNew() {
     newCard();
     document.querySelector("#create").scrollIntoView({ behavior: 'smooth', block: 'center' });
     cards[cards.length - 1].getElementsByClassName('q')[0].focus();
+}
+// Color map
+const map = [
+    [20, [255, 191, 0]],    // Amber
+    [100, [255, 0, 127]],   // Pink
+    [60, [0, 127, 255]],    // Azure
+    [0, [255, 0, 0]],       // Red
+    [70, [0, 0, 255]],      // Blue
+    [90, [255, 0, 255]],    // Magenta
+    [40, [50, 205, 50]],    // Light Green
+    [30, [0, 255, 0]],      // Green
+    [10, [255, 127, 0]],    // Orange
+    [80, [127, 0, 255]],    // Violet
+    [50, [0, 255, 255]]     // Cyan
+]
+// A pure function that generates a color based on a name
+function generateTagColor(n) {
+    let bc = map.filter((c) => parseInt(n.charCodeAt(n.length - 1) / 10) % 10 * 10 == c[0])[0][1];
+    const fh = map.filter((c) => 
+        parseInt((n.substring(1)
+            .substring(0, Math.floor(n.substring(1).length / 2))
+            .split('')
+            .reduce((a, c) => a + c.charCodeAt(0), 0) / n.substring(1)
+            .substring(0, Math.floor(n.substring(1).length / 2)).length) / 10)
+        % 10 * 10 == c[0])[0][1];
+    const sh = map.filter((c) => 
+        parseInt((n.substring(1)
+            .substring(Math.floor(n.substring(1).length / 2))
+            .split('')
+            .reduce((a, c) => a + c.charCodeAt(0), 0) / n.substring(1)
+            .substring(0, Math.floor(n.substring(1).length / 2)).length) / 10)
+        % 10 * 10 == c[0])[0][1];
+    return `rgb(${
+        bc.map((c, i) => {
+            let value = c + parseInt(fh[i] / 25) + parseInt(sh[i] / 25);
+            while (value > 255) 
+                Math.abs(n - 0) < Math.abs(n - 255) ? 
+                    value = 255 : 
+                    Math.abs(n - 255) < Math.abs(n - 0) ? value -= 255 : value = 255;
+            return parseInt(value * 0.65);
+        }).join(', ')
+    })`;
 }
 
 
@@ -586,16 +637,6 @@ function newCard() {
         else if(cn.includes('rankbtn')) init_ranking(card, n);
         else if(cn.includes('mtchbtn')) init_mtch(card, n);
         else init_mc(card, n); // mcbtn + etc.
-    
-    let dragHandle = card.getElementsByClassName('card-drag-handle')[0];
-    dragHandle.setAttribute('draggable', true);
-    dragHandle.addEventListener('dragstart', () => {
-        drag = card;
-        dragParent = cardContain;
-        card.style.backgroundColor = 'var(--drag-color)';
-        cardContain.append(dragline);
-    });
-    dragHandle.addEventListener('dragend', e => endDrag(e, card, cardContain));
 }
 
 
@@ -627,7 +668,7 @@ tagInput.addEventListener('keydown', e => {
         e.preventDefault();
         if(tag_exists(value)) return;
         tags.innerHTML += `
-            <div class='tag remove-tag' onclick='this.remove()'>
+            <div class='tag remove-tag' onclick='this.remove()' style='background-color: ${generateTagColor(value)}'>
                 <div class='material-symbols-outlined'>remove</div>
                 <p class='tag-value'>${value}</p>
             </div>
@@ -831,7 +872,7 @@ function generateCard(contnt, d_keys, i, n) {
             let inv = carddiv.getElementsByClassName('inverse')[0];
             let i_anslist = inv.getElementsByClassName('card-txt-i')[0];
             if(card.ans.length == 0) return;
-            anslist.getElementsByClassName('txt-ans-cont')[0].children[0].setVal(card.ans[0]);
+            anslist.getElementsByClassName('txt-ans-cont')[0].children[1].setVal(card.ans[0]);
             for(let i = 1; i < card.ans.length; i++) generator_txt(carddiv, i_anslist, true, anslist, card.ans[i]);
             if(card.inv) {
                 let confinver = carddiv.getElementsByClassName('txt-inver')[0];
@@ -861,16 +902,6 @@ function generateCard(contnt, d_keys, i, n) {
             for(let i = 0; i < Math.max(card.ans.length, 1); i++) generator_mtch(carddiv, mtchlist, i != 0, card.ans[i] ?? ["", ""]);
         break;
     }
-    // Set up dragging
-    let dragHandle = carddiv.getElementsByClassName('card-drag-handle')[0];
-    dragHandle.setAttribute('draggable', true);
-    dragHandle.addEventListener('dragstart', () => {
-        drag = carddiv;
-        dragParent = cardContain;
-        carddiv.style.backgroundColor = 'var(--drag-color)';
-        cardContain.append(dragline);
-    });
-    dragHandle.addEventListener('dragend', e => endDrag(e, carddiv, cardContain));
     return carddiv;
 }
 function appendToCards(contnt) {
@@ -889,10 +920,10 @@ function appendToCards(contnt) {
         cardContain.appendChild(carddiv);
     }
 }
-function appendTags(tagsToAppend) {
+function appendTags(tagsToAppend = []) {
     tagsToAppend.map(tag => {
         tags.innerHTML += `
-            <div class='tag remove-tag' onclick='this.remove()'>
+            <div class='tag remove-tag' onclick='this.remove()' style='background-color: ${generateTagColor(tag)}'>
                 <div class='material-symbols-outlined'>remove</div>
                 <p class='tag-value'>${tag}</p>
             </div>
@@ -1175,7 +1206,7 @@ async function init() {
     allowedTags = await DeckGateway.getAllowedTags();
     allowedTags.map(x => tagSuggestions.innerHTML += `<option value='${x}'>`);
     newCard();
-    cards[cards.length - 1].getElementsByClassName('q')[0].focus();
+    cards[0].getElementsByClassName('q')[0].focus();
     addCard.addEventListener('mousedown', newCard);
 }
 function active() {

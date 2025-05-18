@@ -74,7 +74,7 @@
                 $stmt->execute();
                 $stmt->close();
                 // Update decks to have accurate username as well
-                $sql = "UPDATE decks SET owner = ? WHERE owner = ? LIMIT 1;";
+                $sql = "UPDATE decks SET owner = ? WHERE owner = ?;";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("ss", $val, $_SESSION["username"]);
                 $stmt->execute();
