@@ -42,6 +42,5 @@
         <div id="answer_info"></div>
     </div>
     <div id="progressBar"></div>
-    <div id="infotext">If you can't see the rest of the option(s) or question, scroll!</div>
 </body>
 </html>
