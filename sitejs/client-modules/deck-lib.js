@@ -6,6 +6,7 @@ const isPublic = document.getElementById("isPublic");
 const description = document.getElementById("description");
 const cardContain = document.getElementById("cardcontain");
 const addCard = document.getElementById("addcard");
+const flushDeck = document.getElementById("flush");
 const resetpic = document.getElementById("picReset");
 const fileselecttrigger = document.getElementById("fileselecttrigger");
 const picimg = document.getElementById("deckpic");
@@ -20,6 +21,7 @@ let user;
 const sizeLimit = 2 * 1000 * 1000; // NOTE: must be same as max_image_size in server/conf/config.json
 
 let allowedTags = [];
+let flushTick = 0;
 
 const dragline = document.createElement('div');
 dragline.className = 'drag-line';
@@ -658,6 +660,27 @@ fileselecttrigger.addEventListener('change', () => {
         reader.readAsDataURL(file);
     }
 });
+document.addEventListener("paste", e => {
+    let items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (let item of items) {
+        if (item.type.startsWith("image/")) {
+            let file = item.getAsFile();
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = e => {
+                    let imageData = e.target.result;
+                    let content = e.target.result;
+                    if(content.byteLength > sizeLimit) return console.warn(`failed! Past size limit of ${sizeLimit / (1 * 1000 * 1000)} MB.`);
+                    deckpic = content;
+                    picimg.src = content;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    }
+});
 resetpic.addEventListener('mousedown', () => {
     deckpic = '';
     picimg.src = '../../img/defaultdeckpic.png';
@@ -1178,6 +1201,22 @@ g_createbtn.addEventListener("mousedown", () => {
 // --------------------------------------------------- \\
 
 
+flushDeck.addEventListener('mousedown', () => {
+    if(cards.length == 0) return;
+    if(Date.now() - flushTick >= 3000) {
+        flushTick = Date.now();
+        window.SHOW_ERROR("Press again to delete all cards.");
+        return;
+    } else if(Date.now() - flushTick < 500) {
+        window.SHOW_ERROR("Don't press too fast - wait half a second.");
+        return;
+    }
+    flushTick = Date.now();
+    cards.forEach(card => card.remove());
+    cards = [];
+    newCard();
+    safety_check();
+});
 window.addEventListener('dragover', e => processDrag(e, dragParent));
 window.addEventListener("keydown", e => {
     if(e.target === addCard && (e.key === "Enter" || e.key === " ")) {
@@ -1219,6 +1258,7 @@ const DeckBind = {
     user: () => user,
     cards: () => cards,
     deckpic: () => deckpic,
+    setDeckpic: (pic) => deckpic = pic,
     allowedTags: () => allowedTags,
     computeCenter,
     init_card,
