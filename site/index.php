@@ -1,3 +1,4 @@
+<?php $_X_NUO = true; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -139,7 +140,7 @@
                 <p style="font-size: 13px; font-family: kadwa;">Your password is always secure. No one can see your password, not even us.</p>
                 <p>Confirm Password:</p>
                 <input type="password" id="signUpPassword2">
-                <button class="submitBtn" id="signUpBtn">Sign Up</button>
+                <button class="submitBtn" id="signUpBtnM">Sign Up</button>
                 <p class="info-error" id="signup-err"></p>
             </div>
         </dialog>
@@ -150,7 +151,7 @@
                 <input type="text" id="signInUsername">
                 <p>Password:</p>
                 <input type="password" id="signInPassword">
-                <button class="submitBtn" id="signInBtn">Login</button>
+                <button class="submitBtn" id="signInBtnM">Login</button>
                 <p class='login-box-selector' onclick="location.href='/user/resetpwd'">I forgot my password >></p>
                 <p class="info-error" id="login-err"></p>
             </div>

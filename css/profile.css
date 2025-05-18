@@ -157,12 +157,11 @@
     border-radius: 5px;
 }
 #global-back-box {
-    filter: brightness(30%);
     & * {
         user-select: none;
     }
 }
-#password, #email {
+#password, #email, #password-confirm {
     margin-top: 5px;
 }
 @keyframes ability-to-use {

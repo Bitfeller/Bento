@@ -106,7 +106,8 @@ button {
     color: var(--dark-text);
     cursor: pointer;
     transition: 0.3s;
-    padding: 0px 8px;
+    padding: 0px 5px;
+    font-size: 12pt;
 }
 button:hover {
     filter: brightness(85%);
@@ -123,6 +124,9 @@ div[contenteditable="true"] {
     color: #eeeeee;
     background-color: var(--lighter-gray);
     transition: 0.3s;
+    padding: 0px 5px;
+    font-size: 12pt;
+    box-sizing: border-box;
 }
 input:hover,
 div[contenteditable="true"]:hover {
@@ -228,6 +232,9 @@ select, option {
     border-radius: 0 0 10px 10px;
     position: relative;
     z-index: 10;
+}
+[id="header:beta-text"] {
+    transition: 0s;
 }
 .header > * {
     padding-top: 12px;

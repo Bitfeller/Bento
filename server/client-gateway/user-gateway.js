@@ -25,7 +25,7 @@ let UserGateway = {
                 getreviews,
                 getdrafts
             })
-        }).then(res => {
+        }).then(async res => {
             if(!res.ok) throw "couldn't fetch! (bad response)";
             fres = res.clone();
             return res.json();
