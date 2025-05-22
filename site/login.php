@@ -1,3 +1,4 @@
+<?php $_X_NUO = true; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,15 +24,6 @@
     </div>
     <script type='module'>
         import { UserGateway } from "../server/client-gateway/user-gateway.js";
-
-        (async () => {
-            let [success, reason] = await UserGateway.getuser();
-            if(success) {
-                const paramList = new URLSearchParams(window.location.search);
-                if(paramList.get("s")) window.location.href = "/" + paramList.get("s");
-                else window.location.href = "/home";
-            }
-        })();
         
         const l_user = document.getElementById("signInUsername");
         const l_pass = document.getElementById("signInPassword");
