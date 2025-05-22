@@ -58,7 +58,7 @@
                 file_put_contents($path, $val);
                 success();
             case "data":
-                $val = json_decode($val, false);
+                $val = json_decode($val, false, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags']);
                 // Check to make sure data is valid
                 if($val === null) fail("invalid data");
                 if(!isset($val->desc)) fail("invalid data");

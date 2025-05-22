@@ -93,7 +93,7 @@
         $decks = [];
         while($row = $raw_res->fetch_assoc()) {
             // Unload viewdata and only get views
-            $views = sizeof(json_decode($row['viewdata'], true));
+            $views = sizeof(json_decode($row['viewdata'], true, $conf['php_cfg']['json_max_depth'], $conf['php_cfg']['json_flags']));
             $row['views'] = $views;
             
             unset($row['data']);
