@@ -17,7 +17,7 @@ resend.addEventListener('mousedown', async () => {
     if(success) resendSuccess.innerHTML = "We sent you another verification email.";
     else if(!success) {
         resendSuccess.innerHTML = "";
-        if(err == 'timeout') window.SHOW_ERROR("You can only send a verification email every 5 minutes. Wait less than 5 minutes...");
+        if(err == 'timeout') window.SHOW_ERROR("You can only resend the verification email every 5 minutes. Wait less than 5 minutes...");
         else window.SHOW_ERROR("Looks like there's something wrong on our side. Try again later.");
     }
 });
@@ -27,6 +27,9 @@ changeEmailBtn.addEventListener('mousedown', async () => {
     else {
         changeSuccess.innerHTML = "";
         switch(err) {
+            case 'timeout':
+                window.SHOW_ERROR("You can only change your email every 5 minutes. Wait less than 5 minutes...");
+            break;
             case 'invalid pwd':
                 window.SHOW_ERROR("Wrong password.");
             break;
@@ -37,6 +40,7 @@ changeEmailBtn.addEventListener('mousedown', async () => {
                 window.SHOW_ERROR("That email is already taken.");
             break;
             default:
+                console.log(err);
                 window.SHOW_ERROR("Looks like there's something wrong on our side. Try again later.");
             break;
         }
