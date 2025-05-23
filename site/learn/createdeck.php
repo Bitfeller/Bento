@@ -114,7 +114,9 @@
             </label> | Use this imported deck's <b>description</b> in this deck<br>
             Import your deck (.json): <input type="file" id="BI-file" accept="application/json"><br>
             <button id="BI-createBtn" disabled="true">Import</button>
-            <p class="info-error" id="BI-err"></p>
+            <p>Or, you can paste in a raw JSON.</p>
+            <textarea type="text" placeholder="Paste JSON Here" id="BI-pasteImportText"></textarea>
+            <button id="BI-pasteCreateBtn">Import</button>
         </div>
     </div>
     <div class="import-modal" id="importing-modal">
