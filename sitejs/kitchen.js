@@ -546,7 +546,7 @@ async function populateRecommended() {
     strictSlider.children[0].style.right = "0";
 
     decks.push(...data);
-    await update();
+    update();
 
     window.LOADED();
     populateRecommended();
