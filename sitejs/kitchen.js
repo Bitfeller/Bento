@@ -7,7 +7,9 @@ let loaded = -1, loadedReviews = false;
 let decks = [];
 
 let allowedTags = [];
+let reviewsTags = {};
 
+// Elements
 const filteredTags = document.getElementsByClassName('filtered-tags')[0];
 const predefinedTags = document.getElementsByClassName('predefined-tags')[0];
 const tagSearch = document.getElementById('tagSearch');
@@ -129,6 +131,12 @@ function box(id, killfn = (box) => box.remove()) {
 
         b.getElementsByClassName('preview-button')[0].addEventListener('click', e => preview(e.currentTarget));
         b.getElementsByClassName('add-button')[0].addEventListener('click', e => updateReviews(e.currentTarget));
+
+        // Update reviews tags
+        if(user.userdata.reviews[id]) {
+            for(let tag of data.data.tags)
+                reviewsTags[tag] = (reviewsTags[tag] ?? 0) + 1;
+        }
     }
 
     return {
@@ -457,26 +465,31 @@ async function appendTag(tag) {
 }
 
 async function populateRecommended() {
-    // Count tag occurrences from all loaded decks
-    const tagCounts = {};
+    // Select top 3 from tags in the user's reviews
+    const topTags = Object.keys(reviewsTags)
+        .sort((a, b) => reviewsTags[b] - reviewsTags[a])
+        .slice(0, 3);
+
+    if(topTags.length < 3) {
+        const tagCounts = {};
     
-    for (const deck of decks) {
-        if (deck.data && deck.data.tags) {
-            for (const tag of deck.data.tags) {
-                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        for (const deck of decks) {
+            if (deck.data && deck.data.tags) {
+                for (const tag of deck.data.tags) {
+                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                }
             }
         }
+
+        const bestTags = Object.keys(tagCounts)
+            .sort((a, b) => tagCounts[b] - tagCounts[a])
+            .slice(0, 3 - topTags.length);
+        topTags.push(...bestTags);
     }
-    
-    // Sort tags by count to find the most popular ones
-    const topTags = Object.keys(tagCounts)
-        .sort((a, b) => tagCounts[b] - tagCounts[a])
-        .slice(0, 3);
-    
     // If no tags were found in decks, use 3 random tags from allowed tags
-    if (topTags.length === 0 && allowedTags.length > 0) {
+    if (topTags.length < 3 && allowedTags.length > 0) {
         const shuffled = [...allowedTags].sort(() => 0.5 - Math.random());
-        topTags.push(...shuffled.slice(0, 3));
+        topTags.push(...shuffled.slice(0, 3 - topTags.length));
     }
     
     // Add each top tag to the filteredTags container
