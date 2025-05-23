@@ -180,6 +180,9 @@ async function update() {
         }
     }
 
+    if(ownedDecks.children.length == 0)
+        ownedDecks.innerHTML = `<p class='info-blank'>You haven't added any decks to your reviews yet.</p>`;
+
     loaded = decks.length - 1;
 }
 async function preview(_this) {
