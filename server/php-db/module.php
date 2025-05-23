@@ -8,6 +8,8 @@
     use PHPMailer\PHPMailer\PHPMailer;
     use Predis\Client as Redis;
 
+    require_once '../lib/predis/autoload.php';
+
     // Redis
     global $redis;
     function build_redis() {
