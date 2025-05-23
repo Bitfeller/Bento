@@ -26,7 +26,7 @@
         $sql = "SELECT * FROM decks WHERE (public = ? OR owner = ?)";
         if(!empty($searchTerms)) {
             // Check name and owner
-            $coll = $caseSensitive ? "latin1_general_cs" : "latin1_general_ci";
+            $coll = $caseSensitive ? "utf8mb4_unicode_cs" : "utf8mb4_unicode_ci";
             $comp = $regex ? "REGEXP ?" : "LIKE CONCAT('%', ?, '%')";
             
             $sql .= "AND (";
