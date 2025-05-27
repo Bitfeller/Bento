@@ -22,7 +22,7 @@
 }
 .review-container {
     flex-direction: column;
-    max-height: calc(100dvh - 108px);
+    height: calc(100dvh - 145px);
     width: calc(100vw - 20px);
 }
 #question, #answers {
@@ -44,11 +44,17 @@
     font-size: 18pt;
 }
 #questionImage {
-
+    border-radius: 10px;
+    height: 20vw;
+    margin: 0 auto;
 }
-/* .question:has(#questionImage) {
-
-} */
+#question:has(#questionImage) {
+    display: flex;
+    flex-direction: column;
+}
+#question:has(.tall-image) {
+    flex-direction: row;  
+}
 #answers {
     width: var(--default-width);
     margin-top: 10px;
