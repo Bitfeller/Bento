@@ -1,5 +1,5 @@
 :root {
-    --default-width: calc(100vw / 1.8);
+    --default-width: calc(100vw / 1.3);
 }
 .progress-display {
     
@@ -54,40 +54,69 @@
     margin-top: 10px;
     transition: all 2s;
     resize: both;
+    counter-reset: item-counter;
+}
+#answers > div {
+    counter-increment: item-counter;
+    position: relative;
+}
+#answers > div::before {
+    content: counter(item-counter);
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    line-height: 1.5em;
+    border-radius: 50%;
+    border: 2px solid var(--light-gray);
+    color: var(--light-color);
+    text-align: center;
+    margin-right: 0.5em;
+}
+#answers > div, #answers > input {
+    background-color: var(--background);
+    border: solid 2px var(--lighter-gray);
+    transition: filter 0.3s;
+}
+#answers > div:hover {
+    filter: brightness(85%);
 }
 #answerText {
-    /* width: var(--default-width); */
     width: 100%;
-    background-color: var(--background);
-    border: solid 1px var(--light-text);
     padding: 5px;
-    /* transition: border-color 0s; */
 }
 #answerText:focus {
     outline: none;
     border-color: var(--select-blue);
 }
 .review-container:has(#answers > #answerText) #question {
-    margin-top: 6vh;
+    margin-top: 4vh;
 }
-
-.mc-option {
-
+.mc-option, .ranking-option {
+    width: calc(50% - 19px - 2em);
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }
-#answers:has(.mc-option) {
-
+#answers:has(.mc-option), #answers:has(.ranking-option) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px
 }
 .ranking-option {
-
-}
-#answers:has(.ranking-option) {
-
+    width: 100%;
+    cursor: grab;
 }
 .matching-option {
-
+    padding: 5px;
+    border-radius: 5px;
+    cursor: grab;
+}
+.matching-option::before {
+    display: none !important;   
 }
 #answers:has(.matching-option) {
-
+    display: flex;
+    gap: 5px;
 }
 .answer-options {
     margin-top: 10px;
