@@ -44,6 +44,7 @@
     font-size: 18pt;
 }
 #questionImage {
+    display: none;
     border-radius: 10px;
     height: 20vw;
     margin: 0 auto;
@@ -94,6 +95,11 @@
     outline: none;
     border-color: var(--select-blue);
 }
+#answers:has(#answerText) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px
+};
 .review-container:has(#answers > #answerText) #question {
     margin-top: 4vh;
 }
@@ -124,8 +130,19 @@
     display: flex;
     gap: 5px;
 }
+#answerInfo {
+    width: var(--default-width);
+    background-color: var(--danger-red);
+    margin: -3px auto;
+    padding: 5px 20px;
+    border-radius: 0 0 10px 10px;
+    border: var(--gray) 3px solid;
+    overflow: hidden;
+}
 .answer-options {
-    margin-top: 10px;
+    width: calc(var(--default-width) + 40px);
+    margin: 0 auto;
+    margin-top: 5px;
     display: flex;
     justify-content: space-between;
 
