@@ -59,6 +59,11 @@
             <!-- <img id="questionImage" src="https://cdn.mos.cms.futurecdn.net/42E9as7NaTaAi4A6JcuFwG.jpg" alt="Question Image"> -->
         </div>
         <div id="answers">
+            <!-- Continue Button -->
+            <!-- <button id="continueButton">
+                Continue?
+            </button> -->
+
             <!-- Text -->
             <!-- <input type="text" id="answerText" placeholder="Type your answer here..." autocomplete="off"> -->
 
