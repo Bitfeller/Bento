@@ -92,15 +92,10 @@ function newSet() {
     lastWrong = currWrong;
     currWrong = [];
 
-    // scramble
-    if(currSet.length > 0) {
-        let save = currSet;
-        currSet = [];
-        while(save.length > 0) {
-            let idx = random(0, save.length - 1);
-            currSet.push(save[idx]);
-            save.splice(idx, 1);
-        }
+    // scramble using Fisher-Yates shuffle
+    for (let i = currSet.length - 1; i > 0; i--) {
+        const j = random(0, i); // random index between 0 and i
+        [currSet[i], currSet[j]] = [currSet[j], currSet[i]]; // swap elements
     }
 
     let min = Math.min(gameData.length, curr + deckSize);
