@@ -2,13 +2,14 @@
     require_once '../module.php';
     validate_request();
     $data = get_data();
-    require_types('bbbb', 'getpfp', 'getudata', 'getreviews', 'getdrafts');
+    require_types('bbbbs', 'getpfp', 'getudata', 'getreviews', 'getdrafts', 'pfpHash');
     session_start();
     if(!isset($_SESSION['uid']) || !isset($_SESSION['username'])) fail('no session');
     $getpfp = $data['getpfp'] ? 1 : 0;
     $getudata = $data['getudata'] ? 1 : 0;
     $getreviews = $data['getreviews'] ? 1 : 0;
     $getdrafts = $data['getdrafts'] ? 1 : 0;
+    $pfpHash = $data['pfpHash'] ?? "";
     try {
         $conf = get_server_config();
         if(redis_get('update-'.$_SESSION['uid']) == 1) {
@@ -50,7 +51,13 @@
             if($getdrafts == 0) unset($userdata->draftdecks);
             $data['userdata'] = json_encode($userdata);
         }
-        if($getpfp == 1) $data['pfp'] = $_SESSION['pfp'];
+        if($getpfp == 1) {
+            // Check if the cache hash matches; if so, the client already has the pfp; if not, send pfp
+            if($pfpHash == "" || $pfpHash != md5($_SESSION['pfp'])) {
+                $data['pfp'] = $_SESSION['pfp'];
+                $data['pfphash'] = md5($_SESSION['pfp']);
+            }
+        }
         success($data);
     } catch(_) {
         header('Location: /');
