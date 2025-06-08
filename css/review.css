@@ -1,7 +1,7 @@
 :root {
     --default-width: calc(100vw / 1.3);
-    --correct-green: #4CAF50;
-    --incorrect-red: #F44336;
+    --correct-green: #058507;
+    --incorrect-red: #850507;
 }
 #progressBar {
     height: 3px;
@@ -58,8 +58,7 @@
 #answers {
     width: var(--default-width);
     margin-top: 10px;
-    transition: all 2s;
-    resize: both;
+    transition: all 0.3s;
     counter-reset: item-counter;
 }
 #answers > div {
@@ -68,6 +67,7 @@
 }
 #answers > div::before {
     content: counter(item-counter);
+    font-family: "Kadwa";
     display: inline-block;
     width: 1.5em;
     height: 1.5em;
@@ -103,7 +103,7 @@
     margin-top: 4vh;
 }
 .mc-option, .ranking-option {
-    width: calc(50% - 19px - 2em);
+    width: calc(50% - 2em);
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
@@ -111,7 +111,15 @@
 #answers:has(.mc-option), #answers:has(.ranking-option) {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px
+    gap: 10px;
+}
+.mc-correct::before {
+    content: "✓" !important;
+    background-color: var(--correct-green) !important;
+}
+.mc-incorrect::before {
+    content: "✗" !important;
+    background-color: var(--incorrect-red) !important;
 }
 .ranking-option {
     width: 100%;
@@ -135,21 +143,22 @@
 .correct {
     background-color: var(--correct-green) !important;
 }
+.correct:hover {
+    filter: brightness(100%);
+}
 #continueButton {
     width: var(--default-width);
     margin: 0 auto;
     margin-top: 10px;
-    padding: 10px;
+    padding: 5px;
     border-radius: 5px;
+    color: var(--light-text);
     background-color: var(--light-gray);
-    color: white;
     font-size: 16pt;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.3s;
 }
 #answerInfo {
-    display: none;
-
     width: var(--default-width);
     background-color: var(--gray);
     margin: -3px auto;
@@ -159,12 +168,20 @@
     transition: all 2s;
     transition: background-color 0s;
     overflow: hidden;
+    transition: height 0.15s, border-width 0.15s, padding 0.15s;
+
+    padding: 0px 20px;
+    height: 0px;
+    border-width: 0px 3px;
 }
 .answer-options {
     width: calc(var(--default-width) + 40px);
     margin: 0 auto;
-    margin-top: 5px;
+    margin-top: 15px;
     display: flex;
     justify-content: space-between;
     display: none;
+}
+#reshow, #markCorrect {
+    cursor: pointer;
 }

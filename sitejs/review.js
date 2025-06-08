@@ -4,9 +4,15 @@ import { UserGateway } from "../server/client-gateway/user-gateway.js";
 const percentCorrect = document.getElementById("percentageCorrect");
 const numberCompleted = document.getElementById("numberCompleted");
 const numberRemaining = document.getElementById("numberRemaining");
+
 const question = document.getElementById("questionText");
 const answer = document.getElementById("answers");
+
 const answerInfo = document.getElementById("answerInfo");
+const answerOptions = document.getElementsByClassName("answer-options")[0];
+
+const reshowButton = document.getElementById("reshow");
+const markCorrectButton = document.getElementById("markCorrect");
 
 let requireCorrect = false;
 let lazyCheck = false;
@@ -14,7 +20,7 @@ let lazyCheck = false;
 let data;
 let answers = [];
 
-// Rendering or something idk dont as me
+// Rendering or something idk dont ask me
 let r_temp = document.createElement('div');
 r_temp.style.visibility = 'hidden';
 document.body.appendChild(r_temp);
@@ -57,22 +63,24 @@ async function renderable(input) {
 }
 function showDisplay(msg) {
     answerInfo.innerHTML = msg;
-    answerInfo.style.display = "block";
+    answerInfo.style.height = "30px";
+    answerInfo.style.padding = "5px 20px";
 }
-function hideDisplay() {
-    console.log("Hiding display");
-    answerInfo.style.display = "none";
+async function hideDisplay() {
+    answerInfo.style.padding = "0px 20px";
+    answerInfo.style.borderWidth = "0px 3px"
+    answerInfo.style.height = "0";
 }
 function showCorrect() {
-    answerInfo.innerHTML = "Correct!";
     answerInfo.classList.add("correct");
-    answerInfo.style.display = "block";
+    showDisplay("Correct!");
+
     window.setTimeout(() => {
-        answerInfo.style.display = "none";
-        answerInfo.classList.remove("correct");
-    }, 1000);
+        hideDisplay();
+        window.setTimeout(() => answerInfo.classList.remove("correct"), 1500);
+    }, 700);
 }
-function showContinue(text = "Continue") {
+function showContinue(text = `Continue <span class="shortcut">Enter</span>`) {
     let continueButton = answer.appendChild(document.createElement("button"));
     continueButton.innerHTML = text;
     continueButton.id = "continueButton";
@@ -91,9 +99,16 @@ function showContinue(text = "Continue") {
         refresh();
     });
 }
+function showOptions() {
+    answerOptions.style.display = "flex";
+}
+function hideOptions() {
+    answerOptions.style.display = "none";
+}
 
 function refresh() {
-    
+    document.getElementById("continueButton")?.remove();
+    hideOptions();
 
     if(Game.isDead()) {
         // Handle dead game state
@@ -126,15 +141,32 @@ function refresh() {
                 }
             });
 
-            // input.addEventListener('keyup', async () => {
-            //     if(await renderable(input.value) && input.value.match(/\$[^$]*\$/g)) showDisplay(input.value); 
-            //         else hideDisplay();
-            // });
+            input.addEventListener('keyup', async () => {
+                if(await renderable(input.value) && input.value.match(/\$[^$]*\$/g)) {
+                    showDisplay(input.value);
+                    typeset(answerInfo);
+                };
+            });
 
             break;
         case "mc":
-            // Handle multiple choice question
-            break;
+            data.op.forEach(async (e) => {
+                let option = answer.appendChild(document.createElement("div"));
+                option.classList.add("mc-option");
+                option.innerHTML = e;
+
+                if(await renderable(option.innerHTML) && option.innerHTML.match(/\$[^$]*\$/g)) {
+                        typeset(answerInfo);
+                }
+
+                option.addEventListener("click", async () => {
+                    option.id = "selectedOption";
+                    answerHandler();
+                });
+
+                answers.push(option);
+            });
+
         case "ranking":
             // Handle ranking question
             break;
@@ -145,13 +177,15 @@ function refresh() {
 }
 function answerHandler() {
     if (Game.isDead()) window.location.href = "/home?l=lm&s=1";
+    
+    showOptions();
 
     let correct = false;
     switch (data.type) {
         case "txt":
             if(answers[0].value.trim() === "") {
                 showDisplay("Please enter an answer.");
-                window.setTimeout(() => hideDisplay(), 1000);
+                window.setTimeout(() => hideDisplay(), 1500);
                 return;
             }
 
@@ -190,6 +224,46 @@ function answerHandler() {
                 }
             }
         break;
+        case "mc":
+            let selectedIndex;
+            for(let i = 0; i < answers.length; i++) {
+                if(answers[i].id == "selectedOption") {
+                    selectedIndex = i;
+                }
+            }
+            correct = Game.isCorrect(selectedIndex);
+
+            if (correct) {
+                Game.registerTick(Date.now() - startTick);
+                Game.continue();
+
+                answers[selectedIndex].classList.add("correct");
+                window.setTimeout(() => {}, 1000);
+
+                showCorrect();
+                refresh();
+            } else {
+                answers[selectedIndex].classList.add("mc-incorrect");
+
+                let correctAnswer;
+                for(let i = 0; i < answers.length; i++) {
+                    if(Game.isCorrect(i)) {
+                        correctAnswer = answers[i];
+                        break;
+                    }
+                }
+
+                correctAnswer.classList.add("mc-correct");
+                if (requireCorrect) {
+                    correctAnswer.addEventListener("click", () => {
+                        refresh();
+                    });
+                    showDisplay("Select the correct answer to continue.");
+                    answers[selectedIndex].id = "";
+                } else {
+                    showContinue();
+                }
+            }
     }
 }
 
@@ -220,3 +294,34 @@ function answerHandler() {
     refresh();
     window.LOADED();
 })();
+
+reshowButton.addEventListener("click", () => {
+    Game.registerTick(endTick - startTick);
+    Game.reshow();
+    refresh();
+});
+markCorrectButton.addEventListener("click", () => {
+    Game.markCorrect();
+    Game.registerTick(endTick - startTick);
+    Game.continue();
+    refresh();
+});
+window.addEventListener("keyup", (e) => {
+    if(e.key == "r" && document.getElementById("reshow")) {
+        e.preventDefault();
+        reshowButton.click();
+    }
+});
+window.addEventListener("keyup", (e) => {
+    if(e.key == " " && document.getElementById("markCorrect")) {
+        e.preventDefault();
+        markCorrectButton.click();
+    }
+});
+window.addEventListener("keyup", (e) => {
+    if(e.key == "Enter" && document.getElementById("continueButton")) {
+        let continueButton = document.getElementById("continueButton");
+        e.preventDefault();
+        continueButton.click();
+    }
+});
