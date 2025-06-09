@@ -92,8 +92,15 @@ function newSet() {
     lastWrong = currWrong;
     currWrong = [];
 
+    // scramble using Fisher-Yates shuffle
+    for (let i = currSet.length - 1; i > 0; i--) {
+        const j = random(0, i); // random index between 0 and i
+        [currSet[i], currSet[j]] = [currSet[j], currSet[i]]; // swap elements
+    }
+
     let min = Math.min(gameData.length, curr + deckSize);
-    for(let i = curr; i < min; i++) currSet.push(i);
+    for(let i = curr; i < min; i++) 
+        currSet.push(i);
     
     curr = min;
     card = 0;
