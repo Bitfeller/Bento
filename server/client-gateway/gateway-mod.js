@@ -16,6 +16,12 @@ async function gateway_fetch(path) {
         return {};
     }
 }
+function cache(key, value) {
+    localStorage.setItem(key, value);
+}
+function getCache(key) {
+    return localStorage.getItem(key);
+}    
 function types(t, ...args) {
     return args.every((c, i) => {
         if(c === undefined) return false;
@@ -67,4 +73,4 @@ async function senderror(name, error, relatedData) {
     })
 }
 
-export { types, sameUser, senderror, gateway_fetch };
+export { types, sameUser, senderror, gateway_fetch, cache, getCache };
