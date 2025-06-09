@@ -1144,7 +1144,7 @@ b_pastebtn.addEventListener("mousedown", () => {
     let importText = b_paste.value.trim();
     try {
         let main = JSON.parse(importText);
-        if(main.name == undefined || main.desc == undefined || main.contnt == undefined) return window.SHOW_ERROR("This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
+        if(main.name === undefined || main.desc === undefined || main.contnt === undefined) return window.SHOW_ERROR("This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
         let val_name = window.lib.dpwrapper(dp, main.name);
         let val_desc = window.lib.dpwrapper(dp, main.desc);
         let val_contnt = window.lib.dpwrapper(dp, main.contnt);
