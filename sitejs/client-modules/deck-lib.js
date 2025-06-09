@@ -1141,7 +1141,7 @@ b_createbtn.addEventListener("mousedown", () => {
 b_pastebtn.addEventListener("mousedown", () => {
     if(!DOMPurify) return window.SHOW_ERROR("The system is loading a module. Please try again later. (code: fetching_dompurify?)");
     let dp = DOMPurify;
-    let importText = b_paste.value;
+    let importText = b_paste.value.trim();
     try {
         let main = JSON.parse(importText);
         if(main.name == undefined || main.desc == undefined || main.contnt == undefined) return window.SHOW_ERROR("This file seems to be corrupted, formatted incorrectly, or isn't a valid Bento deck.");
