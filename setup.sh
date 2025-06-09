@@ -60,10 +60,16 @@ cd ..
 echo "0" > ../conf/config-suspend-server
 
 # Start all Node.js scripts individually
-cd ./backup && pm2 start ./backup.js --name backup && cd ..
-cd ./suspend-server && pm2 start ./suspend-server.js --name suspend-server && cd ..
-cd ./log-collector && pm2 start ./log-collector.js --name log-collector && cd ..
-cd ./error && pm2 start ./error.js --name error && cd ..
+declare -A services=(
+    ["backup"]="backup.js"
+    ["suspend-server"]="suspend-server.js"
+    ["log-collector"]="log-collector.js"
+    ["error"]="error.js"
+)
+
+for service in "${!services[@]}"; do
+    cd "./$service" && pm2 start "./${services[$service]}" --name "$service" && cd ..
+done
 pm2 save
 
 cd ../..
