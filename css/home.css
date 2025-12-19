@@ -44,9 +44,9 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    border: var(--gray) 3px solid; 
+    border: var(--gray) 3px solid;
     border-radius: 5px;
-    background-color: var(--dark-gray); 
+    background-color: var(--dark-gray);
     padding: 10px;
 }
 .plate-svg {
@@ -146,9 +146,9 @@
     width: calc(100% - 26px);
     z-index: 10;
     display: flex;
-    border: var(--gray) 3px solid; 
+    border: var(--gray) 3px solid;
     border-radius: 5px;
-    background-color: var(--dark-gray); 
+    background-color: var(--dark-gray);
     padding: 10px;
 }
 #search-reviews {
@@ -221,6 +221,11 @@
 .answer-preview {
     margin-left: 10px;
 }
+.version {
+    position: absolute;
+    bottom: 0;
+    right: 10;
+}
 @keyframes sushi-shine {
     50% {
         filter: drop-shadow(0 0 0.3rem gold);
@@ -254,7 +259,7 @@
         grid-template-columns: 1fr;
         grid-template-areas: none;
     }
-    
+
     .review-box, .create-deck-box, .browse-decks-box, .changelog, .review-schedule {
         grid-column: 1;
         width: 94%;
@@ -263,7 +268,7 @@
     #deck-reminders {
         display: none;
     }
-    
+
     .review-name {
         max-width: calc(80vw - 50px);
     }
@@ -277,7 +282,7 @@
 }
 ::-webkit-scrollbar-thumb {
     background: var(--lighter-gray);
-} 
+}
 ::-webkit-scrollbar-thumb {
     background: var(--lighter-gray);
 }
