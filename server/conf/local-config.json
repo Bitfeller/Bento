@@ -10,6 +10,10 @@
         "port": -1,
         "password": ""
     },
+    "php_cfg": {
+        "json_max_depth": 512,
+        "json_flags": 0
+    },
     "allowed_hosts": "*",
     "session_path": "",
     "bento_notif_url": "",

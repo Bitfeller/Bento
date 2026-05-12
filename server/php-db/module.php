@@ -151,7 +151,7 @@
         $content = trim($content);
         $content = htmlspecialchars($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $content = preg_replace('/\s/', ' ', $content);
-        $content = preg_replace('/\u00a0/', ' ', $content);
+        $content = preg_replace('/\x{00A0}/u', ' ', $content);
         return $content;
     }
     function sanitize($content) {
