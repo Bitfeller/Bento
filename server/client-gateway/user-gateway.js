@@ -31,6 +31,7 @@ let UserGateway = {
         }).then(async res => {
             if(!res.ok) throw "couldn't fetch! (bad response)";
             fres = res.clone();
+            console.log('backend[user-gateway.js:getuser]: got response of ', await res.clone().text());
             return res.json();
         }).then(res => {
             success = res.status == 'success';
