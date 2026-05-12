@@ -263,6 +263,11 @@ async function preview(_this) {
                                     <span class='preview-ico material-symbols-outlined'>download</span> Export
                                 </div>
                             </button>
+                            <button class='preview-btn' id='preview-expclipboard-btn'>
+                                <div class='line-up-icons'>
+                                    <span class='preview-ico material-symbols-outlined'>download</span> Export to clipboard
+                                </div>
+                            </button>
                             <button class='preview-btn' id='preview-edit-btn'>
                                 <div class='line-up-icons'>
                                     <span class='preview-ico material-symbols-outlined'>edit</span> Edit
@@ -309,6 +314,28 @@ async function preview(_this) {
             link.click();
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
+        });
+        document.getElementById('preview-expclipboard-btn').addEventListener('click', () => {
+            const deckExport = {
+                name: window.lib.decode(deck.name),
+                desc: window.lib.decode(deck.data.desc),
+                tags: window.lib.decode(deck.tags ?? []),
+                contnt: window.lib.recur_decode(deck.data.contnt)
+            };
+            const json = JSON.stringify(deckExport);
+            navigator.clipboard.writeText(json).then(() => {
+                let orig = document.getElementById('preview-expclipboard-btn').innerHTML;
+                document.getElementById('preview-expclipboard-btn').innerHTML = `
+                    <div class='line-up-icons'>
+                        <span class='preview-ico material-symbols-outlined'>check</span> Copied to clipboard!
+                    </div>
+                `;
+                setTimeout(() => {
+                    document.getElementById('preview-expclipboard-btn').innerHTML = orig;
+                }, 1000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
         });
         document.getElementById('preview-edit-btn').addEventListener('click', () => window.location.href = '/learn/editdeck?d=' + id);
         
