@@ -12,7 +12,7 @@
         if($_SESSION['verified'] == 0 and (isset($_X_UO) and $_X_UO == "1"))
             header("Location: /user/verify");
         else if($_SESSION['verified'] == 1 and (isset($_X_VE) and $_X_VE == "1"))
-            header("Location: /home");
+            header("Location: /home?new=1");
         if(isset($_X_NUO) and $_X_NUO == "1")
             header("Location: /home");
         $contnt = json_decode($_SESSION['userdata'], true);

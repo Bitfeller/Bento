@@ -7,7 +7,9 @@ let loaded = -1, loadedReviews = false;
 let decks = [];
 
 let allowedTags = [];
+let reviewsTags = {};
 
+// Elements
 const filteredTags = document.getElementsByClassName('filtered-tags')[0];
 const predefinedTags = document.getElementsByClassName('predefined-tags')[0];
 const tagSearch = document.getElementById('tagSearch');
@@ -124,11 +126,17 @@ function box(id, killfn = (box) => box.remove()) {
         b.style.backgroundImage = `url(${data.deckpic && data.deckpic.length > 0 ? data.deckpic : "../../img/defaultdeckpic.png"})`;
         if(data.data.tags) {
             for(let tag of data.data.tags)
-                tags.innerHTML += `<div class='tag'><p>${tag}</p></div>`;
+                tags.innerHTML += `<div class='tag' style='background-color: ${generateTagColor(tag)}'><p>${tag}</p></div>`;
         }
 
         b.getElementsByClassName('preview-button')[0].addEventListener('click', e => preview(e.currentTarget));
         b.getElementsByClassName('add-button')[0].addEventListener('click', e => updateReviews(e.currentTarget));
+
+        // Update reviews tags
+        if(user.userdata.reviews[id] && data.data.tags) {
+            for(let tag of data.data.tags)
+                reviewsTags[tag] = (reviewsTags[tag] ?? 0) + 1;
+        }
     }
 
     return {
@@ -136,13 +144,15 @@ function box(id, killfn = (box) => box.remove()) {
         loader: _load()
     };
 }
-function removeBox(id) {
+function removeBox(id, removeFromAllDecks = true) {
     let b = ownedDecks.querySelector(`.ingredient-box[data-id="${id}"]`);
     if(b) b.remove();
     if(ownedDecks.children.length == 0)
         ownedDecks.innerHTML = `<p class='info-blank'>You haven't added any decks to your reviews yet.</p>`;
-    b = pubDecks.querySelector(`.ingredient-box[data-id="${id}"]`);
-    if(b) b.remove();
+    if(removeFromAllDecks) {
+        b = pubDecks.querySelector(`.ingredient-box[data-id="${id}"]`);
+        if(b) b.remove();
+    }
 }
 
 async function update() {
@@ -177,6 +187,9 @@ async function update() {
             await UserGateway.editUser('reviews', json);
         }
     }
+
+    if(ownedDecks.children.length == 0)
+        ownedDecks.innerHTML = `<p class='info-blank'>You haven't added any decks to your reviews yet.</p>`;
 
     loaded = decks.length - 1;
 }
@@ -283,7 +296,7 @@ async function preview(_this) {
             const deckExport = {
                 name: window.lib.decode(deck.name),
                 desc: window.lib.decode(deck.data.desc),
-                tags: window.lib.decode(deck.tags ?? []),
+                tags: window.lib.recur_decode(deck.tags ?? []),
                 contnt: window.lib.recur_decode(deck.data.contnt)
             };
             const json = JSON.stringify(deckExport);
@@ -325,7 +338,7 @@ async function updateReviews(_this) {
     let id = parseInt(_this.dataset.id);
     if(user.userdata.reviews[id]) {
         delete user.userdata.reviews[id];
-        removeBox(id);
+        removeBox(id, false);
     } else {
         user.userdata.reviews[id] = {};
         let [success, _] = await DeckGateway.get(id, false, false, false);
@@ -380,7 +393,13 @@ async function fetchDecks(start = 0) {
         hasMtch.checked
     );
     
-    if(!success) return;
+    if(!success) 
+        return 0;
+
+    // Update "Show More Results" btn
+    loadMore.innerHTML = "Show More Results";
+    loadMore.style.pointerEvents = "all";
+    loadMore.style.opacity = "1";
 
     if(start > 0) {
         decks.push(...data);
@@ -391,6 +410,7 @@ async function fetchDecks(start = 0) {
     }
 
     await update();
+    return data.length;
 }
 
 // Color map
@@ -457,26 +477,31 @@ async function appendTag(tag) {
 }
 
 async function populateRecommended() {
-    // Count tag occurrences from all loaded decks
-    const tagCounts = {};
+    // Select top 3 from tags in the user's reviews
+    const topTags = Object.keys(reviewsTags)
+        .sort((a, b) => reviewsTags[b] - reviewsTags[a])
+        .slice(0, 3);
+
+    if(topTags.length < 3) {
+        const tagCounts = {};
     
-    for (const deck of decks) {
-        if (deck.data && deck.data.tags) {
-            for (const tag of deck.data.tags) {
-                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        for (const deck of decks) {
+            if (deck.data && deck.data.tags) {
+                for (const tag of deck.data.tags) {
+                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                }
             }
         }
+
+        const bestTags = Object.keys(tagCounts)
+            .sort((a, b) => tagCounts[b] - tagCounts[a])
+            .slice(0, 3 - topTags.length);
+        topTags.push(...bestTags);
     }
-    
-    // Sort tags by count to find the most popular ones
-    const topTags = Object.keys(tagCounts)
-        .sort((a, b) => tagCounts[b] - tagCounts[a])
-        .slice(0, 3);
-    
     // If no tags were found in decks, use 3 random tags from allowed tags
-    if (topTags.length === 0 && allowedTags.length > 0) {
+    if (topTags.length < 3 && allowedTags.length > 0) {
         const shuffled = [...allowedTags].sort(() => 0.5 - Math.random());
-        topTags.push(...shuffled.slice(0, 3));
+        topTags.push(...shuffled.slice(0, 3 - topTags.length));
     }
     
     // Add each top tag to the filteredTags container
@@ -521,7 +546,7 @@ async function populateRecommended() {
     strictSlider.children[0].style.right = "0";
 
     decks.push(...data);
-    await update();
+    update();
 
     window.LOADED();
     populateRecommended();
